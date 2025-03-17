@@ -1,0 +1,74 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.border-transparent {
+  border-color: transparent !important;
+}
+
+.overFlowAutoY::-webkit-scrollbar {
+  width: 6px;
+  border-radius: 24px;
+}
+.overFlowAutoY::-webkit-scrollbar-track {
+  border-radius: 24px;
+  /* background: #d9d9d9; */
+}
+.overFlowAutoY::-webkit-scrollbar-thumb {
+  border-radius: 24px;
+  background: #d2d5d8;
+  margin: 10px 2px;
+}
+.overFlowAutoY::-webkit-scrollbar-thumb:hover {
+  border-radius: 24px;
+  /* background: #555; */
+}
+
+/* Toggle Container */
+.toggle-container {
+  display: inline-block;
+  position: relative;
+  width: 40px;
+  height: 24px;
+}
+.toggle-input {
+  display: none;
+}
+.toggle-label {
+  background-color: #c8c8c8;
+  border-radius: 34px;
+  cursor: pointer;
+  display: block;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+.toggle-label::after {
+  content: "";
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0px 2px 4px 0px #07070740;
+  height: 18px;
+  left: 3px;
+  position: absolute;
+  top: 3px;
+  transition: transform 0.3s ease;
+  width: 18px;
+}
+
+.toggle-input:checked + .toggle-label {
+  background-color: #7f56d9;
+}
+
+.toggle-input:checked + .toggle-label::after {
+  transform: translateX(16px);
+}
+/* ----- */
