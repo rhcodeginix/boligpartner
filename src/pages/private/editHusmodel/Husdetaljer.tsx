@@ -25,10 +25,11 @@ import {
 } from "../../../components/ui/select";
 import { TextArea } from "../../../components/ui/textarea";
 import { Link } from "react-router-dom";
-import { addDoc, collection } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { db, storage } from "../../../config/firebaseConfig";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import toast from "react-hot-toast";
+import { v4 as uuidv4 } from "uuid";
 
 const formSchema = z.object({
   TypeObjekt: z.string().min(1, { message: "Velg en Type Objekt." }),
@@ -324,21 +325,23 @@ export const Husdetaljer: React.FC<{
       data.VideoLink = `https://${data.VideoLink}`;
     }
 
-    const husmodellCollectionRef = collection(db, "Husmodell");
+    const uniqueId = uuidv4();
+    const husmodellDocRef = doc(db, "house_model", uniqueId);
 
     const husdetaljerData = {
       ...data,
       link_3D_image: data.link_3D_image || null,
+      id: uniqueId,
     };
 
-    await addDoc(husmodellCollectionRef, {
+    await setDoc(husmodellDocRef, {
       Husdetaljer: husdetaljerData,
-      createdAt: new Date(),
     });
     toast.success("Add successfully", { position: "top-right" });
 
     setActiveTab(1);
   };
+
   const selectedHouseType = form.watch("TypeObjekt");
   return (
     <>
