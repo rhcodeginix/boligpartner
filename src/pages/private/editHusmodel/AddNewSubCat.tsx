@@ -17,16 +17,37 @@ const formSchema = z.object({
   }),
 });
 
-export const AddNewSubCat: React.FC<{ onClose: any; setSubCategory: any }> = ({
-  onClose,
-  setSubCategory,
-}) => {
+export const AddNewSubCat: React.FC<{
+  onClose: any;
+  formData: any;
+  activeTabData: any;
+  setCategory: any;
+}> = ({ onClose, formData, activeTabData, setCategory }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     onClose();
-    setSubCategory((prev: any) => [...prev, data.Kategorinavn]);
+
+    const newSubCategory = { navn: data.Kategorinavn, produkter: [] };
+
+    const existingCategories =
+      formData.getValues(`hovedkategorinavn.${activeTabData}.Kategorinavn`) ||
+      [];
+    setCategory((prev: any) => {
+      const updatedCategory = [...prev];
+      updatedCategory[activeTabData] = {
+        ...updatedCategory[activeTabData],
+        Kategorinavn: [...existingCategories, newSubCategory],
+      };
+      return updatedCategory;
+    });
+    formData.setValue(
+      `hovedkategorinavn.${activeTabData}.Kategorinavn`,
+      [...existingCategories, newSubCategory],
+      { shouldValidate: true }
+    );
   };
   return (
     <>

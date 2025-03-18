@@ -31,6 +31,25 @@ input[type="number"] {
   /* background: #555; */
 }
 
+/* ---- */
+.overflowXAuto::-webkit-scrollbar {
+  height: 4px;
+  border-radius: 24px;
+}
+.overflowXAuto::-webkit-scrollbar-track {
+  border-radius: 24px;
+  /* background: #d9d9d9; */
+}
+.overflowXAuto::-webkit-scrollbar-thumb {
+  border-radius: 24px;
+  background: #d2d5d8;
+  margin: 10px 2px;
+}
+.overflowXAuto::-webkit-scrollbar-thumb:hover {
+  border-radius: 24px;
+  /* background: #555; */
+}
+/* ---- */
 /* Toggle Container */
 .toggle-container {
   display: inline-block;

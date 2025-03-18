@@ -2,26 +2,14 @@ import React, { useState } from "react";
 import { Eksterior } from "./Eksterior";
 import Modal from "../../../components/common/modal";
 import { AddNewCat } from "./AddNewCat";
+import Ic_trash from "../../../assets/images/Ic_trash.svg";
 
 export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   setActiveTab,
 }) => {
   const [activeTabData, setActiveTabData] = useState(0);
   const [AddCategory, setAddCategory] = useState(false);
-  const [Category, setCategory] = useState([
-    { label: "Eksteriør" },
-    { label: "Carport & utebod" },
-    { label: "Inngangsdører" },
-    { label: "Gulv & flis" },
-    { label: "Interiørfarger" },
-    { label: "Bad 1" },
-    { label: "Bad 2" },
-    { label: "Bad 3" },
-    { label: "Ildsted" },
-    { label: "Peis" },
-    { label: "Innvendige dører" },
-    { label: "Listverk" },
-  ]);
+  const [Category, setCategory] = useState<any>([]);
 
   const handleToggleSubCategoryPopup = () => {
     if (AddCategory) {
@@ -37,21 +25,34 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
         Her konfigurerer du husmodellen
       </h3>
       <div className="flex gap-6 px-6 relative">
-        <div className="w-[20%] flex flex-col bg-[#F9FAFB] p-3 pb-0 rounded-lg gap-3 h-[690px] overflow-y-auto overFlowAutoY sticky top-[80px]">
-          {Category.map((tab, index) => (
+        <div className="w-[20%] flex flex-col bg-[#F9FAFB] p-3 pb-0 rounded-lg gap-3 h-full max-h-[690px] overflow-y-auto overFlowAutoY sticky top-[80px]">
+          {Category.map((tab: any, index: number) => (
             <button
               key={index}
-              className={`text-sm rounded-lg text-darkBlack py-3 px-5 flex items-center gap-2 font-semibold bg-white ${
+              className={`bg-white rounded-lg flex items-center justify-between gap-2 px-5 ${
                 activeTabData === index
                   ? "border-2 border-primary bg-lightPurple rounded-t-[12px]"
                   : "border border-gray2"
               }`}
               onClick={() => setActiveTabData(index)}
             >
-              <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
-                {index + 1}
-              </span>
-              {tab.label}
+              <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold">
+                <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
+                  {index + 1}
+                </span>
+                {tab.navn}
+              </div>
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setCategory((prev: any[]) =>
+                    prev.filter((_, i) => i !== index)
+                  );
+                }}
+              >
+                <img src={Ic_trash} alt="delete" />
+              </div>
             </button>
           ))}
           <div
@@ -64,21 +65,18 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
             Legg til nytt rom/kategori
           </div>
         </div>
-        {/* {tabData.map((tab, index) =>
-          activeTabData === index ? (
-            <div className="w-[80%] mb-[130px]" key={index}>
-              {tab.content || tab.label}
-            </div>
-          ) : null
-        )} */}
-        <div className="w-[80%] mb-[130px]">
-          <Eksterior
-            setActiveTab={setActiveTab}
-            labelName={
-              Category.find((_tab, index) => activeTabData === index)?.label
-            }
-          />
-        </div>
+
+        {Category.length > 0 && (
+          <div className="w-[80%] mb-[130px]">
+            <Eksterior
+              setActiveTab={setActiveTab}
+              labelName={Category[activeTabData]?.navn || ""}
+              Category={Category}
+              activeTabData={activeTabData}
+              setCategory={setCategory}
+            />
+          </div>
+        )}
       </div>
       {AddCategory && (
         <Modal onClose={handleToggleSubCategoryPopup} isOpen={true}>

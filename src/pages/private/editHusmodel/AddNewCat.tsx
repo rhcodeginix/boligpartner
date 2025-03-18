@@ -26,7 +26,10 @@ export const AddNewCat: React.FC<{ onClose: any; setCategory: any }> = ({
   });
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     onClose();
-    setCategory((prev: any) => [...prev, { label: data.Hovedkategorinavn }]);
+    setCategory((prev: any) => [
+      ...prev,
+      { navn: data.Hovedkategorinavn, Beskrivelse: "", Kategorinavn: [] },
+    ]);
   };
   return (
     <>
