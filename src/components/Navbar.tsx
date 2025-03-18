@@ -14,7 +14,7 @@ export const Navbar: React.FC = () => {
       <div
         className="px-6 py-4 flex items-center border-b border-gray2 justify-between sticky top-0 bg-white"
         style={{
-          zIndex: 99999999,
+          zIndex: 999,
         }}
       >
         <Link to={"/"}>

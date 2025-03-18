@@ -16,7 +16,13 @@ const queryClient = new QueryClient({
 export const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          style: {
+            zIndex: 999999999,
+          },
+        }}
+      />
       <RouterProvider router={routes} />
     </QueryClientProvider>
   );

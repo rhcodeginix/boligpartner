@@ -25,6 +25,9 @@ const formSchema = z.object({
   Kategorinavn: z.string().min(1, {
     message: "Kategorinavn må bestå av minst 2 tegn.",
   }),
+  hovedkategorinavn: z.string().min(1, {
+    message: "Kategorinavn må bestå av minst 2 tegn.",
+  }),
   produkter: z
     .array(
       z.object({
@@ -61,8 +64,9 @@ const formSchema = z.object({
     .min(1, "Minst ett produkt er påkrevd."),
 });
 
-export const Eksterior: React.FC<{ setActiveTab: any }> = ({
+export const Eksterior: React.FC<{ setActiveTab: any; labelName: any }> = ({
   setActiveTab,
+  labelName,
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -111,8 +115,14 @@ export const Eksterior: React.FC<{ setActiveTab: any }> = ({
   const [SubCategory, setSubCategory] = useState(["Husfarge"]);
 
   useEffect(() => {
-    form.setValue("Kategorinavn", SubCategory[activeTabData]);
-  }, [activeTabData, SubCategory, form]);
+    form.setValue("Kategorinavn", SubCategory[activeTabData], {
+      shouldValidate: true,
+    });
+
+    if (labelName) {
+      form.setValue("hovedkategorinavn", labelName, { shouldValidate: true });
+    }
+  }, [labelName, form, activeTabData, SubCategory]);
 
   const handleToggleSubCategoryPopup = () => {
     if (AddSubCategory) {
@@ -150,7 +160,7 @@ export const Eksterior: React.FC<{ setActiveTab: any }> = ({
           <div>
             <div className="flex items-center justify-between gap-2 mb-2">
               <h4 className="text-darkBlack font-semibold text-xl">
-                Eksteriør
+                {labelName}
               </h4>
               <h5
                 className="text-purple font-semibold text-base cursor-pointer"

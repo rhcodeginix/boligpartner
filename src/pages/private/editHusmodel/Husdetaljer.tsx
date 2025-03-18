@@ -25,7 +25,7 @@ import {
 } from "../../../components/ui/select";
 import { TextArea } from "../../../components/ui/textarea";
 import { Link } from "react-router-dom";
-import { addDoc, collection, doc, getDocs, query } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { db, storage } from "../../../config/firebaseConfig";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import toast from "react-hot-toast";
@@ -337,7 +337,7 @@ export const Husdetaljer: React.FC<{
     });
     toast.success("Add successfully", { position: "top-right" });
 
-    // setActiveTab(1);
+    setActiveTab(1);
   };
   const selectedHouseType = form.watch("TypeObjekt");
   return (
