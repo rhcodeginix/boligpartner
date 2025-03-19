@@ -45,7 +45,7 @@ export const EditHouseModel = () => {
           <Tabs
             tabs={tabData}
             activeTab={activeTab}
-            setActiveTab={setActiveTab}
+            // setActiveTab={setActiveTab}
           />
         </div>
         {activeTab === 0 && <Husdetaljer setActiveTab={setActiveTab} />}

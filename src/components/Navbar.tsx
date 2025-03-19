@@ -46,7 +46,7 @@ export const Navbar: React.FC = () => {
               currentPath === "/Husmodeller" ||
               currentPath === "/se-husmodell" ||
               currentPath === "/add-husmodell" ||
-              currentPath === "/edit-husmodell"
+              currentPath.startsWith("/edit-husmodell/")
                 ? "bg-lightPurple text-primary"
                 : "text-black"
             }`}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,49 +18,39 @@ import { Plus, X } from "lucide-react";
 import Modal from "../../../components/common/modal";
 import { AddNewSubCat } from "./AddNewSubCat";
 import { TextArea } from "../../../components/ui/textarea";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { db, storage } from "../../../config/firebaseConfig";
+import toast from "react-hot-toast";
+import { useLocation, useNavigate } from "react-router-dom";
+import { doc, updateDoc } from "firebase/firestore";
 
 const fileSchema = z.union([
-  z.instanceof(File).refine((file) => file.size <= 10 * 1024 * 1024, {
-    message: "Filstørrelsen må være mindre enn 10 MB.",
-  }),
+  z
+    .instanceof(File)
+    .refine((file: any) => file === null || file.size <= 10 * 1024 * 1024, {
+      message: "Filstørrelsen må være mindre enn 10 MB.",
+    }),
   z.string(),
 ]);
 
 const productSchema = z.object({
-  Produktnavn: z.string().min(2, {
-    message: "Produktnavn må bestå av minst 2 tegn.",
-  }),
-  Hovedbilde: z.array(fileSchema).min(1, {
-    message: "Minst én fil må lastes opp.",
-  }),
-  pris: z
-    .string()
-    .min(1, {
-      message: "Pris må bestå av minst 1 tegn.",
-    })
-    .nullable(),
+  Produktnavn: z.string().min(1, "Produktnavn må bestå av minst 1 tegn."),
+  Hovedbilde: z.array(fileSchema).min(1, "Minst én fil må lastes opp."),
+  pris: z.string().nullable(),
   IncludingOffer: z.boolean().optional(),
-  Produktbeskrivelse: z.string().min(2, {
-    message: "Produktbeskrivelse må bestå av minst 2 tegn.",
-  }),
+  Produktbeskrivelse: z
+    .string()
+    .min(1, "Produktbeskrivelse må bestå av minst 1 tegn."),
 });
 
 const categorySchema = z.object({
-  navn: z.string().min(2, {
-    message: "Kategorinavn må bestå av minst 2 tegn.",
-  }),
-  produkter: z.array(productSchema).min(1, {
-    message: "Minst ett produkt er påkrevd.",
-  }),
+  navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
+  produkter: z.array(productSchema).min(1, "Minst ett produkt er påkrevd."),
 });
 
 const mainCategorySchema = z.object({
-  navn: z.string().min(2, {
-    message: "Hovedkategorinavn må bestå av minst 2 tegn.",
-  }),
-  Beskrivelse: z.string().min(2, {
-    message: "Beskrivelse må bestå av minst 2 tegn.",
-  }),
+  navn: z.string().min(1, "Hovedkategorinavn må bestå av minst 1 tegn."),
+  Beskrivelse: z.string().min(1, "Beskrivelse må bestå av minst 1 tegn."),
   Kategorinavn: z.array(categorySchema),
 });
 
@@ -76,6 +66,11 @@ export const Eksterior: React.FC<{
   setCategory: any;
 }> = ({ setActiveTab, labelName, Category, activeTabData, setCategory }) => {
   const [activeSubTabData, setActiveSubTabData] = useState(0);
+
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/");
+  const id: any = pathSegments.length > 2 ? pathSegments[2] : null;
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -103,13 +98,17 @@ export const Eksterior: React.FC<{
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const produkter = form.watch(
+    `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`
+  );
+
+  const { fields, insert, remove } = useFieldArray({
     control: form.control,
     name: `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
   });
 
-  const addProduct = () => {
-    append({
+  const addProductAtIndex = (index: number) => {
+    insert(index + 1, {
       Produktnavn: "",
       Hovedbilde: [],
       pris: "",
@@ -118,30 +117,39 @@ export const Eksterior: React.FC<{
     });
   };
 
-  // const removeProduct = (index: number) => {
-  //   if (fields.length > 1) {
-  //     remove(index);
-  //   }
-  // };
   const removeProduct = (index: number) => {
-    if (fields.length > 1) {
-      const currentValues = form.getValues();
-      const updatedProdukter = currentValues.hovedkategorinavn[
-        activeTabData
-      ].Kategorinavn[activeSubTabData].produkter.filter((_, i) => i !== index);
-
-      form.setValue(
-        `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
-        updatedProdukter
-      );
-
+    if (produkter.length > 1) {
       remove(index);
     }
   };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log("final-data---", data);
-    // setActiveTab(2);
+    try {
+      const husmodellDocRef = doc(db, "house_model", id);
+
+      const husdetaljerData = {
+        ...data,
+        id: id,
+      };
+      const formatDate = (date: Date) => {
+        return date
+          .toLocaleString("sv-SE", { timeZone: "UTC" })
+          .replace(",", "");
+      };
+      await updateDoc(husmodellDocRef, {
+        Huskonfigurator: husdetaljerData,
+        updatedAt: formatDate(new Date()),
+      });
+      toast.success("Updated successfully", { position: "top-right" });
+
+      navigate(`/edit-husmodell/${id}`);
+      setActiveTab(2);
+    } catch (error) {
+      console.error("Firestore operation failed:", error);
+      toast.error("Something went wrong. Please try again.", {
+        position: "top-right",
+      });
+    }
   };
 
   const [AddSubCategory, setAddSubCategory] = useState(false);
@@ -149,6 +157,51 @@ export const Eksterior: React.FC<{
   useEffect(() => {
     form.setValue("hovedkategorinavn", Category);
   }, [form, Category]);
+
+  const prevProductsRef = useRef<any[]>([]);
+
+  useEffect(() => {
+    const updatedProducts = form.watch(
+      `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`
+    );
+
+    if (!updatedProducts) return;
+
+    if (
+      JSON.stringify(prevProductsRef.current) !==
+      JSON.stringify(updatedProducts)
+    ) {
+      setCategory((prev: any[]) => {
+        const updatedCategories = [...prev];
+
+        if (
+          updatedCategories[activeTabData]?.Kategorinavn?.[activeSubTabData]
+        ) {
+          updatedCategories[activeTabData].Kategorinavn[
+            activeSubTabData
+          ].produkter = updatedProducts?.map((product: any, _index: number) => {
+            return {
+              Produktnavn: product.Produktnavn || "",
+              Hovedbilde: product.Hovedbilde || [],
+              pris: product.pris || "",
+              IncludingOffer: product.IncludingOffer || false,
+              Produktbeskrivelse: product.Produktbeskrivelse || "",
+            };
+          });
+        }
+
+        return updatedCategories;
+      });
+
+      prevProductsRef.current = updatedProducts;
+    }
+  }, [
+    JSON.stringify(
+      form.watch(
+        `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`
+      )
+    ),
+  ]);
 
   const handleToggleSubCategoryPopup = () => {
     if (AddSubCategory) {
@@ -159,35 +212,48 @@ export const Eksterior: React.FC<{
   };
   const file3DInputRef = React.useRef<HTMLInputElement | null>(null);
 
-  const handle3DClick = () => {
-    file3DInputRef.current?.click();
-  };
-
-  const handle3DDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-  };
-
-  const produkter = form.watch(
-    `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`
+  const handle3DClick = useCallback(() => file3DInputRef.current?.click(), []);
+  const handle3DDragOver = useCallback(
+    (event: any) => event.preventDefault(),
+    []
   );
 
+  const produkterPris = form.watch(`hovedkategorinavn`);
+
   const totalPris =
-    produkter &&
-    produkter.reduce((acc, prod) => {
-      const numericValue = prod.pris
-        ?.replace(/\s/g, "")
-        .replace(/\./g, "")
-        .replace(",", ".");
-      return acc + (numericValue ? parseFloat(numericValue) : 0);
-    }, 0);
+    produkterPris?.reduce((katAcc, kategori) => {
+      return (
+        katAcc +
+        (kategori?.Kategorinavn?.reduce((acc, category) => {
+          return (
+            acc +
+            (category?.produkter?.reduce((prodAcc, product) => {
+              const numericValue = product.pris
+                ?.replace(/\s/g, "")
+                .replace(/\./g, "")
+                .replace(",", ".");
+
+              return prodAcc + (numericValue ? parseFloat(numericValue) : 0);
+            }, 0) || 0)
+          );
+        }, 0) || 0)
+      );
+    }, 0) || 0;
 
   const hovedkategorinavn = (() => {
     const categories =
       form.getValues("hovedkategorinavn")?.[activeTabData]?.Kategorinavn || [];
 
-    const filteredCategories = categories.filter(
-      (item: any) => item?.navn?.trim() !== ""
-    );
+    const filteredCategories = categories.filter((item: any) => {
+      if (!item?.navn) {
+        return false;
+      }
+
+      const hasNavn = item.navn.trim() !== "";
+      const hasSubTabNavn = item?.[activeSubTabData]?.navn?.trim() !== "";
+
+      return hasNavn || hasSubTabNavn;
+    });
 
     return filteredCategories.length > 0 ? filteredCategories : [];
   })();
@@ -317,41 +383,340 @@ export const Eksterior: React.FC<{
             </div>
             {hovedkategorinavn?.length > 0 && (
               <div className="flex flex-col gap-8">
-                {fields.map((product, index) => {
+                {produkter?.map((_product, index) => {
                   const upload3DPhoto = form.watch(
                     `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Hovedbilde`
                   );
-
                   return (
-                    <div key={product.id} className="flex flex-col gap-[18px]">
-                      <div className="flex items-center gap-3 justify-between">
-                        <h4 className="text-darkBlack text-base font-semibold">
-                          Produktdetaljer
-                        </h4>
-                        <div
-                          className={`flex items-center gap-1 font-medium ${
-                            fields.length === 1
-                              ? "text-gray cursor-not-allowed text-opacity-55"
-                              : "text-purple cursor-pointer"
-                          }`}
-                          onClick={() => {
-                            if (fields.length > 1) {
-                              removeProduct(index);
-                            }
-                          }}
-                        >
-                          <X /> Slett produkt
+                    <div className="flex flex-col gap-8" key={index}>
+                      <div className="flex flex-col gap-[18px]">
+                        <div className="flex items-center gap-3 justify-between">
+                          <h4 className="text-darkBlack text-base font-semibold">
+                            Produktdetaljer
+                          </h4>
+                          <div
+                            className={`flex items-center gap-1 font-medium ${
+                              produkter.length === 1
+                                ? "text-gray cursor-not-allowed text-opacity-55"
+                                : "text-purple cursor-pointer"
+                            }`}
+                            onClick={() => {
+                              if (produkter.length > 1) {
+                                removeProduct(index);
+                              }
+                            }}
+                          >
+                            <X /> Slett produkt
+                          </div>
                         </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-6">
+                        <div className="grid grid-cols-2 gap-6">
+                          <div>
+                            <FormField
+                              control={form.control}
+                              name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Produktnavn`}
+                              render={({ field, fieldState }) => {
+                                const initialValue =
+                                  form.getValues(
+                                    `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Produktnavn`
+                                  ) || "";
+                                return (
+                                  <FormItem>
+                                    <p
+                                      className={`${
+                                        fieldState.error
+                                          ? "text-red"
+                                          : "text-black"
+                                      } mb-[6px] text-sm font-medium`}
+                                    >
+                                      Produktnavn
+                                    </p>
+                                    <FormControl>
+                                      <div className="relative">
+                                        <Input
+                                          placeholder="Skriv inn Produktnavn"
+                                          {...field}
+                                          className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                          type="text"
+                                          value={initialValue ?? ""}
+                                        />
+                                      </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          </div>
+                          <div className="row-span-2">
+                            <FormField
+                              control={form.control}
+                              name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Hovedbilde`}
+                              render={() => {
+                                const fieldPath: any = `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Hovedbilde`;
+                                const initialValue =
+                                  form.watch(fieldPath) || [];
+
+                                const handleFileChange = async (
+                                  files: FileList | null
+                                ) => {
+                                  if (files) {
+                                    let newImages: any = [
+                                      ...(initialValue || []),
+                                    ];
+
+                                    for (let i = 0; i < files.length; i++) {
+                                      const file: any = files[i];
+
+                                      if (file.size > 2 * 1024 * 1024) {
+                                        toast.error(
+                                          "Image size must be less than 2MB.",
+                                          {
+                                            position: "top-right",
+                                          }
+                                        );
+                                        continue;
+                                      }
+                                      const fileType = "images";
+                                      const timestamp = new Date().getTime();
+                                      const fileName = `${timestamp}_${file?.name}`;
+
+                                      const storageRef = ref(
+                                        storage,
+                                        `${fileType}/${fileName}`
+                                      );
+
+                                      const snapshot = await uploadBytes(
+                                        storageRef,
+                                        file
+                                      );
+
+                                      const url = await getDownloadURL(
+                                        snapshot.ref
+                                      );
+
+                                      newImages.push(url);
+
+                                      form.setValue(fieldPath, newImages);
+                                      form.clearErrors(fieldPath);
+                                    }
+                                  }
+                                };
+
+                                return (
+                                  <FormItem className="w-full">
+                                    <FormControl>
+                                      <div className="flex items-center gap-5 w-full">
+                                        <div className="relative w-full">
+                                          <div
+                                            className="border border-gray2 rounded-[8px] px-3 laptop:px-6 py-4 flex justify-center items-center flex-col gap-3 cursor-pointer w-full"
+                                            onDragOver={handle3DDragOver}
+                                            onClick={handle3DClick}
+                                            onDrop={(event) => {
+                                              event.preventDefault();
+                                              handleFileChange(
+                                                event.dataTransfer.files
+                                              );
+                                            }}
+                                          >
+                                            <img
+                                              src={Ic_upload_photo}
+                                              alt="upload"
+                                            />
+                                            <p className="text-gray text-sm text-center truncate w-full">
+                                              <span className="text-primary font-medium truncate">
+                                                Klikk for opplasting
+                                              </span>{" "}
+                                              eller dra-og-slipp
+                                            </p>
+                                            <p className="text-gray text-sm text-center truncate w-full">
+                                              SVG, PNG, JPG or GIF (maks.
+                                              800x400px)
+                                            </p>
+                                            <input
+                                              type="file"
+                                              ref={file3DInputRef}
+                                              className="hidden"
+                                              multiple
+                                              accept="image/png, image/jpeg, image/svg+xml, image/gif"
+                                              onChange={(event) =>
+                                                handleFileChange(
+                                                  event.target.files
+                                                )
+                                              }
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <FormField
+                              control={form.control}
+                              name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.pris`}
+                              render={({ field, fieldState }) => {
+                                const initialValue = form.getValues(
+                                  `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.pris`
+                                );
+                                return (
+                                  <FormItem>
+                                    <div className="flex items-center justify-between gap-2 mb-[6px]">
+                                      <p
+                                        className={`${
+                                          fieldState.error
+                                            ? "text-red"
+                                            : "text-black"
+                                        } text-sm font-medium`}
+                                      >
+                                        Pris fra
+                                      </p>
+                                      <div className="flex items-center gap-3 text-black text-sm font-medium">
+                                        inkl. i tilbud
+                                        <div className="toggle-container">
+                                          <input
+                                            type="checkbox"
+                                            id={`toggleSwitch.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.IncludingOffer`}
+                                            className="toggle-input"
+                                            checked={
+                                              form.watch(
+                                                `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.IncludingOffer`
+                                              ) || false
+                                            }
+                                            name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.IncludingOffer`}
+                                            onChange={(e: any) => {
+                                              const checkedValue =
+                                                e.target.checked;
+                                              form.setValue(
+                                                `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.IncludingOffer`,
+                                                checkedValue
+                                              );
+                                              if (checkedValue) {
+                                                form.setValue(
+                                                  `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.pris`,
+                                                  null
+                                                );
+                                              } else {
+                                                form.setValue(
+                                                  `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.pris`,
+                                                  ""
+                                                );
+                                              }
+                                            }}
+                                          />
+                                          <label
+                                            htmlFor={`toggleSwitch.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.IncludingOffer`}
+                                            className="toggle-label"
+                                          ></label>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <FormControl>
+                                      <div className="relative">
+                                        <Input
+                                          placeholder="Skriv inn Pris fra"
+                                          {...field}
+                                          className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                          inputMode="numeric"
+                                          disabled={form.watch(
+                                            `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.IncludingOffer`
+                                          )}
+                                          type="text"
+                                          onChange={({
+                                            target: { value },
+                                          }: any) =>
+                                            field.onChange({
+                                              target: {
+                                                name: `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.pris`,
+                                                value: value.replace(/\D/g, "")
+                                                  ? new Intl.NumberFormat(
+                                                      "no-NO"
+                                                    ).format(
+                                                      Number(
+                                                        value.replace(/\D/g, "")
+                                                      )
+                                                    )
+                                                  : "",
+                                              },
+                                            })
+                                          }
+                                          value={
+                                            initialValue === null
+                                              ? "-"
+                                              : initialValue
+                                          }
+                                        />
+                                      </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          {upload3DPhoto && (
+                            <div className="mt-5 flex items-center gap-5">
+                              {upload3DPhoto?.map(
+                                (file: any, imgIndex: number) => (
+                                  <div
+                                    className="relative h-[140px] w-[140px]"
+                                    key={imgIndex}
+                                  >
+                                    <img
+                                      src={file}
+                                      alt="logo"
+                                      height="100%"
+                                      width="100%"
+                                      className="object-cover"
+                                    />
+                                    <div
+                                      className="absolute top-2 right-2 bg-[#FFFFFFCC] rounded-[12px] p-[6px] cursor-pointer"
+                                      onClick={() => {
+                                        const updatedFiles =
+                                          upload3DPhoto.filter(
+                                            (_, i) => i !== imgIndex
+                                          );
+                                        form.setValue(
+                                          `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Hovedbilde`,
+                                          updatedFiles
+                                        );
+                                      }}
+                                    >
+                                      <img
+                                        src={Ic_delete_purple}
+                                        alt="delete"
+                                      />
+                                    </div>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          )}
+                        </div>
                         <div>
                           <FormField
                             control={form.control}
-                            name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Produktnavn`}
+                            name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Produktbeskrivelse`}
                             render={({ field, fieldState }) => {
-                              const initialValue = form.getValues(
-                                `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Produktnavn`
-                              );
+                              const initialValue =
+                                form.getValues(
+                                  `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Produktbeskrivelse`
+                                ) || "";
                               return (
                                 <FormItem>
                                   <p
@@ -361,24 +726,20 @@ export const Eksterior: React.FC<{
                                         : "text-black"
                                     } mb-[6px] text-sm font-medium`}
                                   >
-                                    Produktnavn
+                                    Produktbeskrivelse
                                   </p>
                                   <FormControl>
                                     <div className="relative">
-                                      <Input
-                                        placeholder="Skriv inn Produktnavn"
+                                      <TextArea
+                                        placeholder="Skriv inn Produktbeskrivelse"
                                         {...field}
-                                        className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                        type="text"
-                                        value={initialValue ?? field.value}
-                                        onChange={(e: any) =>
-                                          field.onChange(e.target.value)
-                                        }
+                                        className={`h-[130px] bg-white rounded-[8px] border text-black
+                                  ${
+                                    fieldState?.error
+                                      ? "border-red"
+                                      : "border-gray1"
+                                  } `}
+                                        value={initialValue}
                                       />
                                     </div>
                                   </FormControl>
@@ -388,261 +749,13 @@ export const Eksterior: React.FC<{
                             }}
                           />
                         </div>
-                        <div className="row-span-2">
-                          <FormField
-                            control={form.control}
-                            name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Hovedbilde`}
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormControl>
-                                  <div className="flex items-center gap-5 w-full">
-                                    <div className="relative w-full">
-                                      <div
-                                        className="border border-gray2 rounded-[8px] px-3 laptop:px-6 py-4 flex justify-center items-center flex-col gap-3 cursor-pointer w-full"
-                                        onDragOver={handle3DDragOver}
-                                        onClick={handle3DClick}
-                                        onDrop={(event) => {
-                                          event.preventDefault();
-                                          const files = Array.from(
-                                            event.dataTransfer.files
-                                          );
-
-                                          if (files.length > 0) {
-                                            const updatedFiles = [
-                                              ...(Array.isArray(field.value)
-                                                ? field.value
-                                                : []),
-                                              ...files,
-                                            ];
-                                            form.setValue(
-                                              `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Hovedbilde`,
-                                              updatedFiles
-                                            );
-                                            form.clearErrors(
-                                              `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Hovedbilde`
-                                            );
-                                          }
-                                        }}
-                                      >
-                                        <img
-                                          src={Ic_upload_photo}
-                                          alt="upload"
-                                        />
-                                        <p className="text-gray text-sm text-center truncate w-full">
-                                          <span className="text-primary font-medium truncate">
-                                            Klikk for opplasting
-                                          </span>{" "}
-                                          eller dra-og-slipp
-                                        </p>
-                                        <p className="text-gray text-sm text-center truncate w-full">
-                                          SVG, PNG, JPG or GIF (maks. 800x400px)
-                                        </p>
-                                        <input
-                                          type="file"
-                                          ref={file3DInputRef}
-                                          className="hidden"
-                                          multiple
-                                          accept="image/png, image/jpeg, image/svg+xml, image/gif"
-                                          onChange={(event) => {
-                                            const files = event.target.files
-                                              ? Array.from(event.target.files)
-                                              : [];
-                                            if (files.length > 0) {
-                                              const updatedFiles = [
-                                                ...(Array.isArray(field.value)
-                                                  ? field.value
-                                                  : []),
-                                                ...files,
-                                              ];
-                                              form.setValue(
-                                                `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Hovedbilde`,
-                                                updatedFiles
-                                              );
-                                              form.clearErrors(
-                                                `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Hovedbilde`
-                                              );
-                                            }
-                                          }}
-                                        />
-                                      </div>
-                                    </div>
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div>
-                          <FormField
-                            control={form.control}
-                            name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.pris`}
-                            render={({ field, fieldState }) => (
-                              <FormItem>
-                                <div className="flex items-center justify-between gap-2 mb-[6px]">
-                                  <p
-                                    className={`${
-                                      fieldState.error
-                                        ? "text-red"
-                                        : "text-black"
-                                    } text-sm font-medium`}
-                                  >
-                                    Pris fra
-                                  </p>
-                                  <div className="flex items-center gap-3 text-black text-sm font-medium">
-                                    inkl. i tilbud
-                                    <div className="toggle-container">
-                                      <input
-                                        type="checkbox"
-                                        id={`toggleSwitch.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.IncludingOffer`}
-                                        className="toggle-input"
-                                        checked={
-                                          form.watch(
-                                            `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.IncludingOffer`
-                                          ) || false
-                                        }
-                                        name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.IncludingOffer`}
-                                        onChange={(e: any) => {
-                                          const checkedValue = e.target.checked;
-                                          form.setValue(
-                                            `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.IncludingOffer`,
-                                            checkedValue
-                                          );
-                                          if (checkedValue) {
-                                            form.setValue(
-                                              `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.pris`,
-                                              null
-                                            );
-                                          } else {
-                                            form.setValue(
-                                              `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.pris`,
-                                              ""
-                                            );
-                                          }
-                                        }}
-                                      />
-                                      <label
-                                        htmlFor={`toggleSwitch.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.IncludingOffer`}
-                                        className="toggle-label"
-                                      ></label>
-                                    </div>
-                                  </div>
-                                </div>
-                                <FormControl>
-                                  <div className="relative">
-                                    <Input
-                                      placeholder="Skriv inn Pris fra"
-                                      {...field}
-                                      className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                      inputMode="numeric"
-                                      type="text"
-                                      onChange={({ target: { value } }: any) =>
-                                        field.onChange({
-                                          target: {
-                                            name: `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.pris`,
-                                            value: value.replace(/\D/g, "")
-                                              ? new Intl.NumberFormat(
-                                                  "no-NO"
-                                                ).format(
-                                                  Number(
-                                                    value.replace(/\D/g, "")
-                                                  )
-                                                )
-                                              : "",
-                                          },
-                                        })
-                                      }
-                                      value={
-                                        field.value === null ? "-" : field.value
-                                      }
-                                    />
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        {upload3DPhoto && (
-                          <div className="mt-5 flex items-center gap-5">
-                            {upload3DPhoto.map(
-                              (file: any, imgIndex: number) => (
-                                <div
-                                  className="relative h-[140px] w-[140px]"
-                                  key={imgIndex}
-                                >
-                                  <img
-                                    src={URL.createObjectURL(file)}
-                                    alt="logo"
-                                    height="100%"
-                                    width="100%"
-                                    className="object-cover"
-                                  />
-                                  <div
-                                    className="absolute top-2 right-2 bg-[#FFFFFFCC] rounded-[12px] p-[6px] cursor-pointer"
-                                    onClick={() => {
-                                      const updatedFiles = upload3DPhoto.filter(
-                                        (_, i) => i !== imgIndex
-                                      );
-                                      form.setValue(
-                                        `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Hovedbilde`,
-                                        updatedFiles
-                                      );
-                                    }}
-                                  >
-                                    <img src={Ic_delete_purple} alt="delete" />
-                                  </div>
-                                </div>
-                              )
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      <div>
-                        <FormField
-                          control={form.control}
-                          name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Produktbeskrivelse`}
-                          render={({ field, fieldState }) => (
-                            <FormItem>
-                              <p
-                                className={`${
-                                  fieldState.error ? "text-red" : "text-black"
-                                } mb-[6px] text-sm font-medium`}
-                              >
-                                Produktbeskrivelse
-                              </p>
-                              <FormControl>
-                                <div className="relative">
-                                  <TextArea
-                                    placeholder="Skriv inn Produktbeskrivelse"
-                                    {...field}
-                                    className={`h-[130px] bg-white rounded-[8px] border text-black
-                                  ${
-                                    fieldState?.error
-                                      ? "border-red"
-                                      : "border-gray1"
-                                  } `}
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
                       </div>
                     </div>
                   );
                 })}
                 <div
                   className="text-purple font-semibold text-base flex items-center gap-1 cursor-pointer h-full"
-                  onClick={addProduct}
+                  onClick={() => addProductAtIndex(fields.length - 1)}
                 >
                   <Plus />
                   Legg til annet produkt
@@ -683,7 +796,6 @@ export const Eksterior: React.FC<{
           </div>
         </form>
       </Form>
-
       {AddSubCategory && (
         <Modal onClose={handleToggleSubCategoryPopup} isOpen={true}>
           <div className="bg-white relative rounded-[12px] p-6 md:m-0 w-full sm:w-[518px]">

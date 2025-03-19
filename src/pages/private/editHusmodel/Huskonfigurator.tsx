@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Eksterior } from "./Eksterior";
 import Modal from "../../../components/common/modal";
 import { AddNewCat } from "./AddNewCat";
 import Ic_trash from "../../../assets/images/Ic_trash.svg";
+import Button from "../../../components/common/button";
+import { useLocation } from "react-router-dom";
+import { Spinner } from "../../../components/Spinner";
+import { fetchHusmodellData } from "../../../lib/utils";
 
 export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   setActiveTab,
@@ -10,6 +14,28 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   const [activeTabData, setActiveTabData] = useState(0);
   const [AddCategory, setAddCategory] = useState(false);
   const [Category, setCategory] = useState<any>([]);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/");
+  const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+    const getData = async () => {
+      const data = await fetchHusmodellData(id);
+      if (data && data.Huskonfigurator) {
+        setCategory(data.Huskonfigurator.hovedkategorinavn);
+      }
+      setLoading(false);
+    };
+
+    getData();
+  }, [id]);
 
   const handleToggleSubCategoryPopup = () => {
     if (AddCategory) {
@@ -17,6 +43,27 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     } else {
       setAddCategory(true);
     }
+  };
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (index: number) => {
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    const updatedCategories = [...Category];
+    const draggedItem = updatedCategories[draggedIndex];
+
+    updatedCategories.splice(draggedIndex, 1);
+
+    updatedCategories.splice(index, 0, draggedItem);
+
+    setCategory(updatedCategories);
+    setDraggedIndex(null);
   };
 
   return (
@@ -27,9 +74,13 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
       <div className="flex gap-6 px-6 relative">
         <div className="w-[20%] flex flex-col bg-[#F9FAFB] p-3 pb-0 rounded-lg gap-3 h-full max-h-[690px] overflow-y-auto overFlowAutoY sticky top-[80px]">
           {Category.map((tab: any, index: number) => (
-            <button
+            <div
               key={index}
-              className={`bg-white rounded-lg flex items-center justify-between gap-2 px-5 ${
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={handleDragOver}
+              onDrop={() => handleDrop(index)}
+              className={`bg-white cursor-pointer rounded-lg flex items-center justify-between gap-2 px-5 ${
                 activeTabData === index
                   ? "border-2 border-primary bg-lightPurple rounded-t-[12px]"
                   : "border border-gray2"
@@ -49,11 +100,12 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                   setCategory((prev: any[]) =>
                     prev.filter((_, i) => i !== index)
                   );
+                  setActiveTabData(0);
                 }}
               >
                 <img src={Ic_trash} alt="delete" />
               </div>
-            </button>
+            </div>
           ))}
           <div
             className="sticky bottom-0 mb-3 bg-purple border-gray2 rounded-lg p-3 flex items-center gap-2 text-white font-semibold text-sm cursor-pointer"
@@ -66,7 +118,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           </div>
         </div>
 
-        {Category.length > 0 && (
+        {Category.length > 0 ? (
           <div className="w-[80%] mb-[130px]">
             <Eksterior
               setActiveTab={setActiveTab}
@@ -75,6 +127,28 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
               activeTabData={activeTabData}
               setCategory={setCategory}
             />
+          </div>
+        ) : (
+          <div className="w-full">
+            <div
+              className="text-purple font-semibold text-base cursor-pointer flex justify-end w-full"
+              onClick={() => setActiveTab(2)}
+            >
+              Hopp over steget
+            </div>
+            <div className="flex justify-end w-full gap-5 items-center fixed bottom-0 bg-white z-50 border-t border-gray2 p-4 left-0">
+              <div
+                onClick={() => {
+                  setActiveTab(0);
+                }}
+                className="w-1/2 sm:w-auto"
+              >
+                <Button
+                  text="Avbryt"
+                  className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
+                />
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -91,6 +165,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           </div>
         </Modal>
       )}
+      {loading && <Spinner />}
     </>
   );
 };

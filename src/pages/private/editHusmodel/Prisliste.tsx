@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -14,6 +14,12 @@ import { Input } from "../../../components/ui/input";
 import { X } from "lucide-react";
 import { AddByggkostnader } from "./AddByggkostnader";
 import { AddTomtekost } from "./AddTomtekost";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../../../config/firebaseConfig";
+import { useLocation, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { fetchHusmodellData } from "../../../lib/utils";
+import { Spinner } from "../../../components/Spinner";
 
 const formSchema = z.object({
   ByggekostnaderInfo: z.string().min(1, {
@@ -107,6 +113,31 @@ export const Prisliste: React.FC<{ setActiveTab: any }> = ({
     name: "Tomtekost",
   });
 
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/");
+  const id: any = pathSegments.length > 2 ? pathSegments[2] : null;
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+    const getData = async () => {
+      const data = await fetchHusmodellData(id);
+      if (data && data.Prisliste) {
+        Object.entries(data.Prisliste).forEach(([key, value]) => {
+          if (value !== undefined && value !== null)
+            form.setValue(key as any, value);
+        });
+      }
+      setLoading(false);
+    };
+
+    getData();
+  }, [form, id]);
+
   const addProduct = () => {
     append({
       byggkostnaderID: "",
@@ -139,7 +170,31 @@ export const Prisliste: React.FC<{ setActiveTab: any }> = ({
   };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    try {
+      const husmodellDocRef = doc(db, "house_model", id);
+
+      const husdetaljerData = {
+        ...data,
+        id: id,
+      };
+      const formatDate = (date: Date) => {
+        return date
+          .toLocaleString("sv-SE", { timeZone: "UTC" })
+          .replace(",", "");
+      };
+      await updateDoc(husmodellDocRef, {
+        Prisliste: husdetaljerData,
+        updatedAt: formatDate(new Date()),
+      });
+      toast.success("Updated successfully", { position: "top-right" });
+
+      navigate(`/Husmodeller`);
+    } catch (error) {
+      console.error("Firestore operation failed:", error);
+      toast.error("Something went wrong. Please try again.", {
+        position: "top-right",
+      });
+    }
   };
 
   const scrollToSection = (id: string) => {
@@ -155,6 +210,36 @@ export const Prisliste: React.FC<{ setActiveTab: any }> = ({
     }
   };
   const [currentDiv, setCurrentDiv] = useState("byggekostnader");
+
+  useEffect(() => {
+    const handleWheelScroll = () => {
+      const sections = ["byggekostnader", "tomkostnader"];
+      let closestSection = currentDiv;
+      let minDistance = Infinity;
+
+      sections.forEach((id) => {
+        const section = document.getElementById(id);
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          const distance = Math.abs(rect.top - 170);
+
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestSection = id;
+          }
+        }
+      });
+
+      if (closestSection !== currentDiv) {
+        setCurrentDiv(closestSection);
+      }
+    };
+
+    window.addEventListener("wheel", handleWheelScroll);
+    return () => {
+      window.removeEventListener("wheel", handleWheelScroll);
+    };
+  }, [currentDiv]);
 
   const Byggekostnader = form.watch("Byggekostnader");
 
@@ -184,7 +269,7 @@ export const Prisliste: React.FC<{ setActiveTab: any }> = ({
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
-          <div className="w-full bg-white sticky top-[80px] shadow-shadow1 py-2">
+          <div className="w-full bg-white sticky top-[80px] shadow-shadow1 py-2 z-50">
             <div className="bg-lightPurple flex items-center gap-2 rounded-lg p-[6px] mx-6 w-max">
               <div
                 className={`cursor-pointer px-5 py-2 text-sm rounded-lg ${
@@ -212,7 +297,7 @@ export const Prisliste: React.FC<{ setActiveTab: any }> = ({
               </div>
             </div>
           </div>
-          <div className="p-6 mb-[100px]">
+          <div className="p-6 mb-[100px] z-40 relative">
             <div className="flex flex-col gap-8">
               <div className="flex gap-8" id="byggekostnader">
                 <div className="w-[20%]">
@@ -397,6 +482,9 @@ export const Prisliste: React.FC<{ setActiveTab: any }> = ({
                                             : "border-gray1"
                                         } `}
                                               inputMode="numeric"
+                                              disabled={form.watch(
+                                                `Byggekostnader.${index}.IncludingOffer`
+                                              )}
                                               type="text"
                                               onChange={({
                                                 target: { value },
@@ -644,6 +732,9 @@ export const Prisliste: React.FC<{ setActiveTab: any }> = ({
                                             : "border-gray1"
                                         } `}
                                               inputMode="numeric"
+                                              disabled={form.watch(
+                                                `Tomtekost.${index}.IncludingOffer`
+                                              )}
                                               type="text"
                                               onChange={({
                                                 target: { value },
@@ -720,6 +811,7 @@ export const Prisliste: React.FC<{ setActiveTab: any }> = ({
               type="submit"
             />
           </div>
+          {loading && <Spinner />}
         </form>
       </Form>
     </>

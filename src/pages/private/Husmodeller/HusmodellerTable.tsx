@@ -1,4 +1,4 @@
-import { Ellipsis, Loader2 } from "lucide-react";
+import { Eye, Loader2, Pencil, Trash } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -15,57 +15,74 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Ic_Leverandor from "../../../assets/images/Ic_Leverandor.svg";
 import Ic_search from "../../../assets/images/Ic_search.svg";
 import Ic_filter from "../../../assets/images/Ic_filter.svg";
-import Ic_husmodell from "../../../assets/images/Ic_husmodell.svg";
 import Ic_Avatar from "../../../assets/images/Ic_Avatar.svg";
-
-const data = [
-  {
-    id: 1,
-    leverandor: Ic_Leverandor,
-    Husmodell: Ic_husmodell,
-    husmodell: "Almgaard",
-    Kategori: "Herskapelig",
-    m2: 233,
-    soverom: 5,
-    bad: 3,
-    avatar: Ic_Avatar,
-    SisteOppdatert: "Lars Nilsen",
-    time: "04.03.2025 13:45:22",
-  },
-  {
-    id: 2,
-    leverandor: Ic_Leverandor,
-    Husmodell: Ic_husmodell,
-    Kategori: "Herskapelig",
-    husmodell: "ST 66",
-    m2: 233,
-    soverom: 5,
-    bad: 3,
-    avatar: Ic_Avatar,
-    SisteOppdatert: "Lars Nilsen",
-    time: "04.03.2025 13:45:22",
-  },
-  {
-    id: 3,
-    leverandor: Ic_Leverandor,
-    Kategori: "Herskapelig",
-    Husmodell: Ic_husmodell,
-    husmodell: "ST 66",
-    m2: 233,
-    soverom: 5,
-    bad: 3,
-    avatar: Ic_Avatar,
-    SisteOppdatert: "Lars Nilsen",
-    time: "04.03.2025 13:45:22",
-  },
-];
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { db } from "../../../config/firebaseConfig";
+import { formatDateTime } from "../../../lib/utils";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import Modal from "../../../components/common/modal";
+import Button from "../../../components/common/button";
 
 export const HusmodellerTable = () => {
   const [page, setPage] = useState(1);
+  const [houseModels, setHouseModels] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedId, setSelectedId] = useState<any>(null);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "house_model", id));
+      toast.success("Delete successfully", { position: "top-right" });
+      fetchHusmodellData();
+      setShowConfirm(false);
+    } catch (error) {
+      console.error("Error deleting document:", error);
+    }
+  };
+
+  const handleConfirmPopup = () => {
+    if (showConfirm) {
+      setShowConfirm(false);
+    } else {
+      setShowConfirm(true);
+    }
+  };
+  const fetchHusmodellData = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "house_model"));
+      const data: any = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setHouseModels(data);
+    } catch (error) {
+      console.error("Error fetching husmodell data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchHusmodellData();
+  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const confirmDelete = (id: string) => {
+    setSelectedId(id);
+    setShowConfirm(true);
+  };
+
+  const filteredData = useMemo(() => {
+    return houseModels.filter((model: any) =>
+      model.Husdetaljer?.husmodell_name
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
+  }, [houseModels, searchTerm]);
 
   const columns = useMemo<ColumnDef<any>[]>(
     () => [
@@ -75,12 +92,12 @@ export const HusmodellerTable = () => {
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
             <img
-              src={row.original.Husmodell}
+              src={row.original.Husdetaljer.photo}
               alt="Husmodell"
               className="w-8 h-8 rounded-full"
             />
             <p className="font-medium text-sm text-purple">
-              {row.original.husmodell}
+              {row.original.Husdetaljer.husmodell_name}
             </p>
           </div>
         ),
@@ -89,14 +106,15 @@ export const HusmodellerTable = () => {
         accessorKey: "leverandor",
         header: "Leverandør",
         cell: ({ row }) => (
-          <img src={row.original.leverandor} alt="leverandor" className="h-5" />
+          <img src={Ic_Leverandor} alt="leverandor" className="h-5" />
         ),
       },
       {
         accessorKey: "kategori",
         header: "Kategori",
         cell: ({ row }) => (
-          <p className="text-sm text-gray">{row.original.Kategori}</p>
+          <p className="text-sm text-gray">Herskapelig</p>
+          // <p className="text-sm text-gray">{row.original.Kategori}</p>
         ),
       },
       {
@@ -104,9 +122,16 @@ export const HusmodellerTable = () => {
         header: "Husdetaljer",
         cell: ({ row }) => (
           <p className="text-sm text-gray">
-            <span className="font-bold">{row.original.m2}</span> m2.{" "}
-            <span className="font-bold">{row.original.soverom}</span> soverom,{" "}
-            <span className="font-bold">{row.original.bad}</span> bad
+            <span className="font-bold">
+              {row.original.Husdetaljer.BRATotal}
+            </span>{" "}
+            m2.{" "}
+            <span className="font-bold">
+              {row.original.Husdetaljer.Soverom}
+            </span>{" "}
+            soverom,{" "}
+            <span className="font-bold">{row.original.Husdetaljer.Bad}</span>{" "}
+            bad
           </p>
         ),
       },
@@ -116,15 +141,18 @@ export const HusmodellerTable = () => {
         cell: ({ row }) => (
           <div className="flex items-start gap-3">
             <img
-              src={row.original.avatar}
+              src={Ic_Avatar}
               alt="avatar"
               className="w-8 h-8 rounded-full"
             />
             <div>
               <p className="font-medium text-black text-sm mb-[2px]">
-                {row.original.SisteOppdatert}
+                {/* {row.original.SisteOppdatert} */}
+                John Deo
               </p>
-              <p className="text-xs text-gray">{row.original.time}</p>
+              <p className="text-xs text-gray">
+                {formatDateTime(row.original.updatedAt)}
+              </p>
             </div>
           </div>
         ),
@@ -132,22 +160,34 @@ export const HusmodellerTable = () => {
       {
         id: "action",
         header: "Action",
-        cell: () => (
-          <button className="h-8 w-8 flex items-center justify-center">
-            <Ellipsis className="h-4 w-4 text-gray-500" />
-            {/* se-husmodell */}
-          </button>
+        cell: ({ row }) => (
+          <>
+            <div className="flex items-center justify-center gap-3">
+              <Pencil
+                className="h-5 w-5 text-primary cursor-pointer"
+                onClick={() => navigate(`/edit-husmodell/${row.original.id}`)}
+              />
+              <Trash
+                className="h-5 w-5 text-primary cursor-pointer"
+                onClick={() => confirmDelete(row.original.id)}
+              />
+              <Eye
+                className="h-5 w-5 text-primary cursor-pointer"
+                onClick={() => navigate("/se-husmodell")}
+              />
+            </div>
+          </>
         ),
       },
     ],
-    []
+    [confirmDelete, navigate]
   );
 
   const pageSize = 10;
   const paginatedData = useMemo(() => {
     const start = (page - 1) * pageSize;
-    return data.slice(start, start + pageSize);
-  }, [page]);
+    return filteredData.slice(start, start + pageSize);
+  }, [filteredData, page]);
 
   const table = useReactTable({
     data: paginatedData,
@@ -161,7 +201,7 @@ export const HusmodellerTable = () => {
         pageSize,
       },
     },
-    pageCount: Math.ceil(data.length / pageSize),
+    pageCount: Math.ceil(filteredData.length / pageSize),
     manualPagination: true,
     onPaginationChange: (updater: any) => {
       if (typeof updater === "function") {
@@ -183,6 +223,8 @@ export const HusmodellerTable = () => {
             type="text"
             placeholder="Søk etter lead"
             className="focus-within:outline-none"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
@@ -208,7 +250,7 @@ export const HusmodellerTable = () => {
             ))}
           </TableHeader>
           <TableBody>
-            {data.length === 0 ? (
+            {houseModels.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
@@ -217,7 +259,17 @@ export const HusmodellerTable = () => {
                   <Loader2 className="w-6 h-6 animate-spin mx-auto" />
                 </TableCell>
               </TableRow>
-            ) : table.getRowModel().rows?.length ? (
+            ) : filteredData.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            ) : (
+              table.getRowModel().rows?.length &&
               table.getRowModel().rows.map((row: any) => (
                 <TableRow
                   key={row.id}
@@ -234,15 +286,6 @@ export const HusmodellerTable = () => {
                   ))}
                 </TableRow>
               ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
             )}
           </TableBody>
         </Table>
@@ -267,6 +310,34 @@ export const HusmodellerTable = () => {
           </button>
         </div>
       </div>
+      {showConfirm && (
+        <Modal onClose={handleConfirmPopup} isOpen={true}>
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <p className="text-lg font-bold">
+                Er du sikker på at du vil slette?
+              </p>
+              <div className="flex justify-center mt-5 w-full gap-5 items-center">
+                <div
+                  onClick={() => setShowConfirm(false)}
+                  className="w-1/2 sm:w-auto"
+                >
+                  <Button
+                    text="Avbryt"
+                    className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  />
+                </div>
+                <div onClick={() => handleDelete(selectedId)}>
+                  <Button
+                    text="Bekrefte"
+                    className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

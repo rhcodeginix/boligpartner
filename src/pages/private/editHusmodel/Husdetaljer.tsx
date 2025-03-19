@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,12 +24,14 @@ import {
   SelectValue,
 } from "../../../components/ui/select";
 import { TextArea } from "../../../components/ui/textarea";
-import { Link } from "react-router-dom";
-import { doc, setDoc } from "firebase/firestore";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../config/firebaseConfig";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
+import { fetchHusmodellData } from "../../../lib/utils";
+import { Spinner } from "../../../components/Spinner";
 
 const formSchema = z.object({
   TypeObjekt: z.string().min(1, { message: "Velg en Type Objekt." }),
@@ -146,7 +148,31 @@ export const Husdetaljer: React.FC<{
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/");
+  const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+    const getData = async () => {
+      const data = await fetchHusmodellData(id);
+      if (data && data.Husdetaljer) {
+        Object.entries(data.Husdetaljer).forEach(([key, value]) => {
+          if (value !== undefined && value !== null)
+            form.setValue(key as any, value);
+        });
+      }
+      setLoading(false);
+    };
+
+    getData();
+  }, [form, id]);
+
+  const navigate = useNavigate();
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
   const file3DInputRef = React.useRef<HTMLInputElement | null>(null);
   const filePlantegningerFasaderPhotoInputRef =
@@ -156,22 +182,37 @@ export const Husdetaljer: React.FC<{
     "PlantegningerFasader"
   );
   const upload3DPhoto: any = form.watch("photo3D");
+
+  const uploadFile = async (file: File, fieldName: any) => {
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Image size must be less than 2MB.", {
+        position: "top-right",
+      });
+      return;
+    }
+    const fileType = "images";
+    const timestamp = Date.now();
+    const fileName = `${timestamp}_${file.name}`;
+    const storageRef = ref(storage, `${fileType}/${fileName}`);
+
+    try {
+      const snapshot = await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(snapshot.ref);
+
+      form.setValue(fieldName, url);
+      form.clearErrors(fieldName);
+    } catch (error) {
+      console.error(`Error uploading file for ${fieldName}:`, error);
+    }
+  };
+
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const files = event.target.files;
-    if (files) {
-      const fileType = "images";
-      const timestamp = new Date().getTime();
-      const fileName = `${timestamp}_${files[0]?.name}`;
-
-      const storageRef = ref(storage, `${fileType}/${fileName}`);
-
-      const snapshot = await uploadBytes(storageRef, files[0]);
-
-      const url = await getDownloadURL(snapshot.ref);
-      form.clearErrors("photo");
-      form.setValue("photo", url);
+    if (event.target.files?.[0]) {
+      await uploadFile(event.target.files[0], "photo");
     }
   };
 
@@ -181,38 +222,16 @@ export const Husdetaljer: React.FC<{
 
   const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    const files = event.dataTransfer.files;
-    if (files) {
-      const fileType = "images";
-      const timestamp = new Date().getTime();
-      const fileName = `${timestamp}_${files[0]?.name}`;
-
-      const storageRef = ref(storage, `${fileType}/${fileName}`);
-
-      const snapshot = await uploadBytes(storageRef, files[0]);
-
-      const url = await getDownloadURL(snapshot.ref);
-      form.setValue("photo", url);
-      form.clearErrors("photo");
+    if (event.dataTransfer.files?.[0]) {
+      await uploadFile(event.dataTransfer.files[0], "photo");
     }
   };
 
   const handlePlantegningerFasaderFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const files = event.target.files;
-    if (files) {
-      const fileType = "images";
-      const timestamp = new Date().getTime();
-      const fileName = `${timestamp}_${files[0]?.name}`;
-
-      const storageRef = ref(storage, `${fileType}/${fileName}`);
-
-      const snapshot = await uploadBytes(storageRef, files[0]);
-
-      const url = await getDownloadURL(snapshot.ref);
-      form.clearErrors("PlantegningerFasader");
-      form.setValue("PlantegningerFasader", url);
+    if (event.target.files?.[0]) {
+      await uploadFile(event.target.files[0], "PlantegningerFasader");
     }
   };
 
@@ -224,52 +243,54 @@ export const Husdetaljer: React.FC<{
     event: React.DragEvent<HTMLDivElement>
   ) => {
     event.preventDefault();
-    const files = event.dataTransfer.files;
-    if (files && files[0]) {
-      const fileType = "images";
-      const timestamp = new Date().getTime();
-      const fileName = `${timestamp}_${files[0]?.name}`;
+    if (event.dataTransfer.files?.[0]) {
+      await uploadFile(event.dataTransfer.files[0], "PlantegningerFasader");
+    }
+  };
 
+  const handleFileUpload = async (files: FileList) => {
+    if (!files.length) return;
+
+    let newImages = [...(upload3DPhoto || [])];
+
+    const uploadPromises = Array.from(files).map(async (file) => {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error("Image size must be less than 2MB.", {
+          position: "top-right",
+        });
+        return null;
+      }
+
+      const fileType = "images";
+      const timestamp = Date.now();
+      const fileName = `${timestamp}_${file.name}`;
       const storageRef = ref(storage, `${fileType}/${fileName}`);
 
-      const snapshot = await uploadBytes(storageRef, files[0]);
+      try {
+        const snapshot = await uploadBytes(storageRef, file);
+        return await getDownloadURL(snapshot.ref);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        return null;
+      }
+    });
 
-      const url = await getDownloadURL(snapshot.ref);
-      form.clearErrors("PlantegningerFasader");
-      form.setValue("PlantegningerFasader", url);
+    const uploadedUrls = (await Promise.all(uploadPromises)).filter(
+      Boolean
+    ) as string[];
+
+    if (uploadedUrls.length) {
+      newImages = [...newImages, ...uploadedUrls];
+      form.setValue("photo3D", newImages);
+      form.clearErrors("photo3D");
     }
   };
 
   const handle3DFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const files = event.target.files;
-    if (files) {
-      let newImages: any = [...(upload3DPhoto || [])];
-
-      for (let i = 0; i < files.length; i++) {
-        const file: any = files[i];
-
-        if (file.size > 2 * 1024 * 1024) {
-          alert("Image size must be less than 2MB.");
-          continue;
-        }
-
-        const fileType = "images";
-        const timestamp = new Date().getTime();
-        const fileName = `${timestamp}_${file?.name}`;
-
-        const storageRef = ref(storage, `${fileType}/${fileName}`);
-
-        const snapshot = await uploadBytes(storageRef, file);
-
-        const url = await getDownloadURL(snapshot.ref);
-
-        newImages.push(url);
-
-        form.setValue("photo3D", [...(upload3DPhoto || []), ...newImages]);
-        form.clearErrors("photo3D");
-      }
+    if (event.target.files) {
+      await handleFileUpload(event.target.files);
     }
   };
 
@@ -279,32 +300,8 @@ export const Husdetaljer: React.FC<{
 
   const handle3DDrop = async (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    const files = event.dataTransfer.files;
-    if (files) {
-      let newImages: any = [...upload3DPhoto];
-
-      for (let i = 0; i < files.length; i++) {
-        const file: any = files[i];
-
-        if (file.size > 2 * 1024 * 1024) {
-          alert("Image size must be less than 2MB.");
-          continue;
-        }
-
-        const fileType = "images";
-        const timestamp = new Date().getTime();
-        const fileName = `${timestamp}_${file?.name}`;
-        const storageRef = ref(storage, `${fileType}/${fileName}`);
-
-        const snapshot = await uploadBytes(storageRef, file);
-
-        const url = await getDownloadURL(snapshot.ref);
-
-        newImages.push(url);
-
-        form.setValue("photo3D", [...(upload3DPhoto || []), ...newImages]);
-        form.clearErrors("photo3D");
-      }
+    if (event.dataTransfer.files) {
+      await handleFileUpload(event.dataTransfer.files);
     }
   };
 
@@ -321,28 +318,54 @@ export const Husdetaljer: React.FC<{
   };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    if (data.VideoLink && !/^https?:\/\//i.test(data.VideoLink)) {
-      data.VideoLink = `https://${data.VideoLink}`;
+    try {
+      if (data.VideoLink && !/^https?:\/\//i.test(data.VideoLink)) {
+        data.VideoLink = `https://${data.VideoLink}`;
+      }
+
+      const formatDate = (date: Date) => {
+        return date
+          .toLocaleString("sv-SE", { timeZone: "UTC" })
+          .replace(",", "");
+      };
+
+      const uniqueId = id ? id : uuidv4();
+      const husmodellDocRef = doc(db, "house_model", uniqueId);
+
+      const husdetaljerData = {
+        ...data,
+        link_3D_image: data.link_3D_image || null,
+        id: uniqueId,
+      };
+
+      if (id) {
+        await updateDoc(husmodellDocRef, {
+          Husdetaljer: husdetaljerData,
+          updatedAt: formatDate(new Date()),
+        });
+        toast.success("Updated successfully", {
+          position: "top-right",
+        });
+      } else {
+        await setDoc(husmodellDocRef, {
+          Husdetaljer: husdetaljerData,
+          updatedAt: formatDate(new Date()),
+          createdAt: formatDate(new Date()),
+        });
+        toast.success("Added successfully", { position: "top-right" });
+      }
+
+      navigate(`/edit-husmodell/${uniqueId}`);
+      setActiveTab(1);
+    } catch (error) {
+      console.error("Firestore operation failed:", error);
+      toast.error("Something went wrong. Please try again.", {
+        position: "top-right",
+      });
     }
-
-    const uniqueId = uuidv4();
-    const husmodellDocRef = doc(db, "house_model", uniqueId);
-
-    const husdetaljerData = {
-      ...data,
-      link_3D_image: data.link_3D_image || null,
-      id: uniqueId,
-    };
-
-    await setDoc(husmodellDocRef, {
-      Husdetaljer: husdetaljerData,
-    });
-    toast.success("Add successfully", { position: "top-right" });
-
-    setActiveTab(1);
   };
-
   const selectedHouseType = form.watch("TypeObjekt");
+
   return (
     <>
       <Form {...form}>
@@ -1447,6 +1470,7 @@ export const Husdetaljer: React.FC<{
               type="submit"
             />
           </div>
+          {loading && <Spinner />}
         </form>
       </Form>
     </>

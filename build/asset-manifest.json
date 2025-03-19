@@ -1,0 +1,43 @@
+{
+  "files": {
+    "main.css": "/static/css/main.52359188.css",
+    "main.js": "/static/js/main.b8da0b5f.js",
+    "static/js/453.315213a9.chunk.js": "/static/js/453.315213a9.chunk.js",
+    "static/media/Ic_husmodell.svg": "/static/media/Ic_husmodell.3b4c8a316082049b8d5aa35e3c4ee7e5.svg",
+    "static/media/Img_product1.png": "/static/media/Img_product1.759a44dae915900f3163.png",
+    "static/media/Ic_Avatar.svg": "/static/media/Ic_Avatar.7f224348ed2d1d9a1729461703c2e2f3.svg",
+    "static/media/Ic_map.svg": "/static/media/Ic_map.7d3a56567226a9ba5d7d6819142837cf.svg",
+    "static/media/Img_product_3d_img2.png": "/static/media/Img_product_3d_img2.84c486cb27c0f7992210.png",
+    "static/media/Img_product_3d_img1.png": "/static/media/Img_product_3d_img1.65392a8a99c118933916.png",
+    "static/media/Img_product_map.png": "/static/media/Img_product_map.4fde4aa2290b2969d814.png",
+    "static/media/Img_plot.png": "/static/media/Img_plot.d08ce5c6b60f1621395f.png",
+    "static/media/Ic_profile_image.svg": "/static/media/Ic_profile_image.46bca24331f0d54dc715675e720cd3df.svg",
+    "static/media/Ic_Leverandor.svg": "/static/media/Ic_Leverandor.085d3e74e6fa0cc6f83ddb527a4fbc59.svg",
+    "static/media/Ic_logo.svg": "/static/media/Ic_logo.f93094d3ad1c627dec4331dcfdf84527.svg",
+    "static/media/Ic_settings.svg": "/static/media/Ic_settings.102d11fd04defbee4f11c68a22703903.svg",
+    "static/media/Ic_garaje.svg": "/static/media/Ic_garaje.b8c93a3f446cb95d4bab7931a7bc0cdf.svg",
+    "static/media/Ic_build_housing.svg": "/static/media/Ic_build_housing.c15fbf97e6fbb9de7c121d2dc825bc7e.svg",
+    "static/media/Ic_upload_photo.svg": "/static/media/Ic_upload_photo.c29e1303ad0463e95ebbf71962cc1cb0.svg",
+    "static/media/Ic_download_cloud.svg": "/static/media/Ic_download_cloud.c71945afccb7c93b4a3f7f3d44ac082c.svg",
+    "static/media/Ic_dropdown_menu.svg": "/static/media/Ic_dropdown_menu.3d8825469896364d233136fbc947c262.svg",
+    "index.html": "/index.html",
+    "static/media/Ic_delete_purple.svg": "/static/media/Ic_delete_purple.e86d0ef5ee16d2148126c2aa19d63041.svg",
+    "static/media/Ic_trash.svg": "/static/media/Ic_trash.470840ab3fb61eb8b0c47fe0899784ba.svg",
+    "static/media/Ic_bell.svg": "/static/media/Ic_bell.9055458cea22ce602e3a8ee2d011912e.svg",
+    "static/media/Ic_x_circle.svg": "/static/media/Ic_x_circle.d0042930fd1caed79d02556d7abbfece.svg",
+    "static/media/Ic_info_circle.svg": "/static/media/Ic_info_circle.f235c5d49af556aa298afcd66ae739cd.svg",
+    "static/media/Ic_download.svg": "/static/media/Ic_download.f0cb66080c580091a86b7529bee45dc3.svg",
+    "static/media/Ic_calendar.svg": "/static/media/Ic_calendar.f2a94b56fa7ac9c088f5c7e29f8c18ba.svg",
+    "static/media/Ic_search.svg": "/static/media/Ic_search.d0212c92f08c853ef9e4c155ff66b447.svg",
+    "static/media/Ic_download_primary.svg": "/static/media/Ic_download_primary.61971a5f2140e0283ac19ce7e3fe513b.svg",
+    "static/media/Ic_green_up_arrow.svg": "/static/media/Ic_green_up_arrow.d58930d5ad0a7a1488d1064fd48b07ea.svg",
+    "static/media/Ic_filter.svg": "/static/media/Ic_filter.bc265c4279d0c97384b9abd3c2aa39ad.svg",
+    "main.52359188.css.map": "/static/css/main.52359188.css.map",
+    "main.b8da0b5f.js.map": "/static/js/main.b8da0b5f.js.map",
+    "453.315213a9.chunk.js.map": "/static/js/453.315213a9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.52359188.css",
+    "static/js/main.b8da0b5f.js"
+  ]
+}
