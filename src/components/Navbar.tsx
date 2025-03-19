@@ -44,7 +44,7 @@ export const Navbar: React.FC = () => {
             to={"/Husmodeller"}
             className={`text-base font-medium py-2 px-3 rounded-[6px] ${
               currentPath === "/Husmodeller" ||
-              currentPath === "/se-husmodell" ||
+              currentPath.startsWith("/se-husmodell/") ||
               currentPath === "/add-husmodell" ||
               currentPath.startsWith("/edit-husmodell/")
                 ? "bg-lightPurple text-primary"

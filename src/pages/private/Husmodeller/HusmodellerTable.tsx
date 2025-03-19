@@ -173,7 +173,7 @@ export const HusmodellerTable = () => {
               />
               <Eye
                 className="h-5 w-5 text-primary cursor-pointer"
-                onClick={() => navigate("/se-husmodell")}
+                onClick={() => navigate(`/se-husmodell/${row.original.id}`)}
               />
             </div>
           </>
