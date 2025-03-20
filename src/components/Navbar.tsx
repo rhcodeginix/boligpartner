@@ -33,6 +33,7 @@ export const Navbar: React.FC = () => {
             to={"/Leverandorer"}
             className={`text-base font-medium py-2 px-3 rounded-[6px] ${
               currentPath === "/Leverandorer" ||
+              currentPath.startsWith("/edit-legg-til-leverandor/") ||
               currentPath === "/legg-til-leverandor"
                 ? "bg-lightPurple text-primary"
                 : "text-black"

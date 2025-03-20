@@ -25,15 +25,24 @@ import {
 } from "../../../components/ui/select";
 import { TextArea } from "../../../components/ui/textarea";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db, storage } from "../../../config/firebaseConfig";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
-import { fetchHusmodellData } from "../../../lib/utils";
+import { fetchHusmodellData, fetchSupplierData } from "../../../lib/utils";
 import { Spinner } from "../../../components/Spinner";
 
 const formSchema = z.object({
+  Leverandører: z
+    .string()
+    .min(1, { message: "Leverandører must må spesifiseres." }),
   TypeObjekt: z.string().min(1, { message: "Velg en Type Objekt." }),
   photo: z.union([
     z
@@ -152,6 +161,8 @@ export const Husdetaljer: React.FC<{
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const [loading, setLoading] = useState(true);
+  const [suppliers, setSuppliers] = useState([]);
+  const [oldSupplierId, setOldSupplierId] = useState<any | null>(null);
 
   useEffect(() => {
     if (!id) {
@@ -162,15 +173,36 @@ export const Husdetaljer: React.FC<{
       const data = await fetchHusmodellData(id);
       if (data && data.Husdetaljer) {
         Object.entries(data.Husdetaljer).forEach(([key, value]) => {
-          if (value !== undefined && value !== null)
+          if (value !== undefined && value !== null) {
             form.setValue(key as any, value);
+            if (key === "Leverandører") {
+              setOldSupplierId(value);
+            }
+          }
         });
       }
       setLoading(false);
     };
 
     getData();
-  }, [form, id]);
+  }, [form, id, suppliers]);
+
+  const fetchSuppliersData = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "suppliers"));
+      const data: any = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setSuppliers(data);
+    } catch (error) {
+      console.error("Error fetching husmodell data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSuppliersData();
+  }, []);
 
   const navigate = useNavigate();
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -329,6 +361,40 @@ export const Husdetaljer: React.FC<{
           .replace(",", "");
       };
 
+      const formatter = new Intl.DateTimeFormat("nb-NO", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+
+      const newSupplierId = data.Leverandører;
+
+      if (newSupplierId !== oldSupplierId) {
+        const newSupplierDocRef = doc(db, "suppliers", newSupplierId);
+        const newSupplierData = await fetchSupplierData(newSupplierId);
+
+        await updateDoc(newSupplierDocRef, {
+          ...newSupplierData,
+          id: newSupplierId,
+          updatedAt: formatter.format(new Date()),
+          Produkter: newSupplierData?.Produkter + 1,
+        });
+
+        const oldSupplierDocRef = doc(db, "suppliers", oldSupplierId);
+        const oldSupplierData = await fetchSupplierData(oldSupplierId);
+
+        await updateDoc(oldSupplierDocRef, {
+          ...oldSupplierData,
+          id: oldSupplierId,
+          updatedAt: formatter.format(new Date()),
+          Produkter: Math.max(
+            oldSupplierData?.Produkter === 0
+              ? 0
+              : oldSupplierData?.Produkter - 1
+          ),
+        });
+      }
+
       const uniqueId = id ? id : uuidv4();
       const husmodellDocRef = doc(db, "house_model", uniqueId);
 
@@ -382,6 +448,56 @@ export const Husdetaljer: React.FC<{
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-6 w-[80%] shadow-shadow2 px-6 py-5 rounded-lg">
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="Leverandører"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm font-medium`}
+                          >
+                            Leverandører
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <Select
+                                onValueChange={(value) => {
+                                  field.onChange(value);
+                                }}
+                                value={field.value}
+                              >
+                                <SelectTrigger
+                                  className={`bg-white rounded-[8px] border text-black
+                              ${
+                                fieldState?.error
+                                  ? "border-red"
+                                  : "border-gray1"
+                              } `}
+                                >
+                                  <SelectValue placeholder="Select Leverandører" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white">
+                                  <SelectGroup>
+                                    {suppliers.map((sup: any, index) => {
+                                      return (
+                                        <SelectItem value={sup?.id} key={index}>
+                                          {sup?.company_name}
+                                        </SelectItem>
+                                      );
+                                    })}
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   <div className="col-span-2">
                     <p
                       className={`${
@@ -650,7 +766,7 @@ export const Husdetaljer: React.FC<{
                       />
                     </div>
                     {upload3DPhoto && (
-                      <div className="mt-5 flex items-center gap-5">
+                      <div className="mt-5 flex items-center gap-5 flex-wrap">
                         {upload3DPhoto.map((file: any, index: number) => (
                           <div
                             className="relative h-[140px] w-[140px]"

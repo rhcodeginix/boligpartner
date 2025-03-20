@@ -25,7 +25,7 @@ export const AddSuppliers = () => {
               Legg til bilder og persondetaljer
             </p>
           </div>
-          <div className="w-full shadow-shadow2 rounded-lg overflow-hidden">
+          <div className="w-full shadow-shadow2 rounded-lg overflow-hidden relative">
             <AddSuppliersForm />
           </div>
         </div>

@@ -22,6 +22,21 @@ export const fetchHusmodellData = async (id: string) => {
   }
 };
 
+export const fetchSupplierData = async (id: string) => {
+  try {
+    const supplierDocRef = doc(db, "suppliers", id);
+    const docSnap = await getDoc(supplierDocRef);
+
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      console.log("No document found for ID:", id);
+    }
+  } catch (error) {
+    console.error("Error fetching husmodell data:", error);
+  }
+};
+
 export function formatDateTime(inputDateTime: string) {
   const date = new Date(inputDateTime);
 
@@ -35,3 +50,13 @@ export function formatDateTime(inputDateTime: string) {
 
   return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
 }
+
+export function formatCurrency(nokValue: any) {
+  let number = nokValue.replace(/\s/g, "");
+  return new Intl.NumberFormat("de-DE").format(Number(number)) + " NOK";
+}
+
+export const phoneNumberValidations: Record<string, (num: string) => boolean> =
+  {
+    "+47": (num) => num.length === 8,
+  };

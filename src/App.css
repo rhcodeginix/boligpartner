@@ -107,3 +107,10 @@ input[type="number"] {
     transform: rotate(360deg);
   }
 }
+.PhoneInputCountry {
+  display: none !important;
+}
+.PhoneInputInput:focus-visible {
+  border: none;
+  outline: none;
+}

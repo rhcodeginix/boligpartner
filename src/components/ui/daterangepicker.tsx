@@ -4,9 +4,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import Ic_calendar from "../../assets/images/Ic_calendar.svg";
 
 interface DateRangePickerProps {
-  startDate: Date;
-  endDate: Date;
-  onDateChange: (start: Date, end: Date) => void;
+  startDate: Date | null;
+  endDate: Date | null;
+  onDateChange: (start: Date | null, end: Date | null) => void;
   dateFormat?: string;
   className?: string;
 }

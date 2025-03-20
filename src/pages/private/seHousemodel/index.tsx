@@ -6,18 +6,13 @@ import Tabs from "../../../components/ui/tabnav";
 import Button from "../../../components/common/button";
 import { Husdetaljer } from "./Husdetaljer";
 import { Prisliste } from "./Prisliste";
-import { fetchHusmodellData } from "../../../lib/utils";
+import { fetchHusmodellData, formatCurrency } from "../../../lib/utils";
 import { Spinner } from "../../../components/Spinner";
 
 export const SeHouseModel = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   const tabData = [{ label: "Husdetaljer" }, { label: "Prisliste" }];
-
-  function formatCurrency(nokValue: any) {
-    let number = nokValue.replace(/\s/g, "");
-    return new Intl.NumberFormat("de-DE").format(Number(number)) + " NOK";
-  }
 
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
@@ -40,7 +35,6 @@ export const SeHouseModel = () => {
 
     getData();
   }, [id]);
-  // console.log(husmodellData);
 
   return (
     <>
@@ -75,7 +69,9 @@ export const SeHouseModel = () => {
                   <div className="flex items-center gap-4">
                     <div className="text-lg text-darkBlack font-semibold">
                       {husmodellData?.Husdetaljer?.BRATotal}{" "}
-                      <span className="text-gray font-normal">m2</span>
+                      <span className="text-gray font-normal">
+                        m<sup>2</sup>
+                      </span>
                     </div>
                     <div className="h-3 border-l border-gray2"></div>
                     <div className="text-lg text-darkBlack font-semibold">
@@ -111,7 +107,9 @@ export const SeHouseModel = () => {
                 path="/edit-husmodell"
               />
             </div>
-            {activeTab === 0 && <Husdetaljer />}
+            {activeTab === 0 && (
+              <Husdetaljer husmodellData={husmodellData.Husdetaljer} />
+            )}
             {activeTab === 1 && <Prisliste />}
           </div>
         </>

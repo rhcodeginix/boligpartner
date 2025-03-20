@@ -1,4 +1,4 @@
-import { Ellipsis, Loader2 } from "lucide-react";
+import { Loader2, Pencil, Trash } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -15,47 +15,91 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
-import Ic_Leverandor from "../../../assets/images/Ic_Leverandor.svg";
+import { useEffect, useMemo, useState } from "react";
 import Ic_search from "../../../assets/images/Ic_search.svg";
 import Ic_filter from "../../../assets/images/Ic_filter.svg";
 import DateRangePicker from "../../../components/ui/daterangepicker";
-
-const data = [
-  {
-    id: 1,
-    logo: Ic_Leverandor,
-    Selskapsnavn: "Fjellheimhytta AS",
-    adresse: "Sokkabekveien 77",
-    adresse2: "3478 Nærsnes",
-    Sistendret: "5. mars 2025",
-    type: "Hytte",
-    Produkter: 6,
-  },
-  {
-    id: 2,
-    logo: Ic_Leverandor,
-    Selskapsnavn: "Fjellheimhytta AS",
-    adresse: "Sokkabekveien 77",
-    adresse2: "3478 Nærsnes",
-    Sistendret: "5. mars 2025",
-    type: "Bolig",
-    Produkter: 31,
-  },
-  {
-    id: 3,
-    logo: Ic_Leverandor,
-    Selskapsnavn: "Fjellheimhytta AS",
-    adresse: "Sokkabekveien 77",
-    adresse2: "3478 Nærsnes",
-    Sistendret: "5. mars 2025",
-    type: "Bank",
-    Produkter: 1,
-  },
-];
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { db } from "../../../config/firebaseConfig";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import Button from "../../../components/common/button";
+import Modal from "../../../components/common/modal";
 
 export const SupplierTable = () => {
   const [page, setPage] = useState(1);
+  const [suppliers, setSuppliers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedId, setSelectedId] = useState<any>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+
+  const handleDateChange = (start: Date | null, end: Date | null) => {
+    setStartDate(start);
+    setEndDate(end);
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "suppliers", id));
+      fetchSuppliersData();
+      setShowConfirm(false);
+      toast.success("Delete successfully", { position: "top-right" });
+    } catch (error) {
+      console.error("Error deleting document:", error);
+    }
+  };
+
+  const fetchSuppliersData = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "suppliers"));
+      const data: any = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setSuppliers(data);
+    } catch (error) {
+      console.error("Error fetching husmodell data:", error);
+    }
+  };
+
+  const filteredData = useMemo(() => {
+    return suppliers.filter((model: any) => {
+      let matchesSearch = model?.company_name
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase());
+
+      if (!matchesSearch) return false;
+
+      const modelDate = new Date(model.updatedAt);
+
+      if (startDate !== null && endDate !== null) {
+        const matchDate = modelDate >= startDate && modelDate <= endDate;
+        matchesSearch = matchesSearch && matchDate;
+      }
+
+      return matchesSearch;
+    });
+  }, [suppliers, searchTerm, startDate, endDate]);
+
+  useEffect(() => {
+    fetchSuppliersData();
+  }, []);
+
+  const handleConfirmPopup = () => {
+    if (showConfirm) {
+      setShowConfirm(false);
+    } else {
+      setShowConfirm(true);
+    }
+  };
+
+  const confirmDelete = (id: string) => {
+    setSelectedId(id);
+    setShowConfirm(true);
+  };
 
   const columns = useMemo<ColumnDef<any>[]>(
     () => [
@@ -63,7 +107,7 @@ export const SupplierTable = () => {
         accessorKey: "logo",
         header: "Logo",
         cell: ({ row }) => (
-          <img src={row.original.logo} alt="logo" className="h-5" />
+          <img src={row.original.photo} alt="logo" className="h-5" />
         ),
       },
       {
@@ -71,7 +115,7 @@ export const SupplierTable = () => {
         header: "Selskapsnavn",
         cell: ({ row }) => (
           <p className="font-semibold text-sm text-darkBlack">
-            {row.original.Selskapsnavn}
+            {row.original.company_name}
           </p>
         ),
       },
@@ -79,7 +123,7 @@ export const SupplierTable = () => {
         accessorKey: "type",
         header: "Type",
         cell: ({ row }) => (
-          <p className="text-sm text-darkBlack">{row.original.type}</p>
+          <p className="text-sm text-darkBlack">{row.original.type_partner}</p>
         ),
       },
       {
@@ -87,6 +131,7 @@ export const SupplierTable = () => {
         header: "Produkter",
         cell: ({ row }) => (
           <p className="text-sm text-darkBlack">{row.original.Produkter}</p>
+          // <p className="text-sm text-darkBlack">6</p>
         ),
       },
       {
@@ -94,7 +139,7 @@ export const SupplierTable = () => {
         header: "Sist endret",
         cell: ({ row }) => (
           <p className="text-sm font-semibold text-black">
-            {row.original.Sistendret}
+            {row.original.updatedAt}
           </p>
         ),
       },
@@ -104,30 +149,40 @@ export const SupplierTable = () => {
         cell: ({ row }) => (
           <div>
             <p className="text-black text-sm mb-[2px]">
-              {row.original.adresse}
+              {row.original.Adresse}
             </p>
-            <p className="text-sm text-black">{row.original.adresse2}</p>
           </div>
         ),
       },
       {
         id: "action",
         header: "Action",
-        cell: () => (
-          <button className="h-8 w-8 flex items-center justify-center">
-            <Ellipsis className="h-4 w-4 text-gray-500" />
-          </button>
+        cell: ({ row }) => (
+          <>
+            <div className="flex items-center justify-center gap-3">
+              <Pencil
+                className="h-5 w-5 text-primary cursor-pointer"
+                onClick={() =>
+                  navigate(`/edit-legg-til-leverandor/${row.original.id}`)
+                }
+              />
+              <Trash
+                className="h-5 w-5 text-primary cursor-pointer"
+                onClick={() => confirmDelete(row.original.id)}
+              />
+            </div>
+          </>
         ),
       },
     ],
-    []
+    [navigate]
   );
 
   const pageSize = 10;
   const paginatedData = useMemo(() => {
     const start = (page - 1) * pageSize;
-    return data.slice(start, start + pageSize);
-  }, [page]);
+    return filteredData.slice(start, start + pageSize);
+  }, [filteredData, page]);
 
   const table = useReactTable({
     data: paginatedData,
@@ -141,7 +196,7 @@ export const SupplierTable = () => {
         pageSize,
       },
     },
-    pageCount: Math.ceil(data.length / pageSize),
+    pageCount: Math.ceil(filteredData.length / pageSize),
     manualPagination: true,
     onPaginationChange: (updater: any) => {
       if (typeof updater === "function") {
@@ -154,14 +209,6 @@ export const SupplierTable = () => {
     },
   });
 
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
-
-  const handleDateChange = (start: Date, end: Date) => {
-    setStartDate(start);
-    setEndDate(end);
-  };
-
   return (
     <>
       <div className="mb-2 flex items-center justify-between bg-lightPurple rounded-[12px] py-3 px-4">
@@ -171,6 +218,8 @@ export const SupplierTable = () => {
             type="text"
             placeholder="Søk"
             className="focus-within:outline-none"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex gap-3 items-center">
@@ -202,7 +251,7 @@ export const SupplierTable = () => {
             ))}
           </TableHeader>
           <TableBody>
-            {data.length === 0 ? (
+            {suppliers.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
@@ -211,7 +260,17 @@ export const SupplierTable = () => {
                   <Loader2 className="w-6 h-6 animate-spin mx-auto" />
                 </TableCell>
               </TableRow>
-            ) : table.getRowModel().rows?.length ? (
+            ) : filteredData.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            ) : (
+              table.getRowModel().rows?.length &&
               table.getRowModel().rows.map((row: any) => (
                 <TableRow
                   key={row.id}
@@ -228,15 +287,6 @@ export const SupplierTable = () => {
                   ))}
                 </TableRow>
               ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
             )}
           </TableBody>
         </Table>
@@ -261,6 +311,35 @@ export const SupplierTable = () => {
           </button>
         </div>
       </div>
+
+      {showConfirm && (
+        <Modal onClose={handleConfirmPopup} isOpen={true}>
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <p className="text-lg font-bold">
+                Er du sikker på at du vil slette?
+              </p>
+              <div className="flex justify-center mt-5 w-full gap-5 items-center">
+                <div
+                  onClick={() => setShowConfirm(false)}
+                  className="w-1/2 sm:w-auto"
+                >
+                  <Button
+                    text="Avbryt"
+                    className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  />
+                </div>
+                <div onClick={() => handleDelete(selectedId)}>
+                  <Button
+                    text="Bekrefte"
+                    className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

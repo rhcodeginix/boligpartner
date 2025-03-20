@@ -1,12 +1,42 @@
-import Img_product1 from "../../../assets/images/Img_product1.png";
-import Img_product_logo1 from "../../../assets/images/Img_product_logo1.png";
-import Img_product_map from "../../../assets/images/Img_product_map.png";
 import Img_product_3d_img1 from "../../../assets/images/Img_product_3d_img1.png";
-import Img_product_3d_img2 from "../../../assets/images/Img_product_3d_img2.png";
 import Ic_download_primary from "../../../assets/images/Ic_download_primary.svg";
+import Ic_close from "../../../assets/images/Ic_close.svg";
 import { File } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { formatCurrency } from "../../../lib/utils";
+import Modal from "../../../components/common/modal";
 
-export const Husdetaljer = () => {
+export const Husdetaljer: React.FC<{ husmodellData: any }> = ({
+  husmodellData,
+}) => {
+  const getEmbedUrl = (url: string) => {
+    const videoId = url.split("v=")[1]?.split("&")[0];
+    return videoId
+      ? `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&controls=0&disablekb=1&fs=0`
+      : "";
+  };
+  const textareaRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [husmodellData?.OmHusmodellen]);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const images = husmodellData?.photo3D || [];
+  const displayedImages = images.slice(0, 4);
+  const extraImagesCount = images.length - 4;
+
+  const handlePopup = () => {
+    if (isOpen) {
+      setIsOpen(false);
+    } else {
+      setIsOpen(true);
+    }
+  };
   return (
     <>
       <div className="flex gap-6 h-[333px] mb-[74px]">
@@ -22,12 +52,25 @@ export const Husdetaljer = () => {
                 className="w-full h-full"
               />
             </div>
-            <div className="w-1/2">
-              <img
-                src={Img_product_3d_img2}
-                alt="product"
-                className="w-full h-full"
-              />
+            <div className="w-1/2 grid grid-cols-2 gap-6">
+              {displayedImages.map((image: any, index: number) => (
+                <div key={index} className="relative overflow-hidden h-full">
+                  <img
+                    src={image}
+                    alt="product"
+                    className="w-full h-full object-fill rounded-lg"
+                  />
+
+                  {index === 3 && extraImagesCount > 0 && (
+                    <div
+                      className="absolute inset-0 bg-black bg-opacity-35 flex items-center justify-center text-white text-base font-bold cursor-pointer rounded-lg"
+                      onClick={() => setIsOpen(true)}
+                    >
+                      +{extraImagesCount}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -90,39 +133,42 @@ export const Husdetaljer = () => {
       <div className="w-full flex gap-[60px] mt-8">
         <div className="w-[43%]">
           <h4 className="text-darkBlack mb-6 font-semibold text-2xl">
-            Almgaard
+            {husmodellData?.husmodell_name}
           </h4>
           <div className="relative">
             <img
-              src={Img_product1}
+              src={husmodellData?.photo}
               alt="product-1"
               className="w-full h-[262px] object-cover rounded-[12px] overflow-hidden"
-            />
-            <img
-              src={Img_product_logo1}
-              alt="product-logo-1"
-              className="absolute top-[12px] left-[12px] bg-[#FFFFFFB2] py-2 px-3 flex items-center justify-center rounded-[32px] w-auto"
             />
           </div>
           <div className="my-[20px] flex items-center justify-between">
             <div className="flex flex-col gap-2">
               <p className="text-gray text-base">Pris fra</p>
               <h4 className="text-xl font-semibold text-darkBlack">
-                5.860.000 NOK
+                {formatCurrency(husmodellData?.pris)}
               </h4>
             </div>
             <div className="flex items-center gap-4">
               <div className="text-gray text-sm">
-                <span className="text-darkBlack font-semibold">233</span> m
-                <sup>2</sup>
+                <span className="text-darkBlack font-semibold">
+                  {husmodellData?.BRATotal}
+                </span>{" "}
+                m<sup>2</sup>
               </div>
               <div className="h-[12px] w-[1px] border-l border-gray"></div>
               <div className="text-gray text-sm">
-                <span className="text-darkBlack font-semibold">5</span> soverom
+                <span className="text-darkBlack font-semibold">
+                  {husmodellData?.Soverom}
+                </span>{" "}
+                soverom
               </div>
               <div className="h-[12px] w-[1px] border-l border-gray"></div>
               <div className="text-gray text-sm">
-                <span className="text-darkBlack font-semibold">3</span> bad
+                <span className="text-darkBlack font-semibold">
+                  {husmodellData?.Bad}
+                </span>{" "}
+                bad
               </div>
             </div>
           </div>
@@ -135,7 +181,7 @@ export const Husdetaljer = () => {
                       BRA total
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
-                      244 m<sup>2</sup>
+                      {husmodellData?.BRATotal} m<sup>2</sup>
                     </td>
                   </tr>
                   <tr>
@@ -143,7 +189,7 @@ export const Husdetaljer = () => {
                       BRA bolig
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
-                      233 m<sup>2</sup>
+                      {husmodellData?.BebygdAreal} m<sup>2</sup>
                     </td>
                   </tr>
                   <tr>
@@ -151,7 +197,7 @@ export const Husdetaljer = () => {
                       P-rom:
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
-                      221 m<sup>2</sup>
+                      {husmodellData?.PRom} m<sup>2</sup>
                     </td>
                   </tr>
                   <tr>
@@ -159,7 +205,7 @@ export const Husdetaljer = () => {
                       Bebygd Areal
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
-                      152 m<sup>2</sup>
+                      {husmodellData?.BebygdAreal} m<sup>2</sup>
                     </td>
                   </tr>
                   <tr>
@@ -167,7 +213,7 @@ export const Husdetaljer = () => {
                       L x B:
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
-                      14.3 x 12.8 m
+                      {husmodellData?.LB}
                     </td>
                   </tr>
                   <tr>
@@ -175,7 +221,7 @@ export const Husdetaljer = () => {
                       Soverom
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
-                      5
+                      {husmodellData?.Soverom}
                     </td>
                   </tr>
                 </tbody>
@@ -189,7 +235,7 @@ export const Husdetaljer = () => {
                       Bad
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
-                      3
+                      {husmodellData?.Bad}
                     </td>
                   </tr>
                   <tr>
@@ -197,7 +243,7 @@ export const Husdetaljer = () => {
                       Innvendig bod
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
-                      3
+                      {husmodellData?.InnvendigBod}
                     </td>
                   </tr>
                   <tr>
@@ -205,7 +251,7 @@ export const Husdetaljer = () => {
                       Energimerking
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
-                      B
+                      {husmodellData?.Energimerking}
                     </td>
                   </tr>
                   <tr>
@@ -213,7 +259,7 @@ export const Husdetaljer = () => {
                       Tilgjengelig bolig
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
-                      Ja
+                      {husmodellData?.TilgjengeligBolig}
                     </td>
                   </tr>
                   <tr>
@@ -221,7 +267,7 @@ export const Husdetaljer = () => {
                       Tomtetype
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
-                      Flat tomt
+                      {husmodellData?.Tomtetype}
                     </td>
                   </tr>
                 </tbody>
@@ -231,44 +277,26 @@ export const Husdetaljer = () => {
           <h2 className="mb-6 text-darkBlack text-2xl font-semibold">
             Plantegninger og fasader
           </h2>
-          <img src={Img_product_map} alt="map" className="w-full" />
+          <img
+            src={husmodellData?.PlantegningerFasader}
+            alt="map"
+            className="w-full"
+          />
         </div>
         <div className="w-[57%]">
-          <h2 className="text-darkBlack text-2xl font-semibold mb-4">
-            Herskapelige Almgaard er en drømmebolig for familien
+          <h2 className="text-darkBlack text-2xl font-semibold mb-4 truncate">
+            {husmodellData?.Hustittel}
           </h2>
           <div className="flex flex-col gap-4 mb-[60px]">
-            <p className="text-base text-gray">
-              Lukk øynene. Se for deg opplevelsen av å komme inn i vakre
-              Almgaard. Her venter den majestetiske hallen på deg med over fem
-              meters takhøyde. Videre ledes du inn i selve hjertet i huset –
-              stueområdet på tilsammen nær 60 kvadratmeter og det flotte
-              kjøkkenet. Her er plass nok til å samle venner rundt langbordet
-              mens den myke kveldssola kaster et varmt lys inn gjennom vinduene.
-              Husets første etasje har også en avdeling med gjestesoverom med
-              walk-in closet, bad, wc, vaskerom og bod.
-            </p>
-            <p className="text-base text-gray">
-              Almgaard er et flott hus for flat tomt som kjennetegnes av
-              mansardtaket. I inngangshallen faller blikket raskt mot den
-              nydelige trappa som glir inn som et herskapelig møbel i rommet, og
-              inviterer deg opp til galleriet i 2. etasje. Her oppe venter
-              smarte løsninger med egen foreldreavdeling bestående av soverom
-              walk-in closet og et romslig bad. I den andre fløyen av etasjen
-              finner du barnas egen avdeling med tv-stue og to soverom med ett
-              bad i mellom. I tillegg er det gjort plass til et
-              hjemmekontor/ekstra soverom hvis det er behov for det. 
-            </p>
-            <p className="text-base text-gray">
-              Almgaard ble lansert i januar 2016 som den smarte lillesøsteren
-              til herskapelige Holmgaard – selve symbolet på den store
-              boligdrømmen for mange. I Almgaard har vi bevart Holmgaards
-              ettertraktede kvaliteter, men komprimert det inn på 233
-              kvadratmeter. Dermed har vi designet en herskapelig familiedrøm. 
-            </p>
+            <textarea
+              value={husmodellData?.OmHusmodellen}
+              className="text-base text-gray h-full focus-within:outline-none resize-none"
+              ref={textareaRef}
+              readOnly
+            ></textarea>
           </div>
           <h2 className="text-darkBlack text-2xl font-semibold mb-4">
-            Film av Almgaard
+            {husmodellData?.TittelVideo}
           </h2>
 
           <div
@@ -276,21 +304,44 @@ export const Husdetaljer = () => {
               width: "100%",
               height: "400px",
             }}
-            className="mb-8"
           >
             <iframe
               width="100%"
               height="100%"
-              src="https://www.youtube.com/embed/JG5zEa754N8"
-              title="Almgaard"
+              src={getEmbedUrl(husmodellData?.VideoLink)}
               frameBorder="0"
+              allowFullScreen
+              title={husmodellData?.TittelVideo}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
             ></iframe>
           </div>
         </div>
       </div>
+
+      {isOpen && (
+        <Modal isOpen={true} onClose={handlePopup}>
+          <div className="bg-white p-6 rounded-lg max-w-4xl w-full relative">
+            <button
+              className="absolute top-3 right-3"
+              onClick={() => setIsOpen(false)}
+            >
+              <img src={Ic_close} alt="close" />
+            </button>
+
+            <div className="grid grid-cols-3 gap-2 my-4">
+              {images.map((image: any, index: number) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt="product"
+                  className="w-full h-[200px]"
+                />
+              ))}
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

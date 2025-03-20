@@ -125,7 +125,7 @@ export const HusmodellerTable = () => {
             <span className="font-bold">
               {row.original.Husdetaljer.BRATotal}
             </span>{" "}
-            m2.{" "}
+            m<sup>2</sup>.{" "}
             <span className="font-bold">
               {row.original.Husdetaljer.Soverom}
             </span>{" "}

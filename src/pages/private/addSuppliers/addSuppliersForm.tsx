@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -10,6 +10,7 @@ import {
 } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
 import Ic_upload_photo from "../../../assets/images/Ic_upload_photo.svg";
+import { v4 as uuidv4 } from "uuid";
 import { Input } from "../../../components/ui/input";
 import {
   Select,
@@ -20,6 +21,15 @@ import {
   SelectValue,
 } from "../../../components/ui/select";
 import { z } from "zod";
+import toast from "react-hot-toast";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { db, storage } from "../../../config/firebaseConfig";
+import { useLocation, useNavigate } from "react-router-dom";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { InputMobile } from "../../../components/ui/inputMobile";
+import { parsePhoneNumber } from "react-phone-number-input";
+import { fetchSupplierData, phoneNumberValidations } from "../../../lib/utils";
+import { Spinner } from "../../../components/Spinner";
 
 const formSchema = z.object({
   photo: z.union([
@@ -46,13 +56,24 @@ const formSchema = z.object({
   Adresse: z.string().min(6, {
     message: "Adresse må bestå av minst 6 tegn.",
   }),
-  Telefon: z
-    .string()
-    .min(8, { message: "Telefonnummeret må være 8 sifre." })
-    .max(8, { message: "Telefonnummeret må være 8 sifre." })
-    .regex(/^(2|3|4|5|6|7|8|9)\d{7}$/, {
-      message: "Vennligst skriv inn et gyldig norsk telefonnummer.",
-    }),
+  Telefon: z.string().refine(
+    (value) => {
+      const parsedNumber = parsePhoneNumber(value);
+      const countryCode = parsedNumber?.countryCallingCode
+        ? `+${parsedNumber.countryCallingCode}`
+        : "";
+      const phoneNumber = parsedNumber?.nationalNumber || "";
+      if (countryCode !== "+47") {
+        return false;
+      }
+      const validator = phoneNumberValidations[countryCode];
+      return validator ? validator(phoneNumber) : false;
+    },
+    {
+      message:
+        "Vennligst skriv inn et gyldig telefonnummer for det valgte landet.",
+    }
+  ),
   EPost: z
     .string()
     .email({ message: "Vennligst skriv inn en gyldig e-postadresse." })
@@ -66,13 +87,24 @@ const formSchema = z.object({
       message: "Vennligst skriv inn en gyldig Kontaktperson e-postadresse.",
     })
     .min(1, { message: "Kontaktperson e-posten må være på minst 2 tegn." }),
-  KontaktpersonMobil: z
-    .string()
-    .min(8, { message: "Kontaktperson mobil må være 8 sifre." })
-    .max(8, { message: "Kontaktperson mobil må være 8 sifre." })
-    .regex(/^(2|3|4|5|6|7|8|9)\d{7}$/, {
-      message: "Vennligst skriv inn et gyldig norsk telefonnummer.",
-    }),
+  KontaktpersonMobil: z.string().refine(
+    (value) => {
+      const parsedNumber = parsePhoneNumber(value);
+      const countryCode = parsedNumber?.countryCallingCode
+        ? `+${parsedNumber.countryCallingCode}`
+        : "";
+      const phoneNumber = parsedNumber?.nationalNumber || "";
+      if (countryCode !== "+47") {
+        return false;
+      }
+      const validator = phoneNumberValidations[countryCode];
+      return validator ? validator(phoneNumber) : false;
+    },
+    {
+      message:
+        "Vennligst skriv inn et gyldig telefonnummer for det valgte landet.",
+    }
+  ),
   type_partner: z.string().min(1, { message: "Type partner må spesifiseres." }),
   cpo: z.string().min(1, { message: "CPO must må spesifiseres." }),
   cpl: z.string().min(1, { message: "CPL must må spesifiseres." }),
@@ -84,12 +116,62 @@ export const AddSuppliersForm = () => {
   });
 
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/");
+  const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+    const getData = async () => {
+      const data = await fetchSupplierData(id);
+      if (data) {
+        Object.entries(data).forEach(([key, value]) => {
+          if (value !== undefined && value !== null)
+            form.setValue(key as any, value);
+        });
+      }
+      setLoading(false);
+    };
+
+    getData();
+  }, [form, id]);
+
+  const uploadFile = async (file: File, fieldName: any) => {
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Image size must be less than 2MB.", {
+        position: "top-right",
+      });
+      return;
+    }
+    const fileType = "images";
+    const timestamp = Date.now();
+    const fileName = `${timestamp}_${file.name}`;
+    const storageRef = ref(storage, `${fileType}/${fileName}`);
+
+    try {
+      const snapshot = await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(snapshot.ref);
+
+      form.setValue(fieldName, url);
+      form.clearErrors(fieldName);
+    } catch (error) {
+      console.error(`Error uploading file for ${fieldName}:`, error);
+    }
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const files = event.target.files;
-    if (files) {
-      form.setValue("photo", files[0]);
-      form.clearErrors("photo");
+    if (files && files[0]) {
+      await uploadFile(files[0], "photo");
     }
   };
 
@@ -97,11 +179,11 @@ export const AddSuppliersForm = () => {
     fileInputRef.current?.click();
   };
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const files = event.dataTransfer.files;
     if (files && files[0]) {
-      form.setValue("photo", files[0]);
+      await uploadFile(files[0], "photo");
     }
   };
 
@@ -111,17 +193,55 @@ export const AddSuppliersForm = () => {
   const uploadPhoto = form.watch("photo");
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
-    if (data.Nettside && !/^https?:\/\//i.test(data.Nettside)) {
-      data.Nettside = `https://${data.Nettside}`;
+    try {
+      if (data.Nettside && !/^https?:\/\//i.test(data.Nettside)) {
+        data.Nettside = `https://${data.Nettside}`;
+      }
+
+      const formatter = new Intl.DateTimeFormat("nb-NO", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+
+      const uniqueId = id ? id : uuidv4();
+      const supplierDocRef = doc(db, "suppliers", uniqueId);
+
+      if (id) {
+        await updateDoc(supplierDocRef, {
+          ...data,
+          id: uniqueId,
+          updatedAt: formatter.format(new Date()),
+        });
+        toast.success("Updated successfully", {
+          position: "top-right",
+        });
+      } else {
+        await setDoc(supplierDocRef, {
+          ...data,
+          id: uniqueId,
+          updatedAt: formatter.format(new Date()),
+          createdAt: formatter.format(new Date()),
+          Produkter: 0,
+        });
+        toast.success("Added successfully", { position: "top-right" });
+      }
+
+      navigate(`/Leverandorer`);
+    } catch (error) {
+      console.error("Firestore operation failed:", error);
+      toast.error("Something went wrong. Please try again.", {
+        position: "top-right",
+      });
     }
   };
 
   return (
     <>
+      {/* h-[500px] overflow-y-auto */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
-          <div className=" p-5 laptop:p-6 h-[500px] overflow-y-auto">
+          <div className="p-5 laptop:p-6">
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2 flex gap-6 items-center">
                 <div className="w-1/2">
@@ -165,9 +285,9 @@ export const AddSuppliersForm = () => {
                   />
                 </div>
                 <div className="w-1/2">
-                  {uploadPhoto instanceof File && (
+                  {typeof uploadPhoto === "string" && (
                     <img
-                      src={URL.createObjectURL(uploadPhoto)}
+                      src={uploadPhoto}
                       alt="logo"
                       height="140px"
                       width="140px"
@@ -325,15 +445,15 @@ export const AddSuppliersForm = () => {
                       </p>
                       <FormControl>
                         <div className="relative">
-                          <Input
+                          <InputMobile
                             placeholder="Skriv inn Telefon"
                             {...field}
                             className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
+                              ${
+                                fieldState?.error
+                                  ? "border-red"
+                                  : "border-gray1"
+                              } `}
                             type="tel"
                           />
                         </div>
@@ -457,15 +577,15 @@ export const AddSuppliersForm = () => {
                       </p>
                       <FormControl>
                         <div className="relative">
-                          <Input
+                          <InputMobile
                             placeholder="Skriv inn Kontaktperson mobil"
                             {...field}
                             className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
+                              ${
+                                fieldState?.error
+                                  ? "border-red"
+                                  : "border-gray1"
+                              } `}
                             type="tel"
                           />
                         </div>
@@ -630,7 +750,7 @@ export const AddSuppliersForm = () => {
               </div>
             </div>
           </div>
-          <div className="flex justify-end w-full gap-5 items-center sticky bottom-0 bg-white z-50 border-t border-gray2 p-4 left-0">
+          <div className="flex justify-end w-full gap-5 items-center sticky bottom-0 bg-white z-50 border-t border-gray2 p-4">
             <div onClick={() => form.reset()} className="w-1/2 sm:w-auto">
               <Button
                 text="Avbryt"
@@ -645,6 +765,7 @@ export const AddSuppliersForm = () => {
           </div>
         </form>
       </Form>
+      {loading && <Spinner />}
     </>
   );
 };
