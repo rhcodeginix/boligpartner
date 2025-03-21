@@ -20,9 +20,15 @@ import Ic_Leverandor from "../../../assets/images/Ic_Leverandor.svg";
 import Ic_search from "../../../assets/images/Ic_search.svg";
 import Ic_filter from "../../../assets/images/Ic_filter.svg";
 import Ic_Avatar from "../../../assets/images/Ic_Avatar.svg";
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
-import { formatDateTime } from "../../../lib/utils";
+import { fetchSupplierData, formatDateTime } from "../../../lib/utils";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Modal from "../../../components/common/modal";
@@ -35,9 +41,25 @@ export const HusmodellerTable = () => {
   const navigate = useNavigate();
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedId, setSelectedId] = useState<any>(null);
+  const [suppliersId, setSuppliersId] = useState<any>(null);
 
   const handleDelete = async (id: string) => {
     try {
+      const oldSupplierDocRef = doc(db, "suppliers", suppliersId);
+      const oldSupplierData = await fetchSupplierData(suppliersId);
+      const formatter = new Intl.DateTimeFormat("nb-NO", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      await updateDoc(oldSupplierDocRef, {
+        ...oldSupplierData,
+        id: suppliersId,
+        updatedAt: formatter.format(new Date()),
+        Produkter: Math.max(
+          oldSupplierData?.Produkter === 0 ? 0 : oldSupplierData?.Produkter - 1
+        ),
+      });
       await deleteDoc(doc(db, "house_model", id));
       toast.success("Delete successfully", { position: "top-right" });
       fetchHusmodellData();
@@ -71,8 +93,9 @@ export const HusmodellerTable = () => {
     fetchHusmodellData();
   }, []);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const confirmDelete = (id: string) => {
+  const confirmDelete = (id: string, supplierId: string) => {
     setSelectedId(id);
+    setSuppliersId(supplierId);
     setShowConfirm(true);
   };
 
@@ -169,7 +192,12 @@ export const HusmodellerTable = () => {
               />
               <Trash
                 className="h-5 w-5 text-primary cursor-pointer"
-                onClick={() => confirmDelete(row.original.id)}
+                onClick={() =>
+                  confirmDelete(
+                    row.original.id,
+                    row.original.Husdetaljer.Leverandører
+                  )
+                }
               />
               <Eye
                 className="h-5 w-5 text-primary cursor-pointer"

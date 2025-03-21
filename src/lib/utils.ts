@@ -15,7 +15,7 @@ export const fetchHusmodellData = async (id: string) => {
     if (docSnap.exists()) {
       return docSnap.data();
     } else {
-      console.log("No document found for ID:", id);
+      console.error("No document found for ID:", id);
     }
   } catch (error) {
     console.error("Error fetching husmodell data:", error);
@@ -30,7 +30,7 @@ export const fetchSupplierData = async (id: string) => {
     if (docSnap.exists()) {
       return docSnap.data();
     } else {
-      console.log("No document found for ID:", id);
+      console.error("No document found for ID:", id);
     }
   } catch (error) {
     console.error("Error fetching husmodell data:", error);

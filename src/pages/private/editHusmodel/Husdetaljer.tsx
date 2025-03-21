@@ -369,7 +369,7 @@ export const Husdetaljer: React.FC<{
 
       const newSupplierId = data.Leverandører;
 
-      if (newSupplierId !== oldSupplierId) {
+      if (oldSupplierId && newSupplierId !== oldSupplierId) {
         const newSupplierDocRef = doc(db, "suppliers", newSupplierId);
         const newSupplierData = await fetchSupplierData(newSupplierId);
 
@@ -392,6 +392,16 @@ export const Husdetaljer: React.FC<{
               ? 0
               : oldSupplierData?.Produkter - 1
           ),
+        });
+      } else {
+        const newSupplierDocRef = doc(db, "suppliers", newSupplierId);
+        const newSupplierData = await fetchSupplierData(newSupplierId);
+
+        await updateDoc(newSupplierDocRef, {
+          ...newSupplierData,
+          id: newSupplierId,
+          updatedAt: formatter.format(new Date()),
+          Produkter: newSupplierData?.Produkter + 1,
         });
       }
 
@@ -423,6 +433,7 @@ export const Husdetaljer: React.FC<{
 
       navigate(`/edit-husmodell/${uniqueId}`);
       setActiveTab(1);
+      setOldSupplierId(null);
     } catch (error) {
       console.error("Firestore operation failed:", error);
       toast.error("Something went wrong. Please try again.", {
