@@ -81,7 +81,7 @@ export const Prisliste: React.FC<{ husmodellData: any }> = ({
               <div className="flex items-center gap-2 justify-between">
                 <div className="flex items-center gap-2">
                   <img src={Ic_info_circle} alt="icon" />
-                  <p className="text-gray text-lg font-medium">
+                  <p className="text-gray text-lg font-bold">
                     Sum byggkostnader
                   </p>
                 </div>
