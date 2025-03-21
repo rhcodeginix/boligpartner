@@ -18,6 +18,7 @@ module.exports = {
       purple: "#7F56D9",
       white: "#fff",
       gray2: "#D0D5DD",
+      gray3: "#F9F9FB",
       red: "red",
     },
     borderColor: {

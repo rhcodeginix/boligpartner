@@ -60,3 +60,30 @@ export const phoneNumberValidations: Record<string, (num: string) => boolean> =
   {
     "+47": (num) => num.length === 8,
   };
+
+export function formatDateToDDMMYYYY(dateString: any) {
+  const dateObject: any = new Date(dateString);
+
+  if (isNaN(dateObject)) {
+    return "Invalid Date";
+  }
+
+  const day = String(dateObject.getDate()).padStart(2, "0");
+  const month = String(dateObject.getMonth() + 1).padStart(2, "0");
+  const year = dateObject.getFullYear();
+
+  return `${day}.${month}.${year}`;
+}
+
+export function convertTimestamp(seconds: number, nanoseconds: number): string {
+  const milliseconds = seconds * 1000 + nanoseconds / 1e6;
+
+  const date = new Date(milliseconds);
+
+  const options: Intl.DateTimeFormatOptions = {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  };
+  return date.toLocaleDateString("no-NO", options);
+}

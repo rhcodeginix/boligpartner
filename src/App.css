@@ -114,3 +114,15 @@ input[type="number"] {
   border: none;
   outline: none;
 }
+
+.gm-style img[alt="Google"],
+.gmnoprint,
+.gm-style-cc {
+  display: none !important;
+  opacity: 0 !important;
+  z-index: -1 !important;
+}
+
+.border-transparent {
+  border-color: transparent !important;
+}
