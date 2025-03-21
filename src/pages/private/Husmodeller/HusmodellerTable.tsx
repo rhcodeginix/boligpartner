@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { Eye, Loader2, Pencil, Trash } from "lucide-react";
 import {
   Table,
@@ -16,7 +17,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
-import Ic_Leverandor from "../../../assets/images/Ic_Leverandor.svg";
 import Ic_search from "../../../assets/images/Ic_search.svg";
 import Ic_filter from "../../../assets/images/Ic_filter.svg";
 import Ic_Avatar from "../../../assets/images/Ic_Avatar.svg";
@@ -42,6 +42,13 @@ export const HusmodellerTable = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedId, setSelectedId] = useState<any>(null);
   const [suppliersId, setSuppliersId] = useState<any>(null);
+
+  const getData = async (id: string) => {
+    const data = await fetchSupplierData(id);
+    if (data) {
+      return data;
+    }
+  };
 
   const handleDelete = async (id: string) => {
     try {
@@ -128,9 +135,27 @@ export const HusmodellerTable = () => {
       {
         accessorKey: "leverandor",
         header: "Leverandør",
-        cell: ({ row }) => (
-          <img src={Ic_Leverandor} alt="leverandor" className="h-5" />
-        ),
+        cell: ({ row }) => {
+          const [leverandorData, setLeverandorData] = useState<any>(null);
+
+          useEffect(() => {
+            const fetchData = async () => {
+              const data = await getData(row.original.Husdetaljer.Leverandører);
+              setLeverandorData(data);
+            };
+            fetchData();
+          }, [row.original.Husdetaljer.Leverandører]);
+
+          return (
+            <div>
+              <img
+                src={leverandorData?.photo}
+                alt="leverandor"
+                className="h-5"
+              />
+            </div>
+          );
+        },
       },
       {
         accessorKey: "kategori",

@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import Ic_download_cloud from "../../../assets/images/Ic_download_cloud.svg";
+// import Ic_download_cloud from "../../../assets/images/Ic_download_cloud.svg";
 import Button from "../../../components/common/button";
 import { SupplierTable } from "./supplierTable";
 import { useRef } from "react";
@@ -9,11 +9,11 @@ import toast from "react-hot-toast";
 export const Suppliers = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleUploadClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
+  // const handleUploadClick = () => {
+  //   if (fileInputRef.current) {
+  //     fileInputRef.current.click();
+  //   }
+  // };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -55,7 +55,7 @@ export const Suppliers = () => {
             <p className="text-gray">Liste over alle leverandører</p>
           </div>
           <div className="flex gap-3">
-            <div
+            {/* <div
               className="border border-gray1 rounded-[8px] flex gap-2 items-center py-[10px] px-4 cursor-pointer shadow-shadow1 h-[40px]"
               onClick={handleUploadClick}
             >
@@ -63,7 +63,7 @@ export const Suppliers = () => {
               <span className="text-black text-sm font-medium">
                 Last ned CSV
               </span>
-            </div>
+            </div> */}
             <input
               type="file"
               ref={fileInputRef}
