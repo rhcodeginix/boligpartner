@@ -104,13 +104,15 @@ export const SeHouseModel = () => {
               <Button
                 text="Endre husmodell"
                 className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
-                path="/edit-husmodell"
+                path={`/edit-husmodell/${id}`}
               />
             </div>
             {activeTab === 0 && (
               <Husdetaljer husmodellData={husmodellData.Husdetaljer} />
             )}
-            {activeTab === 1 && <Prisliste />}
+            {activeTab === 1 && (
+              <Prisliste husmodellData={husmodellData.Prisliste} />
+            )}
           </div>
         </>
       )}
