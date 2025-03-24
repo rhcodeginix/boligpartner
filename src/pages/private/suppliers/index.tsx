@@ -2,9 +2,10 @@ import { Plus } from "lucide-react";
 // import Ic_download_cloud from "../../../assets/images/Ic_download_cloud.svg";
 import Button from "../../../components/common/button";
 import { SupplierTable } from "./supplierTable";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
+import { fetchAdminDataByEmail } from "../../../lib/utils";
 
 export const Suppliers = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -44,6 +45,23 @@ export const Suppliers = () => {
     };
     reader.readAsBinaryString(file[0]);
   };
+  const [isAdd, setIsAdd] = useState(false);
+  const email = sessionStorage.getItem("Iplot_admin");
+
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        const finalData = data?.modulePermissions?.find(
+          (item: any) => item.name === "Leverandører"
+        );
+        setIsAdd(finalData?.permissions?.add);
+      }
+    };
+
+    getData();
+  }, []);
+
   return (
     <>
       <div className="px-6 pt-6 pb-16 flex flex-col gap-6">
@@ -71,12 +89,14 @@ export const Suppliers = () => {
               className="hidden"
               onChange={handleFileChange}
             />
-            <Button
-              text="Legg til"
-              className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
-              icon={<Plus className="text-white w-5 h-5" />}
-              path="/legg-til-leverandor"
-            />
+            {(isAdd || email === "andre.finger@gmail.com") && (
+              <Button
+                text="Legg til"
+                className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                icon={<Plus className="text-white w-5 h-5" />}
+                path="/legg-til-leverandor"
+              />
+            )}
           </div>
         </div>
         <SupplierTable />

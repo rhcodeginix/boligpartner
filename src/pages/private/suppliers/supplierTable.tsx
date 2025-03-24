@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Loader2, Pencil, Trash } from "lucide-react";
 import {
   Table,
@@ -19,12 +20,20 @@ import { useEffect, useMemo, useState } from "react";
 import Ic_search from "../../../assets/images/Ic_search.svg";
 import Ic_filter from "../../../assets/images/Ic_filter.svg";
 import DateRangePicker from "../../../components/ui/daterangepicker";
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Button from "../../../components/common/button";
 import Modal from "../../../components/common/modal";
+import { fetchAdminDataByEmail } from "../../../lib/utils";
 
 export const SupplierTable = () => {
   const [page, setPage] = useState(1);
@@ -35,6 +44,24 @@ export const SupplierTable = () => {
   const [selectedId, setSelectedId] = useState<any>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [permission, setPermission] = useState<any>(null);
+  const email = sessionStorage.getItem("Iplot_admin");
+
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        const finalData = data?.modulePermissions?.find(
+          (item: any) => item.name === "Leverandører"
+        );
+        setPermission(finalData?.permissions);
+      }
+    };
+
+    getData();
+  }, []);
 
   const handleDateChange = (start: Date | null, end: Date | null) => {
     setStartDate(start);
@@ -53,15 +80,31 @@ export const SupplierTable = () => {
   };
 
   const fetchSuppliersData = async () => {
+    setIsLoading(true);
+
     try {
-      const querySnapshot = await getDocs(collection(db, "suppliers"));
+      let q;
+      if (email === "andre.finger@gmail.com") {
+        q = query(collection(db, "suppliers"));
+      } else {
+        q = query(
+          collection(db, "suppliers"),
+          where("createDataBy.email", "==", email)
+        );
+      }
+
+      const querySnapshot = await getDocs(q);
+
       const data: any = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
+
       setSuppliers(data);
     } catch (error) {
       console.error("Error fetching husmodell data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -160,22 +203,28 @@ export const SupplierTable = () => {
         cell: ({ row }) => (
           <>
             <div className="flex items-center justify-center gap-3">
-              <Pencil
-                className="h-5 w-5 text-primary cursor-pointer"
-                onClick={() =>
-                  navigate(`/edit-legg-til-leverandor/${row.original.id}`)
-                }
-              />
-              <Trash
-                className="h-5 w-5 text-primary cursor-pointer"
-                onClick={() => confirmDelete(row.original.id)}
-              />
+              {((permission && permission?.edit) ||
+                email === "andre.finger@gmail.com") && (
+                <Pencil
+                  className="h-5 w-5 text-primary cursor-pointer"
+                  onClick={() =>
+                    navigate(`/edit-til-leverandor/${row.original.id}`)
+                  }
+                />
+              )}
+              {((permission && permission?.delete) ||
+                email === "andre.finger@gmail.com") && (
+                <Trash
+                  className="h-5 w-5 text-primary cursor-pointer"
+                  onClick={() => confirmDelete(row.original.id)}
+                />
+              )}
             </div>
           </>
         ),
       },
     ],
-    [navigate]
+    [email, navigate, permission]
   );
 
   const pageSize = 10;
@@ -251,7 +300,7 @@ export const SupplierTable = () => {
             ))}
           </TableHeader>
           <TableBody>
-            {suppliers.length === 0 ? (
+            {isLoading ? (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}

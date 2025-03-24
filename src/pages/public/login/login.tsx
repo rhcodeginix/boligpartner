@@ -13,6 +13,9 @@ import Ic_logo from "../../../assets/images/Ic_logo.svg";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/common/button";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../../config/firebaseConfig";
+import bcrypt from "bcryptjs";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -21,10 +24,10 @@ export const Login = () => {
     email: z
       .string()
       .email({ message: "Vennligst skriv inn en gyldig e-postadresse." })
-      .min(1, { message: "E-postadresse er påkrevd." })
-      .refine((val) => val === "andre.finger@gmail.com", {
-        message: "E-post er feil.",
-      }),
+      .min(1, { message: "E-postadresse er påkrevd." }),
+    // .refine((val) => val === "andre.finger@gmail.com", {
+    //   message: "E-post er feil.",
+    // }),
     password: z
       .string()
       .min(8, { message: "Passordet må være minst 8 tegn langt." })
@@ -37,8 +40,8 @@ export const Login = () => {
       .regex(/[0-9]/, { message: "Passordet må inneholde minst ett tall." })
       .regex(/[@$!%*?&]/, {
         message: "Passordet må inneholde minst ett spesialtegn.",
-      })
-      .refine((val) => val === "Admin@2025", { message: "Passordet er feil." }),
+      }),
+    // .refine((val) => val === "Admin@2025", { message: "Passordet er feil." }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,10 +50,40 @@ export const Login = () => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
-      toast.success("Login successfully", { position: "top-right" });
-      sessionStorage.setItem("Iplot_admin", data.email);
+      const supplierDocRef = doc(db, "admin", data.email);
+      const supplierSnap = await getDoc(supplierDocRef);
 
-      navigate("/dashboard");
+      if (!supplierSnap.exists()) {
+        toast.error("Admin not exist", { position: "top-right" });
+      } else {
+        const adminData = supplierSnap.data();
+        const storedPassword = adminData?.password;
+
+        if (!storedPassword) {
+          if (data.password) {
+            const hashedPassword = bcrypt.hashSync(data.password, 10);
+            await updateDoc(supplierDocRef, { password: hashedPassword });
+
+            toast.success("Login successfully", {
+              position: "top-right",
+            });
+            sessionStorage.setItem("Iplot_admin", data.email);
+            navigate("/dashboard");
+          }
+        } else {
+          const isPasswordCorrect = bcrypt.compareSync(
+            data.password,
+            storedPassword
+          );
+          if (isPasswordCorrect) {
+            toast.success("Login successful", { position: "top-right" });
+            sessionStorage.setItem("Iplot_admin", data.email);
+            navigate("/dashboard");
+          } else {
+            toast.error("Incorrect password", { position: "top-right" });
+          }
+        }
+      }
     } catch (error) {
       console.error("Error during sign-in", error);
     }

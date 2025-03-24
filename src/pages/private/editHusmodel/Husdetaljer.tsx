@@ -36,7 +36,11 @@ import { db, storage } from "../../../config/firebaseConfig";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
-import { fetchHusmodellData, fetchSupplierData } from "../../../lib/utils";
+import {
+  fetchAdminDataByEmail,
+  fetchHusmodellData,
+  fetchSupplierData,
+} from "../../../lib/utils";
 import { Spinner } from "../../../components/Spinner";
 
 const formSchema = z.object({
@@ -163,6 +167,17 @@ export const Husdetaljer: React.FC<{
   const [loading, setLoading] = useState(true);
   const [suppliers, setSuppliers] = useState([]);
   const [oldSupplierId, setOldSupplierId] = useState<any | null>(null);
+  const [createData, setCreateData] = useState<any>(null);
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        setCreateData(data);
+      }
+    };
+
+    getData();
+  }, []);
 
   useEffect(() => {
     if (!id) {
@@ -427,6 +442,11 @@ export const Husdetaljer: React.FC<{
           Husdetaljer: husdetaljerData,
           updatedAt: formatDate(new Date()),
           createdAt: formatDate(new Date()),
+          createDataBy: {
+            email: createData?.email,
+            photo: createData?.photo,
+            name: createData?.name,
+          },
         });
         toast.success("Added successfully", { position: "top-right" });
       }
@@ -492,7 +512,7 @@ export const Husdetaljer: React.FC<{
                                 </SelectTrigger>
                                 <SelectContent className="bg-white">
                                   <SelectGroup>
-                                    {suppliers.map((sup: any, index) => {
+                                    {suppliers?.map((sup: any, index) => {
                                       return (
                                         <SelectItem value={sup?.id} key={index}>
                                           {sup?.company_name}
@@ -778,7 +798,7 @@ export const Husdetaljer: React.FC<{
                     </div>
                     {upload3DPhoto && (
                       <div className="mt-5 flex items-center gap-5 flex-wrap">
-                        {upload3DPhoto.map((file: any, index: number) => (
+                        {upload3DPhoto?.map((file: any, index: number) => (
                           <div
                             className="relative h-[140px] w-[140px]"
                             key={index}

@@ -27,8 +27,11 @@ export const Plot = () => {
   const [plots, setPlots] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchPlotsData = async () => {
+    setIsLoading(true);
+
     try {
       const querySnapshot = await getDocs(collection(db, "empty_plot"));
       const data: any = querySnapshot.docs.map((doc) => ({
@@ -39,6 +42,8 @@ export const Plot = () => {
       setPlots(data);
     } catch (error) {
       console.error("Error fetching plot data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -210,7 +215,7 @@ export const Plot = () => {
                 ))}
               </TableHeader>
               <TableBody>
-                {plots.length === 0 ? (
+                {isLoading ? (
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}

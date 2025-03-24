@@ -28,7 +28,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { InputMobile } from "../../../components/ui/inputMobile";
 import { parsePhoneNumber } from "react-phone-number-input";
-import { fetchSupplierData, phoneNumberValidations } from "../../../lib/utils";
+import {
+  fetchAdminDataByEmail,
+  fetchSupplierData,
+  phoneNumberValidations,
+} from "../../../lib/utils";
 import { Spinner } from "../../../components/Spinner";
 
 const formSchema = z.object({
@@ -121,7 +125,17 @@ export const AddSuppliersForm = () => {
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [createData, setCreateData] = useState<any>(null);
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        setCreateData(data);
+      }
+    };
 
+    getData();
+  }, []);
   useEffect(() => {
     if (!id) {
       setLoading(false);
@@ -223,6 +237,11 @@ export const AddSuppliersForm = () => {
           updatedAt: formatter.format(new Date()),
           createdAt: formatter.format(new Date()),
           Produkter: 0,
+          createDataBy: {
+            email: createData?.email,
+            photo: createData?.photo,
+            name: createData?.name,
+          },
         });
         toast.success("Added successfully", { position: "top-right" });
       }

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { Eye, Loader2, Pencil, Trash } from "lucide-react";
 import {
@@ -19,16 +20,21 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import Ic_search from "../../../assets/images/Ic_search.svg";
 import Ic_filter from "../../../assets/images/Ic_filter.svg";
-import Ic_Avatar from "../../../assets/images/Ic_Avatar.svg";
 import {
   collection,
   deleteDoc,
   doc,
   getDocs,
+  query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
-import { fetchSupplierData, formatDateTime } from "../../../lib/utils";
+import {
+  fetchAdminDataByEmail,
+  fetchSupplierData,
+  formatDateTime,
+} from "../../../lib/utils";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Modal from "../../../components/common/modal";
@@ -42,6 +48,24 @@ export const HusmodellerTable = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedId, setSelectedId] = useState<any>(null);
   const [suppliersId, setSuppliersId] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [permission, setPermission] = useState<any>(null);
+  const email = sessionStorage.getItem("Iplot_admin");
+
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        const finalData = data?.modulePermissions?.find(
+          (item: any) => item.name === "Husmodell"
+        );
+        setPermission(finalData?.permissions);
+      }
+    };
+
+    getData();
+  }, []);
 
   const getData = async (id: string) => {
     const data = await fetchSupplierData(id);
@@ -84,8 +108,19 @@ export const HusmodellerTable = () => {
     }
   };
   const fetchHusmodellData = async () => {
+    setIsLoading(true);
     try {
-      const querySnapshot = await getDocs(collection(db, "house_model"));
+      let q;
+      if (email === "andre.finger@gmail.com") {
+        q = query(collection(db, "house_model"));
+      } else {
+        q = query(
+          collection(db, "house_model"),
+          where("createDataBy.email", "==", email)
+        );
+      }
+      const querySnapshot = await getDocs(q);
+
       const data: any = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -93,6 +128,8 @@ export const HusmodellerTable = () => {
       setHouseModels(data);
     } catch (error) {
       console.error("Error fetching husmodell data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -189,14 +226,13 @@ export const HusmodellerTable = () => {
         cell: ({ row }) => (
           <div className="flex items-start gap-3">
             <img
-              src={Ic_Avatar}
+              src={row.original?.createDataBy?.photo}
               alt="avatar"
               className="w-8 h-8 rounded-full"
             />
             <div>
               <p className="font-medium text-black text-sm mb-[2px]">
-                {/* {row.original.SisteOppdatert} */}
-                John Deo
+                {row.original?.createDataBy?.name}
               </p>
               <p className="text-xs text-gray">
                 {formatDateTime(row.original.updatedAt)}
@@ -211,19 +247,25 @@ export const HusmodellerTable = () => {
         cell: ({ row }) => (
           <>
             <div className="flex items-center justify-center gap-3">
-              <Pencil
-                className="h-5 w-5 text-primary cursor-pointer"
-                onClick={() => navigate(`/edit-husmodell/${row.original.id}`)}
-              />
-              <Trash
-                className="h-5 w-5 text-primary cursor-pointer"
-                onClick={() =>
-                  confirmDelete(
-                    row.original.id,
-                    row.original.Husdetaljer.Leverandører
-                  )
-                }
-              />
+              {((permission && permission?.edit) ||
+                email === "andre.finger@gmail.com") && (
+                <Pencil
+                  className="h-5 w-5 text-primary cursor-pointer"
+                  onClick={() => navigate(`/edit-husmodell/${row.original.id}`)}
+                />
+              )}
+              {((permission && permission?.delete) ||
+                email === "andre.finger@gmail.com") && (
+                <Trash
+                  className="h-5 w-5 text-primary cursor-pointer"
+                  onClick={() =>
+                    confirmDelete(
+                      row.original.id,
+                      row.original.Husdetaljer.Leverandører
+                    )
+                  }
+                />
+              )}
               <Eye
                 className="h-5 w-5 text-primary cursor-pointer"
                 onClick={() => navigate(`/se-husmodell/${row.original.id}`)}
@@ -233,7 +275,7 @@ export const HusmodellerTable = () => {
         ),
       },
     ],
-    [confirmDelete, navigate]
+    [email, navigate, permission]
   );
 
   const pageSize = 10;
@@ -303,7 +345,7 @@ export const HusmodellerTable = () => {
             ))}
           </TableHeader>
           <TableBody>
-            {houseModels.length === 0 ? (
+            {isLoading ? (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}

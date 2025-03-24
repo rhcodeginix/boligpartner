@@ -15,45 +15,76 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import Ic_Avatar from "../../../assets/images/Ic_Avatar.svg";
 import Ic_husmodell from "../../../assets/images/Ic_husmodell.svg";
 import Ic_Leverandor from "../../../assets/images/Ic_Leverandor.svg";
 import Ic_map from "../../../assets/images/Ic_map.svg";
 import Ic_search from "../../../assets/images/Ic_search.svg";
 import Ic_filter from "../../../assets/images/Ic_filter.svg";
 import Ic_download from "../../../assets/images/Ic_download.svg";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../../config/firebaseConfig";
-import { convertTimestamp } from "../../../lib/utils";
+
+const data = [
+  {
+    id: 1,
+    kunde: "Simen Wolmer",
+    email: "Simen@gmail.com",
+    husmodell: "ST 66",
+    leverandor: Ic_Leverandor,
+    adresse: "Sokkabekveien 77",
+    adresse2: "3478 Nærsnes",
+    avatar: Ic_Avatar,
+    leadSent: "5. mars 2025",
+    status: "Lead sendt",
+    Husmodell: Ic_husmodell,
+    map_image: Ic_map,
+  },
+  {
+    id: 2,
+    kunde: "Eskil Pedersen",
+    email: "eskilpedersen@gmail.com",
+    husmodell: "Banktips",
+    leverandor: Ic_Leverandor,
+    adresse: "Sokkabekveien 77",
+    adresse2: "3478 Nærsnes",
+    leadSent: "5. mars 2025",
+    avatar: Ic_Avatar,
+    Husmodell: Ic_husmodell,
+    map_image: Ic_map,
+    status: "Tilbud sendt",
+  },
+  {
+    id: 3,
+    kunde: "Eskil Pedersen",
+    email: "eskilpedersen@gmail.com",
+    husmodell: "Banktips",
+    leverandor: Ic_Leverandor,
+    adresse: "Sokkabekveien 77",
+    adresse2: "3478 Nærsnes",
+    leadSent: "5. mars 2025",
+    avatar: Ic_Avatar,
+    Husmodell: Ic_husmodell,
+    map_image: Ic_map,
+    status: "Tilbud sendt",
+  },
+  {
+    id: 4,
+    kunde: "Eskil Pedersen",
+    email: "eskilpedersen@gmail.com",
+    husmodell: "Banktips",
+    leverandor: Ic_Leverandor,
+    adresse: "Sokkabekveien 77",
+    adresse2: "3478 Nærsnes",
+    leadSent: "5. mars 2025",
+    avatar: Ic_Avatar,
+    Husmodell: Ic_husmodell,
+    map_image: Ic_map,
+    status: "Tilbud sendt",
+  },
+];
 
 export const DashboardTable = () => {
   const [page, setPage] = useState(1);
-  const [users, setUsers] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const fetchSuppliersData = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "users"));
-      const data: any = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setUsers(data);
-    } catch (error) {
-      console.error("Error fetching users data:", error);
-    }
-  };
-
-  const filteredData = useMemo(() => {
-    return users.filter((model: any) => {
-      const name = model?.name?.toLowerCase() || "";
-      return name.includes(searchTerm.toLowerCase());
-    });
-  }, [users, searchTerm]);
-
-  useEffect(() => {
-    fetchSuppliersData();
-  }, []);
 
   const columns = useMemo<ColumnDef<any>[]>(
     () => [
@@ -62,12 +93,14 @@ export const DashboardTable = () => {
         header: "Kunde",
         cell: ({ row }) => (
           <div className="flex items-start gap-3">
-            <div className="w-9 h-9 rounded-full flex items-center justify-center border-gray1 border bg-gray3">
-              {row.original.name[0]}
-            </div>
+            <img
+              src={row.original.avatar}
+              alt="avatar"
+              className="w-8 h-8 rounded-full"
+            />
             <div>
               <p className="font-medium text-black text-sm mb-[2px]">
-                {row.original.name}
+                {row.original.kunde}
               </p>
               <p className="text-xs text-gray">{row.original.email}</p>
             </div>
@@ -80,11 +113,13 @@ export const DashboardTable = () => {
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
             <img
-              src={Ic_husmodell}
+              src={row.original.Husmodell}
               alt="Husmodell"
               className="w-8 h-8 rounded-full"
             />
-            <p className="font-medium text-sm text-darkBlack">ST 66</p>
+            <p className="font-medium text-sm text-darkBlack">
+              {row.original.husmodell}
+            </p>
           </div>
         ),
       },
@@ -92,7 +127,7 @@ export const DashboardTable = () => {
         accessorKey: "leverandor",
         header: "Leverandør",
         cell: ({ row }) => (
-          <img src={Ic_Leverandor} alt="leverandor" className="h-5" />
+          <img src={row.original.leverandor} alt="leverandor" className="h-5" />
         ),
       },
       {
@@ -100,12 +135,16 @@ export const DashboardTable = () => {
         header: "Adresse",
         cell: ({ row }) => (
           <div className="flex items-start gap-3">
-            <img src={Ic_map} alt="map" className="w-8 h-8 rounded-full" />
+            <img
+              src={row.original.map_image}
+              alt="map"
+              className="w-8 h-8 rounded-full"
+            />
             <div>
               <p className="font-medium text-black text-sm mb-[2px]">
-                Sokkabekveien 77
+                {row.original.adresse}
               </p>
-              <p className="text-xs text-gray">3478 Nærsnes</p>
+              <p className="text-xs text-gray">{row.original.adresse2}</p>
             </div>
           </div>
         ),
@@ -115,12 +154,7 @@ export const DashboardTable = () => {
         header: "Lead sendt",
         cell: ({ row }) => (
           <p className="text-sm font-semibold text-black">
-            {row.original.createdAt
-              ? convertTimestamp(
-                  row.original.createdAt?.seconds,
-                  row.original.createdAt?.nanoseconds
-                )
-              : "-"}
+            {row.original.leadSent}
           </p>
         ),
       },
@@ -129,7 +163,7 @@ export const DashboardTable = () => {
         header: "Status",
         cell: ({ row }) => (
           <span className="px-3 py-1 rounded-full bg-[#F1F2FF] text-[#02107A] text-xs font-semibold">
-            Tilbud sendt
+            {row.original.status}
           </span>
         ),
       },
@@ -146,11 +180,11 @@ export const DashboardTable = () => {
     []
   );
 
-  const pageSize = 6;
+  const pageSize = 10;
   const paginatedData = useMemo(() => {
     const start = (page - 1) * pageSize;
-    return filteredData.slice(start, start + pageSize);
-  }, [page, filteredData]);
+    return data.slice(start, start + pageSize);
+  }, [page]);
 
   const table = useReactTable({
     data: paginatedData,
@@ -164,7 +198,7 @@ export const DashboardTable = () => {
         pageSize,
       },
     },
-    pageCount: Math.ceil(filteredData.length / pageSize),
+    pageCount: Math.ceil(data.length / pageSize),
     manualPagination: true,
     onPaginationChange: (updater: any) => {
       if (typeof updater === "function") {
@@ -186,8 +220,6 @@ export const DashboardTable = () => {
             type="text"
             placeholder="Søk i leads"
             className="focus-within:outline-none"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex gap-3 items-center">
@@ -218,7 +250,7 @@ export const DashboardTable = () => {
             ))}
           </TableHeader>
           <TableBody>
-            {users.length === 0 ? (
+            {data.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
@@ -227,17 +259,7 @@ export const DashboardTable = () => {
                   <Loader2 className="w-6 h-6 animate-spin mx-auto" />
                 </TableCell>
               </TableRow>
-            ) : filteredData.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            ) : (
-              table.getRowModel().rows?.length &&
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row: any) => (
                 <TableRow
                   key={row.id}
@@ -254,6 +276,15 @@ export const DashboardTable = () => {
                   ))}
                 </TableRow>
               ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>

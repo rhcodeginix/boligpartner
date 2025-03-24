@@ -2,14 +2,19 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Layout } from "./layouts";
 import {
   AddSuppliers,
+  AddUsers,
   Dashboard,
   EditHouseModel,
   Husmodeller,
   Login,
   Plot,
   PlotDetail,
+  PropertyDetail,
   SeHouseModel,
   Suppliers,
+  UserDetail,
+  UserManagement,
+  Users,
 } from "./pages";
 import { AuthLayout } from "./layouts/AuthLayout";
 
@@ -30,13 +35,19 @@ export const routes = createBrowserRouter([
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/Leverandorer", element: <Suppliers /> },
       { path: "/legg-til-leverandor", element: <AddSuppliers /> },
-      { path: "/edit-legg-til-leverandor/*", element: <AddSuppliers /> },
+      { path: "/edit-til-leverandor/*", element: <AddSuppliers /> },
       { path: "/Husmodeller", element: <Husmodeller /> },
       { path: "/se-husmodell/*", element: <SeHouseModel /> },
       { path: "/edit-husmodell/*", element: <EditHouseModel /> },
       { path: "/add-husmodell", element: <EditHouseModel /> },
       { path: "/plot", element: <Plot /> },
       { path: "/se-plot/*", element: <PlotDetail /> },
+      { path: "/users", element: <Users /> },
+      { path: "/se-user/*", element: <UserDetail /> },
+      { path: "/property", element: <PropertyDetail /> },
+      { path: "/Brukeradministrasjon", element: <UserManagement /> },
+      { path: "/legg-til-bruker", element: <AddUsers /> },
+      { path: "/edit-til-bruker/*", element: <AddUsers /> },
     ],
   },
 ]);

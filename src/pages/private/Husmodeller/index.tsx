@@ -1,7 +1,25 @@
+import { useEffect, useState } from "react";
 import Button from "../../../components/common/button";
 import { HusmodellerTable } from "./HusmodellerTable";
+import { fetchAdminDataByEmail } from "../../../lib/utils";
 
 export const Husmodeller = () => {
+  const [isAdd, setIsAdd] = useState(false);
+  const email = sessionStorage.getItem("Iplot_admin");
+
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        const finalData = data?.modulePermissions?.find(
+          (item: any) => item.name === "Husmodell"
+        );
+        setIsAdd(finalData?.permissions?.add);
+      }
+    };
+
+    getData();
+  }, []);
   return (
     <>
       <div className="px-6 pt-6 pb-16 flex flex-col gap-6">
@@ -9,12 +27,13 @@ export const Husmodeller = () => {
           <h1 className="text-darkBlack font-medium text-[30px]">
             Alle hus- og hyttemodeller
           </h1>
-
-          <Button
-            text="Legg til ny modell"
-            className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
-            path="/add-husmodell"
-          />
+          {(isAdd || email === "andre.finger@gmail.com") && (
+            <Button
+              text="Legg til ny modell"
+              className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+              path="/add-husmodell"
+            />
+          )}
         </div>
         <HusmodellerTable />
       </div>

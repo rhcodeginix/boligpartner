@@ -6,3 +6,8 @@ export { SeHouseModel } from "./seHousemodel";
 export { EditHouseModel } from "./editHusmodel";
 export { Plot } from "./plot";
 export { PlotDetail } from "./plot/plot-detail";
+export { Users } from "./users";
+export { UserDetail } from "./users/user-detail";
+export { PropertyDetail } from "./users/property-detail";
+export { UserManagement } from "./userManagement";
+export { AddUsers } from "./addUsers";

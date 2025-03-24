@@ -1,5 +1,12 @@
 import { clsx, type ClassValue } from "clsx";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { twMerge } from "tailwind-merge";
 import { db } from "../config/firebaseConfig";
 
@@ -33,10 +40,27 @@ export const fetchSupplierData = async (id: string) => {
       console.error("No document found for ID:", id);
     }
   } catch (error) {
-    console.error("Error fetching husmodell data:", error);
+    console.error("Error fetching supplier data:", error);
   }
 };
 
+export const fetchAdminData = async (id: string) => {
+  try {
+    const q = query(collection(db, "admin"), where("id", "==", id));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const docRef = querySnapshot.docs[0];
+
+      return docRef.data();
+    } else {
+      console.error("No document found for ID:", id);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching admin data:", error);
+  }
+};
 export function formatDateTime(inputDateTime: string) {
   const date = new Date(inputDateTime);
 
@@ -87,3 +111,24 @@ export function convertTimestamp(seconds: number, nanoseconds: number): string {
   };
   return date.toLocaleDateString("no-NO", options);
 }
+
+export const fetchAdminDataByEmail = async () => {
+  const email: string | null = sessionStorage.getItem("Iplot_admin");
+  if (email) {
+    try {
+      const q = query(collection(db, "admin"), where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const docRef = querySnapshot.docs[0];
+
+        return docRef.data();
+      } else {
+        console.error("No document found for Email:", email);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching admin data:", error);
+    }
+  }
+};

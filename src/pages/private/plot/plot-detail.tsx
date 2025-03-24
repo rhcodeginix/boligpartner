@@ -20,6 +20,7 @@ export const PlotDetail = () => {
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const [loading, setLoading] = useState(false);
+  const [imgLoading, setImgLoading] = useState(false);
   const [data, setData] = useState<any>(null);
   const [askData, setAskData] = useState<any | null>(null);
 
@@ -158,9 +159,9 @@ export const PlotDetail = () => {
   }, [images, selectedImage]);
   const handleImageClick = (image: any) => {
     if (selectedImage?.id === image.id) {
-      setLoading(false);
+      setImgLoading(false);
     } else {
-      setLoading(true);
+      setImgLoading(true);
     }
     setSelectedImage(image);
   };
@@ -938,7 +939,7 @@ export const PlotDetail = () => {
                                 </div>
                                 <div className="w-full flex flex-col gap-8 items-center mt-[55px]">
                                   <div className="rounded-[12px] overflow-hidden w-full relative border border-[#7D89B0] h-[590px]">
-                                    {loading && (
+                                    {imgLoading && (
                                       <div className="absolute inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-10">
                                         <div className="spinner-border animate-spin border-t-4 border-b-4 border-blue-500 w-12 h-12 border-solid rounded-full"></div>
                                       </div>
@@ -947,8 +948,8 @@ export const PlotDetail = () => {
                                       src={selectedImage?.src}
                                       alt={selectedImage?.alt}
                                       className="h-full w-full"
-                                      onLoad={() => setLoading(false)}
-                                      onError={() => setLoading(false)}
+                                      onLoad={() => setImgLoading(false)}
+                                      onError={() => setImgLoading(false)}
                                     />
                                     <div
                                       className="absolute top-0 left-[4px] flex items-center justify-center h-full"
@@ -975,7 +976,7 @@ export const PlotDetail = () => {
                                                 (img) =>
                                                   img.id === selectedImage.id
                                               );
-                                            setLoading(true);
+                                            setImgLoading(true);
 
                                             const nextIndex = currentIndex - 1;
                                             if (nextIndex >= 0) {
@@ -1024,7 +1025,7 @@ export const PlotDetail = () => {
                                                 (img) =>
                                                   img.id === selectedImage.id
                                               );
-                                            setLoading(true);
+                                            setImgLoading(true);
 
                                             const nextIndex = currentIndex + 1;
                                             if (nextIndex < images.length) {
@@ -1121,7 +1122,7 @@ export const PlotDetail = () => {
                                                   (img) =>
                                                     img.id === selectedImage.id
                                                 );
-                                              setLoading(true);
+                                              setImgLoading(true);
 
                                               const nextIndex =
                                                 currentIndex - 1;
@@ -1162,7 +1163,7 @@ export const PlotDetail = () => {
                                                   (img) =>
                                                     img.id === selectedImage.id
                                                 );
-                                              setLoading(true);
+                                              setImgLoading(true);
 
                                               const nextIndex =
                                                 currentIndex + 1;

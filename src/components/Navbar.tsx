@@ -1,12 +1,12 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Ic_logo from "../assets/images/Ic_logo.svg";
-import Ic_profile_image from "../assets/images/Ic_profile_image.svg";
 import Ic_bell from "../assets/images/Ic_bell.svg";
 import Ic_search from "../assets/images/Ic_search.svg";
 import Ic_settings from "../assets/images/Ic_settings.svg";
 import Ic_chevron_up from "../assets/images/Ic_chevron_up.svg";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { fetchAdminDataByEmail } from "../lib/utils";
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
@@ -14,10 +14,15 @@ export const Navbar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const [loginUser, setLoginUser] = useState(null);
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
   };
+  useEffect(() => {
+    const user: any = sessionStorage.getItem("Iplot_admin");
+    setLoginUser(user);
+  }, [loginUser]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -45,6 +50,32 @@ export const Navbar: React.FC = () => {
       console.error("Error logging out:", error);
     }
   };
+  const [isPhoto, setIsPhoto] = useState(null);
+
+  const [LeverandørerPermission, setLeverandørerPermission] =
+    useState<any>(null);
+  const [HusmodellPermission, setHusmodellPermission] = useState<any>(null);
+  const email = sessionStorage.getItem("Iplot_admin");
+
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        setIsPhoto(data?.photo);
+
+        const supplierData = data?.modulePermissions?.find(
+          (item: any) => item.name === "Leverandører"
+        );
+        setLeverandørerPermission(supplierData?.permissions);
+        const husmodellData = data?.modulePermissions?.find(
+          (item: any) => item.name === "Husmodell"
+        );
+        setHusmodellPermission(husmodellData?.permissions);
+      }
+    };
+
+    getData();
+  }, []);
   return (
     <>
       <div
@@ -58,38 +89,64 @@ export const Navbar: React.FC = () => {
         </Link>
         <div className="flex items-center gap-1">
           <Link
-            to={"/"}
+            to={"/dashboard"}
             className={`text-base font-medium py-2 px-3 rounded-[6px] ${
-              currentPath === "/" ? "bg-lightPurple text-primary" : "text-black"
+              currentPath === "/dashboard"
+                ? "bg-lightPurple text-primary"
+                : "text-black"
             }`}
           >
             Dashboard
           </Link>
-          <Link
-            to={"/Leverandorer"}
-            className={`text-base font-medium py-2 px-3 rounded-[6px] ${
-              currentPath === "/Leverandorer" ||
-              currentPath.startsWith("/edit-legg-til-leverandor/") ||
-              currentPath === "/legg-til-leverandor"
-                ? "bg-lightPurple text-primary"
-                : "text-black"
-            }`}
-          >
-            Leverandører
-          </Link>
-          <Link
-            to={"/Husmodeller"}
-            className={`text-base font-medium py-2 px-3 rounded-[6px] ${
-              currentPath === "/Husmodeller" ||
-              currentPath.startsWith("/se-husmodell/") ||
-              currentPath === "/add-husmodell" ||
-              currentPath.startsWith("/edit-husmodell/")
-                ? "bg-lightPurple text-primary"
-                : "text-black"
-            }`}
-          >
-            Husmodeller
-          </Link>
+          {(email === "andre.finger@gmail.com" ||
+            LeverandørerPermission?.add === true ||
+            LeverandørerPermission?.delete === true ||
+            LeverandørerPermission?.edit === true) && (
+            <Link
+              to={"/Leverandorer"}
+              className={`text-base font-medium py-2 px-3 rounded-[6px] ${
+                currentPath === "/Leverandorer" ||
+                currentPath.startsWith("/edit-til-leverandor/") ||
+                currentPath === "/legg-til-leverandor"
+                  ? "bg-lightPurple text-primary"
+                  : "text-black"
+              }`}
+            >
+              Leverandører
+            </Link>
+          )}
+          {(email === "andre.finger@gmail.com" ||
+            HusmodellPermission?.add === true ||
+            HusmodellPermission?.delete === true ||
+            HusmodellPermission?.edit === true) && (
+            <Link
+              to={"/Husmodeller"}
+              className={`text-base font-medium py-2 px-3 rounded-[6px] ${
+                currentPath === "/Husmodeller" ||
+                currentPath.startsWith("/se-husmodell/") ||
+                currentPath === "/add-husmodell" ||
+                currentPath.startsWith("/edit-husmodell/")
+                  ? "bg-lightPurple text-primary"
+                  : "text-black"
+              }`}
+            >
+              Husmodeller
+            </Link>
+          )}
+          {loginUser && loginUser === "andre.finger@gmail.com" && (
+            <Link
+              to={"/Brukeradministrasjon"}
+              className={`text-base font-medium py-2 px-3 rounded-[6px] ${
+                currentPath === "/Brukeradministrasjon" ||
+                currentPath.startsWith("/edit-til-bruker") ||
+                currentPath.startsWith("/legg-til-bruker")
+                  ? "bg-lightPurple text-primary"
+                  : "text-black"
+              }`}
+            >
+              Brukeradministrasjon
+            </Link>
+          )}
         </div>
         <div className="flex items-center gap-4 relative">
           <div className="flex items-center gap-1">
@@ -107,9 +164,11 @@ export const Navbar: React.FC = () => {
             className="flex items-center gap-2 cursor-pointer"
             onClick={toggleDropdown}
           >
-            <div className="h-[40px] w-[40px]">
-              <img src={Ic_profile_image} alt="profile" />
-            </div>
+            {isPhoto && (
+              <div className="h-[40px] w-[40px]">
+                <img src={isPhoto} alt="profile" className="rounded-full" />
+              </div>
+            )}
             <img src={Ic_chevron_up} alt="arrow" className="rotate-180" />
           </div>
           {isDropdownOpen && (

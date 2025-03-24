@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import Ic_filter from "../../../assets/images/Ic_filter.svg";
 // import Ic_dropdown_menu from "../../../assets/images/Ic_dropdown_menu.svg";
 // import Ic_green_up_arrow from "../../../assets/images/Ic_green_up_arrow.svg";
 import DatePickerComponent from "../../../components/ui/datepicker";
 import { DashboardTable } from "./dashboardTable";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { Spinner } from "../../../components/Spinner";
 import { useNavigate } from "react-router-dom";
@@ -14,13 +15,27 @@ export const Dashboard = () => {
   const [counts, setCounts] = useState({ users: 0, husmodell: 0, plot: 0 });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const email = sessionStorage.getItem("Iplot_admin");
 
   const fetchSuppliersData = async () => {
     try {
       setLoading(true);
-      const usersSnapshot = await getDocs(collection(db, "users"));
-      const husmodellSnapshot = await getDocs(collection(db, "house_model"));
-      const plotSnapshot = await getDocs(collection(db, "empty_plot"));
+      let q;
+      if (email === "andre.finger@gmail.com") {
+        q = query(collection(db, "house_model"));
+      } else {
+        q = query(
+          collection(db, "house_model"),
+          where("createDataBy.email", "==", email)
+        );
+      }
+      const [usersSnapshot, husmodellSnapshot, plotSnapshot] =
+        await Promise.all([
+          getDocs(collection(db, "users")),
+          getDocs(q),
+          getDocs(collection(db, "empty_plot")),
+        ]);
+
       setCounts({
         users: usersSnapshot.size,
         husmodell: husmodellSnapshot.size,
@@ -40,6 +55,7 @@ export const Dashboard = () => {
       title: "Antall brukere",
       value: counts.users,
       percentage: 10,
+      path: "/users",
     },
     {
       title: "Antall tomter",
