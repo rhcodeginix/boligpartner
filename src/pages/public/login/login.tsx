@@ -76,7 +76,7 @@ export const Login = () => {
             storedPassword
           );
           if (isPasswordCorrect) {
-            toast.success("Login successful", { position: "top-right" });
+            toast.success("Login successfully", { position: "top-right" });
             sessionStorage.setItem("Iplot_admin", data.email);
             navigate("/dashboard");
           } else {
