@@ -25,6 +25,7 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  orderBy,
   query,
   updateDoc,
   where,
@@ -112,11 +113,12 @@ export const HusmodellerTable = () => {
     try {
       let q;
       if (email === "andre.finger@gmail.com") {
-        q = query(collection(db, "house_model"));
+        q = query(collection(db, "house_model"), orderBy("updatedAt", "desc"));
       } else {
         q = query(
           collection(db, "house_model"),
-          where("createDataBy.email", "==", email)
+          where("createDataBy.email", "==", email),
+          orderBy("updatedAt", "desc")
         );
       }
       const querySnapshot = await getDocs(q);

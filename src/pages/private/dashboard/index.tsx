@@ -5,7 +5,7 @@ import Ic_filter from "../../../assets/images/Ic_filter.svg";
 // import Ic_green_up_arrow from "../../../assets/images/Ic_green_up_arrow.svg";
 import DatePickerComponent from "../../../components/ui/datepicker";
 import { DashboardTable } from "./dashboardTable";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { Spinner } from "../../../components/Spinner";
 import { useNavigate } from "react-router-dom";
@@ -22,11 +22,12 @@ export const Dashboard = () => {
       setLoading(true);
       let q;
       if (email === "andre.finger@gmail.com") {
-        q = query(collection(db, "house_model"));
+        q = query(collection(db, "house_model"), orderBy("updatedAt", "desc"));
       } else {
         q = query(
           collection(db, "house_model"),
-          where("createDataBy.email", "==", email)
+          where("createDataBy.email", "==", email),
+          orderBy("updatedAt", "desc")
         );
       }
       const [usersSnapshot, husmodellSnapshot, plotSnapshot] =

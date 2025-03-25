@@ -22,6 +22,7 @@ import {
   collection,
   deleteDoc,
   getDocs,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -42,7 +43,11 @@ export const UserTable = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const q = query(collection(db, "admin"), where("id", "==", id));
+      const q = query(
+        collection(db, "admin"),
+        where("id", "==", id),
+        orderBy("updatedAt", "desc")
+      );
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {

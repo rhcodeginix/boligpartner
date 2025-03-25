@@ -4,6 +4,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -46,7 +47,11 @@ export const fetchSupplierData = async (id: string) => {
 
 export const fetchAdminData = async (id: string) => {
   try {
-    const q = query(collection(db, "admin"), where("id", "==", id));
+    const q = query(
+      collection(db, "admin"),
+      where("id", "==", id),
+      orderBy("updatedAt", "desc")
+    );
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
@@ -116,7 +121,11 @@ export const fetchAdminDataByEmail = async () => {
   const email: string | null = sessionStorage.getItem("Iplot_admin");
   if (email) {
     try {
-      const q = query(collection(db, "admin"), where("email", "==", email));
+      const q = query(
+        collection(db, "admin"),
+        where("email", "==", email),
+        orderBy("updatedAt", "desc")
+      );
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {

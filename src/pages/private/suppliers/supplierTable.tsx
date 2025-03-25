@@ -25,6 +25,7 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -85,11 +86,12 @@ export const SupplierTable = () => {
     try {
       let q;
       if (email === "andre.finger@gmail.com") {
-        q = query(collection(db, "suppliers"));
+        q = query(collection(db, "suppliers"), orderBy("updatedAt", "desc"));
       } else {
         q = query(
           collection(db, "suppliers"),
-          where("createDataBy.email", "==", email)
+          where("createDataBy.email", "==", email),
+          orderBy("updatedAt", "desc")
         );
       }
 
