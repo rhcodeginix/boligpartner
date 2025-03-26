@@ -1,16 +1,12 @@
 {
   "files": {
     "main.css": "/static/css/main.d339d84b.css",
-    "main.js": "/static/js/main.12f42ef8.js",
+    "main.js": "/static/js/main.6a191f99.js",
     "static/js/453.2a83c92c.chunk.js": "/static/js/453.2a83c92c.chunk.js",
-    "static/media/Ic_husmodell.svg": "/static/media/Ic_husmodell.3b4c8a316082049b8d5aa35e3c4ee7e5.svg",
-    "static/media/Ic_Avatar.svg": "/static/media/Ic_Avatar.7f224348ed2d1d9a1729461703c2e2f3.svg",
-    "static/media/Ic_map.svg": "/static/media/Ic_map.7d3a56567226a9ba5d7d6819142837cf.svg",
     "static/media/Img_product_3d_img1.png": "/static/media/Img_product_3d_img1.65392a8a99c118933916.png",
     "static/media/Img_plot.png": "/static/media/Img_plot.d08ce5c6b60f1621395f.png",
     "static/media/Img_line_bg.png": "/static/media/Img_line_bg.ea53a5f7dd39bc3e2975.png",
     "static/media/Ic_generelt.svg": "/static/media/Ic_generelt.5587c7ffd08273c504698007822e7781.svg",
-    "static/media/Ic_Leverandor.svg": "/static/media/Ic_Leverandor.085d3e74e6fa0cc6f83ddb527a4fbc59.svg",
     "static/media/Ic_logo.svg": "/static/media/Ic_logo.f93094d3ad1c627dec4331dcfdf84527.svg",
     "static/media/Ic_settings.svg": "/static/media/Ic_settings.102d11fd04defbee4f11c68a22703903.svg",
     "static/media/Ic_garaje.svg": "/static/media/Ic_garaje.b8c93a3f446cb95d4bab7931a7bc0cdf.svg",
@@ -35,11 +31,11 @@
     "static/media/Ic_x_close.svg": "/static/media/Ic_x_close.2927b7d219cf8c2897b9d9e9074a80c1.svg",
     "static/media/Ic_chevron_right.svg": "/static/media/Ic_chevron_right.d0df60b8083e393506a2a5531985f1d8.svg",
     "main.d339d84b.css.map": "/static/css/main.d339d84b.css.map",
-    "main.12f42ef8.js.map": "/static/js/main.12f42ef8.js.map",
+    "main.6a191f99.js.map": "/static/js/main.6a191f99.js.map",
     "453.2a83c92c.chunk.js.map": "/static/js/453.2a83c92c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d339d84b.css",
-    "static/js/main.12f42ef8.js"
+    "static/js/main.6a191f99.js"
   ]
 }
