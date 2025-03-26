@@ -4,7 +4,6 @@ import Ic_filter from "../../../assets/images/Ic_filter.svg";
 // import Ic_dropdown_menu from "../../../assets/images/Ic_dropdown_menu.svg";
 // import Ic_green_up_arrow from "../../../assets/images/Ic_green_up_arrow.svg";
 import DatePickerComponent from "../../../components/ui/datepicker";
-import { DashboardTable } from "./dashboardTable";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { Spinner } from "../../../components/Spinner";
@@ -12,7 +11,13 @@ import { useNavigate } from "react-router-dom";
 
 export const Dashboard = () => {
   const [selectedDate1, setSelectedDate1] = useState<Date | null>(null);
-  const [counts, setCounts] = useState({ users: 0, husmodell: 0, plot: 0 });
+  const [counts, setCounts] = useState({
+    users: 0,
+    husmodell: 0,
+    plot: 0,
+    householdLeads: 0,
+    kombinasjoner: 0,
+  });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const email = sessionStorage.getItem("Iplot_admin");
@@ -30,17 +35,26 @@ export const Dashboard = () => {
           orderBy("updatedAt", "desc")
         );
       }
-      const [usersSnapshot, husmodellSnapshot, plotSnapshot] =
-        await Promise.all([
-          getDocs(collection(db, "users")),
-          getDocs(q),
-          getDocs(collection(db, "empty_plot")),
-        ]);
+      const [
+        usersSnapshot,
+        husmodellSnapshot,
+        plotSnapshot,
+        householdLeadsShot,
+        kombinasjonerShot,
+      ] = await Promise.all([
+        getDocs(collection(db, "users")),
+        getDocs(q),
+        getDocs(collection(db, "empty_plot")),
+        getDocs(query(collection(db, "leads"), where("Isopt", "==", true))),
+        getDocs(query(collection(db, "leads"), where("Isopt", "==", false))),
+      ]);
 
       setCounts({
         users: usersSnapshot.size,
         husmodell: husmodellSnapshot.size,
         plot: plotSnapshot.size,
+        householdLeads: householdLeadsShot.size,
+        kombinasjoner: kombinasjonerShot.size,
       });
       setLoading(false);
     } catch (error) {
@@ -77,8 +91,9 @@ export const Dashboard = () => {
     },
     {
       title: "Antall husleads",
-      value: "27",
+      value: counts.householdLeads,
       percentage: 12,
+      path: "/se-husleads",
     },
     {
       title: "Antall bankleads",
@@ -88,8 +103,9 @@ export const Dashboard = () => {
     {
       title: "Antall kombinasjoner",
       title2: "(tomt+hus)",
-      value: "207",
+      value: counts.kombinasjoner,
       percentage: 10,
+      path: "/se-kombinasjoner",
     },
     {
       title: "Unike besøkende",
@@ -169,9 +185,6 @@ export const Dashboard = () => {
               </div>
             );
           })}
-        </div>
-        <div>
-          <DashboardTable />
         </div>
       </div>
     </>

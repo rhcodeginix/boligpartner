@@ -5,7 +5,9 @@ import {
   AddUsers,
   Dashboard,
   EditHouseModel,
+  Husleads,
   Husmodeller,
+  Kombinasjoner,
   Login,
   Plot,
   PlotDetail,
@@ -48,6 +50,8 @@ export const routes = createBrowserRouter([
       { path: "/Brukeradministrasjon", element: <UserManagement /> },
       { path: "/legg-til-bruker", element: <AddUsers /> },
       { path: "/edit-til-bruker/*", element: <AddUsers /> },
+      { path: "/se-husleads", element: <Husleads /> },
+      { path: "/se-kombinasjoner", element: <Kombinasjoner /> },
     ],
   },
 ]);

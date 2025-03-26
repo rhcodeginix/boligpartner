@@ -119,13 +119,10 @@ export function convertTimestamp(seconds: number, nanoseconds: number): string {
 
 export const fetchAdminDataByEmail = async () => {
   const email: string | null = sessionStorage.getItem("Iplot_admin");
+
   if (email) {
     try {
-      const q = query(
-        collection(db, "admin"),
-        where("email", "==", email),
-        orderBy("updatedAt", "desc")
-      );
+      const q = query(collection(db, "admin"), where("email", "==", email));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {

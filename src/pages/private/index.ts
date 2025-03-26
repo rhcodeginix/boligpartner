@@ -11,3 +11,5 @@ export { UserDetail } from "./users/user-detail";
 export { PropertyDetail } from "./users/property-detail";
 export { UserManagement } from "./userManagement";
 export { AddUsers } from "./addUsers";
+export { Husleads } from "./husleads";
+export { Kombinasjoner } from "./kombinasjoner";
