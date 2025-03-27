@@ -149,11 +149,11 @@ const formSchema = z.object({
     .refine(
       (val) =>
         val === "" ||
-        /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?(\/.*)?$/.test(
+        /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[a-zA-Z0-9_-]+$/.test(
           val
         ),
       {
-        message: "Please enter a valid URL.",
+        message: "Please enter a valid YouTube URL.",
       }
     ),
 });
