@@ -138,9 +138,12 @@ const formSchema = z.object({
   OmHusmodellen: z.string().min(1, {
     message: "OmHusmodellen må bestå av minst 2 tegn.",
   }),
-  TittelVideo: z.string().min(1, {
-    message: "Tittel på video må bestå av minst 2 tegn.",
-  }),
+  TittelVideo: z
+    .string()
+    .min(1, {
+      message: "Tittel på video må bestå av minst 2 tegn.",
+    })
+    .optional(),
   VideoLink: z
     .string()
     .refine(
@@ -873,31 +876,17 @@ export const Husdetaljer: React.FC<{
                             Bruksareal (BRA)
                           </p>
                           <FormControl>
-                            <Select
-                              onValueChange={(value) => {
-                                field.onChange(value);
-                              }}
-                              value={field.value}
-                            >
-                              <SelectTrigger
-                                className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                              >
-                                <SelectValue placeholder="Enter Bruksareal (BRA)" />
-                              </SelectTrigger>
-                              <SelectContent className="bg-white">
-                                <SelectGroup>
-                                  <SelectItem value="233 m2">233 m2</SelectItem>
-                                  <SelectItem value="234 m2">234 m2</SelectItem>
-                                  <SelectItem value="235 m2">235 m2</SelectItem>
-                                  <SelectItem value="236 m2">236 m2</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
+                            <Input
+                              placeholder="Enter Bruksareal (BRA)"
+                              {...field}
+                              className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                              type="text"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

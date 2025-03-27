@@ -4,7 +4,6 @@ import {
   doc,
   getDoc,
   getDocs,
-  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -49,8 +48,8 @@ export const fetchAdminData = async (id: string) => {
   try {
     const q = query(
       collection(db, "admin"),
-      where("id", "==", id),
-      orderBy("updatedAt", "desc")
+      where("id", "==", id)
+      // orderBy("updatedAt", "desc")
     );
     const querySnapshot = await getDocs(q);
 

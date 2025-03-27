@@ -47,6 +47,7 @@ const formSchema = z.object({
           add: z.boolean(),
           edit: z.boolean(),
           delete: z.boolean(),
+          duplicate: z.boolean().optional(),
         }),
       })
     )
@@ -181,6 +182,7 @@ export const AddUserForm = () => {
         add: true,
         edit: true,
         delete: true,
+        duplicate: true,
       },
     },
   ]);
@@ -190,6 +192,7 @@ export const AddUserForm = () => {
     { key: "add", label: "Add" },
     { key: "edit", label: "Edit" },
     { key: "delete", label: "Delete" },
+    { key: "duplicate", label: "Duplicate" },
   ];
 
   const handlePermissionChange = (
@@ -394,7 +397,7 @@ export const AddUserForm = () => {
                   Informasjon om tilgangsnivå
                 </p>
                 <div className="border border-gray1 border-r-0 border-b-0 rounded shadow-sm overflow-x-auto">
-                  <table className="min-w-full bg-white">
+                  <table className="min-w-full bg-white border-r border-gray1">
                     <thead>
                       <tr className="bg-gray-50 border-b border-gray1">
                         <th className="py-3 px-4 text-left font-medium text-gray-500 tracking-wider border-r border-gray1 text-black">
@@ -423,50 +426,58 @@ export const AddUserForm = () => {
                           <td className="py-3 px-4 border-r border-gray1 text-black">
                             {module.name}
                           </td>
-                          {permissionTypes.map((permission) => (
-                            <td
-                              key={`${module.id}-${permission.key}`}
-                              className="text-center py-2 px-4 border-r border-gray1"
-                            >
-                              <label className="inline-flex items-center justify-center cursor-pointer">
-                                <input
-                                  type="checkbox"
-                                  className="hidden"
-                                  checked={module.permissions[permission.key]}
-                                  onChange={() =>
-                                    handlePermissionChange(
-                                      module.id,
-                                      permission.key
-                                    )
-                                  }
-                                />
-                                <div
-                                  className={`w-6 h-6 border rounded flex items-center justify-center ${
-                                    module.permissions[permission.key]
-                                      ? "bg-primary border-[#fff]"
-                                      : "bg-white border-gray1"
-                                  }`}
-                                >
-                                  {module.permissions[permission.key] && (
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="none"
-                                      viewBox="0 0 24 24"
-                                      stroke="currentColor"
-                                      className="w-4 h-4 text-white"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M5 13l4 4L19 7"
-                                      />
-                                    </svg>
-                                  )}
-                                </div>
-                              </label>
-                            </td>
-                          ))}
+                          {permissionTypes
+                            .filter(
+                              (permission) =>
+                                !(
+                                  module.name === "Leverandører" &&
+                                  permission.key === "duplicate"
+                                )
+                            )
+                            .map((permission) => (
+                              <td
+                                key={`${module.id}-${permission.key}`}
+                                className="text-center py-2 px-4 border-r border-gray1"
+                              >
+                                <label className="inline-flex items-center justify-center cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    className="hidden"
+                                    checked={module.permissions[permission.key]}
+                                    onChange={() =>
+                                      handlePermissionChange(
+                                        module.id,
+                                        permission.key
+                                      )
+                                    }
+                                  />
+                                  <div
+                                    className={`w-6 h-6 border rounded flex items-center justify-center ${
+                                      module.permissions[permission.key]
+                                        ? "bg-primary border-[#fff]"
+                                        : "bg-white border-gray1"
+                                    }`}
+                                  >
+                                    {module.permissions[permission.key] && (
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        className="w-4 h-4 text-white"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth="2"
+                                          d="M5 13l4 4L19 7"
+                                        />
+                                      </svg>
+                                    )}
+                                  </div>
+                                </label>
+                              </td>
+                            ))}
                         </tr>
                       ))}
                     </tbody>

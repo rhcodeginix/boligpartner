@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { Eye, Loader2, Pencil, Trash } from "lucide-react";
+import { Copy, Eye, Loader2, Pencil, Trash } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -21,9 +21,11 @@ import { useEffect, useMemo, useState } from "react";
 import Ic_search from "../../../assets/images/Ic_search.svg";
 import Ic_filter from "../../../assets/images/Ic_filter.svg";
 import {
+  addDoc,
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   orderBy,
   query,
@@ -47,6 +49,7 @@ export const HusmodellerTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showConfirmCopy, setShowConfirmCopy] = useState(false);
   const [selectedId, setSelectedId] = useState<any>(null);
   const [suppliersId, setSuppliersId] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -100,12 +103,64 @@ export const HusmodellerTable = () => {
       console.error("Error deleting document:", error);
     }
   };
+  const handleCopy = async (id: string) => {
+    try {
+      const oldSupplierDocRef = doc(db, "suppliers", suppliersId);
+      const oldSupplierData = await fetchSupplierData(suppliersId);
+      const formatter = new Intl.DateTimeFormat("nb-NO", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      await updateDoc(oldSupplierDocRef, {
+        ...oldSupplierData,
+        id: suppliersId,
+        updatedAt: formatter.format(new Date()),
+        Produkter: Math.max(oldSupplierData?.Produkter + 1),
+      });
+      // await deleteDoc(doc(db, "house_model", id));
+
+      const oldHouseModelRef = doc(db, "house_model", id);
+      const oldHouseModelSnap = await getDoc(oldHouseModelRef);
+
+      if (!oldHouseModelSnap.exists()) {
+        throw new Error("Document does not exist.");
+      }
+
+      const oldHouseModelData = oldHouseModelSnap.data();
+      const formatDate = (date: Date) => {
+        return date
+          .toLocaleString("sv-SE", { timeZone: "UTC" })
+          .replace(",", "");
+      };
+      // Create a new document with the same data but without 'id'
+      const newHouseModelRef = collection(db, "house_model");
+      await addDoc(newHouseModelRef, {
+        ...oldHouseModelData,
+        createdAt: formatDate(new Date()),
+      });
+
+      toast.success("Copied successfully", { position: "top-right" });
+      fetchHusmodellData();
+      setShowConfirmCopy(false);
+    } catch (error) {
+      console.error("Error deleting document:", error);
+    }
+  };
 
   const handleConfirmPopup = () => {
     if (showConfirm) {
       setShowConfirm(false);
     } else {
       setShowConfirm(true);
+    }
+  };
+
+  const handleConfirmCopyPopup = () => {
+    if (showConfirmCopy) {
+      setShowConfirmCopy(false);
+    } else {
+      setShowConfirmCopy(true);
     }
   };
   const fetchHusmodellData = async () => {
@@ -143,6 +198,12 @@ export const HusmodellerTable = () => {
     setSelectedId(id);
     setSuppliersId(supplierId);
     setShowConfirm(true);
+  };
+
+  const confirmCopy = (id: string, supplierId: string) => {
+    setSelectedId(id);
+    setSuppliersId(supplierId);
+    setShowConfirmCopy(true);
   };
 
   const filteredData = useMemo(() => {
@@ -272,6 +333,18 @@ export const HusmodellerTable = () => {
                 className="h-5 w-5 text-primary cursor-pointer"
                 onClick={() => navigate(`/se-husmodell/${row.original.id}`)}
               />
+              {((permission && permission?.duplicate) ||
+                email === "andre.finger@gmail.com") && (
+                <Copy
+                  className="h-5 w-5 text-primary cursor-pointer"
+                  onClick={() =>
+                    confirmCopy(
+                      row.original.id,
+                      row.original.Husdetaljer.Leverandører
+                    )
+                  }
+                />
+              )}
             </div>
           </>
         ),
@@ -425,6 +498,35 @@ export const HusmodellerTable = () => {
                   />
                 </div>
                 <div onClick={() => handleDelete(selectedId)}>
+                  <Button
+                    text="Bekrefte"
+                    className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {showConfirmCopy && (
+        <Modal onClose={handleConfirmCopyPopup} isOpen={true}>
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <p className="text-lg font-bold">
+                Er du sikker på at du vil kopiere?
+              </p>
+              <div className="flex justify-center mt-5 w-full gap-5 items-center">
+                <div
+                  onClick={() => setShowConfirmCopy(false)}
+                  className="w-1/2 sm:w-auto"
+                >
+                  <Button
+                    text="Avbryt"
+                    className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  />
+                </div>
+                <div onClick={() => handleCopy(selectedId)}>
                   <Button
                     text="Bekrefte"
                     className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"

@@ -31,7 +31,7 @@ export const HusleadsTable = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchSuppliersData = async () => {
+  const fetchLeadsData = async () => {
     setIsLoading(true);
 
     try {
@@ -63,7 +63,7 @@ export const HusleadsTable = () => {
   }, [leads, searchTerm]);
 
   useEffect(() => {
-    fetchSuppliersData();
+    fetchLeadsData();
   }, []);
 
   const pageSize = 10;

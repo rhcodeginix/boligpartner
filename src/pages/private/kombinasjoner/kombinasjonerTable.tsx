@@ -31,7 +31,7 @@ export const KombinasjonerTable = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchSuppliersData = async () => {
+  const fetchLeadsData = async () => {
     setIsLoading(true);
 
     try {
@@ -63,7 +63,7 @@ export const KombinasjonerTable = () => {
   }, [leads, searchTerm]);
 
   useEffect(() => {
-    fetchSuppliersData();
+    fetchLeadsData();
   }, []);
 
   const pageSize = 10;
