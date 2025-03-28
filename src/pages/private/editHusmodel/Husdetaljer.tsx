@@ -56,14 +56,21 @@ const formSchema = z.object({
       }),
     z.string(),
   ]),
-  PlantegningerFasader: z.union([
-    z
-      .instanceof(File)
-      .refine((file: any) => file === null || file.size <= 10 * 1024 * 1024, {
-        message: "Filstørrelsen må være mindre enn 10 MB.",
-      }),
-    z.string(),
-  ]),
+  PlantegningerFasader: z
+    .array(
+      z.union([
+        z
+          .instanceof(File)
+          .refine(
+            (file: any) => file === null || file.size <= 10 * 1024 * 1024,
+            {
+              message: "Filstørrelsen må være mindre enn 10 MB.",
+            }
+          ),
+        z.string(),
+      ])
+    )
+    .min(1, "Minst ett bilde kreves."),
   photo3D: z
     .array(
       z.union([
@@ -156,6 +163,42 @@ const formSchema = z.object({
         message: "Please enter a valid YouTube URL.",
       }
     ),
+  signConractConstructionDrawing: z.number().min(1, {
+    message:
+      "Antall dager for å signere kontrakt og byggtegninger må bestå av minst 1 tegn.",
+  }),
+  neighborNotification: z.number().min(1, {
+    message: "Antall dager for nabovarsel må bestå av minst 1 tegn.",
+  }),
+  appSubmitApprove: z.number().min(1, {
+    message:
+      "Antall dager fra søknad sendt til søknad godkjent må bestå av minst 1 tegn.",
+  }),
+  constuctionDayStart: z.number().min(1, {
+    message:
+      "Antall dager før oppstart av byggearbeider må bestå av minst 1 tegn.",
+  }),
+  foundationWork: z.number().min(1, {
+    message: "Antall dager for grunnarbeider må bestå av minst 1 tegn.",
+  }),
+  concreteWork: z.number().min(1, {
+    message: "Antall dager for betongarbeid må bestå av minst 1 tegn.",
+  }),
+  deliveryconstuctionKit: z.number().min(1, {
+    message: "Antall dager for levering byggesett må bestå av minst 1 tegn.",
+  }),
+  denseConstuction: z.number().min(1, {
+    message: "Antall dager for tett bygg må bestå av minst 1 tegn.",
+  }),
+  completeInside: z.number().min(1, {
+    message: "Antall dager for ferdig inne må bestå av minst 1 tegn.",
+  }),
+  preliminaryInspection: z.number().min(1, {
+    message: "Antall dager for forhåndsbefaring må bestå av minst 1 tegn.",
+  }),
+  takeOver: z.number().min(1, {
+    message: "Antall dager for overtakelse må bestå av minst 1 tegn.",
+  }),
 });
 
 export const Husdetaljer: React.FC<{
@@ -276,29 +319,7 @@ export const Husdetaljer: React.FC<{
       await uploadFile(event.dataTransfer.files[0], "photo");
     }
   };
-
-  const handlePlantegningerFasaderFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.files?.[0]) {
-      await uploadFile(event.target.files[0], "PlantegningerFasader");
-    }
-  };
-
-  const handlePlantegningerFasaderClick = () => {
-    filePlantegningerFasaderPhotoInputRef.current?.click();
-  };
-
-  const handlePlantegningerFasaderDrop = async (
-    event: React.DragEvent<HTMLDivElement>
-  ) => {
-    event.preventDefault();
-    if (event.dataTransfer.files?.[0]) {
-      await uploadFile(event.dataTransfer.files[0], "PlantegningerFasader");
-    }
-  };
-
-  const handleFileUpload = async (files: FileList) => {
+  const handleFileUpload = async (files: FileList, fieldName: any) => {
     if (!files.length) return;
 
     let newImages = [...(upload3DPhoto || [])];
@@ -331,8 +352,29 @@ export const Husdetaljer: React.FC<{
 
     if (uploadedUrls.length) {
       newImages = [...newImages, ...uploadedUrls];
-      form.setValue("photo3D", newImages);
-      form.clearErrors("photo3D");
+      form.setValue(fieldName, newImages);
+      form.clearErrors(fieldName);
+    }
+  };
+
+  const handlePlantegningerFasaderFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files) {
+      await handleFileUpload(event.target.files, "PlantegningerFasader");
+    }
+  };
+
+  const handlePlantegningerFasaderClick = () => {
+    filePlantegningerFasaderPhotoInputRef.current?.click();
+  };
+
+  const handlePlantegningerFasaderDrop = async (
+    event: React.DragEvent<HTMLDivElement>
+  ) => {
+    event.preventDefault();
+    if (event.dataTransfer.files) {
+      await handleFileUpload(event.dataTransfer.files, "PlantegningerFasader");
     }
   };
 
@@ -340,7 +382,7 @@ export const Husdetaljer: React.FC<{
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.files) {
-      await handleFileUpload(event.target.files);
+      await handleFileUpload(event.target.files, "photo3D");
     }
   };
 
@@ -351,7 +393,7 @@ export const Husdetaljer: React.FC<{
   const handle3DDrop = async (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     if (event.dataTransfer.files) {
-      await handleFileUpload(event.dataTransfer.files);
+      await handleFileUpload(event.dataTransfer.files, "photo3D");
     }
   };
 
@@ -1390,6 +1432,471 @@ export const Husdetaljer: React.FC<{
               <div className="flex gap-8">
                 <div className="w-[20%]">
                   <h5 className="text-black text-sm font-medium">
+                    Tidskalkulering
+                  </h5>
+                  <p className="text-gray text-sm whitespace-nowrap">
+                    Legg til forventet søknad og byggerperiode.
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-6 w-[80%] shadow-shadow2 px-6 py-5 rounded-lg">
+                  <div>
+                    <h4 className="text-[#111322] font-semibold text-lg mb-4">
+                      Antall dager fra lead til byggestart
+                    </h4>
+                    <div className="flex flex-col gap-6">
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="signConractConstructionDrawing"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm font-medium`}
+                              >
+                                Antall dager for å{" "}
+                                <span className="font-bold">
+                                  signere kontrakt og byggtegninger
+                                </span>
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Angi verdi i dager"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="number"
+                                    onChange={(e: any) =>
+                                      field.onChange(
+                                        Number(e.target.value) || ""
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="neighborNotification"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm font-medium`}
+                              >
+                                Antall dager for{" "}
+                                <span className="font-bold">nabovarsel</span>
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Angi verdi i dager"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="number"
+                                    onChange={(e: any) =>
+                                      field.onChange(
+                                        Number(e.target.value) || ""
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="appSubmitApprove"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm font-medium`}
+                              >
+                                Antall dager fra{" "}
+                                <span className="font-bold">
+                                  søknad sendt til søknad godkjent
+                                </span>
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Angi verdi i dager"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="number"
+                                    onChange={(e: any) =>
+                                      field.onChange(
+                                        Number(e.target.value) || ""
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="constuctionDayStart"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm font-medium`}
+                              >
+                                Antall dager før{" "}
+                                <span className="font-bold">
+                                  oppstart av byggearbeider
+                                </span>
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Angi verdi i dager"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="number"
+                                    onChange={(e: any) =>
+                                      field.onChange(
+                                        Number(e.target.value) || ""
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-[#111322] font-semibold text-lg mb-4">
+                      Antall dager fra byggestart til overtakelse
+                    </h4>
+                    <div className="flex flex-col gap-6">
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="foundationWork"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm font-medium`}
+                              >
+                                Antall dager for{" "}
+                                <span className="font-bold">grunnarbeider</span>
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Angi verdi i dager"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="number"
+                                    onChange={(e: any) =>
+                                      field.onChange(
+                                        Number(e.target.value) || ""
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="concreteWork"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm font-medium`}
+                              >
+                                Antall dager for
+                                <span className="font-bold">betongarbeid</span>
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Angi verdi i dager"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="number"
+                                    onChange={(e: any) =>
+                                      field.onChange(
+                                        Number(e.target.value) || ""
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="deliveryconstuctionKit"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm font-medium`}
+                              >
+                                Antall dager for{" "}
+                                <span className="font-bold">
+                                  levering byggesett
+                                </span>
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Angi verdi i dager"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="number"
+                                    onChange={(e: any) =>
+                                      field.onChange(
+                                        Number(e.target.value) || ""
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="denseConstuction"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm font-medium`}
+                              >
+                                Antall dager for{" "}
+                                <span className="font-bold">tett bygg</span>
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Angi verdi i dager"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="number"
+                                    onChange={(e: any) =>
+                                      field.onChange(
+                                        Number(e.target.value) || ""
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="completeInside"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm font-medium`}
+                              >
+                                Antall dager for{" "}
+                                <span className="font-bold">ferdig inne</span>
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Angi verdi i dager"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="number"
+                                    onChange={(e: any) =>
+                                      field.onChange(
+                                        Number(e.target.value) || ""
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="preliminaryInspection"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm font-medium`}
+                              >
+                                Antall dager for{" "}
+                                <span className="font-bold">
+                                  forhåndsbefaring
+                                </span>
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Angi verdi i dager"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="number"
+                                    onChange={(e: any) =>
+                                      field.onChange(
+                                        Number(e.target.value) || ""
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="takeOver"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm font-medium`}
+                              >
+                                Antall dager for{" "}
+                                <span className="font-bold">overtakelse</span>
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Angi verdi i dager"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="number"
+                                    onChange={(e: any) =>
+                                      field.onChange(
+                                        Number(e.target.value) || ""
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-8">
+                <div className="w-[20%]">
+                  <h5 className="text-black text-sm font-medium">
                     Husbeskrivelse og plantegninger
                   </h5>
                   <p className="text-gray text-sm whitespace-nowrap">
@@ -1462,7 +1969,7 @@ export const Husdetaljer: React.FC<{
                       )}
                     />
                   </div>
-                  <div className="col-span-2 flex gap-6 items-center">
+                  <div className="">
                     <FormField
                       control={form.control}
                       name="PlantegningerFasader"
@@ -1477,14 +1984,6 @@ export const Husdetaljer: React.FC<{
                           </p>
                           <FormControl>
                             <div className="flex items-center gap-5 w-full">
-                              {uploadPlantegningerFasaderPhoto && (
-                                <img
-                                  src={uploadPlantegningerFasaderPhoto}
-                                  alt="logo"
-                                  height="140px"
-                                  width="140px"
-                                />
-                              )}
                               <div className="relative w-full">
                                 <div
                                   className="border border-gray2 rounded-[8px] px-3 laptop:px-6 py-4 flex justify-center items-center flex-col gap-3 cursor-pointer w-full"
@@ -1513,6 +2012,7 @@ export const Husdetaljer: React.FC<{
                                       handlePlantegningerFasaderFileChange
                                     }
                                     name="PlantegningerFasader"
+                                    multiple
                                   />
                                 </div>
                               </div>
@@ -1522,6 +2022,43 @@ export const Husdetaljer: React.FC<{
                         </FormItem>
                       )}
                     />
+                  </div>
+                  <div>
+                    {uploadPlantegningerFasaderPhoto && (
+                      <div className="mt-5 flex items-center gap-5 flex-wrap">
+                        {uploadPlantegningerFasaderPhoto?.map(
+                          (file: any, index: number) => (
+                            <div
+                              className="relative h-[140px] w-[140px]"
+                              key={index}
+                            >
+                              <img
+                                src={file}
+                                alt="logo"
+                                height="100%"
+                                width="100%"
+                                className="object-cover max-h-full h-full"
+                              />
+                              <div
+                                className="absolute top-2 right-2 bg-[#FFFFFFCC] rounded-[12px] p-[6px] cursor-pointer"
+                                onClick={() => {
+                                  const updatedFiles =
+                                    uploadPlantegningerFasaderPhoto.filter(
+                                      (_: any, i: number) => i !== index
+                                    );
+                                  form.setValue(
+                                    "PlantegningerFasader",
+                                    updatedFiles
+                                  );
+                                }}
+                              >
+                                <img src={Ic_delete_purple} alt="delete" />
+                              </div>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    )}
                   </div>
                   <div>
                     <FormField

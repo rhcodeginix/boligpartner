@@ -125,6 +125,17 @@ export const Plot = () => {
         ),
       },
       {
+        accessorKey: "view_count",
+        header: "Antall eiendomsvisninger",
+        cell: ({ row }) => (
+          <div>
+            <p className="text-black text-sm mb-[2px]">
+              {row.original.view_count || 0}
+            </p>
+          </div>
+        ),
+      },
+      {
         id: "action",
         header: "Action",
         cell: ({ row }) => (

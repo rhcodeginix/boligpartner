@@ -13,3 +13,5 @@ export { UserManagement } from "./userManagement";
 export { AddUsers } from "./addUsers";
 export { Husleads } from "./husleads";
 export { Kombinasjoner } from "./kombinasjoner";
+export { ConstructedPlot } from "./constructedPlot";
+export { ConstructedPlotDetail } from "./constructedPlot/constructed-plot-detail";

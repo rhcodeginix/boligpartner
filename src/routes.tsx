@@ -3,6 +3,8 @@ import { Layout } from "./layouts";
 import {
   AddSuppliers,
   AddUsers,
+  ConstructedPlot,
+  ConstructedPlotDetail,
   Dashboard,
   EditHouseModel,
   Husleads,
@@ -52,6 +54,8 @@ export const routes = createBrowserRouter([
       { path: "/edit-til-bruker/*", element: <AddUsers /> },
       { path: "/se-husleads", element: <Husleads /> },
       { path: "/se-kombinasjoner", element: <Kombinasjoner /> },
+      { path: "/constructed-plot", element: <ConstructedPlot /> },
+      { path: "/se-constructed-plot/*", element: <ConstructedPlotDetail /> },
     ],
   },
 ]);

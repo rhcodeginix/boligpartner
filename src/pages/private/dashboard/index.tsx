@@ -17,6 +17,7 @@ export const Dashboard = () => {
     plot: 0,
     householdLeads: 0,
     kombinasjoner: 0,
+    constructedPlot: 0,
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -41,12 +42,14 @@ export const Dashboard = () => {
         plotSnapshot,
         householdLeadsShot,
         kombinasjonerShot,
+        constructedPlotSnapshot,
       ] = await Promise.all([
         getDocs(collection(db, "users")),
         getDocs(q),
         getDocs(collection(db, "empty_plot")),
         getDocs(query(collection(db, "leads"), where("Isopt", "==", true))),
         getDocs(query(collection(db, "leads"), where("Isopt", "==", false))),
+        getDocs(collection(db, "plot_building")),
       ]);
 
       setCounts({
@@ -55,6 +58,7 @@ export const Dashboard = () => {
         plot: plotSnapshot.size,
         householdLeads: householdLeadsShot.size,
         kombinasjoner: kombinasjonerShot.size,
+        constructedPlot: constructedPlotSnapshot.size,
       });
       setLoading(false);
     } catch (error) {
@@ -111,6 +115,12 @@ export const Dashboard = () => {
       title: "Unike besøkende",
       value: "2713",
       percentage: 12,
+    },
+    {
+      title: "Antall bygget tomt teller",
+      value: counts.constructedPlot,
+      percentage: 10,
+      path: "/constructed-plot",
     },
   ];
   return (

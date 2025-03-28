@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Spinner } from "../../../components/Spinner";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import Ic_chevron_up from "../../../assets/images/Ic_chevron_up.svg";
 import Ic_x_close from "../../../assets/images/Ic_x_close.svg";
@@ -23,6 +23,7 @@ export const PlotDetail = () => {
   const [imgLoading, setImgLoading] = useState(false);
   const [data, setData] = useState<any>(null);
   const [askData, setAskData] = useState<any | null>(null);
+  const [viewerData, setViewerData] = useState<any>(null);
 
   useEffect(() => {
     if (data?.additionalData?.answer) {
@@ -46,8 +47,25 @@ export const PlotDetail = () => {
           const plotDocRef = doc(db, "empty_plot", id);
           const docSnap = await getDoc(plotDocRef);
 
+          let viewerData = [];
+
           if (docSnap.exists()) {
             setData(docSnap.data());
+
+            const viewerCollectionRef = collection(
+              db,
+              "empty_plot",
+              id,
+              "viewer"
+            );
+            const viewerSnapshot = await getDocs(viewerCollectionRef);
+
+            viewerData = viewerSnapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+
+            setViewerData(viewerData);
             setLoading(false);
           }
         } catch (error) {
@@ -213,6 +231,12 @@ export const PlotDetail = () => {
                       {lamdaDataFromApi?.searchParameters?.bruksnummer}
                     </span>
                   </div>
+                  <div className="text-gray text-base">
+                    Totalt antall visninger:{" "}
+                    <span className="text-black font-semibold">
+                      {data?.view_count || 0}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -371,6 +395,42 @@ export const PlotDetail = () => {
             )}
           </div>
           <div className="px-6 pt-6 pb-16 flex flex-col gap-6">
+            <div>
+              <h2 className="text-black text-2xl font-semibold mb-3">
+                Seerdetaljer
+              </h2>
+              {viewerData?.length > 0 ? (
+                <table
+                  className="border border-gray1 rounded-lg w-full"
+                  cellPadding="10"
+                >
+                  <thead className="border border-gray1">
+                    <tr>
+                      <th className="border border-gray1">Navn</th>
+                      <th className="border border-gray1">Siste visning</th>
+                      <th className="border border-gray1">Visningstall</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {viewerData.map((viewer: any) => (
+                      <tr key={viewer.id}>
+                        <td className="text-center text-gray border border-gray1">
+                          {viewer.name}
+                        </td>
+                        <td className="text-center text-gray border border-gray1">
+                          {new Date(viewer.last_updated_date).toLocaleString()}
+                        </td>
+                        <td className="text-center text-gray border border-gray1">
+                          {viewer.view_count}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>Fant ingen seere.</p>
+              )}
+            </div>
             <div
               className="p-6 rounded-lg"
               style={{

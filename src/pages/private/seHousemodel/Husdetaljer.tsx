@@ -278,7 +278,7 @@ export const Husdetaljer: React.FC<{ husmodellData: any }> = ({
             Plantegninger og fasader
           </h2>
           <img
-            src={husmodellData?.PlantegningerFasader}
+            src={husmodellData?.PlantegningerFasader[0]}
             alt="map"
             className="w-full"
           />
