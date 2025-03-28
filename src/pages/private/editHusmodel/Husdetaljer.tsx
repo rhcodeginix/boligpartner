@@ -507,7 +507,19 @@ export const Husdetaljer: React.FC<{
     }
   };
   const selectedHouseType = form.watch("TypeObjekt");
-
+  const totalDays = [
+    form.watch("signConractConstructionDrawing"),
+    form.watch("neighborNotification"),
+    form.watch("appSubmitApprove"),
+    form.watch("constuctionDayStart"),
+    form.watch("foundationWork"),
+    form.watch("concreteWork"),
+    form.watch("deliveryconstuctionKit"),
+    form.watch("denseConstuction"),
+    form.watch("completeInside"),
+    form.watch("preliminaryInspection"),
+    form.watch("takeOver"),
+  ].reduce((acc, curr) => acc + (curr || 0), 0);
   return (
     <>
       <Form {...form}>
@@ -1891,6 +1903,18 @@ export const Husdetaljer: React.FC<{
                         />
                       </div>
                     </div>
+                  </div>
+                  <div className="col-span-2 flex flex-col gap-6 items-center justify-center">
+                    <h3 className="text-black text-sm">
+                      TOTALT ANTALL DAGER{" "}
+                      <span className="font-bold">
+                        FRA LEAD TIL OVERTAKELSE
+                      </span>
+                    </h3>
+                    <p className="text-2xl font-semibold text-black">
+                      {totalDays}{" "}
+                      <span className="text-[#34405499]">dager</span>
+                    </p>
                   </div>
                 </div>
               </div>
