@@ -157,14 +157,14 @@ export const HusleadsTable = () => {
             <div>
               <p className="font-medium text-black text-sm mb-[2px]">
                 {
-                  row.original.finalData.plot.CadastreDataFromApi
-                    .presentationAddressApi.response.item.formatted.line1
+                  row.original.finalData?.plot?.CadastreDataFromApi
+                    ?.presentationAddressApi.response.item.formatted.line1
                 }
               </p>
               <p className="text-xs text-gray">
                 {
-                  row.original.finalData.plot.CadastreDataFromApi
-                    .presentationAddressApi.response.item.formatted.line2
+                  row.original.finalData?.plot?.CadastreDataFromApi
+                    ?.presentationAddressApi.response.item.formatted.line2
                 }
               </p>
             </div>

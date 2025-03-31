@@ -50,7 +50,7 @@ export const ConstructedPlot = () => {
   const filteredData = useMemo(() => {
     return plots.filter((model: any) => {
       const addressData =
-        model.CadastreDataFromApi?.presentationAddressApi?.response?.item
+        model?.CadastreDataFromApi?.presentationAddressApi?.response?.item
           ?.formatted;
 
       if (!addressData) return false;
