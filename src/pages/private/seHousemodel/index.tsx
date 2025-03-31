@@ -1,6 +1,5 @@
 import { ChevronRight } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import Img_plot from "../../../assets/images/Img_plot.png";
 import { useEffect, useState } from "react";
 import Tabs from "../../../components/ui/tabnav";
 import Button from "../../../components/common/button";
