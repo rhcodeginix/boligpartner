@@ -18,6 +18,7 @@ export const Dashboard = () => {
     householdLeads: 0,
     kombinasjoner: 0,
     constructedPlot: 0,
+    bankLeads: 0,
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ export const Dashboard = () => {
         householdLeadsShot,
         kombinasjonerShot,
         constructedPlotSnapshot,
+        BankLeadShot,
       ] = await Promise.all([
         getDocs(collection(db, "users")),
         getDocs(q),
@@ -50,6 +52,9 @@ export const Dashboard = () => {
         getDocs(query(collection(db, "leads"), where("Isopt", "==", true))),
         getDocs(query(collection(db, "leads"), where("Isopt", "==", false))),
         getDocs(collection(db, "plot_building")),
+        getDocs(
+          query(collection(db, "leads"), where("IsoptForBank", "==", true))
+        ),
       ]);
 
       setCounts({
@@ -59,6 +64,7 @@ export const Dashboard = () => {
         householdLeads: householdLeadsShot.size,
         kombinasjoner: kombinasjonerShot.size,
         constructedPlot: constructedPlotSnapshot.size,
+        bankLeads: BankLeadShot.size,
       });
       setLoading(false);
     } catch (error) {
@@ -101,8 +107,9 @@ export const Dashboard = () => {
     },
     {
       title: "Antall bankleads",
-      value: "13",
+      value: counts.bankLeads,
       percentage: 10,
+      path: "/se-bankleads",
     },
     {
       title: "Antall kombinasjoner",

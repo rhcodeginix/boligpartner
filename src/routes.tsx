@@ -3,6 +3,7 @@ import { Layout } from "./layouts";
 import {
   AddSuppliers,
   AddUsers,
+  Bankleads,
   ConstructedPlot,
   ConstructedPlotDetail,
   Dashboard,
@@ -56,6 +57,7 @@ export const routes = createBrowserRouter([
       { path: "/se-kombinasjoner", element: <Kombinasjoner /> },
       { path: "/constructed-plot", element: <ConstructedPlot /> },
       { path: "/se-constructed-plot/*", element: <ConstructedPlotDetail /> },
+      { path: "/se-bankleads", element: <Bankleads /> },
     ],
   },
 ]);

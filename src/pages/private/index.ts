@@ -15,3 +15,4 @@ export { Husleads } from "./husleads";
 export { Kombinasjoner } from "./kombinasjoner";
 export { ConstructedPlot } from "./constructedPlot";
 export { ConstructedPlotDetail } from "./constructedPlot/constructed-plot-detail";
+export { Bankleads } from "./bankleads";
