@@ -59,7 +59,7 @@ export const SeHouseModel = () => {
                 <img
                   src={husmodellData?.Husdetaljer?.photo}
                   alt="plot-image"
-                  className="w-[180px] h-[113px]"
+                  className="w-[180px] h-[113px] rounded-lg"
                 />
                 <div className="flex flex-col gap-4">
                   <h4 className="text-darkBlack font-medium text-2xl">
