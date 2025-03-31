@@ -58,7 +58,7 @@ export const SeHouseModel = () => {
             <div className="flex items-start justify-between gap-3">
               <div className="flex gap-4 items-center">
                 <img
-                  src={Img_plot}
+                  src={husmodellData?.Husdetaljer?.photo}
                   alt="plot-image"
                   className="w-[180px] h-[113px]"
                 />

@@ -62,7 +62,7 @@ export const Dashboard = () => {
       });
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching users data:", error);
+      console.error("Error fetching data:", error);
     }
   };
   useEffect(() => {
