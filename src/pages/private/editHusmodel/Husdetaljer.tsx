@@ -14,6 +14,7 @@ import Ic_upload_photo from "../../../assets/images/Ic_upload_photo.svg";
 import Ic_build_housing from "../../../assets/images/Ic_build_housing.svg";
 import Ic_delete_purple from "../../../assets/images/Ic_delete_purple.svg";
 import Ic_garaje from "../../../assets/images/Ic_garaje.svg";
+import Ic_file from "../../../assets/images/Ic_file.svg";
 import { Input } from "../../../components/ui/input";
 import {
   Select,
@@ -42,6 +43,7 @@ import {
   fetchSupplierData,
 } from "../../../lib/utils";
 import { Spinner } from "../../../components/Spinner";
+import FileInfo from "../../../components/FileInfo";
 
 const formSchema = z.object({
   Leverandører: z
@@ -199,6 +201,21 @@ const formSchema = z.object({
   takeOver: z.number().min(1, {
     message: "Antall dager for overtakelse må bestå av minst 1 tegn.",
   }),
+  documents: z
+    .array(
+      z.union([
+        z
+          .instanceof(File)
+          .refine(
+            (file: any) => file === null || file.size <= 10 * 1024 * 1024,
+            {
+              message: "Filstørrelsen må være mindre enn 10 MB.",
+            }
+          ),
+        z.string(),
+      ])
+    )
+    .min(1, "Minst ett bilde kreves."),
 });
 
 export const Husdetaljer: React.FC<{
@@ -268,6 +285,7 @@ export const Husdetaljer: React.FC<{
   const navigate = useNavigate();
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
   const file3DInputRef = React.useRef<HTMLInputElement | null>(null);
+  const fileDocumentsInputRef = React.useRef<HTMLInputElement | null>(null);
   const filePlantegningerFasaderPhotoInputRef =
     React.useRef<HTMLInputElement | null>(null);
   const uploadPhoto: any = form.watch("photo");
@@ -275,6 +293,7 @@ export const Husdetaljer: React.FC<{
     "PlantegningerFasader"
   );
   const upload3DPhoto: any = form.watch("photo3D");
+  const documents: any = form.watch("documents");
 
   const uploadFile = async (file: File, fieldName: any) => {
     if (!file) return;
@@ -322,7 +341,11 @@ export const Husdetaljer: React.FC<{
   const handleFileUpload = async (files: FileList, fieldName: any) => {
     if (!files.length) return;
 
-    let newImages = [...(upload3DPhoto || [])];
+    let newImages = [
+      ...(fieldName === "PlantegningerFasader"
+        ? uploadPlantegningerFasaderPhoto
+        : upload3DPhoto || []),
+    ];
 
     const uploadPromises = Array.from(files).map(async (file) => {
       if (file.size > 2 * 1024 * 1024) {
@@ -378,6 +401,77 @@ export const Husdetaljer: React.FC<{
     }
   };
 
+  const handleDocumentUpload = async (files: FileList, fieldName: any) => {
+    if (!files.length) return;
+
+    let newImages = [...(documents || [])];
+
+    const uploadPromises = Array.from(files).map(async (file) => {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error("Image size must be less than 2MB.", {
+          position: "top-right",
+        });
+        return null;
+      }
+
+      const fileType = "documents";
+      const timestamp = Date.now();
+      const fileName = `${timestamp}_${file.name}`;
+      const storageRef = ref(storage, `${fileType}/${fileName}`);
+
+      try {
+        const snapshot = await uploadBytes(storageRef, file);
+        return await getDownloadURL(snapshot.ref);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        return null;
+      }
+    });
+
+    const uploadedUrls = (await Promise.all(uploadPromises)).filter(
+      Boolean
+    ) as string[];
+
+    if (uploadedUrls.length) {
+      newImages = [...newImages, ...uploadedUrls];
+      form.setValue(fieldName, newImages);
+      form.clearErrors(fieldName);
+    }
+  };
+
+  const handleDocumentsFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files) {
+      await handleDocumentUpload(event.target.files, "documents");
+    }
+  };
+
+  const handleDocumentsClick = () => {
+    fileDocumentsInputRef.current?.click();
+  };
+
+  const handleDocumentsDrop = async (
+    event: React.DragEvent<HTMLDivElement>
+  ) => {
+    event.preventDefault();
+    if (event.dataTransfer.files) {
+      await handleDocumentUpload(event.dataTransfer.files, "documents");
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+  const handle3DDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+  const handlePlantegningerFasaderDragOver = (
+    event: React.DragEvent<HTMLDivElement>
+  ) => {
+    event.preventDefault();
+  };
+
   const handle3DFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -396,16 +490,7 @@ export const Husdetaljer: React.FC<{
       await handleFileUpload(event.dataTransfer.files, "photo3D");
     }
   };
-
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-  };
-  const handle3DDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-  };
-  const handlePlantegningerFasaderDragOver = (
-    event: React.DragEvent<HTMLDivElement>
-  ) => {
+  const handleDocumentsDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
 
@@ -1438,6 +1523,98 @@ export const Husdetaljer: React.FC<{
                         </FormItem>
                       )}
                     />
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-8">
+                <div className="w-[20%]">
+                  <h5 className="text-black text-sm font-medium">Dokumenter</h5>
+                  <p className="text-gray text-sm whitespace-nowrap">
+                    Legg til dokument for huset
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-6 w-[80%] shadow-shadow2 px-6 py-5 rounded-lg">
+                  <div className="col-span-2">
+                    <p className={`text-black mb-[6px] text-sm font-medium`}>
+                      Dokumenter
+                    </p>
+                    <div className="grid grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="photo"
+                        render={() => (
+                          <FormItem className="w-full">
+                            <FormControl>
+                              <div className="flex items-center gap-5 w-full">
+                                <div className="relative w-full">
+                                  <div
+                                    className="border border-gray2 rounded-[8px] px-3 laptop:px-6 py-4 flex justify-center items-center flex-col gap-3 cursor-pointer w-full"
+                                    onDragOver={handleDocumentsDragOver}
+                                    onClick={handleDocumentsClick}
+                                    onDrop={handleDocumentsDrop}
+                                  >
+                                    <img src={Ic_upload_photo} alt="upload" />
+                                    <p className="text-gray text-sm text-center truncate w-full">
+                                      <span className="text-primary font-medium truncate">
+                                        Klikk for opplasting
+                                      </span>{" "}
+                                      eller dra-og-slipp
+                                    </p>
+                                    <p className="text-gray text-sm text-center truncate w-full">
+                                      PDF (maks. 800x400px)
+                                    </p>
+                                    <input
+                                      type="file"
+                                      ref={fileDocumentsInputRef}
+                                      className="hidden"
+                                      accept=".pdf"
+                                      onChange={handleDocumentsFileChange}
+                                      name="documents"
+                                      multiple
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div>
+                        {documents && (
+                          <div className="flex flex-col items-center gap-3">
+                            {documents?.map((file: any, index: number) => (
+                              <div
+                                className="border border-gray2 rounded-lg p-3 bg-[#F9FAFB] flex items-center justify-between relative w-full"
+                                key={index}
+                              >
+                                <div className="flex items-start gap-4 truncate">
+                                  <div className="border-[4px] border-lightPurple rounded-full flex items-center justify-center">
+                                    <div className="bg-darkPurple w-7 h-7 rounded-full flex justify-center items-center">
+                                      <img src={Ic_file} alt="file" />
+                                    </div>
+                                  </div>
+                                  <FileInfo file={file} />
+                                </div>
+                                <div>
+                                  <div
+                                    className="bg-[#FFFFFFCC] rounded-[12px] p-[6px] cursor-pointer w-8 h-8"
+                                    onClick={() => {
+                                      const updatedFiles = documents.filter(
+                                        (_: any, i: number) => i !== index
+                                      );
+                                      form.setValue("documents", updatedFiles);
+                                    }}
+                                  >
+                                    <img src={Ic_delete_purple} alt="delete" />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

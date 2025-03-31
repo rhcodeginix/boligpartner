@@ -5,7 +5,32 @@ import { File } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { formatCurrency } from "../../../lib/utils";
 import Modal from "../../../components/common/modal";
+import FileInfo from "../../../components/FileInfo";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
+const handleDownload = async (filePath: string) => {
+  try {
+    if (!filePath) {
+      console.error("File path is missing!");
+      return;
+    }
+
+    const storage = getStorage();
+    const fileRef = ref(storage, filePath);
+    const url = await getDownloadURL(fileRef);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.download = filePath.split("/").pop() || "download";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch (error) {
+    console.error("Error downloading file:", error);
+  }
+};
 export const Husdetaljer: React.FC<{ husmodellData: any }> = ({
   husmodellData,
 }) => {
@@ -78,55 +103,30 @@ export const Husdetaljer: React.FC<{ husmodellData: any }> = ({
           <div className="px-4 py-5 border-b border-gray2 text-darkBlack text-base font-semibold">
             Dokumenter
           </div>
-          <div className="p-4 flex flex-col gap-4">
-            <div className="border border-gray2 rounded-lg p-3 bg-[#F9FAFB] flex items-center justify-between">
-              <div className="flex items-start gap-3">
-                <div className="border-[4px] border-lightPurple rounded-full flex items-center justify-center">
-                  <div className="bg-darkPurple w-7 h-7 rounded-full flex justify-center items-center">
-                    <File className="text-primary w-4 h-4" />
+          <div className="p-4 flex flex-col gap-4 overflow-y-auto h-[calc(100%-65px)] overFlowAutoY">
+            {husmodellData?.documents.map((doc: any, index: number) => {
+              return (
+                <div
+                  className="border border-gray2 rounded-lg p-3 bg-[#F9FAFB] flex items-center justify-between"
+                  key={index}
+                >
+                  <div className="flex items-start gap-3 truncate">
+                    <div className="border-[4px] border-lightPurple rounded-full flex items-center justify-center">
+                      <div className="bg-darkPurple w-7 h-7 rounded-full flex justify-center items-center">
+                        <File className="text-primary w-4 h-4" />
+                      </div>
+                    </div>
+                    <FileInfo file={doc} />
                   </div>
+                  <img
+                    src={Ic_download_primary}
+                    alt="download"
+                    className="cursor-pointer"
+                    onClick={() => handleDownload(doc)}
+                  />
                 </div>
-                <div>
-                  <h5 className="text-darkBlack text-sm font-medium mb-1">
-                    Document 1.pdf
-                  </h5>
-                  <p className="text-gray text-xs">200 KB</p>
-                </div>
-              </div>
-              <img src={Ic_download_primary} alt="download" />
-            </div>
-            <div className="border border-gray2 rounded-lg p-3 bg-[#F9FAFB] flex items-center justify-between">
-              <div className="flex items-start gap-3">
-                <div className="border-[4px] border-lightPurple rounded-full flex items-center justify-center">
-                  <div className="bg-darkPurple w-7 h-7 rounded-full flex justify-center items-center">
-                    <File className="text-primary w-4 h-4" />
-                  </div>
-                </div>
-                <div>
-                  <h5 className="text-darkBlack text-sm font-medium mb-1">
-                    Document 2.pdf
-                  </h5>
-                  <p className="text-gray text-xs">200 KB</p>
-                </div>
-              </div>
-              <img src={Ic_download_primary} alt="download" />
-            </div>
-            <div className="border border-gray2 rounded-lg p-3 bg-[#F9FAFB] flex items-center justify-between">
-              <div className="flex items-start gap-3">
-                <div className="border-[4px] border-lightPurple rounded-full flex items-center justify-center">
-                  <div className="bg-darkPurple w-7 h-7 rounded-full flex justify-center items-center">
-                    <File className="text-primary w-4 h-4" />
-                  </div>
-                </div>
-                <div>
-                  <h5 className="text-darkBlack text-sm font-medium mb-1">
-                    Document 3.pdf
-                  </h5>
-                  <p className="text-gray text-xs">200 KB</p>
-                </div>
-              </div>
-              <img src={Ic_download_primary} alt="download" />
-            </div>
+              );
+            })}
           </div>
         </div>
       </div>
