@@ -1503,18 +1503,10 @@ export const Husdetaljer: React.FC<{
                               </SelectTrigger>
                               <SelectContent className="bg-white">
                                 <SelectGroup>
-                                  <SelectItem value="Apartment">
-                                    Apartment
+                                  <SelectItem value="Flat">Flat</SelectItem>
+                                  <SelectItem value="Skrånet">
+                                    Skrånet
                                   </SelectItem>
-                                  <SelectItem value="House">House</SelectItem>
-                                  <SelectItem value="Duplex">Duplex</SelectItem>
-                                  <SelectItem value="Townhouse">
-                                    Townhouse
-                                  </SelectItem>
-                                  <SelectItem value="Condominium">
-                                    Condominium
-                                  </SelectItem>
-                                  <SelectItem value="Villa">Villa</SelectItem>
                                 </SelectGroup>
                               </SelectContent>
                             </Select>

@@ -7,6 +7,7 @@ import Button from "../../../components/common/button";
 import { useLocation } from "react-router-dom";
 import { Spinner } from "../../../components/Spinner";
 import { fetchHusmodellData } from "../../../lib/utils";
+import { Pencil } from "lucide-react";
 
 export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   setActiveTab,
@@ -15,6 +16,10 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   const [AddCategory, setAddCategory] = useState(false);
   const [Category, setCategory] = useState<any>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [editCategory, setEditCategory] = useState<null | {
+    index: number;
+    data: any;
+  }>(null);
 
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
@@ -40,6 +45,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   const handleToggleSubCategoryPopup = () => {
     if (AddCategory) {
       setAddCategory(false);
+      setEditCategory(null);
     } else {
       setAddCategory(true);
     }
@@ -93,17 +99,30 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                 </span>
                 {tab.navn}
               </div>
-              <div
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setCategory((prev: any[]) =>
-                    prev.filter((_, i) => i !== index)
-                  );
-                  setActiveTabData(0);
-                }}
-              >
-                <img src={Ic_trash} alt="delete" />
+              <div className="flex items-center gap-1.5">
+                <div
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setEditCategory({ index, data: tab });
+                    setAddCategory(true);
+                  }}
+                >
+                  <Pencil className="w-5 h-5 text-primary" />
+                </div>
+
+                <div
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setCategory((prev: any[]) =>
+                      prev.filter((_, i) => i !== index)
+                    );
+                    setActiveTabData(0);
+                  }}
+                >
+                  <img src={Ic_trash} alt="delete" />
+                </div>
               </div>
             </div>
           ))}
@@ -161,6 +180,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
             <AddNewCat
               onClose={handleToggleSubCategoryPopup}
               setCategory={setCategory}
+              editData={editCategory}
             />
           </div>
         </Modal>

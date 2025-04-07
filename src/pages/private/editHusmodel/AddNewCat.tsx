@@ -10,26 +10,57 @@ import {
 } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
 import { Input } from "../../../components/ui/input";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   Hovedkategorinavn: z.string().min(1, {
     message: "Hovedkategorinavn må bestå av minst 2 tegn.",
   }),
+  isSelected: z.boolean().optional(),
 });
 
-export const AddNewCat: React.FC<{ onClose: any; setCategory: any }> = ({
-  onClose,
-  setCategory,
-}) => {
+export const AddNewCat: React.FC<{
+  onClose: any;
+  setCategory: any;
+  editData: any;
+}> = ({ onClose, setCategory, editData }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  console.log(editData);
+  useEffect(() => {
+    if (editData?.data?.navn) {
+      form.setValue("Hovedkategorinavn", editData?.data?.navn);
+    }
+    if (editData?.data?.isSelected) {
+      form.setValue("isSelected", editData?.data?.isSelected);
+    }
+  }, [form, editData?.data?.navn, editData?.data?.isSelected]);
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     onClose();
-    setCategory((prev: any) => [
-      ...prev,
-      { navn: data.Hovedkategorinavn, Beskrivelse: "", Kategorinavn: [] },
-    ]);
+    if (editData) {
+      setCategory((prev: any) =>
+        prev.map((cat: any, idx: any) =>
+          idx === editData.index
+            ? {
+                ...cat,
+                navn: data.Hovedkategorinavn,
+                isSelected: data.isSelected,
+              }
+            : cat
+        )
+      );
+    } else {
+      setCategory((prev: any) => [
+        ...prev,
+        {
+          navn: data.Hovedkategorinavn,
+          Beskrivelse: "",
+          Kategorinavn: [],
+          isSelected: data.isSelected,
+        },
+      ]);
+    }
   };
   return (
     <>
@@ -64,6 +95,44 @@ export const AddNewCat: React.FC<{ onClose: any; setCategory: any }> = ({
                                           } `}
                         type="text"
                       />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div>
+            <FormField
+              control={form.control}
+              name={`isSelected`}
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="relative flex items-center gap-2 mt-3">
+                      <input
+                        className={`bg-white rounded-[8px] border text-black
+                                  ${
+                                    fieldState?.error
+                                      ? "border-red"
+                                      : "border-gray1"
+                                  } h-4 w-4`}
+                        type="radio"
+                        onChange={(e) => {
+                          const isChecked = e.target.checked;
+                          if (isChecked) {
+                            form.setValue("isSelected", isChecked);
+                          }
+                        }}
+                        checked={field.value}
+                      />
+                      <p
+                        className={`${
+                          fieldState.error ? "text-red" : "text-black"
+                        } text-sm font-medium`}
+                      >
+                        Is mandatory
+                      </p>
                     </div>
                   </FormControl>
                   <FormMessage />

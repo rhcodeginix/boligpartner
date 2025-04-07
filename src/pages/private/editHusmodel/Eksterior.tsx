@@ -53,6 +53,7 @@ const mainCategorySchema = z.object({
   navn: z.string().min(1, "Hovedkategorinavn må bestå av minst 1 tegn."),
   Beskrivelse: z.string().min(1, "Beskrivelse må bestå av minst 1 tegn."),
   Kategorinavn: z.array(categorySchema),
+  isSelected: z.boolean().optional(),
 });
 
 const formSchema = z.object({
