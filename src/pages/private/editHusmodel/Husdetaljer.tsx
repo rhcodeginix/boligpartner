@@ -948,9 +948,7 @@ export const Husdetaljer: React.FC<{
                             <img
                               src={file}
                               alt="logo"
-                              height="100%"
-                              width="100%"
-                              className="object-cover"
+                              className="object-cover w-full h-full rounded-lg"
                             />
                             <div
                               className="absolute top-2 right-2 bg-[#FFFFFFCC] rounded-[12px] p-[6px] cursor-pointer"
@@ -2228,9 +2226,7 @@ export const Husdetaljer: React.FC<{
                               <img
                                 src={file}
                                 alt="logo"
-                                height="100%"
-                                width="100%"
-                                className="object-cover max-h-full h-full"
+                                className="object-cover w-full h-full rounded-lg"
                               />
                               <div
                                 className="absolute top-2 right-2 bg-[#FFFFFFCC] rounded-[12px] p-[6px] cursor-pointer"
