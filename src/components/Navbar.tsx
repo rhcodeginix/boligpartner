@@ -147,6 +147,22 @@ export const Navbar: React.FC = () => {
               Brukeradministrasjon
             </Link>
           )}
+          {(email === "andre.finger@gmail.com" ||
+            LeverandørerPermission?.add === true ||
+            LeverandørerPermission?.delete === true ||
+            LeverandørerPermission?.edit === true) && (
+            <Link
+              to={"/my-leads"}
+              className={`text-base font-medium py-2 px-3 rounded-[6px] ${
+                currentPath === "/my-leads" ||
+                currentPath.startsWith("/my-leads-details/")
+                  ? "bg-lightPurple text-primary"
+                  : "text-black"
+              }`}
+            >
+              Min Lead
+            </Link>
+          )}
         </div>
         <div className="flex items-center gap-4 relative">
           <div className="flex items-center gap-1">

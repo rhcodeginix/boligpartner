@@ -12,6 +12,8 @@ import {
   Husmodeller,
   Kombinasjoner,
   Login,
+  MyLeads,
+  MyLeadsDetail,
   Plot,
   PlotDetail,
   PropertyDetail,
@@ -58,6 +60,8 @@ export const routes = createBrowserRouter([
       { path: "/constructed-plot", element: <ConstructedPlot /> },
       { path: "/se-constructed-plot/*", element: <ConstructedPlotDetail /> },
       { path: "/se-bankleads", element: <Bankleads /> },
+      { path: "/my-leads", element: <MyLeads /> },
+      { path: "/my-leads-details/*", element: <MyLeadsDetail /> },
     ],
   },
 ]);

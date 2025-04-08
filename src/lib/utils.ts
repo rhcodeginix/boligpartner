@@ -137,3 +137,53 @@ export const fetchAdminDataByEmail = async () => {
     }
   }
 };
+
+export const fetchLeadData = async (id: string) => {
+  try {
+    const supplierDocRef = doc(db, "leads_from_supplier", id);
+    const docSnap = await getDoc(supplierDocRef);
+
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      console.error("No document found for ID:", id);
+    }
+  } catch (error) {
+    console.error("Error fetching lead data:", error);
+  }
+};
+export function formatTimestamp(timestamp: any) {
+  const date = new Date(timestamp.seconds * 1000);
+
+  const day = date.getDate();
+  const month = date.toLocaleString("no-NO", { month: "long" });
+  const year = date.getFullYear();
+
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const isPM = hours >= 12;
+  hours = hours % 12 || 12;
+
+  const period = isPM ? "pm" : "am";
+
+  return `${day}. ${month} ${year} | ${hours}:${minutes} ${period}`;
+}
+
+export function convertToFullDateString(timestamp: any) {
+  if (!timestamp?.seconds) return "";
+
+  const date = new Date(timestamp.seconds * 1000);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+export function formatDateOnly(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
