@@ -255,7 +255,7 @@ export const MyLeads = () => {
                 </div>
               </div>
             ) : (
-              "-"
+              <p className="text-center">-</p>
             )}
           </>
         ),
