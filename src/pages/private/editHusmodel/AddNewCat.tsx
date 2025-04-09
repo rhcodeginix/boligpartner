@@ -27,7 +27,6 @@ export const AddNewCat: React.FC<{
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
-  console.log(editData);
   useEffect(() => {
     if (editData?.data?.navn) {
       form.setValue("Hovedkategorinavn", editData?.data?.navn);

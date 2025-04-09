@@ -165,16 +165,33 @@ export const MyLeads = () => {
   const columns = useMemo<ColumnDef<any>[]>(
     () => [
       {
+        accessorKey: "kunde",
+        header: "Kunde",
+        cell: ({ row }) => (
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full border border-gray1 bg-gray3 flex items-center justify-center">
+              {row.original.leadData.name[0]}
+            </div>
+            <div>
+              <Link
+                to={`/my-leads-details/${row.original.id}`}
+                className="font-medium text-purple text-sm mb-[2px]"
+              >
+                {row.original.leadData.name}
+              </Link>
+              <p className="text-xs text-gray">{row.original.leadData.email}</p>
+            </div>
+          </div>
+        ),
+      },
+      {
         accessorKey: "Husmodell",
         header: "Husmodell",
         cell: ({ row }) => (
-          <Link
-            to={`/my-leads-details/${row.original.id}`}
-            className="flex items-center gap-3"
-          >
+          <div className="flex items-center gap-3">
             <img src={Ic_husmodell} alt="logo" className="h-10 w-10" />
-            <p className="text-purple text-sm font-semibold">ST 66</p>
-          </Link>
+            <p className="text-black text-sm font-semibold">ST 66</p>
+          </div>
         ),
       },
       {
@@ -184,23 +201,6 @@ export const MyLeads = () => {
           <p className="text-sm font-semibold text-black">
             {formatTimestamp(row.original.createdAt)}
           </p>
-        ),
-      },
-      {
-        accessorKey: "kunde",
-        header: "Kunde",
-        cell: ({ row }) => (
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full border border-gray1 bg-gray3 flex items-center justify-center">
-              {row.original.leadData.name[0]}
-            </div>
-            <div>
-              <p className="font-medium text-black text-sm mb-[2px]">
-                {row.original.leadData.name}
-              </p>
-              <p className="text-xs text-gray">{row.original.leadData.email}</p>
-            </div>
-          </div>
         ),
       },
       {
@@ -265,6 +265,15 @@ export const MyLeads = () => {
           <div className="text-darkGreen flex items-center justify-between w-max bg-lightGreen rounded-[16px] py-[2px] px-2">
             {row.original.status}
           </div>
+        ),
+      },
+      {
+        accessorKey: "Oppdatert kl",
+        header: "Oppdatert kl",
+        cell: ({ row }) => (
+          <p className="text-sm font-semibold text-black">
+            {formatTimestamp(row.original.updatedAt)}
+          </p>
         ),
       },
     ],

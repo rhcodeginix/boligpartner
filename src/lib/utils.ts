@@ -153,7 +153,7 @@ export const fetchLeadData = async (id: string) => {
   }
 };
 export function formatTimestamp(timestamp: any) {
-  const date = new Date(timestamp.seconds * 1000);
+  const date = new Date(timestamp?.seconds * 1000);
 
   const day = date.getDate();
   const month = date.toLocaleString("no-NO", { month: "long" });
@@ -172,7 +172,7 @@ export function formatTimestamp(timestamp: any) {
 export function convertToFullDateString(timestamp: any) {
   if (!timestamp?.seconds) return "";
 
-  const date = new Date(timestamp.seconds * 1000);
+  const date = new Date(timestamp?.seconds * 1000);
 
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");

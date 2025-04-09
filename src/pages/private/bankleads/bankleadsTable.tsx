@@ -177,8 +177,8 @@ export const BankleadsTable = () => {
         cell: ({ row }) => (
           <p className="text-sm font-semibold text-black">
             {convertTimestamp(
-              row.original.updatedAt.seconds,
-              row.original.updatedAt.nanoseconds
+              row.original.updatedAt?.seconds,
+              row.original.updatedAt?.nanoseconds
             )}
           </p>
         ),

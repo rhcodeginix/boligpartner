@@ -20,17 +20,21 @@ module.exports = {
       gray2: "#D0D5DD",
       gray3: "#F9F9FB",
       red: "red",
+      green: "#12B76A",
+      green2: "#008E6D",
     },
     borderColor: {
       gray1: "#D0D5DD",
       primary: "#6941C6",
       purple: "#7F56D9",
       gray2: "#EAECF0",
+      green2: "#008E6D",
       lightPurple: "#F9F5FF",
     },
     boxShadow: {
       shadow1: "0px 1px 2px 0px #1018280D",
       shadow2: "0px 1px 2px 0px #1018280F, 0px 1px 3px 0px #1018281A",
+      shadow3: "0px 2px 4px -2px #1018280F, 0px 4px 8px -2px #1018281A",
     },
     screens: {
       sm: "576px",

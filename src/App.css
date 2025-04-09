@@ -126,3 +126,30 @@ input[type="number"] {
 .border-transparent {
   border-color: transparent !important;
 }
+/* your global css or tailwind override */
+.custom-datepicker-wrapper .react-datepicker-wrapper {
+  width: 100%;
+}
+
+.custom-datepicker-wrapper .react-datepicker-popper {
+  z-index: 9999999999 !important;
+}
+/* ---- */
+.overFlowXScroll::-webkit-scrollbar {
+  height: 4px;
+  position: absolute !important;
+  border-radius: 24px;
+}
+.overFlowXScroll::-webkit-scrollbar-track {
+  border-radius: 24px;
+  background: #d9d9d9;
+}
+.overFlowXScroll::-webkit-scrollbar-thumb {
+  border-radius: 24px;
+  background: #919191;
+  margin: 10px 2px;
+}
+.overFlowXScroll::-webkit-scrollbar-thumb:hover {
+  border-radius: 24px;
+  background: #919191;
+}
