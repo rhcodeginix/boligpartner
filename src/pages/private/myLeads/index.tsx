@@ -2,12 +2,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useMemo, useState } from "react";
 import Ic_filter from "../../../assets/images/Ic_filter.svg";
-import Ic_husmodell from "../../../assets/images/Ic_husmodell.svg";
 import Ic_map from "../../../assets/images/Ic_map.svg";
 import Ic_download from "../../../assets/images/Ic_download.svg";
 import * as XLSX from "xlsx";
 import DatePickerComponent from "../../../components/ui/datepicker";
-import { Loader2 } from "lucide-react";
+import { Ellipsis, Loader2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -35,6 +34,8 @@ import {
   formatDateOnly,
   formatTimestamp,
 } from "../../../lib/utils";
+import { HouseModelCell } from "./houseRow";
+import { StatusCell } from "./statusRow";
 
 const calculateDateRange = (range: string) => {
   const currentDate = new Date();
@@ -168,7 +169,7 @@ export const MyLeads = () => {
         accessorKey: "kunde",
         header: "Kunde",
         cell: ({ row }) => (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-max">
             <div className="w-8 h-8 rounded-full border border-gray1 bg-gray3 flex items-center justify-center">
               {row.original.leadData.name[0]}
             </div>
@@ -187,18 +188,13 @@ export const MyLeads = () => {
       {
         accessorKey: "Husmodell",
         header: "Husmodell",
-        cell: ({ row }) => (
-          <div className="flex items-center gap-3">
-            <img src={Ic_husmodell} alt="logo" className="h-10 w-10" />
-            <p className="text-black text-sm font-semibold">ST 66</p>
-          </div>
-        ),
+        cell: ({ row }) => <HouseModelCell id={row.original.id} />,
       },
       {
         accessorKey: "Opprettet kl",
         header: "Opprettet kl",
         cell: ({ row }) => (
-          <p className="text-sm font-semibold text-black">
+          <p className="text-sm font-semibold text-black w-max">
             {formatTimestamp(row.original.createdAt)}
           </p>
         ),
@@ -207,7 +203,7 @@ export const MyLeads = () => {
         accessorKey: "Telefonnummer",
         header: "Telefonnummer",
         cell: ({ row }) => (
-          <p className="text-sm font-semibold text-black">
+          <p className="text-sm font-semibold text-black w-max">
             {row.original.leadData.telefon}
           </p>
         ),
@@ -227,7 +223,7 @@ export const MyLeads = () => {
           }, [row.original.supplierId]);
 
           return (
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 w-max">
               <div className="w-8 h-8 rounded-full border border-gray1 bg-gray3 flex items-center justify-center">
                 {leverandorData?.Kontaktperson[0]}
               </div>
@@ -247,33 +243,53 @@ export const MyLeads = () => {
         accessorKey: "adresse",
         header: "Adresse",
         cell: ({ row }) => (
-          <div className="flex items-center gap-3">
-            <img src={Ic_map} alt="map" className="w-10 h-10" />
-            <div>
-              <p className="text-black text-sm mb-[2px] font-medium">
-                Sokkabekveien 77
-              </p>
-              <span className="text-gray text-xs">3478 Nærsnes</span>
-            </div>
-          </div>
+          <>
+            {row.original.address ? (
+              <div className="flex items-center gap-3 w-max">
+                <img src={Ic_map} alt="map" className="w-10 h-10" />
+                <div>
+                  <p className="text-black text-sm mb-[2px] font-medium">
+                    Sokkabekveien 77
+                  </p>
+                  <span className="text-gray text-xs">3478 Nærsnes</span>
+                </div>
+              </div>
+            ) : (
+              "-"
+            )}
+          </>
         ),
       },
       {
         accessorKey: "Status",
         header: "Status",
+        cell: ({ row }) => <StatusCell id={row.original.id} />,
+      },
+      {
+        accessorKey: "Oppdatert kl",
+        header: "Oppdatert kl",
         cell: ({ row }) => (
-          <div className="text-darkGreen flex items-center justify-between w-max bg-lightGreen rounded-[16px] py-[2px] px-2">
-            {row.original.status}
-          </div>
+          <p className="text-sm font-semibold text-black w-max">
+            {formatTimestamp(row.original.updatedAt)}
+          </p>
         ),
       },
       {
         accessorKey: "Oppdatert kl",
         header: "Oppdatert kl",
         cell: ({ row }) => (
-          <p className="text-sm font-semibold text-black">
-            {formatTimestamp(row.original.updatedAt)}
+          <p className="text-sm font-semibold text-black w-[500px]">
+            {row.original.leadData?.notaterFørsteSamtale}
           </p>
+        ),
+      },
+      {
+        id: "handling",
+        header: "Handling",
+        cell: () => (
+          <button className="h-8 w-8 flex items-center justify-center">
+            <Ellipsis className="h-4 w-4 text-gray-500" />
+          </button>
         ),
       },
     ],

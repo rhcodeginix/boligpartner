@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import Ic_close from "../../../assets/images/Ic_close.svg";
 import { Link, useLocation } from "react-router-dom";
 import {
   convertTimestamp,
@@ -8,7 +9,6 @@ import {
   fetchSupplierData,
   formatTimestamp,
 } from "../../../lib/utils";
-// import Ic_map from "../../../assets/images/Ic_map.svg";
 import { Spinner } from "../../../components/Spinner";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -22,7 +22,6 @@ import {
 } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
 import {
-  addDoc,
   collection,
   doc,
   getDoc,
@@ -33,11 +32,11 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
-import { TextArea } from "../../../components/ui/textarea";
 import toast from "react-hot-toast";
-import DateTimePickerComponent from "../../../components/ui/datetimepicker";
 import { LogRow } from "./logRow";
 import MultiSelect from "../../../components/ui/multiSelect";
+import Modal from "../../../components/common/modal";
+import { AddFollowupForm } from "./addFollowUp";
 
 const formSchema = z.object({
   Husmodell: z
@@ -46,58 +45,55 @@ const formSchema = z.object({
   City: z
     .array(z.string().min(1, { message: "Ønsket bygget i må spesifiseres." }))
     .min(1, { message: "Minst én by må velges." }),
-  LeadsNotat: z.string().min(1, {
-    message: "Lead Notat må bestå av minst 2 tegn.",
-  }),
+  // LeadsNotat: z.string().min(1, {
+  //   message: "Lead Notat må bestå av minst 2 tegn.",
+  // }),
   Tildelt: z.string().min(1, { message: "Tildelt i must må spesifiseres." }),
 });
 
-const HistorikkFormSchema = z
-  .object({
-    activeStep: z.number().min(0),
-    Hurtigvalg: z.string().optional(),
-    date: z.coerce.date().optional(),
-    notat: z.string().optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.Hurtigvalg) {
-      if (
-        data.Hurtigvalg !== "Start prosess" &&
-        data.Hurtigvalg !== "Email Sent" &&
-        data.Hurtigvalg !== "Signert"
-      ) {
-        if (!data.date) {
-          ctx.addIssue({
-            path: ["date"],
-            code: z.ZodIssueCode.custom,
-            message: "Dato er påkrevd",
-          });
-        }
-      }
-      if (data.Hurtigvalg !== "Email Sent" && data.Hurtigvalg !== "Signert") {
-        if (!data.notat || data.notat.trim().length < 2) {
-          ctx.addIssue({
-            path: ["notat"],
-            code: z.ZodIssueCode.too_small,
-            type: "string",
-            minimum: 2,
-            inclusive: true,
-            message: "Notat må bestå av minst 2 tegn.",
-          });
-        }
-      }
-    }
-  });
-
+// const HistorikkFormSchema = z
+//   .object({
+//     activeStep: z.number().min(0),
+//     Hurtigvalg: z.string().optional(),
+//     date: z.coerce.date().optional(),
+//     notat: z.string().optional(),
+//   })
+//   .superRefine((data, ctx) => {
+//     if (data.Hurtigvalg) {
+//       if (
+//         data.Hurtigvalg !== "Start prosess" &&
+//         data.Hurtigvalg !== "Email Sent" &&
+//         data.Hurtigvalg !== "Signert"
+//       ) {
+//         if (!data.date) {
+//           ctx.addIssue({
+//             path: ["date"],
+//             code: z.ZodIssueCode.custom,
+//             message: "Dato er påkrevd",
+//           });
+//         }
+//       }
+//       if (data.Hurtigvalg !== "Email Sent" && data.Hurtigvalg !== "Signert") {
+//         if (!data.notat || data.notat.trim().length < 2) {
+//           ctx.addIssue({
+//             path: ["notat"],
+//             code: z.ZodIssueCode.too_small,
+//             type: "string",
+//             minimum: 2,
+//             inclusive: true,
+//             message: "Notat må bestå av minst 2 tegn.",
+//           });
+//         }
+//       }
+//     }
+//   });
 export const MyLeadsDetail = () => {
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const [loading, setLoading] = useState(true);
   const [leadData, setLeadData] = useState<any>(null);
-  const HistorikkForm = useForm<z.infer<typeof HistorikkFormSchema>>({
-    resolver: zodResolver(HistorikkFormSchema),
-  });
+
   useEffect(() => {
     if (!id) {
       setLoading(false);
@@ -160,8 +156,22 @@ export const MyLeadsDetail = () => {
       setLoading(false);
     }
   };
+  const [supplierData, setSupplierData] = useState<any>();
+  const getData = async (id: string) => {
+    const data: any = await fetchSupplierData(id);
+    if (data) {
+      setSupplierData(data);
+    }
+  };
+  const [SelectHistoryValue, setSelectHistoryValue] = useState("");
+  useEffect(() => {
+    if (leadData?.supplierId) {
+      getData(leadData?.supplierId);
+    }
+  }, [leadData?.supplierId]);
 
   const [suppliers, setSuppliers] = useState([]);
+
   const fetchSuppliersData = async () => {
     setLoading(true);
     try {
@@ -231,20 +241,15 @@ export const MyLeadsDetail = () => {
         const data = subDocSnap.data();
 
         Object.entries(data).forEach(([key, value]) => {
-          if (key === "date" && value?.seconds) {
-            const jsDate = new Date(value.seconds * 1000);
-            HistorikkForm.setValue("date", jsDate);
-          } else if (key === "activeStep") {
+          if (key === "activeStep") {
             setActiveStep(value);
-          } else if (value !== undefined && value !== null && key !== "date") {
-            HistorikkForm.setValue(key as any, value);
           }
         });
       }
     };
 
     fetchPreferredHouse();
-  }, [HistorikkForm, id]);
+  }, [id]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
@@ -318,25 +323,20 @@ export const MyLeadsDetail = () => {
     return "text-black";
   };
 
-  useEffect(() => {
-    if (activeStep !== undefined && activeStep !== null) {
-      HistorikkForm.setValue("activeStep", activeStep);
-    }
-  }, [activeStep, HistorikkForm]);
   const options = [
     { label: "Førstegangsmøte", color: "#996CFF", textColor: "text-primary" },
-    { label: "Email Sent", color: "#06BDEF", textColor: "text-[#008BB1]" },
-    { label: "Ikke svar", color: "#EFA906", textColor: "text-[#A27200]" },
-    { label: "Ring tilbake", color: "#277252", textColor: "text-[#277252]" },
-    {
-      label: "Ikke interessert",
-      color: "#F04438",
-      textColor: "text-[#B42318]",
-    },
+    // { label: "Email Sent", color: "#06BDEF", textColor: "text-[#008BB1]" },
+    // { label: "Ikke svar", color: "#EFA906", textColor: "text-[#A27200]" },
+    // { label: "Ring tilbake", color: "#277252", textColor: "text-[#277252]" },
+    // {
+    //   label: "Ikke interessert",
+    //   color: "#F04438",
+    //   textColor: "text-[#B42318]",
+    // },
     { label: "Start prosess", color: "#E46A00", textColor: "text-[#994700]" },
     { label: "Signert", color: "#0022E4", textColor: "text-[#001795]" },
   ];
-  const HurtigvalgValue = HistorikkForm.watch("Hurtigvalg");
+  // const HurtigvalgValue = HistorikkForm.watch("Hurtigvalg");
 
   const [logs, setLogs] = useState([]);
   const fetchLogs = async () => {
@@ -367,82 +367,6 @@ export const MyLeadsDetail = () => {
     fetchLogs();
   }, [id]);
 
-  const onHistorikkSubmit = async (
-    data: z.infer<typeof HistorikkFormSchema>
-  ) => {
-    const finalData = {
-      ...data,
-      date: data.date ?? null,
-      notat: data.notat ?? null,
-    };
-    try {
-      const formatter = new Intl.DateTimeFormat("nb-NO", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
-
-      const subDocRef = doc(
-        db,
-        "leads_from_supplier",
-        String(id),
-        "history",
-        String(id)
-      );
-      const subDocSnap = await getDoc(subDocRef);
-
-      if (subDocSnap.exists()) {
-        await updateDoc(subDocRef, {
-          ...finalData,
-          updatedAt: formatter.format(new Date()),
-        });
-        toast.success("History info updated.", {
-          position: "top-right",
-        });
-      } else {
-        await setDoc(subDocRef, {
-          ...finalData,
-          createdAt: formatter.format(new Date()),
-        });
-        toast.success("History info created.", {
-          position: "top-right",
-        });
-      }
-      const now = new Date();
-
-      const datePart = new Intl.DateTimeFormat("nb-NO", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      }).format(now);
-
-      const timePart = new Intl.DateTimeFormat("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      }).format(now);
-
-      const formattedDateTime = `${datePart} | ${timePart}`;
-      const logRef = collection(
-        db,
-        "leads_from_supplier",
-        String(id),
-        "followups"
-      );
-
-      await addDoc(logRef, {
-        ...finalData,
-        createdAt: formattedDateTime,
-      });
-      await fetchLogs();
-    } catch (error) {
-      console.error("Firestore operation failed:", error);
-      toast.error("Something went wrong. Please try again.", {
-        position: "top-right",
-      });
-    }
-  };
-
   const houseModelsOption: any =
     houseModels && houseModels.length > 0
       ? houseModels.map((model: any) => ({
@@ -457,19 +381,15 @@ export const MyLeadsDetail = () => {
           label: model?.name,
         }))
       : [];
-  const [supplierData, setSupplierData] = useState<any>();
-  const getData = async (id: string) => {
-    const data: any = await fetchSupplierData(id);
-    if (data) {
-      setSupplierData(data);
+
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const handlePopup = () => {
+    if (isPopupOpen) {
+      setIsPopupOpen(false);
+    } else {
+      setIsPopupOpen(true);
     }
   };
-  useEffect(() => {
-    if (leadData?.supplierId) {
-      getData(leadData?.supplierId);
-    }
-  }, [leadData?.supplierId]);
-
   return (
     <>
       {loading && <Spinner />}
@@ -523,23 +443,36 @@ export const MyLeadsDetail = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-4 items-end">
-            <div className="flex items-center gap-5">
-              <p className="text-sm text-gray">
-                {formatTimestamp(leadData?.createdAt)}
-              </p>
-              <div className="bg-lightGreen rounded-[16px] py-1.5 px-4 flex items-center gap-1.5 h-[30px]">
-                <div className="w-1.5 h-1.5 rounded-full bg-green"></div>
-                <span className="text-darkGreen text-sm font-medium">Ny</span>
+          <div className="flex gap-4">
+            <div className="flex flex-col gap-4 items-end">
+              <div className="flex items-center gap-5">
+                <p className="text-sm text-gray">
+                  {formatTimestamp(leadData?.createdAt)}
+                </p>
+                <div className="bg-lightGreen rounded-[16px] py-1.5 px-4 flex items-center gap-1.5 h-[30px]">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green"></div>
+                  <span className="text-darkGreen text-sm font-medium">Ny</span>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="text-gray text-sm">Kilde:</span>
-              <div className="bg-lightPurple py-1 px-3 h-[28px] rounded-[40px] flex items-center justify-between clear-start text-black text-sm font-medium">
-                {supplierData?.company_name}
+              <div className="flex items-center gap-1">
+                <span className="text-gray text-sm">Kilde:</span>
+                <div className="bg-lightPurple py-1 px-3 h-[28px] rounded-[40px] flex items-center justify-between clear-start text-black text-sm font-medium">
+                  {supplierData?.company_name}
+                </div>
               </div>
             </div>
           </div>
+        </div>
+        <div className="flex justify-end">
+          <Button
+            text="Legg til oppfølging"
+            className="border border-green2 bg-green2 text-white text-base rounded-[8px] h-[48px] font-medium relative px-[30px] py-[10px] flex items-center gap-2"
+            type="button"
+            onClick={() => {
+              handlePopup();
+              setSelectHistoryValue("");
+            }}
+          />
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
@@ -649,7 +582,7 @@ export const MyLeadsDetail = () => {
                     </div>
                   )}
                 </div>
-                <div className="col-span-2">
+                {/* <div className="col-span-2">
                   <FormField
                     control={form.control}
                     name="LeadsNotat"
@@ -680,7 +613,7 @@ export const MyLeadsDetail = () => {
                       </FormItem>
                     )}
                   />
-                </div>
+                </div> */}
               </div>
               <div className="flex justify-end w-full gap-5 items-center mt-8">
                 <div onClick={() => form.reset()} className="w-1/2 sm:w-auto">
@@ -698,97 +631,94 @@ export const MyLeadsDetail = () => {
             </div>
           </form>
         </Form>
-        <Form {...form}>
+        <div className="shadow-shadow3 border border-gray2 rounded-lg p-6">
+          <h4 className="text-darkBlack text-lg font-semibold mb-5">
+            Historikk
+          </h4>
+          <div className="w-full mb-5">
+            <div className="relative flex justify-between items-center">
+              <div className="absolute top-5 left-[72px] right-[72px] h-0.5 bg-gray2 z-0"></div>
+
+              <div
+                className="absolute top-5 left-[72px] h-0.5 bg-purple z-10 transition-all duration-300 ease-in-out"
+                style={{
+                  width: `calc((100% - 144px) * ${
+                    activeStep / (steps.length - 1)
+                  })`,
+                }}
+              ></div>
+              {steps.map((step, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col z-20 items-center w-[145px]"
+                  // onClick={() => setActiveStep(index)}
+                >
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center border-4 shadow-md ${getStepStyle(
+                      index
+                    )}`}
+                  >
+                    <div
+                      className={`w-3 h-3 rounded-full ${getDotStyle(index)}`}
+                    ></div>
+                  </div>
+                  <div
+                    className={`mt-3 font-medium text-base text-center ${getTextStyle(
+                      index
+                    )}`}
+                  >
+                    {step.title}
+                  </div>
+                  <div
+                    className={`text-base text-center ${getTextStyle(index)}`}
+                  >
+                    {step.date}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center gap-5">
+            Hurtigvalg:
+            <div className="flex items-center gap-2 flex-wrap">
+              {options.map(({ label, color, textColor }) => (
+                <div
+                  key={label}
+                  onClick={() => {
+                    if (label === "Førstegangsmøte") {
+                      setActiveStep(1);
+                    }
+                    if (label === "Start prosess") {
+                      setActiveStep(2);
+                    }
+                    if (label === "Signert") {
+                      setActiveStep(3);
+                    }
+                    setSelectHistoryValue(label);
+                    handlePopup();
+                  }}
+                  className={`cursor-pointer border-2 rounded-lg py-2 px-4 shadow-shadow1 flex items-center gap-2 transition-all duration-200 border-primary
+                          ${
+                            SelectHistoryValue === label ? "bg-[#EBDEFF]" : ""
+                          }`}
+                >
+                  <div
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ backgroundColor: color }}
+                  ></div>
+                  <span className={`text-xs font-medium ${textColor}`}>
+                    {label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        {/* <Form {...form}>
           <form
             onSubmit={HistorikkForm.handleSubmit(onHistorikkSubmit)}
             className="relative"
           >
-            <div className="shadow-shadow3 border border-gray2 rounded-lg p-6">
-              <h4 className="text-darkBlack text-lg font-semibold mb-5">
-                Historikk
-              </h4>
-              <div className="w-full mb-5">
-                <div className="relative flex justify-between items-center">
-                  <div className="absolute top-5 left-[72px] right-[72px] h-0.5 bg-gray2 z-0"></div>
-
-                  <div
-                    className="absolute top-5 left-[72px] h-0.5 bg-purple z-10 transition-all duration-300 ease-in-out"
-                    style={{
-                      width: `calc((100% - 144px) * ${
-                        activeStep / (steps.length - 1)
-                      })`,
-                    }}
-                  ></div>
-                  {steps.map((step, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col z-20 items-center w-[145px]"
-                      // onClick={() => setActiveStep(index)}
-                    >
-                      <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center border-4 shadow-md ${getStepStyle(
-                          index
-                        )}`}
-                      >
-                        <div
-                          className={`w-3 h-3 rounded-full ${getDotStyle(
-                            index
-                          )}`}
-                        ></div>
-                      </div>
-                      <div
-                        className={`mt-3 font-medium text-base text-center ${getTextStyle(
-                          index
-                        )}`}
-                      >
-                        {step.title}
-                      </div>
-                      <div
-                        className={`text-base text-center ${getTextStyle(
-                          index
-                        )}`}
-                      >
-                        {step.date}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="flex items-center gap-5">
-                Hurtigvalg:
-                <div className="flex items-center gap-2 flex-wrap">
-                  {options.map(({ label, color, textColor }) => (
-                    <div
-                      key={label}
-                      onClick={() => {
-                        HistorikkForm.setValue("Hurtigvalg", label);
-                        HistorikkForm.resetField("date");
-                        HistorikkForm.resetField("notat");
-                        if (label === "Førstegangsmøte") {
-                          setActiveStep(1);
-                        }
-                        if (label === "Start prosess") {
-                          setActiveStep(2);
-                        }
-                        if (label === "Signert") {
-                          setActiveStep(3);
-                        }
-                      }}
-                      className={`cursor-pointer border-2 rounded-lg py-2 px-4 shadow-shadow1 flex items-center gap-2 transition-all duration-200 border-primary
-                          ${HurtigvalgValue === label ? "bg-[#EBDEFF]" : ""}`}
-                    >
-                      <div
-                        className="w-1.5 h-1.5 rounded-full"
-                        style={{ backgroundColor: color }}
-                      ></div>
-                      <span className={`text-xs font-medium ${textColor}`}>
-                        {label}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
             {HurtigvalgValue &&
               HurtigvalgValue !== "" &&
               HurtigvalgValue !== "Email Sent" &&
@@ -883,7 +813,7 @@ export const MyLeadsDetail = () => {
               />
             </div>
           </form>
-        </Form>
+        </Form> */}
         <div>
           <h3 className="text-darkBlack text-lg font-semibold mb-5">Logg</h3>
           <table className="min-w-full rounded-md overflow-hidden">
@@ -932,6 +862,25 @@ export const MyLeadsDetail = () => {
           </table>
         </div>
       </div>
+      {isPopupOpen && (
+        <Modal isOpen={true} onClose={handlePopup}>
+          <div className="bg-white p-6 rounded-lg w-full sm:w-[500px] relative">
+            <button
+              className="absolute top-3 right-3"
+              onClick={() => setIsPopupOpen(false)}
+            >
+              <img src={Ic_close} alt="close" />
+            </button>
+            <AddFollowupForm
+              fetchLogs={fetchLogs}
+              fetchHusmodellData={fetchHusmodellData}
+              handlePopup={handlePopup}
+              SelectHistoryValue={SelectHistoryValue}
+              setSelectHistoryValue={setSelectHistoryValue}
+            />
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

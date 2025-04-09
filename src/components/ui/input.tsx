@@ -17,6 +17,7 @@ const Input = React.forwardRef<any, any>(
         )}
         ref={ref}
         {...props}
+        disabled={props.disable}
       />
     );
   }
