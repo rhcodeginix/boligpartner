@@ -50,7 +50,7 @@ export const LogRow = ({ log, leadId, fetchLogs }: LogItemProps) => {
         </>
       ) : (
         <>
-          {log?.notat || "-"}
+          {log?.notat || log?.notes}
           <button
             onClick={() => setIsEditing(true)}
             className="ml-2 rounded-lg"

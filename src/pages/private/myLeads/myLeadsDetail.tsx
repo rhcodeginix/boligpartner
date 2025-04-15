@@ -836,10 +836,10 @@ export const MyLeadsDetail = () => {
                   return (
                     <tr className="border-b border-gray2" key={index}>
                       <td className="px-4 py-6 text-sm text-black font-medium">
-                        {log?.createdAt || "-"}
+                        {log?.createdAt || formatTimestamp(log?.date)}
                       </td>
                       <td className="px-4 py-6 text-sm text-black font-medium">
-                        {log?.Hurtigvalg || "-"}
+                        {log?.Hurtigvalg || log?.type}
                       </td>
                       <LogRow
                         log={log}
