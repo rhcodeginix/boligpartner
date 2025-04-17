@@ -216,6 +216,14 @@ const formSchema = z.object({
       ])
     )
     .min(1, "Minst ett bilde kreves."),
+  VelgBoligtype: z
+    .string({
+      required_error: "Velg en boligtype",
+    })
+    .min(1, "Velg en boligtype"),
+  VelgEgenskaperBoligtype: z
+    .array(z.string())
+    .min(1, "Velg minst én Velg egenskaper til boligtype"),
 });
 
 export const Husdetaljer: React.FC<{
@@ -605,6 +613,22 @@ export const Husdetaljer: React.FC<{
     form.watch("preliminaryInspection"),
     form.watch("takeOver"),
   ].reduce((acc, curr) => acc + (curr || 0), 0);
+
+  const VelgboligType = [
+    "Funkis",
+    "Moderne",
+    "Herskapelig",
+    "Tradisjonelt",
+    "Tomannsbolig",
+  ];
+
+  const boligOptions = [
+    "Tomannsbolig",
+    "Med utleiedal",
+    "Ett plan",
+    "Med garasje",
+  ];
+
   return (
     <>
       <Form {...form}>
@@ -721,6 +745,108 @@ export const Husdetaljer: React.FC<{
                         {form.formState.errors.TypeObjekt.message}
                       </p>
                     )}
+                  </div>
+                  <div className="col-span-2">
+                    <FormField
+                      control={form.control}
+                      name={`VelgBoligtype`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p className="text-black mb-3 text-base font-semibold">
+                            Velg boligtype
+                          </p>
+                          <FormControl>
+                            <div className="flex items-center gap-5">
+                              {VelgboligType.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2"
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-primary`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        "VelgBoligtype",
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p
+                                    className={`text-gray text-sm font-medium`}
+                                  >
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <FormField
+                      control={form.control}
+                      name={`VelgEgenskaperBoligtype`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p className="text-black mb-3 text-base font-semibold">
+                            Velg egenskaper til boligtype
+                          </p>
+                          <FormControl>
+                            <div className="flex items-center gap-5">
+                              {boligOptions.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2"
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-primary`}
+                                    type="checkbox"
+                                    value={option}
+                                    checked={field.value?.includes(option)}
+                                    onChange={(e) => {
+                                      const checked = e.target.checked;
+                                      const currentValues = field.value || [];
+
+                                      if (checked) {
+                                        form.setValue(
+                                          "VelgEgenskaperBoligtype",
+                                          [...currentValues, option]
+                                        );
+                                      } else {
+                                        form.setValue(
+                                          "VelgEgenskaperBoligtype",
+                                          currentValues.filter(
+                                            (val) => val !== option
+                                          )
+                                        );
+                                      }
+                                    }}
+                                  />
+                                  <p
+                                    className={`text-gray text-sm font-medium`}
+                                  >
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                   <div>
                     <FormField

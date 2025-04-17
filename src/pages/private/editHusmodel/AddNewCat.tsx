@@ -110,7 +110,7 @@ export const AddNewCat: React.FC<{
                   <FormControl>
                     <div className="relative flex items-center gap-2 mt-3">
                       <input
-                        className={`bg-white rounded-[8px] border text-black
+                        className={`bg-white rounded-[8px] accent-primary border text-black
                                   ${
                                     fieldState?.error
                                       ? "border-red"
