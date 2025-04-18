@@ -221,9 +221,7 @@ const formSchema = z.object({
       required_error: "Velg en boligtype",
     })
     .min(1, "Velg en boligtype"),
-  VelgEgenskaperBoligtype: z
-    .array(z.string())
-    .min(1, "Velg minst én Velg egenskaper til boligtype"),
+  VelgEgenskaperBoligtype: z.array(z.string()).optional(),
 });
 
 export const Husdetaljer: React.FC<{
