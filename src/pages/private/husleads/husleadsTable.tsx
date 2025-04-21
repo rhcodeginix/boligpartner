@@ -23,7 +23,8 @@ import Ic_download from "../../../assets/images/Ic_download.svg";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { convertTimestamp, fetchSupplierData } from "../../../lib/utils";
-import GoogleMapComponent from "../../../components/ui/map";
+// import GoogleMapComponent from "../../../components/ui/map";
+import NorkartMap from "../../../components/map";
 
 export const HusleadsTable = () => {
   const [page, setPage] = useState(1);
@@ -147,12 +148,21 @@ export const HusleadsTable = () => {
         cell: ({ row }) => (
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-full overflow-hidden">
-              <GoogleMapComponent
+              {/* <GoogleMapComponent
                 coordinates={
                   row.original.finalData.plot.lamdaDataFromApi?.coordinates
                     ?.convertedCoordinates
                 }
-              />
+              /> */}
+              {row.original.finalData.plot.lamdaDataFromApi?.coordinates
+                ?.convertedCoordinates && (
+                <NorkartMap
+                  coordinates={
+                    row.original.finalData.plot.lamdaDataFromApi?.coordinates
+                      ?.convertedCoordinates
+                  }
+                />
+              )}
             </div>
             <div>
               <p className="font-medium text-black text-sm mb-[2px]">

@@ -12,9 +12,10 @@ import Ic_chevron_right from "../../../assets/images/Ic_chevron_right.svg";
 import Ic_check_green_icon from "../../../assets/images/Ic_check_green_icon.svg";
 import Img_line_bg from "../../../assets/images/Img_line_bg.png";
 import { formatDateToDDMMYYYY } from "../../../lib/utils";
-import GoogleMapComponent from "../../../components/ui/map";
+// import GoogleMapComponent from "../../../components/ui/map";
 import Eierinformasjon from "./Eierinformasjon";
 import GoogleMapNearByComponent from "../../../components/ui/map/nearbyBuiildingMap";
+import NorkartMap from "../../../components/map";
 
 export const ConstructedPlotDetail = () => {
   const location = useLocation();
@@ -933,11 +934,18 @@ export const ConstructedPlotDetail = () => {
                     </div>
                   </div>
                   <div className="rounded-[12px] overflow-hidden w-[407px]">
-                    <GoogleMapComponent
+                    {/* <GoogleMapComponent
                       coordinates={
                         lamdaDataFromApi?.coordinates?.convertedCoordinates
                       }
-                    />
+                    /> */}
+                    {lamdaDataFromApi?.coordinates?.convertedCoordinates && (
+                      <NorkartMap
+                        coordinates={
+                          lamdaDataFromApi?.coordinates?.convertedCoordinates
+                        }
+                      />
+                    )}
                   </div>
                 </div>
               </div>
