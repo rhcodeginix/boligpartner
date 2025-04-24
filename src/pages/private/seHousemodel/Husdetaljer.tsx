@@ -178,7 +178,7 @@ export const Husdetaljer: React.FC<{ husmodellData: any }> = ({
                 <tbody>
                   <tr>
                     <td className="text-left pb-[16px] text-gray text-sm whitespace-nowrap">
-                      BRA total
+                      BRA total (bruksareal)
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
                       {husmodellData?.BRATotal} m<sup>2</sup>
@@ -194,7 +194,7 @@ export const Husdetaljer: React.FC<{ husmodellData: any }> = ({
                   </tr>
                   <tr>
                     <td className="text-left pb-[16px] text-gray text-sm whitespace-nowrap">
-                      P-rom:
+                      BRA-e (eksternt bruksareal):
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
                       {husmodellData?.PRom} m<sup>2</sup>

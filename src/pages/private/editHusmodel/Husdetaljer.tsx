@@ -101,11 +101,11 @@ const formSchema = z.object({
     message: "Pris må bestå av minst 1 tegn.",
   }),
   BRATotal: z.string().min(1, {
-    message: "BRA total må bestå av minst 2 tegn.",
+    message: "BRA total (bruksareal) må bestå av minst 2 tegn.",
   }),
   Bruksareal: z.string().min(1, { message: "Bruksareal må spesifiseres." }),
   PRom: z.string().min(1, {
-    message: "P-rom må bestå av minst 2 tegn.",
+    message: "BRA-e (eksternt bruksareal) må bestå av minst 2 tegn.",
   }),
   BebygdArealBYA: z.string().min(1, {
     message: "Bebygd areal (BYA) må bestå av minst 2 tegn.",
@@ -1101,12 +1101,12 @@ export const Husdetaljer: React.FC<{
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm font-medium`}
                           >
-                            BRA total
+                            BRA total (bruksareal)
                           </p>
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Skriv inn BRA total"
+                                placeholder="Skriv inn BRA total (bruksareal)"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
@@ -1134,11 +1134,11 @@ export const Husdetaljer: React.FC<{
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm font-medium`}
                           >
-                            Bruksareal (BRA)
+                            BRA-i (internt bruksareal)
                           </p>
                           <FormControl>
                             <Input
-                              placeholder="Enter Bruksareal (BRA)"
+                              placeholder="Enter BRA-i (internt bruksareal)"
                               {...field}
                               className={`bg-white rounded-[8px] border text-black
                                           ${
@@ -1165,12 +1165,12 @@ export const Husdetaljer: React.FC<{
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm font-medium`}
                           >
-                            P-rom
+                            BRA-e (eksternt bruksareal)
                           </p>
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Skriv inn P-rom"
+                                placeholder="Skriv inn BRA-e (eksternt bruksareal)"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
