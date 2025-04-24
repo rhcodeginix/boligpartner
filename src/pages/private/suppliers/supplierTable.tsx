@@ -27,14 +27,13 @@ import {
   getDocs,
   orderBy,
   query,
-  where,
 } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Button from "../../../components/common/button";
 import Modal from "../../../components/common/modal";
-import { fetchAdminDataByEmail } from "../../../lib/utils";
+import { fetchAdminDataByEmail, fetchSupplierData } from "../../../lib/utils";
 
 export const SupplierTable = () => {
   const [page, setPage] = useState(1);
@@ -54,10 +53,8 @@ export const SupplierTable = () => {
     const getData = async () => {
       const data = await fetchAdminDataByEmail();
       if (data) {
-        const finalData = data?.modulePermissions?.find(
-          (item: any) => item.name === "Leverandører"
-        );
-        setPermission(finalData?.permissions);
+        const finalSupData = data?.supplier;
+        setPermission(finalSupData);
       }
     };
 
@@ -84,16 +81,7 @@ export const SupplierTable = () => {
     setIsLoading(true);
 
     try {
-      let q;
-      if (email === "andre.finger@gmail.com") {
-        q = query(collection(db, "suppliers"), orderBy("updatedAt", "desc"));
-      } else {
-        q = query(
-          collection(db, "suppliers"),
-          where("createDataBy.email", "==", email),
-          orderBy("updatedAt", "desc")
-        );
-      }
+      let q = query(collection(db, "suppliers"), orderBy("updatedAt", "desc"));
 
       const querySnapshot = await getDocs(q);
 
@@ -101,8 +89,17 @@ export const SupplierTable = () => {
         id: doc.id,
         ...doc.data(),
       }));
+      const filterData: any = [];
+      const findSupData: any = await fetchSupplierData(permission);
+      if (findSupData) {
+        filterData.push(findSupData);
+      }
 
-      setSuppliers(data);
+      if (email === "andre.finger@gmail.com") {
+        setSuppliers(data);
+      } else {
+        setSuppliers(filterData);
+      }
     } catch (error) {
       console.error("Error fetching husmodell data:", error);
     } finally {
@@ -131,7 +128,7 @@ export const SupplierTable = () => {
 
   useEffect(() => {
     fetchSuppliersData();
-  }, []);
+  }, [permission]);
 
   const handleConfirmPopup = () => {
     if (showConfirm) {
@@ -147,85 +144,84 @@ export const SupplierTable = () => {
   };
 
   const columns = useMemo<ColumnDef<any>[]>(
-    () => [
-      {
-        accessorKey: "logo",
-        header: "Logo",
-        cell: ({ row }) => (
-          <img src={row.original.photo} alt="logo" className="h-5" />
-        ),
-      },
-      {
-        accessorKey: "selskapsnavn",
-        header: "Selskapsnavn",
-        cell: ({ row }) => (
-          <p className="font-semibold text-sm text-darkBlack">
-            {row.original.company_name}
-          </p>
-        ),
-      },
-      {
-        accessorKey: "type",
-        header: "Type",
-        cell: ({ row }) => (
-          <p className="text-sm text-darkBlack">{row.original.type_partner}</p>
-        ),
-      },
-      {
-        accessorKey: "Produkter",
-        header: "Produkter",
-        cell: ({ row }) => (
-          <p className="text-sm text-darkBlack">{row.original.Produkter}</p>
-          // <p className="text-sm text-darkBlack">6</p>
-        ),
-      },
-      {
-        accessorKey: "Sistendret",
-        header: "Sist endret",
-        cell: ({ row }) => (
-          <p className="text-sm font-semibold text-black">
-            {row.original.updatedAt}
-          </p>
-        ),
-      },
-      {
-        accessorKey: "adresse",
-        header: "Adresse",
-        cell: ({ row }) => (
-          <div>
-            <p className="text-black text-sm mb-[2px]">
-              {row.original.Adresse}
+    () =>
+      [
+        {
+          accessorKey: "logo",
+          header: "Logo",
+          cell: ({ row }: any) => (
+            <img src={row.original.photo} alt="logo" className="h-5" />
+          ),
+        },
+        {
+          accessorKey: "selskapsnavn",
+          header: "Selskapsnavn",
+          cell: ({ row }: any) => (
+            <p className="font-semibold text-sm text-darkBlack">
+              {row.original.company_name}
             </p>
-          </div>
-        ),
-      },
-      {
-        id: "action",
-        header: "Action",
-        cell: ({ row }) => (
-          <>
-            <div className="flex items-center justify-center gap-3">
-              {((permission && permission?.edit) ||
-                email === "andre.finger@gmail.com") && (
-                <Pencil
-                  className="h-5 w-5 text-primary cursor-pointer"
-                  onClick={() =>
-                    navigate(`/edit-til-leverandor/${row.original.id}`)
-                  }
-                />
-              )}
-              {((permission && permission?.delete) ||
-                email === "andre.finger@gmail.com") && (
-                <Trash
-                  className="h-5 w-5 text-primary cursor-pointer"
-                  onClick={() => confirmDelete(row.original.id)}
-                />
-              )}
+          ),
+        },
+        {
+          accessorKey: "type",
+          header: "Type",
+          cell: ({ row }: any) => (
+            <p className="text-sm text-darkBlack">
+              {row.original.type_partner}
+            </p>
+          ),
+        },
+        {
+          accessorKey: "Produkter",
+          header: "Produkter",
+          cell: ({ row }: any) => (
+            <p className="text-sm text-darkBlack">{row.original.Produkter}</p>
+            // <p className="text-sm text-darkBlack">6</p>
+          ),
+        },
+        {
+          accessorKey: "Sistendret",
+          header: "Sist endret",
+          cell: ({ row }: any) => (
+            <p className="text-sm font-semibold text-black">
+              {row.original.updatedAt}
+            </p>
+          ),
+        },
+        {
+          accessorKey: "adresse",
+          header: "Adresse",
+          cell: ({ row }: any) => (
+            <div>
+              <p className="text-black text-sm mb-[2px]">
+                {row.original.Adresse}
+              </p>
             </div>
-          </>
-        ),
-      },
-    ],
+          ),
+        },
+        email === "andre.finger@gmail.com"
+          ? {
+              id: "action",
+              header: "Action",
+              cell: ({ row }: any) => (
+                <>
+                  <div className="flex items-center justify-center gap-3">
+                    <Pencil
+                      className="h-5 w-5 text-primary cursor-pointer"
+                      onClick={() =>
+                        navigate(`/edit-til-leverandor/${row.original.id}`)
+                      }
+                    />
+                    <Trash
+                      className="h-5 w-5 text-primary cursor-pointer"
+                      onClick={() => confirmDelete(row.original.id)}
+                    />
+                  </div>
+                </>
+              ),
+            }
+          : null,
+      ].filter(Boolean) as ColumnDef<any>[],
     [email, navigate, permission]
   );
 

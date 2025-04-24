@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { Ellipsis, Loader2 } from "lucide-react";
 import {
@@ -22,7 +23,11 @@ import Ic_filter from "../../../assets/images/Ic_filter.svg";
 import Ic_download from "../../../assets/images/Ic_download.svg";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
-import { convertTimestamp, fetchSupplierData } from "../../../lib/utils";
+import {
+  convertTimestamp,
+  fetchAdminDataByEmail,
+  fetchSupplierData,
+} from "../../../lib/utils";
 // import GoogleMapComponent from "../../../components/ui/map";
 import NorkartMap from "../../../components/map";
 
@@ -32,13 +37,46 @@ export const BankleadsTable = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const email = sessionStorage.getItem("Iplot_admin");
+  const [permission, setPermission] = useState<any>(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        const finalData = data?.supplier;
+        setPermission(finalData);
+      }
+    };
+
+    getData();
+  }, [permission]);
+
   const fetchLeadsData = async () => {
     setIsLoading(true);
 
     try {
-      let q = query(collection(db, "leads"), where("IsoptForBank", "==", true));
-
-      const querySnapshot = await getDocs(q);
+      let leadBankTrue = query(
+        collection(db, "leads"),
+        where("IsoptForBank", "==", true)
+      );
+      if (email === "andre.finger@gmail.com") {
+        leadBankTrue = query(
+          collection(db, "leads"),
+          where("IsoptForBank", "==", true)
+        );
+      } else {
+        leadBankTrue = query(
+          collection(db, "leads"),
+          where("IsoptForBank", "==", true),
+          where(
+            "finalData.husmodell.Husdetaljer.Leverandører",
+            "==",
+            String(permission)
+          )
+        );
+      }
+      const querySnapshot = await getDocs(leadBankTrue);
 
       const data: any = querySnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -65,7 +103,7 @@ export const BankleadsTable = () => {
 
   useEffect(() => {
     fetchLeadsData();
-  }, []);
+  }, [permission]);
 
   const pageSize = 10;
   const paginatedData = useMemo(() => {

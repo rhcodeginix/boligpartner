@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -234,19 +235,26 @@ export const Husdetaljer: React.FC<{
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const [loading, setLoading] = useState(true);
-  const [suppliers, setSuppliers] = useState([]);
+  const [suppliers, setSuppliers] = useState<any>([]);
   const [oldSupplierId, setOldSupplierId] = useState<any | null>(null);
   const [createData, setCreateData] = useState<any>(null);
+
+  const [permission, setPermission] = useState<any>(null);
+  const email = sessionStorage.getItem("Iplot_admin");
+
   useEffect(() => {
     const getData = async () => {
       const data = await fetchAdminDataByEmail();
       if (data) {
         setCreateData(data);
+
+        const finalData = data?.supplier;
+        setPermission(finalData);
       }
     };
 
     getData();
-  }, []);
+  }, [permission]);
 
   useEffect(() => {
     if (!id) {
@@ -273,12 +281,25 @@ export const Husdetaljer: React.FC<{
 
   const fetchSuppliersData = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "suppliers"));
-      const data: any = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setSuppliers(data);
+      if ((permission && permission) || email !== "andre.finger@gmail.com") {
+        const singleData: any = await fetchSupplierData(permission);
+
+        const filterData = [];
+        if (singleData) {
+          filterData.push(singleData);
+        }
+
+        if (filterData) {
+          setSuppliers(filterData);
+        }
+      } else {
+        const querySnapshot = await getDocs(collection(db, "suppliers"));
+        const data: any = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setSuppliers(data);
+      }
     } catch (error) {
       console.error("Error fetching husmodell data:", error);
     }
@@ -286,7 +307,7 @@ export const Husdetaljer: React.FC<{
 
   useEffect(() => {
     fetchSuppliersData();
-  }, []);
+  }, [permission]);
 
   const navigate = useNavigate();
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -676,13 +697,18 @@ export const Husdetaljer: React.FC<{
                                 </SelectTrigger>
                                 <SelectContent className="bg-white">
                                   <SelectGroup>
-                                    {suppliers?.map((sup: any, index) => {
-                                      return (
-                                        <SelectItem value={sup?.id} key={index}>
-                                          {sup?.company_name}
-                                        </SelectItem>
-                                      );
-                                    })}
+                                    {suppliers?.map(
+                                      (sup: any, index: number) => {
+                                        return (
+                                          <SelectItem
+                                            value={sup?.id}
+                                            key={index}
+                                          >
+                                            {sup?.company_name}
+                                          </SelectItem>
+                                        );
+                                      }
+                                    )}
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>

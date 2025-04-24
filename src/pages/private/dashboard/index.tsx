@@ -8,6 +8,7 @@ import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { Spinner } from "../../../components/Spinner";
 import { useNavigate } from "react-router-dom";
+import { fetchAdminDataByEmail } from "../../../lib/utils";
 
 export const Dashboard = () => {
   const [selectedDate1, setSelectedDate1] = useState<Date | null>(null);
@@ -23,18 +24,68 @@ export const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const email = sessionStorage.getItem("Iplot_admin");
+  const [permission, setPermission] = useState<any>(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        const finalData = data?.supplier;
+        setPermission(finalData);
+      }
+    };
+
+    getData();
+  }, [permission]);
 
   const fetchSuppliersData = async () => {
     try {
       setLoading(true);
       let q;
+      let leadTrue;
+      let leadFalse;
+      let leadBankTrue;
+
       if (email === "andre.finger@gmail.com") {
         q = query(collection(db, "house_model"), orderBy("updatedAt", "desc"));
+        leadTrue = query(collection(db, "leads"), where("Isopt", "==", true));
+        leadFalse = query(collection(db, "leads"), where("Isopt", "==", false));
+        leadBankTrue = query(
+          collection(db, "leads"),
+          where("IsoptForBank", "==", true)
+        );
       } else {
         q = query(
           collection(db, "house_model"),
           where("createDataBy.email", "==", email),
-          orderBy("updatedAt", "desc")
+          where("Husdetaljer.Leverandører", "==", String(permission))
+        );
+        leadTrue = query(
+          collection(db, "leads"),
+          where("Isopt", "==", true),
+          where(
+            "finalData.husmodell.Husdetaljer.Leverandører",
+            "==",
+            String(permission)
+          )
+        );
+        leadFalse = query(
+          collection(db, "leads"),
+          where("Isopt", "==", false),
+          where(
+            "finalData.husmodell.Husdetaljer.Leverandører",
+            "==",
+            String(permission)
+          )
+        );
+        leadBankTrue = query(
+          collection(db, "leads"),
+          where("IsoptForBank", "==", true),
+          where(
+            "finalData.husmodell.Husdetaljer.Leverandører",
+            "==",
+            String(permission)
+          )
         );
       }
       const [
@@ -49,12 +100,10 @@ export const Dashboard = () => {
         getDocs(collection(db, "users")),
         getDocs(q),
         getDocs(collection(db, "empty_plot")),
-        getDocs(query(collection(db, "leads"), where("Isopt", "==", true))),
-        getDocs(query(collection(db, "leads"), where("Isopt", "==", false))),
+        getDocs(leadTrue),
+        getDocs(leadFalse),
         getDocs(collection(db, "plot_building")),
-        getDocs(
-          query(collection(db, "leads"), where("IsoptForBank", "==", true))
-        ),
+        getDocs(leadBankTrue),
       ]);
 
       setCounts({
@@ -73,7 +122,7 @@ export const Dashboard = () => {
   };
   useEffect(() => {
     fetchSuppliersData();
-  }, []);
+  }, [permission]);
 
   const data = [
     {

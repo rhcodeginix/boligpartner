@@ -15,11 +15,28 @@ import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import toast from "react-hot-toast";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import bcrypt from "bcryptjs";
 import { db, storage } from "../../../config/firebaseConfig";
 import { useLocation, useNavigate } from "react-router-dom";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { fetchAdminData } from "../../../lib/utils";
 import { Spinner } from "../../../components/Spinner";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select";
+import Modal from "../../../components/common/modal";
 
 const formSchema = z.object({
   photo: z.union([
@@ -52,7 +69,31 @@ const formSchema = z.object({
       })
     )
     .min(1, "At least one permission is required"),
+  supplier: z.string().min(1, {
+    message: "Leverandør må velges",
+  }),
+  password: z
+    .string()
+    .min(8, { message: "Passordet må være minst 8 tegn langt." })
+    .regex(/[A-Z]/, {
+      message: "Passordet må inneholde minst én stor bokstav.",
+    })
+    .regex(/[a-z]/, {
+      message: "Passordet må inneholde minst én liten bokstav.",
+    })
+    .regex(/[0-9]/, { message: "Passordet må inneholde minst ett tall." })
+    .regex(/[@$!%*?&]/, {
+      message: "Passordet må inneholde minst ett spesialtegn.",
+    }),
 });
+
+function hashPassword(password: any) {
+  if (bcrypt.getRounds(password)) {
+    return password;
+  }
+
+  return bcrypt.hashSync(password, 10);
+}
 
 export const AddUserForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -70,6 +111,8 @@ export const AddUserForm = () => {
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [suppliers, setSuppliers] = useState([]);
+  const [isPopup, setIsPopup] = useState(false);
 
   const uploadFile = async (file: File, fieldName: any) => {
     if (!file) return;
@@ -95,6 +138,23 @@ export const AddUserForm = () => {
       console.error(`Error uploading file for ${fieldName}:`, error);
     }
   };
+
+  const fetchSuppliersData = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "suppliers"));
+      const data: any = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setSuppliers(data);
+    } catch (error) {
+      console.error("Error fetching husmodell data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSuppliersData();
+  }, []);
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -127,22 +187,31 @@ export const AddUserForm = () => {
       const adminDocRef = doc(db, "admin", data.email);
       const adminSnap = await getDoc(adminDocRef);
       const uniqueId = id ? id : uuidv4();
+      const hashedPassword = hashPassword(data.password);
 
       if (id) {
         await updateDoc(adminDocRef, {
           ...data,
           id: uniqueId,
+          password: hashedPassword,
           updatedAt: new Date(),
         });
         toast.success("Updated successfully", {
           position: "top-right",
         });
+        if (hashedPassword === data.password) {
+          setIsPopup(false);
+          navigate(`/Brukeradministrasjon`);
+        } else {
+          setIsPopup(true);
+        }
       } else {
         if (!adminSnap.exists()) {
           await setDoc(adminDocRef, {
             ...data,
             role: "admin",
             id: uniqueId,
+            password: hashedPassword,
             createdAt: new Date(),
             updatedAt: new Date(),
           });
@@ -150,11 +219,11 @@ export const AddUserForm = () => {
           toast.success("Admin created successfully!", {
             position: "top-right",
           });
+          setIsPopup(true);
         } else {
           toast.error("Already Added!", { position: "top-right" });
         }
       }
-      navigate(`/Brukeradministrasjon`);
     } catch (error) {
       console.error("Firestore operation failed:", error);
       toast.error("Something went wrong. Please try again.", {
@@ -166,16 +235,6 @@ export const AddUserForm = () => {
   const [modulePermissions, setModulePermissions] = useState([
     {
       id: 1,
-      name: "Leverandører",
-      permissions: {
-        all: true,
-        add: true,
-        edit: true,
-        delete: true,
-      },
-    },
-    {
-      id: 2,
       name: "Husmodell",
       permissions: {
         all: true,
@@ -255,6 +314,8 @@ export const AddUserForm = () => {
       const data = await fetchAdminData(id);
       if (data) {
         Object.entries(data).forEach(([key, value]) => {
+          if (key === "password") form.setValue(key as any, value);
+
           if (value !== undefined && value !== null)
             form.setValue(key as any, value);
           if (key === "modulePermissions") {
@@ -267,6 +328,14 @@ export const AddUserForm = () => {
 
     getData();
   }, [form, id]);
+
+  const handleConfirmPopup = () => {
+    if (isPopup) {
+      setIsPopup(false);
+    } else {
+      setIsPopup(true);
+    }
+  };
 
   return (
     <>
@@ -426,58 +495,50 @@ export const AddUserForm = () => {
                           <td className="py-3 px-4 border-r border-gray1 text-black">
                             {module.name}
                           </td>
-                          {permissionTypes
-                            .filter(
-                              (permission) =>
-                                !(
-                                  module.name === "Leverandører" &&
-                                  permission.key === "duplicate"
-                                )
-                            )
-                            .map((permission) => (
-                              <td
-                                key={`${module.id}-${permission.key}`}
-                                className="text-center py-2 px-4 border-r border-gray1"
-                              >
-                                <label className="inline-flex items-center justify-center cursor-pointer">
-                                  <input
-                                    type="checkbox"
-                                    className="hidden"
-                                    checked={module.permissions[permission.key]}
-                                    onChange={() =>
-                                      handlePermissionChange(
-                                        module.id,
-                                        permission.key
-                                      )
-                                    }
-                                  />
-                                  <div
-                                    className={`w-6 h-6 border rounded flex items-center justify-center ${
-                                      module.permissions[permission.key]
-                                        ? "bg-primary border-[#fff]"
-                                        : "bg-white border-gray1"
-                                    }`}
-                                  >
-                                    {module.permissions[permission.key] && (
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                        className="w-4 h-4 text-white"
-                                      >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          strokeWidth="2"
-                                          d="M5 13l4 4L19 7"
-                                        />
-                                      </svg>
-                                    )}
-                                  </div>
-                                </label>
-                              </td>
-                            ))}
+                          {permissionTypes.map((permission) => (
+                            <td
+                              key={`${module.id}-${permission.key}`}
+                              className="text-center py-2 px-4 border-r border-gray1"
+                            >
+                              <label className="inline-flex items-center justify-center cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  className="hidden"
+                                  checked={module.permissions[permission.key]}
+                                  onChange={() =>
+                                    handlePermissionChange(
+                                      module.id,
+                                      permission.key
+                                    )
+                                  }
+                                />
+                                <div
+                                  className={`w-6 h-6 border rounded flex items-center justify-center ${
+                                    module.permissions[permission.key]
+                                      ? "bg-primary border-[#fff]"
+                                      : "bg-white border-gray1"
+                                  }`}
+                                >
+                                  {module.permissions[permission.key] && (
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      stroke="currentColor"
+                                      className="w-4 h-4 text-white"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M5 13l4 4L19 7"
+                                      />
+                                    </svg>
+                                  )}
+                                </div>
+                              </label>
+                            </td>
+                          ))}
                         </tr>
                       ))}
                     </tbody>
@@ -489,6 +550,89 @@ export const AddUserForm = () => {
                     {form.formState.errors.modulePermissions?.message}
                   </div>
                 )}
+              </div>
+              <div>
+                <FormField
+                  control={form.control}
+                  name="supplier"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <p
+                        className={`${
+                          fieldState.error ? "text-red" : "text-black"
+                        } mb-[6px] text-sm font-medium`}
+                      >
+                        Leverandører
+                      </p>
+                      <FormControl>
+                        <div className="relative">
+                          <Select
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                            }}
+                            value={field.value}
+                          >
+                            <SelectTrigger
+                              className={`bg-white rounded-[8px] border text-black
+                              ${
+                                fieldState?.error
+                                  ? "border-red"
+                                  : "border-gray1"
+                              } `}
+                            >
+                              <SelectValue placeholder="Select Leverandører" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white">
+                              <SelectGroup>
+                                {suppliers?.map((sup: any, index) => {
+                                  return (
+                                    <SelectItem value={sup?.id} key={index}>
+                                      {sup?.company_name}
+                                    </SelectItem>
+                                  );
+                                })}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div>
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <p
+                        className={`${
+                          fieldState.error ? "text-red" : "text-black"
+                        } mb-[6px] text-sm font-medium`}
+                      >
+                        Passord
+                      </p>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            placeholder="Skriv inn Passord"
+                            {...field}
+                            className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                            type="password"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             </div>
           </div>
@@ -508,6 +652,45 @@ export const AddUserForm = () => {
         </form>
       </Form>
       {loading && <Spinner />}
+
+      {isPopup && (
+        <Modal onClose={handleConfirmPopup} isOpen={true}>
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <div className="flex gap-2 items-center">
+                <p className="text-lg font-bold">E-post:</p>
+                <span className="text-base">{form.getValues("email")}</span>
+              </div>
+              <div className="flex gap-2 items-center">
+                <p className="text-lg font-bold">Password:</p>
+                <span className="text-base">{form.getValues("password")}</span>
+              </div>
+              <br />
+              <p>
+                <span className="font-semibold">Note:</span> Dette er din e-post
+                og passord. vennligst send dette passordet til denne brukeren.
+              </p>
+              <div className="flex justify-center mt-5 w-full gap-5 items-center">
+                <div
+                  onClick={() => setIsPopup(false)}
+                  className="w-1/2 sm:w-auto"
+                >
+                  <Button
+                    text="Avbryt"
+                    className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  />
+                </div>
+                <div onClick={() => navigate(`/Brukeradministrasjon`)}>
+                  <Button
+                    text="Bekrefte"
+                    className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

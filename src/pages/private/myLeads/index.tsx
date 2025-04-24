@@ -29,7 +29,6 @@ import { db } from "../../../config/firebaseConfig";
 import { Link, useNavigate } from "react-router-dom";
 import {
   convertToFullDateString,
-  fetchAdminDataByEmail,
   fetchSupplierData,
   formatDateOnly,
   formatTimestamp,
@@ -81,22 +80,7 @@ export const MyLeads = () => {
     null
   );
 
-  const [permission, setPermission] = useState<any>(null);
   const email = sessionStorage.getItem("Iplot_admin");
-
-  useEffect(() => {
-    const getData = async () => {
-      const data = await fetchAdminDataByEmail();
-      if (data) {
-        const finalData = data?.modulePermissions?.find(
-          (item: any) => item.name === "Leverandører"
-        );
-        setPermission(finalData?.permissions);
-      }
-    };
-
-    getData();
-  }, []);
 
   const fetchLeadsData = async () => {
     setIsLoading(true);
@@ -293,7 +277,7 @@ export const MyLeads = () => {
         ),
       },
     ],
-    [email, navigate, permission]
+    [email, navigate]
   );
 
   const pageSize = 10;

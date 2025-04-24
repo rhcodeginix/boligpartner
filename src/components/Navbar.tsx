@@ -52,8 +52,6 @@ export const Navbar: React.FC = () => {
   };
   const [isPhoto, setIsPhoto] = useState(null);
 
-  const [LeverandørerPermission, setLeverandørerPermission] =
-    useState<any>(null);
   const [HusmodellPermission, setHusmodellPermission] = useState<any>(null);
   const email = sessionStorage.getItem("Iplot_admin");
 
@@ -63,10 +61,6 @@ export const Navbar: React.FC = () => {
       if (data) {
         setIsPhoto(data?.photo);
 
-        const supplierData = data?.modulePermissions?.find(
-          (item: any) => item.name === "Leverandører"
-        );
-        setLeverandørerPermission(supplierData?.permissions);
         const husmodellData = data?.modulePermissions?.find(
           (item: any) => item.name === "Husmodell"
         );
@@ -98,23 +92,19 @@ export const Navbar: React.FC = () => {
           >
             Dashboard
           </Link>
-          {(email === "andre.finger@gmail.com" ||
-            LeverandørerPermission?.add === true ||
-            LeverandørerPermission?.delete === true ||
-            LeverandørerPermission?.edit === true) && (
-            <Link
-              to={"/Leverandorer"}
-              className={`text-base font-medium py-2 px-3 rounded-[6px] ${
-                currentPath === "/Leverandorer" ||
-                currentPath.startsWith("/edit-til-leverandor/") ||
-                currentPath === "/legg-til-leverandor"
-                  ? "bg-lightPurple text-primary"
-                  : "text-black"
-              }`}
-            >
-              Leverandører
-            </Link>
-          )}
+
+          <Link
+            to={"/Leverandorer"}
+            className={`text-base font-medium py-2 px-3 rounded-[6px] ${
+              currentPath === "/Leverandorer" ||
+              currentPath.startsWith("/edit-til-leverandor/") ||
+              currentPath === "/legg-til-leverandor"
+                ? "bg-lightPurple text-primary"
+                : "text-black"
+            }`}
+          >
+            Leverandører
+          </Link>
           {(email === "andre.finger@gmail.com" ||
             HusmodellPermission?.add === true ||
             HusmodellPermission?.delete === true ||
@@ -147,10 +137,7 @@ export const Navbar: React.FC = () => {
               Brukeradministrasjon
             </Link>
           )}
-          {(email === "andre.finger@gmail.com" ||
-            LeverandørerPermission?.add === true ||
-            LeverandørerPermission?.delete === true ||
-            LeverandørerPermission?.edit === true) && (
+          {email === "andre.finger@gmail.com" && (
             <Link
               to={"/my-leads"}
               className={`text-base font-medium py-2 px-3 rounded-[6px] ${
