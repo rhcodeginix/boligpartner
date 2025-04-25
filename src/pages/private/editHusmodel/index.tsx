@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import Tabs from "../../../components/ui/tabnav";
 import { Husdetaljer } from "./Husdetaljer";
@@ -13,6 +13,7 @@ export const EditHouseModel = () => {
     { label: "Huskonfigurator" },
     { label: "Prisliste" },
   ];
+  const location = useLocation();
 
   return (
     <>
@@ -45,6 +46,9 @@ export const EditHouseModel = () => {
           <Tabs
             tabs={tabData}
             activeTab={activeTab}
+            {...(location.pathname.startsWith("/edit-husmodell")
+              ? { setActiveTab }
+              : {})}
             // setActiveTab={setActiveTab}
           />
         </div>
