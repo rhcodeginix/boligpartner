@@ -44,7 +44,7 @@ export const AddNewCat: React.FC<{
             ? {
                 ...cat,
                 navn: data.Hovedkategorinavn,
-                isSelected: data.isSelected,
+                isSelected: data.isSelected ?? false,
               }
             : cat
         )
@@ -56,7 +56,7 @@ export const AddNewCat: React.FC<{
           navn: data.Hovedkategorinavn,
           Beskrivelse: "",
           Kategorinavn: [],
-          isSelected: data.isSelected,
+          isSelected: data.isSelected ?? false,
         },
       ]);
     }
