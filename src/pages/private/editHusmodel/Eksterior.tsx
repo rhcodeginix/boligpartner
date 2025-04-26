@@ -639,22 +639,43 @@ export const Eksterior: React.FC<{
                                           type="text"
                                           onChange={({
                                             target: { value },
-                                          }: any) =>
+                                          }: any) => {
+                                            // Allow only digits and leading minus
+                                            let cleaned = value
+                                              .replace(/[^\d-]/g, "")
+                                              .replace(/(?!^)-/g, "");
+
+                                            // Check if the value starts with a negative sign
+                                            const isNegative =
+                                              cleaned.startsWith("-");
+
+                                            // Remove the negative sign for formatting
+                                            const numericPart = cleaned.replace(
+                                              /-/g,
+                                              ""
+                                            );
+
+                                            let formatted = "";
+
+                                            if (numericPart) {
+                                              formatted = new Intl.NumberFormat(
+                                                "no-NO"
+                                              ).format(Number(numericPart));
+                                              if (isNegative) {
+                                                formatted = "-" + formatted;
+                                              }
+                                            } else {
+                                              // Allow "-" or empty field without formatting
+                                              formatted = isNegative ? "-" : "";
+                                            }
+
                                             field.onChange({
                                               target: {
                                                 name: `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.pris`,
-                                                value: value.replace(/\D/g, "")
-                                                  ? new Intl.NumberFormat(
-                                                      "no-NO"
-                                                    ).format(
-                                                      Number(
-                                                        value.replace(/\D/g, "")
-                                                      )
-                                                    )
-                                                  : "",
+                                                value: formatted,
                                               },
-                                            })
-                                          }
+                                            });
+                                          }}
                                           value={
                                             initialValue === null
                                               ? "-"
