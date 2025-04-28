@@ -260,6 +260,35 @@ export const Eksterior: React.FC<{
     return filteredCategories.length > 0 ? filteredCategories : [];
   })();
 
+  const [draggingProductIndex, setDraggingProductIndex] = useState<
+    number | null
+  >(null);
+  const [dragOverProductIndex, setDragOverProductIndex] = useState<
+    number | null
+  >(null);
+  const handleDrop = () => {
+    if (
+      draggingProductIndex === null ||
+      dragOverProductIndex === null ||
+      draggingProductIndex === dragOverProductIndex
+    ) {
+      return;
+    }
+
+    const updatedProducts = [...produkter];
+    const draggedItem = updatedProducts[draggingProductIndex];
+    updatedProducts.splice(draggingProductIndex, 1);
+    updatedProducts.splice(dragOverProductIndex, 0, draggedItem);
+
+    form.setValue(
+      `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
+      updatedProducts
+    );
+
+    setDraggingProductIndex(null);
+    setDragOverProductIndex(null);
+  };
+
   return (
     <>
       <Form {...form}>
@@ -390,7 +419,17 @@ export const Eksterior: React.FC<{
                     `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Hovedbilde`
                   );
                   return (
-                    <div className="flex flex-col gap-8" key={index}>
+                    <div
+                      className="flex flex-col gap-8 cursor-move"
+                      key={index}
+                      draggable
+                      onDragStart={() => setDraggingProductIndex(index)}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setDragOverProductIndex(index);
+                      }}
+                      onDrop={() => handleDrop()}
+                    >
                       <div className="flex flex-col gap-[18px]">
                         <div className="flex items-center gap-3 justify-between">
                           <h4 className="text-darkBlack text-base font-semibold">

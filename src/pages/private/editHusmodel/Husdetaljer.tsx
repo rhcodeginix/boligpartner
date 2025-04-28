@@ -45,6 +45,7 @@ import {
 } from "../../../lib/utils";
 import { Spinner } from "../../../components/Spinner";
 import FileInfo from "../../../components/FileInfo";
+import Modal from "../../../components/common/modal";
 
 const formSchema = z.object({
   Leverandører: z
@@ -104,27 +105,23 @@ const formSchema = z.object({
   BRATotal: z.string().min(1, {
     message: "BRA total (bruksareal) må bestå av minst 2 tegn.",
   }),
-  Bruksareal: z.string().min(1, { message: "Bruksareal må spesifiseres." }),
   PRom: z.string().min(1, {
-    message: "BRA-e (eksternt bruksareal) må bestå av minst 2 tegn.",
-  }),
-  BebygdArealBYA: z.string().min(1, {
-    message: "Bebygd areal (BYA) må bestå av minst 2 tegn.",
+    message: "GUA (Gulvareal) må bestå av minst 2 tegn.",
   }),
   Mønehøyde: z.number().min(1, {
-    message: "Mønehøyde areal (BYA) må bestå av minst 2 tegn.",
+    message: "Mønehøyde areal må bestå av minst 2 tegn.",
   }),
   Gesimshøyde: z.number().min(1, {
-    message: "Gesimshøyde areal (BYA) må bestå av minst 2 tegn.",
+    message: "Gesimshøyde areal må bestå av minst 2 tegn.",
   }),
   LB: z.string().min(1, {
-    message: "LB areal (BYA) må bestå av minst 2 tegn.",
+    message: "LB areal må bestå av minst 2 tegn.",
   }),
   Takvinkel: z.number().min(1, {
-    message: "Takvinkel areal (BYA) må bestå av minst 2 tegn.",
+    message: "Takvinkel areal må bestå av minst 2 tegn.",
   }),
   BebygdAreal: z.number().min(1, {
-    message: "Bebygd areal må bestå av minst 2 tegn.",
+    message: "Bebygd areal (BYA) må bestå av minst 2 tegn.",
   }),
   Soverom: z.number().min(1, {
     message: "Soverom må bestå av minst 2 tegn.",
@@ -216,7 +213,7 @@ const formSchema = z.object({
         z.string(),
       ])
     )
-    .min(1, "Minst ett bilde kreves."),
+    .optional(),
   VelgBoligtype: z
     .string({
       required_error: "Velg en boligtype",
@@ -558,6 +555,10 @@ export const Husdetaljer: React.FC<{
         await updateDoc(oldSupplierDocRef, {
           ...oldSupplierData,
           id: oldSupplierId,
+          documents:
+            data?.documents && data?.documents.length > 0
+              ? data?.documents
+              : null,
           updatedAt: formatter.format(new Date()),
           Produkter: Math.max(
             oldSupplierData?.Produkter === 0
@@ -572,6 +573,10 @@ export const Husdetaljer: React.FC<{
         await updateDoc(newSupplierDocRef, {
           ...newSupplierData,
           id: newSupplierId,
+          documents:
+            data?.documents && data?.documents.length > 0
+              ? data?.documents
+              : null,
           updatedAt: formatter.format(new Date()),
           Produkter: newSupplierData?.Produkter + 1,
         });
@@ -647,6 +652,38 @@ export const Husdetaljer: React.FC<{
     "Ett plan",
     "Med garasje",
   ];
+
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+
+  const handleDeleteClick = (index: number) => {
+    setDeleteIndex(index);
+    setShowConfirm(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteIndex !== null) {
+      const updatedFiles = documents.filter(
+        (_: any, i: number) => i !== deleteIndex
+      );
+      form.setValue("documents", updatedFiles);
+    }
+    setShowConfirm(false);
+    setDeleteIndex(null);
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirm(false);
+    setDeleteIndex(null);
+  };
+
+  const handleConfirmPopup = () => {
+    if (showConfirm) {
+      setShowConfirm(false);
+    } else {
+      setShowConfirm(true);
+    }
+  };
 
   return (
     <>
@@ -1152,37 +1189,6 @@ export const Husdetaljer: React.FC<{
                   <div>
                     <FormField
                       control={form.control}
-                      name="Bruksareal"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            BRA-i (internt bruksareal)
-                          </p>
-                          <FormControl>
-                            <Input
-                              placeholder="Enter BRA-i (internt bruksareal)"
-                              {...field}
-                              className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                              type="text"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
                       name="PRom"
                       render={({ field, fieldState }) => (
                         <FormItem>
@@ -1191,45 +1197,12 @@ export const Husdetaljer: React.FC<{
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm font-medium`}
                           >
-                            BRA-e (eksternt bruksareal)
+                            GUA (Gulvareal)
                           </p>
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Skriv inn BRA-e (eksternt bruksareal)"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="BebygdArealBYA"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Bebygd areal (BYA)
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Bebygd areal (BYA)"
+                                placeholder="Skriv inn GUA (Gulvareal)"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
@@ -1365,12 +1338,12 @@ export const Husdetaljer: React.FC<{
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm font-medium`}
                           >
-                            Bebygd areal
+                            Bebygd areal (BYA)
                           </p>
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Skriv inn Bebygd areal"
+                                placeholder="Skriv inn Bebygd areal (BYA)"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
@@ -1681,7 +1654,7 @@ export const Husdetaljer: React.FC<{
                     <div className="grid grid-cols-2 gap-6">
                       <FormField
                         control={form.control}
-                        name="photo"
+                        name="documents"
                         render={() => (
                           <FormItem className="w-full">
                             <FormControl>
@@ -1739,12 +1712,7 @@ export const Husdetaljer: React.FC<{
                                 <div>
                                   <div
                                     className="bg-[#FFFFFFCC] rounded-[12px] p-[6px] cursor-pointer w-8 h-8"
-                                    onClick={() => {
-                                      const updatedFiles = documents.filter(
-                                        (_: any, i: number) => i !== index
-                                      );
-                                      form.setValue("documents", updatedFiles);
-                                    }}
+                                    onClick={() => handleDeleteClick(index)}
                                   >
                                     <img src={Ic_delete_purple} alt="delete" />
                                   </div>
@@ -2485,6 +2453,29 @@ export const Husdetaljer: React.FC<{
           {loading && <Spinner />}
         </form>
       </Form>
+
+      {showConfirm && (
+        <Modal onClose={handleConfirmPopup} isOpen={true}>
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg">
+              <p className="mb-4">Er du sikker på at du vil slette?</p>
+              <div className="flex justify-center gap-4">
+                <div onClick={handleCancelDelete} className="w-1/2 sm:w-auto">
+                  <Button
+                    text="Avbryt"
+                    className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  />
+                </div>
+                <Button
+                  text="Bekrefte"
+                  className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  onClick={handleConfirmDelete}
+                />
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };
