@@ -289,6 +289,10 @@ export const Eksterior: React.FC<{
     setDragOverProductIndex(null);
   };
 
+  const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(
+    null
+  );
+
   return (
     <>
       <Form {...form}>
@@ -679,16 +683,13 @@ export const Eksterior: React.FC<{
                                           onChange={({
                                             target: { value },
                                           }: any) => {
-                                            // Allow only digits and leading minus
                                             let cleaned = value
                                               .replace(/[^\d-]/g, "")
                                               .replace(/(?!^)-/g, "");
 
-                                            // Check if the value starts with a negative sign
                                             const isNegative =
                                               cleaned.startsWith("-");
 
-                                            // Remove the negative sign for formatting
                                             const numericPart = cleaned.replace(
                                               /-/g,
                                               ""
@@ -704,7 +705,6 @@ export const Eksterior: React.FC<{
                                                 formatted = "-" + formatted;
                                               }
                                             } else {
-                                              // Allow "-" or empty field without formatting
                                               formatted = isNegative ? "-" : "";
                                             }
 
@@ -738,6 +738,30 @@ export const Eksterior: React.FC<{
                                   <div
                                     className="relative h-[140px] w-[140px]"
                                     key={imgIndex}
+                                    draggable
+                                    onDragStart={() =>
+                                      setDraggedImageIndex(imgIndex)
+                                    }
+                                    onDragOver={(e) => e.preventDefault()}
+                                    onDrop={() => {
+                                      if (
+                                        draggedImageIndex === null ||
+                                        draggedImageIndex === imgIndex
+                                      )
+                                        return;
+
+                                      const newOrder = [...upload3DPhoto];
+                                      const draggedItem =
+                                        newOrder[draggedImageIndex];
+                                      newOrder.splice(draggedImageIndex, 1);
+                                      newOrder.splice(imgIndex, 0, draggedItem);
+
+                                      form.setValue(
+                                        `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.Hovedbilde`,
+                                        newOrder
+                                      );
+                                      setDraggedImageIndex(null);
+                                    }}
                                   >
                                     <img
                                       src={file}

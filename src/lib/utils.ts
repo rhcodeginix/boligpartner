@@ -16,13 +16,13 @@ export function cn(...inputs: ClassValue[]) {
 
 export const fetchHusmodellData = async (id: string) => {
   try {
-    const husmodellDocRef = doc(db, "house_model", id);
-    const docSnap = await getDoc(husmodellDocRef);
+    if (id) {
+      const husmodellDocRef = doc(db, "house_model", id);
+      const docSnap = await getDoc(husmodellDocRef);
 
-    if (docSnap.exists()) {
-      return docSnap.data();
-    } else {
-      console.error("No document found for ID:", id);
+      if (docSnap.exists()) {
+        return docSnap.data();
+      }
     }
   } catch (error) {
     console.error("Error fetching husmodell data:", error);
@@ -31,13 +31,15 @@ export const fetchHusmodellData = async (id: string) => {
 
 export const fetchSupplierData = async (id: string) => {
   try {
-    const supplierDocRef = doc(db, "suppliers", id);
-    const docSnap = await getDoc(supplierDocRef);
+    if (id) {
+      const supplierDocRef = doc(db, "suppliers", id);
+      const docSnap = await getDoc(supplierDocRef);
 
-    if (docSnap.exists()) {
-      return docSnap.data();
-    } else {
-      console.error("No document found for ID:", id);
+      if (docSnap.exists()) {
+        return docSnap.data();
+      } else {
+        console.error("No document found for ID:", id);
+      }
     }
   } catch (error) {
     console.error("Error fetching supplier data:", error);

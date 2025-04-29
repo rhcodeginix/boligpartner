@@ -259,8 +259,8 @@ export const MyLeads = () => {
         ),
       },
       {
-        accessorKey: "Oppdatert kl",
-        header: "Oppdatert kl",
+        accessorKey: "notaterFørsteSamtale",
+        header: "notaterFørsteSamtale",
         cell: ({ row }) => (
           <p className="text-sm font-semibold text-black w-[500px]">
             {row.original.leadData?.notaterFørsteSamtale}

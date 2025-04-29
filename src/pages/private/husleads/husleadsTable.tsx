@@ -231,7 +231,7 @@ export const HusleadsTable = () => {
         accessorKey: "status",
         header: "Status",
         cell: ({ row }) => (
-          <span className="px-3 py-1 rounded-full bg-[#F1F2FF] text-[#02107A] text-xs font-semibold">
+          <span className="px-3 py-1 rounded-full bg-[#F1F2FF] text-[#02107A] text-xs font-semibold whitespace-nowrap">
             Lead sendt
           </span>
         ),
