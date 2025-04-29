@@ -360,11 +360,46 @@ export const Prisliste: React.FC<{ setActiveTab: any }> = ({
                           {product.byggkostnaderID ? (
                             <div className="flex flex-col gap-[18px]">
                               <div className="flex items-center gap-3 justify-between">
-                                <h4 className="text-darkBlack text-base font-semibold">
+                                {/* <h4 className="text-darkBlack text-base font-semibold">
                                   {Byggekostnader[index].Headline}
-                                </h4>
+                                </h4> */}
+                                <div className="w-full">
+                                  <FormField
+                                    control={form.control}
+                                    name={`Byggekostnader.${index}.Headline`}
+                                    render={({ field, fieldState }) => (
+                                      <FormItem>
+                                        <p
+                                          className={`${
+                                            fieldState.error
+                                              ? "text-red"
+                                              : "text-black"
+                                          } mb-[6px] text-sm font-medium`}
+                                        >
+                                          Heading
+                                        </p>
+                                        <FormControl>
+                                          <div className="relative">
+                                            <Input
+                                              placeholder="Skriv inn Heading"
+                                              {...field}
+                                              className={`bg-white rounded-[8px] border text-black
+                                        ${
+                                          fieldState?.error
+                                            ? "border-red"
+                                            : "border-gray1"
+                                        } `}
+                                              type="text"
+                                            />
+                                          </div>
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
                                 <div
-                                  className={`flex items-center gap-1 font-medium ${
+                                  className={`w-max whitespace-nowrap flex items-center gap-1 font-medium ${
                                     fields.length === 1
                                       ? "text-gray cursor-not-allowed text-opacity-55"
                                       : "text-purple cursor-pointer"
@@ -610,11 +645,46 @@ export const Prisliste: React.FC<{ setActiveTab: any }> = ({
                           {product.TomtekostID ? (
                             <div className="flex flex-col gap-[18px]">
                               <div className="flex items-center gap-3 justify-between">
-                                <h4 className="text-darkBlack text-base font-semibold">
+                                {/* <h4 className="text-darkBlack text-base font-semibold">
                                   {Tomtekost[index].Headline}
-                                </h4>
+                                </h4> */}
+                                <div className="w-full">
+                                  <FormField
+                                    control={form.control}
+                                    name={`Tomtekost.${index}.Headline`}
+                                    render={({ field, fieldState }) => (
+                                      <FormItem>
+                                        <p
+                                          className={`${
+                                            fieldState.error
+                                              ? "text-red"
+                                              : "text-black"
+                                          } mb-[6px] text-sm font-medium`}
+                                        >
+                                          Heading
+                                        </p>
+                                        <FormControl>
+                                          <div className="relative">
+                                            <Input
+                                              placeholder="Skriv inn Heading"
+                                              {...field}
+                                              className={`bg-white rounded-[8px] border text-black
+                                        ${
+                                          fieldState?.error
+                                            ? "border-red"
+                                            : "border-gray1"
+                                        } `}
+                                              type="text"
+                                            />
+                                          </div>
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
                                 <div
-                                  className={`flex items-center gap-1 font-medium ${
+                                  className={`flex whitespace-nowrap w-max items-center gap-1 font-medium ${
                                     TomtekostFields.length === 1
                                       ? "text-gray cursor-not-allowed text-opacity-55"
                                       : "text-purple cursor-pointer"

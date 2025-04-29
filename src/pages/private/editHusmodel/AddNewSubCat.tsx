@@ -22,32 +22,79 @@ export const AddNewSubCat: React.FC<{
   formData: any;
   activeTabData: any;
   setCategory: any;
-}> = ({ onClose, formData, activeTabData, setCategory }) => {
+  editIndex?: any;
+  defaultValue?: string;
+}> = ({
+  onClose,
+  formData,
+  activeTabData,
+  setCategory,
+  editIndex,
+  defaultValue,
+}) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      Kategorinavn: defaultValue || "",
+    },
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     onClose();
-
-    const newSubCategory = { navn: data.Kategorinavn, produkter: [] };
+    const updatedName = data.Kategorinavn;
 
     const existingCategories =
       formData.getValues(`hovedkategorinavn.${activeTabData}.Kategorinavn`) ||
       [];
-    setCategory((prev: any) => {
-      const updatedCategory = [...prev];
-      updatedCategory[activeTabData] = {
-        ...updatedCategory[activeTabData],
-        Kategorinavn: [...existingCategories, newSubCategory],
-      };
-      return updatedCategory;
-    });
-    formData.setValue(
-      `hovedkategorinavn.${activeTabData}.Kategorinavn`,
-      [...existingCategories, newSubCategory],
-      { shouldValidate: true }
-    );
+    // setCategory((prev: any) => {
+    //   const updatedCategory = [...prev];
+    //   updatedCategory[activeTabData] = {
+    //     ...updatedCategory[activeTabData],
+    //     Kategorinavn: [...existingCategories, newSubCategory],
+    //   };
+    //   return updatedCategory;
+    // });
+    // formData.setValue(
+    //   `hovedkategorinavn.${activeTabData}.Kategorinavn`,
+    //   [...existingCategories, newSubCategory],
+    //   { shouldValidate: true }
+    // );
+    if (editIndex !== null && existingCategories[editIndex]) {
+      // Edit existing
+      const updatedCategories = [...existingCategories];
+      updatedCategories[editIndex].navn = updatedName;
+
+      setCategory((prev: any) => {
+        const updatedCategory = [...prev];
+        updatedCategory[activeTabData] = {
+          ...updatedCategory[activeTabData],
+          Kategorinavn: updatedCategories,
+        };
+        return updatedCategory;
+      });
+
+      formData.setValue(
+        `hovedkategorinavn.${activeTabData}.Kategorinavn`,
+        updatedCategories,
+        { shouldValidate: true }
+      );
+    } else {
+      // Add new
+      const newSubCategory = { navn: updatedName, produkter: [] };
+      setCategory((prev: any) => {
+        const updatedCategory = [...prev];
+        updatedCategory[activeTabData] = {
+          ...updatedCategory[activeTabData],
+          Kategorinavn: [...existingCategories, newSubCategory],
+        };
+        return updatedCategory;
+      });
+      formData.setValue(
+        `hovedkategorinavn.${activeTabData}.Kategorinavn`,
+        [...existingCategories, newSubCategory],
+        { shouldValidate: true }
+      );
+    }
   };
   return (
     <>

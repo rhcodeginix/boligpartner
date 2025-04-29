@@ -15,7 +15,7 @@ import Ic_upload_photo from "../../../assets/images/Ic_upload_photo.svg";
 import { Input } from "../../../components/ui/input";
 import Ic_delete_purple from "../../../assets/images/Ic_delete_purple.svg";
 import Ic_x_circle from "../../../assets/images/Ic_x_circle.svg";
-import { Plus, X } from "lucide-react";
+import { Pencil, Plus, X } from "lucide-react";
 import Modal from "../../../components/common/modal";
 import { AddNewSubCat } from "./AddNewSubCat";
 import { TextArea } from "../../../components/ui/textarea";
@@ -292,6 +292,7 @@ export const Eksterior: React.FC<{
   const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(
     null
   );
+  const [editSubCatIndex, setEditSubCatIndex] = useState<number | null>(null);
 
   return (
     <>
@@ -377,6 +378,16 @@ export const Eksterior: React.FC<{
                       onClick={() => setActiveSubTabData(index)}
                     >
                       <span className="text-sm">{cat.navn}</span>
+                      <div
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setEditSubCatIndex(index);
+                          setAddSubCategory(true);
+                        }}
+                      >
+                        <Pencil className="w-5 h-5 text-primary" />
+                      </div>
                       <img
                         src={Ic_x_circle}
                         alt="close"
@@ -434,7 +445,13 @@ export const Eksterior: React.FC<{
                       }}
                       onDrop={() => handleDrop()}
                     >
-                      <div className="flex flex-col gap-[18px]">
+                      <div
+                        className="flex flex-col gap-[18px] p-4 rounded-lg bg-white"
+                        style={{
+                          boxShadow:
+                            "0px 2px 4px -2px #1018280F, 0px 4px 8px -2px #1018281A",
+                        }}
+                      >
                         <div className="flex items-center gap-3 justify-between">
                           <h4 className="text-darkBlack text-base font-semibold">
                             Produktdetaljer
@@ -884,13 +901,30 @@ export const Eksterior: React.FC<{
         <Modal onClose={handleToggleSubCategoryPopup} isOpen={true}>
           <div className="bg-white relative rounded-[12px] p-6 md:m-0 w-full sm:w-[518px]">
             <h4 className="mb-[20px] text-darkBlack font-medium text-xl">
-              Legg til ny underkategori
+              {editSubCatIndex !== null
+                ? "Rediger underkategori"
+                : "Legg til ny underkategori"}
             </h4>
-            <AddNewSubCat
+            {/* <AddNewSubCat
               onClose={handleToggleSubCategoryPopup}
               formData={form}
               activeTabData={activeTabData}
               setCategory={setCategory}
+            /> */}
+            <AddNewSubCat
+              onClose={() => {
+                setAddSubCategory(false);
+                setEditSubCatIndex(null);
+              }}
+              formData={form}
+              activeTabData={activeTabData}
+              setCategory={setCategory}
+              editIndex={editSubCatIndex}
+              defaultValue={
+                editSubCatIndex !== null
+                  ? hovedkategorinavn[editSubCatIndex]?.navn || ""
+                  : ""
+              }
             />
           </div>
         </Modal>
