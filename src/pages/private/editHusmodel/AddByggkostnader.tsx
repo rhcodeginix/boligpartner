@@ -48,16 +48,11 @@ export const AddByggkostnader: React.FC<{
 
     data.byggkostnaderID = new Date().toISOString();
     const existingByggekostnader = formValue.getValues("Byggekostnader") || [];
+    existingByggekostnader.push(data);
 
-    const updatedByggekostnader = [
-      ...existingByggekostnader.map((item: any) =>
-        item.id === product.id ? { ...item, ...data } : item
-      ),
-      ...(existingByggekostnader.some((item: any) => item.id === product.id) ||
-      !product.id
-        ? []
-        : [{ ...product, ...data }]),
-    ].filter((item: any) => item.id?.trim());
+    const updatedByggekostnader = existingByggekostnader.filter(
+      (item: any) => item.byggkostnaderID
+    );
 
     updatedByggekostnader.length &&
       formValue.setValue("Byggekostnader", updatedByggekostnader, {
