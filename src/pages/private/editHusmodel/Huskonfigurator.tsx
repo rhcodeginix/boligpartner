@@ -120,8 +120,9 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                     );
                     setActiveTabData(0);
                   }}
+                  className="w-5 h-5"
                 >
-                  <img src={Ic_trash} alt="delete" />
+                  <img src={Ic_trash} alt="delete" className="w-full h-full" />
                 </div>
               </div>
             </div>
