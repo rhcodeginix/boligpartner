@@ -36,7 +36,6 @@ export const EditHouseModel = () => {
       getData();
     }
   }, [id]);
-  console.log(house);
 
   return (
     <>
