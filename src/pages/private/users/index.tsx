@@ -21,6 +21,7 @@ import Ic_filter from "../../../assets/images/Ic_filter.svg";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { useNavigate } from "react-router-dom";
+import { convertTimestamp } from "../../../lib/utils";
 
 export const Users = () => {
   const [page, setPage] = useState(1);
@@ -102,6 +103,43 @@ export const Users = () => {
         cell: ({ row }) => (
           <p className="text-sm text-darkBlack">
             {row.original?.propertyCount}
+          </p>
+        ),
+      },
+      {
+        accessorKey: "Date registrated",
+        header: "Date registrated",
+        cell: ({ row }) => (
+          <p className="text-sm font-semibold text-black">
+            {row.original.createdAt
+              ? convertTimestamp(
+                  row.original.createdAt?.seconds,
+                  row.original.createdAt?.nanoseconds
+                )
+              : "-"}
+          </p>
+        ),
+      },
+      {
+        accessorKey: "OppdatertKlokke",
+        header: "OppdatertKlokke",
+        cell: ({ row }) => (
+          <p className="text-sm font-semibold text-black">
+            {row.original.updatedAt
+              ? convertTimestamp(
+                  row.original.updatedAt?.seconds,
+                  row.original.updatedAt?.nanoseconds
+                )
+              : "-"}
+          </p>
+        ),
+      },
+      {
+        accessorKey: "loginCount",
+        header: "Antall pålogginger",
+        cell: ({ row }) => (
+          <p className="text-sm text-darkBlack">
+            {row.original?.loginCount ? row.original?.loginCount : 0}
           </p>
         ),
       },
