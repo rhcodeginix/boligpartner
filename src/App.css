@@ -57,6 +57,9 @@ input[type="number"] {
   width: 40px;
   height: 24px;
 }
+.react-datepicker-wrapper {
+  display: flex;
+}
 .toggle-input {
   display: none;
 }

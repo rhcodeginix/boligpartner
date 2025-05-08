@@ -36,13 +36,13 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
         value={value}
         placeholder={placeholderText}
         readOnly
-        className="text-sm font-medium focus-within:outline-none w-[100px]"
+        className="text-sm font-medium focus-within:outline-none w-full"
       />
     </div>
   );
 
   return (
-    <div>
+    <div className="w-full">
       <DatePicker
         selected={selectedDate}
         onChange={onDateChange}

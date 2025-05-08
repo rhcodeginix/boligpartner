@@ -92,7 +92,6 @@ export const Navbar: React.FC = () => {
           >
             Dashboard
           </Link>
-
           <Link
             to={"/Leverandorer"}
             className={`text-base font-medium py-2 px-3 rounded-[6px] ${
@@ -150,6 +149,16 @@ export const Navbar: React.FC = () => {
               Min Lead
             </Link>
           )}
+          <Link
+            to={"/bank-leads"}
+            className={`text-base font-medium py-2 px-3 rounded-[6px] ${
+              currentPath === "/bank-leads"
+                ? "bg-lightPurple text-primary"
+                : "text-black"
+            }`}
+          >
+            Bank Leads
+          </Link>
         </div>
         <div className="flex items-center gap-4 relative">
           <div className="flex items-center gap-1">
