@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Kunden } from "./kunden";
 import { Banknote, ChevronRight, ScrollText, User } from "lucide-react";
 import { PlotHusmodell } from "./plotHusmodell";
 import { ProjectAccounting } from "./projectAccounting";
 import { Oppsummering } from "./oppsummering";
+import { useLocation } from "react-router-dom";
+import { fetchBankLeadData } from "../../../lib/utils";
 
 export const BankleadsTabs = () => {
   const [activeTab, setActiveTab] = useState<any>(0);
@@ -13,7 +15,52 @@ export const BankleadsTabs = () => {
     { label: "Prosjektregnskap", icon: <ScrollText /> },
     { label: "Oppsummering", icon: <Banknote /> },
   ];
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/");
+  const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const [bankData, setBankData] = useState<any>();
 
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    const getData = async () => {
+      const data = await fetchBankLeadData(id);
+      setBankData(data);
+    };
+
+    getData();
+  }, [id]);
+  const projectAccount = bankData?.ProjectAccount?.husmodellData;
+
+  const parsePrice = (value: any): number => {
+    if (!value) return 0;
+    return parseFloat(
+      String(value).replace(/\s/g, "").replace(/\./g, "").replace(",", ".")
+    );
+  };
+  const Byggekostnader = projectAccount?.Byggekostnader ?? [];
+  const Tomtekost = projectAccount?.Tomtekost ?? [];
+
+  const totalPrisOfByggekostnader = [...Byggekostnader].reduce(
+    (acc: number, prod: any, index: number) => {
+      const value = prod?.pris;
+      return acc + parsePrice(value);
+    },
+    0
+  );
+
+  const totalPrisOfTomtekost = [...Tomtekost].reduce(
+    (acc: number, prod: any, index: number) => {
+      const value = prod.pris;
+      return acc + parsePrice(value);
+    },
+    0
+  );
+
+  const grandTotal = totalPrisOfTomtekost + totalPrisOfByggekostnader;
+  const formattedGrandTotal = grandTotal.toLocaleString("nb-NO");
   return (
     <>
       <div>
@@ -57,9 +104,9 @@ export const BankleadsTabs = () => {
               <div>
                 <p className="text-[#5D6B98] mb-2 text-sm">Tilbudspris</p>
                 <h3 className="text-darkBlack font-semibold text-xl">
-                  6.042.150 NOK
+                  {formattedGrandTotal ? formattedGrandTotal : 0} NOK
                 </h3>
-                <p className="text-sm text-gray">+ tomtepris</p>
+                <p className="text-sm text-gray">inkl. tomtepris</p>
               </div>
             </div>
           </div>
@@ -97,9 +144,9 @@ export const BankleadsTabs = () => {
               <div>
                 <p className="text-[#5D6B98] mb-2 text-sm">Tilbudspris</p>
                 <h3 className="text-darkBlack font-semibold text-xl">
-                  6.042.150 NOK
+                  {formattedGrandTotal ? formattedGrandTotal : 0} NOK
                 </h3>
-                <p className="text-sm text-gray">+ tomtepris</p>
+                <p className="text-sm text-gray">inkl. tomtepris</p>
               </div>
             </div>
           </div>
@@ -144,9 +191,9 @@ export const BankleadsTabs = () => {
               <div>
                 <p className="text-[#5D6B98] mb-2 text-sm">Tilbudspris</p>
                 <h3 className="text-darkBlack font-semibold text-xl">
-                  6.042.150 NOK
+                  {formattedGrandTotal ? formattedGrandTotal : 0} NOK
                 </h3>
-                <p className="text-sm text-gray">+ tomtepris</p>
+                <p className="text-sm text-gray">inkl. tomtepris</p>
               </div>
             </div>
           </div>
@@ -163,14 +210,18 @@ export const BankleadsTabs = () => {
               {tabData.map((tab, index) => (
                 <button
                   key={index}
-                  className={`cursor-auto flex items-center gap-2 text-darkBlack py-2 px-3 rounded-lg ${
+                  className={`${
+                    id ? "cursor-pointer" : "cursor-auto"
+                  } flex items-center gap-2 text-darkBlack py-2 px-3 rounded-lg ${
                     activeTab === index
                       ? "font-semibold bg-[#7839EE] text-white"
                       : "text-[#4D4D4D]"
                   }`}
-                  // onClick={() =>
-                  //   setActiveTab ? setActiveTab(index) : undefined
-                  // }
+                  onClick={() => {
+                    if (id) {
+                      setActiveTab(index);
+                    }
+                  }}
                 >
                   {tab.icon}
                   {tab.label}

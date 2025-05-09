@@ -1,6 +1,6 @@
 import { Trash2, UserRoundCheck } from "lucide-react";
 // import { Spinner } from "../../../components/Spinner";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -12,11 +12,10 @@ import {
   FormMessage,
 } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
-import { phoneNumberValidations } from "../../../lib/utils";
+import { fetchBankLeadData, phoneNumberValidations } from "../../../lib/utils";
 import { parsePhoneNumber } from "react-phone-number-input";
 import { InputMobile } from "../../../components/ui/inputMobile";
 import { Input } from "../../../components/ui/input";
-import DatePickerComponent from "../../../components/ui/datepicker";
 import {
   Select,
   SelectContent,
@@ -25,6 +24,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../components/ui/select";
+import toast from "react-hot-toast";
+import { v4 as uuidv4 } from "uuid";
+import { useLocation, useNavigate } from "react-router-dom";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../../config/firebaseConfig";
+import { Spinner } from "../../../components/Spinner";
+import ApiUtils from "../../../api";
 
 const formSchema = z.object({
   Kundeinformasjon: z
@@ -61,8 +67,8 @@ const formSchema = z.object({
           .string()
           .email({ message: "Vennligst skriv inn en gyldig e-postadresse." })
           .min(1, { message: "E-posten må være på minst 2 tegn." }),
-        dato: z.union([z.date(), z.null()]).refine((val) => val !== null, {
-          message: "Dato er påkrevd.",
+        dato: z.string().min(1, {
+          message: "Fødselsdato må bestå av minst 2 tegn.",
         }),
         Personnummer: z.string().min(1, {
           message: "Personnummer må bestå av minst 2 tegn.",
@@ -76,6 +82,12 @@ const formSchema = z.object({
 export const Kunden: React.FC<{
   setActiveTab: any;
 }> = ({ setActiveTab }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const pathSegments = location.pathname.split("/");
+  const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const [loading, setLoading] = useState(true);
+
   const form = useForm<any>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -86,19 +98,56 @@ export const Kunden: React.FC<{
           l_name: "",
           Adresse: "",
           EPost: "",
-          dato: null,
+          dato: "",
           Personnummer: "",
           Kundetype: "",
         },
       ],
     },
   });
-  //   const [loading, setLoading] = useState(true);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "Kundeinformasjon",
   });
+  const [phoneCallApiData, setPhoneCallApiData] = useState<any>();
+
+  useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
+    const getData = async () => {
+      const data = await fetchBankLeadData(id);
+
+      if (data && data?.Kunden) {
+        if (data?.Kunden?.phoneCallApiData) {
+          setPhoneCallApiData(data?.Kunden?.phoneCallApiData);
+        }
+
+        if (data.Kunden?.Kundeinformasjon) {
+          const formattedInfo: any[] = [];
+
+          data.Kunden.Kundeinformasjon.forEach((info: any, index: number) => {
+            const formattedItem: any = {};
+            Object.entries(info).forEach(([key, value]: any) => {
+              if (value !== undefined && value !== null) {
+                formattedItem[key] = value;
+              }
+            });
+            formattedInfo.push(formattedItem);
+          });
+
+          form.setValue(`Kundeinformasjon`, formattedInfo);
+        }
+      }
+
+      setLoading(false);
+    };
+
+    getData();
+  }, [form, id, phoneCallApiData]);
 
   const addProduct = () => {
     append({
@@ -107,7 +156,7 @@ export const Kunden: React.FC<{
       l_name: "",
       Adresse: "",
       EPost: "",
-      dato: null,
+      dato: "",
       Personnummer: "",
       Kundetype: "",
     } as any);
@@ -119,17 +168,76 @@ export const Kunden: React.FC<{
   };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
     setActiveTab(1);
 
-    // try {
+    try {
+      const formatDate = (date: Date) => {
+        return date
+          .toLocaleString("sv-SE", { timeZone: "UTC" })
+          .replace(",", "");
+      };
 
-    // } catch (error) {
-    //   console.error("Firestore operation failed:", error);
-    //   toast.error("Something went wrong. Please try again.", {
-    //     position: "top-right",
-    //   });
-    // }
+      const uniqueId = id ? id : uuidv4();
+      const docRef = doc(db, "bank_leads", uniqueId);
+
+      const BankData = {
+        ...data,
+        id: uniqueId,
+        ...(phoneCallApiData ? { phoneCallApiData } : {}),
+      };
+
+      if (id) {
+        await updateDoc(docRef, {
+          Kunden: BankData,
+          updatedAt: formatDate(new Date()),
+        });
+        toast.success("Updated successfully", {
+          position: "top-right",
+        });
+        navigate(`/bank-leads/${uniqueId}`);
+        setActiveTab(1);
+      } else {
+        await setDoc(docRef, {
+          Kunden: BankData,
+          updatedAt: formatDate(new Date()),
+          createdAt: formatDate(new Date()),
+        });
+        toast.success("Added successfully", { position: "top-right" });
+        navigate(`/bank-leads/${uniqueId}`);
+        setActiveTab(1);
+      }
+    } catch (error) {
+      console.error("Firestore operation failed:", error);
+      toast.error("Something went wrong. Please try again.", {
+        position: "top-right",
+      });
+    }
+  };
+
+  const handlePhoneChange = async (phoneNumber: string, index: number) => {
+    if (phoneNumber) {
+      try {
+        const response = await ApiUtils.handleLookup(phoneNumber);
+
+        if (response) {
+          setPhoneCallApiData(response);
+          form.setValue(
+            `Kundeinformasjon.${index}.f_name`,
+            response?.contacts[0]?.firstName
+          );
+          form.setValue(
+            `Kundeinformasjon.${index}.l_name`,
+            response?.contacts[0]?.lastName
+          );
+          form.setValue(
+            `Kundeinformasjon.${index}.Adresse`,
+            response?.contacts[0]?.geography?.address?.addressString
+          );
+        }
+      } catch (error: any) {
+        console.error(error);
+      }
+    }
   };
 
   return (
@@ -215,7 +323,12 @@ export const Kunden: React.FC<{
                               } `}
                                       type="tel"
                                     />
-                                    <div className="border-primary border-2 rounded-lg py-2 px-3 text-primary font-semibold cursor-pointer h-12 flex items-center justify-center">
+                                    <div
+                                      className="border-primary border-2 rounded-lg py-2 px-3 text-primary font-semibold cursor-pointer h-12 flex items-center justify-center"
+                                      onClick={() =>
+                                        handlePhoneChange(field.value, index)
+                                      }
+                                    >
                                       Søk på telefonummer
                                     </div>
                                   </div>
@@ -409,17 +522,17 @@ export const Kunden: React.FC<{
                                     Fødselsdato
                                   </p>
                                   <FormControl>
-                                    <div className="w-full">
-                                      <DatePickerComponent
-                                        selectedDate={field.value ?? null}
-                                        onDateChange={field.onChange}
-                                        dateFormat="MM/dd/yyyy"
-                                        placeholderText="Select Fødselsdato"
-                                        className={`border h-11 ${
-                                          fieldState.error
-                                            ? "border-red"
-                                            : "border-gray1"
-                                        } rounded-[8px] flex gap-2 items-center py-[10px] px-4 cursor-pointer shadow-shadow1 w-full`}
+                                    <div className="relative">
+                                      <Input
+                                        placeholder="Skriv inn Fødselsdato"
+                                        {...field}
+                                        className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                        type="date"
                                       />
                                     </div>
                                   </FormControl>
@@ -498,8 +611,8 @@ export const Kunden: React.FC<{
                                           <SelectItem value="Privatperson">
                                             Privatperson
                                           </SelectItem>
-                                          <SelectItem value="Offentlig person">
-                                            Offentlig person
+                                          <SelectItem value="Selskap">
+                                            Selskap
                                           </SelectItem>
                                         </SelectGroup>
                                       </SelectContent>
@@ -527,13 +640,13 @@ export const Kunden: React.FC<{
               className="text-white rounded-lg w-max bg-purple font-medium justify-center text-base flex items-center gap-1 cursor-pointer h-full px-4 py-[10px]"
               onClick={addProduct}
             >
-              + Legg til ny byggekostnad
+              + Legg til medlåntaker
             </div>
           </div>
           <div className="flex justify-end w-full gap-5 items-center sticky bottom-0 bg-white z-50 border-t border-gray2 p-4 left-0">
             <div className="w-1/2 sm:w-auto">
               <Button
-                text="Avbryt"
+                text="Tilbake"
                 className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
               />
             </div>
@@ -545,7 +658,7 @@ export const Kunden: React.FC<{
               />
             </div>
           </div>
-          {/* {loading && <Spinner />} */}
+          {loading && <Spinner />}
         </form>
       </Form>
     </>

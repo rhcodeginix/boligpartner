@@ -22,10 +22,20 @@ import {
   SelectValue,
 } from "../../../components/ui/select";
 import ApiUtils from "../../../api";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
-import { useNavigate } from "react-router-dom";
-import { fetchAdminDataByEmail } from "../../../lib/utils";
+import { useLocation, useNavigate } from "react-router-dom";
+import { fetchAdminDataByEmail, fetchBankLeadData } from "../../../lib/utils";
+import toast from "react-hot-toast";
+import { Spinner } from "../../../components/Spinner";
 
 const formSchema = z.object({
   plot: z.object({
@@ -36,9 +46,6 @@ const formSchema = z.object({
     Seksjonsnummer: z.string().optional(),
     Festenummer: z.string().optional(),
     alreadyHavePlot: z.string().optional(),
-    tomtekostnader: z.string().min(1, {
-      message: "Estimert totale tomtekostnader må bestå av minst 1 tegn.",
-    }),
     Kommentar: z.string().min(1, {
       message: "Kommentar til banken må bestå av minst 1 tegn.",
     }),
@@ -47,9 +54,6 @@ const formSchema = z.object({
     housemodell: z
       .string()
       .min(1, { message: "Housemodell must må spesifiseres." }),
-    byggekostnader: z.string().min(1, {
-      message: "Estimert totale byggekostnader må bestå av minst 1 tegn.",
-    }),
     Kommentar: z.string().min(1, {
       message: "Kommentar til banken må bestå av minst 1 tegn.",
     }),
@@ -59,11 +63,15 @@ const formSchema = z.object({
 export const PlotHusmodell: React.FC<{
   setActiveTab: any;
 }> = ({ setActiveTab }) => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const pathSegments = location.pathname.split("/");
+  const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const [loading, setLoading] = useState(true);
   const form = useForm<any>({
     resolver: zodResolver(formSchema),
   });
-  //   const [loading, setLoading] = useState(true);
+
   const [addressData, setAddressData] = useState<any>(null);
   const [showAddressDropdown, setShowAddressDropdown] = useState(true);
 
@@ -89,11 +97,32 @@ export const PlotHusmodell: React.FC<{
   const selectedPlotType = form.watch("plot.alreadyHavePlot");
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
-    setActiveTab(2);
-    navigate(
-      `?houseId=${data.house.housemodell}&kommunenummer=${data?.plot?.Kommunenummer}&gardsnummer=${data?.plot?.Gårdsnummer}&bruksnummer=${data?.plot?.Bruksnummer}`
-    );
+    try {
+      const docRef = doc(db, "bank_leads", String(id));
+
+      const BankData = {
+        ...data,
+        id: id,
+      };
+      const formatDate = (date: Date) => {
+        return date
+          .toLocaleString("sv-SE", { timeZone: "UTC" })
+          .replace(",", "");
+      };
+      await updateDoc(docRef, {
+        plotHusmodell: BankData,
+        updatedAt: formatDate(new Date()),
+      });
+      toast.success("Updated successfully", { position: "top-right" });
+
+      navigate(`/bank-leads/${id}`);
+      setActiveTab(2);
+    } catch (error) {
+      console.error("Firestore operation failed:", error);
+      toast.error("Something went wrong. Please try again.", {
+        position: "top-right",
+      });
+    }
   };
 
   const email = sessionStorage.getItem("Iplot_admin");
@@ -149,6 +178,29 @@ export const PlotHusmodell: React.FC<{
   useEffect(() => {
     fetchHusmodellData();
   }, [permission]);
+
+  useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
+    const getData = async () => {
+      const data = await fetchBankLeadData(id);
+
+      if (data && data.plotHusmodell) {
+        Object.entries(data.plotHusmodell).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            form.setValue(key as any, value);
+          }
+        });
+      }
+
+      setLoading(false);
+    };
+
+    getData();
+  }, [form, id, house]);
 
   return (
     <>
@@ -501,57 +553,6 @@ export const PlotHusmodell: React.FC<{
                   </div>
                 </div>
                 <div className="flex gap-6">
-                  <div className="w-[35%]">
-                    <FormField
-                      control={form.control}
-                      name="plot.tomtekostnader"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Estimert{" "}
-                            <span className="font-bold">
-                              totale tomtekostnader
-                            </span>{" "}
-                            (kjøp + klargjøring):
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Estimert totale tomtekostnader"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                  ${
-                                    fieldState?.error
-                                      ? "border-red"
-                                      : "border-gray1"
-                                  } `}
-                                inputMode="numeric"
-                                type="text"
-                                onChange={({ target: { value } }: any) =>
-                                  field.onChange({
-                                    target: {
-                                      name: `plot.tomtekostnader`,
-                                      value: value.replace(/\D/g, "")
-                                        ? new Intl.NumberFormat("no-NO").format(
-                                            Number(value.replace(/\D/g, ""))
-                                          )
-                                        : "",
-                                    },
-                                  })
-                                }
-                                value={field.value}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
                   <div className="w-[65%]">
                     <FormField
                       control={form.control}
@@ -657,57 +658,6 @@ export const PlotHusmodell: React.FC<{
                   <div className="w-[65%]"></div>
                 </div>
                 <div className="flex gap-6">
-                  <div className="w-[35%]">
-                    <FormField
-                      control={form.control}
-                      name="house.byggekostnader"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Estimert{" "}
-                            <span className="font-bold">
-                              totale byggekostnader
-                            </span>{" "}
-                            (oppstilling på neste side):
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Estimert totale byggekostnader"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                  ${
-                                    fieldState?.error
-                                      ? "border-red"
-                                      : "border-gray1"
-                                  } `}
-                                inputMode="numeric"
-                                type="text"
-                                onChange={({ target: { value } }: any) =>
-                                  field.onChange({
-                                    target: {
-                                      name: `house.byggekostnader`,
-                                      value: value.replace(/\D/g, "")
-                                        ? new Intl.NumberFormat("no-NO").format(
-                                            Number(value.replace(/\D/g, ""))
-                                          )
-                                        : "",
-                                    },
-                                  })
-                                }
-                                value={field.value}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
                   <div className="w-[65%]">
                     <FormField
                       control={form.control}
@@ -749,7 +699,7 @@ export const PlotHusmodell: React.FC<{
           <div className="flex justify-end w-full gap-5 items-center sticky bottom-0 bg-white z-50 border-t border-gray2 p-4 left-0">
             <div onClick={() => setActiveTab(0)} className="w-1/2 sm:w-auto">
               <Button
-                text="Avbryt"
+                text="Tilbake"
                 className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
               />
             </div>
@@ -761,7 +711,7 @@ export const PlotHusmodell: React.FC<{
               />
             </div>
           </div>
-          {/* {loading && <Spinner />} */}
+          {loading && <Spinner />}
         </form>
       </Form>
     </>

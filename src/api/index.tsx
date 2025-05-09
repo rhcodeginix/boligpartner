@@ -28,6 +28,29 @@ const ApiUtils = {
       throw error;
     }
   },
+  handleLookup: async (phoneNumber: string) => {
+    if (!phoneNumber) return;
+    const cleanedNumber = phoneNumber.replace(/\D/g, "").replace(/^47/, "");
+    try {
+      const response = await fetch(
+        `https://services.api1881.no/lookup/phonenumber/${cleanedNumber}`,
+        {
+          method: "GET",
+          headers: {
+            "Ocp-Apim-Subscription-Key": "cce12bb764f34e9083eec0f57fd0dc53",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (err: any) {
+      console.log(err);
+    }
+  },
 };
 
 export default ApiUtils;

@@ -29,6 +29,21 @@ export const fetchHusmodellData = async (id: string) => {
   }
 };
 
+export const fetchBankLeadData = async (id: string) => {
+  try {
+    if (id) {
+      const docRef = doc(db, "bank_leads", id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        return docSnap.data();
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching bank lead data:", error);
+  }
+};
+
 export const fetchSupplierData = async (id: string) => {
   try {
     if (id) {
@@ -188,4 +203,18 @@ export function formatDateOnly(date: Date) {
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
+}
+
+export function TimestampDisplay(dato: any) {
+  const date = new Date(
+    dato.seconds * 1000 + Math.floor(dato.nanoseconds / 1000000)
+  );
+
+  const formattedDate = date.toISOString().split("T")[0].replace(/-/g, ".");
+
+  return formattedDate;
+}
+export function formatSpaceSeparatedToNOK(value: string): string {
+  const numericValue = Number(value.replace(/\s/g, ""));
+  return numericValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " NOK";
 }

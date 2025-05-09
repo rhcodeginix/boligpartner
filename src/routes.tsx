@@ -64,6 +64,7 @@ export const routes = createBrowserRouter([
       { path: "/my-leads", element: <MyLeads /> },
       { path: "/my-leads-details/*", element: <MyLeadsDetail /> },
       { path: "/bank-leads", element: <BankleadsTabs /> },
+      { path: "/bank-leads/*", element: <BankleadsTabs /> },
     ],
   },
 ]);
