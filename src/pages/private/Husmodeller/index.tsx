@@ -1,41 +1,115 @@
 import { useEffect, useState } from "react";
 import Button from "../../../components/common/button";
-import { HusmodellerTable } from "./HusmodellerTable";
-import { fetchAdminDataByEmail } from "../../../lib/utils";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { db } from "../../../config/firebaseConfig";
+import { Spinner } from "../../../components/Spinner";
+import { useNavigate } from "react-router-dom";
 
 export const Husmodeller = () => {
-  const [isAdd, setIsAdd] = useState(false);
-  const email = sessionStorage.getItem("Iplot_admin");
+  const navigate = useNavigate();
+  const [houseModels, setHouseModels] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchHusmodellData = async () => {
+    setIsLoading(true);
+    try {
+      let q = query(
+        collection(db, "housemodell_configure_broker"),
+        orderBy("updatedAt", "desc")
+      );
+      const querySnapshot = await getDocs(q);
+
+      const data: any = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setHouseModels(data);
+    } catch (error) {
+      console.error("Error fetching husmodell data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const getData = async () => {
-      const data = await fetchAdminDataByEmail();
-      if (data) {
-        const finalData = data?.modulePermissions?.find(
-          (item: any) => item.name === "Husmodell"
-        );
-        setIsAdd(finalData?.permissions?.add);
-      }
-    };
-
-    getData();
+    fetchHusmodellData();
   }, []);
+
   return (
     <>
-      <div className="px-6 pt-6 pb-16 flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-darkBlack font-medium text-[30px]">
-            Alle hus- og hyttemodeller
+      {isLoading && <Spinner />}
+
+      <div className="p-8 flex gap-3 items-center justify-between bg-lightPurple">
+        <div>
+          <h1 className="text-darkBlack font-medium text-[32px] mb-2">
+            Husmodell du la til
           </h1>
-          {(isAdd || email === "andre.finger@gmail.com") && (
-            <Button
-              text="Legg til ny modell"
-              className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
-              path="/add-husmodell"
-            />
-          )}
+          <p className="text-secondary text-lg">
+            Here is the list of house model you have added you can always add a
+            new house form add house model
+          </p>
         </div>
-        <HusmodellerTable />
+        <Button
+          text="Legg til ny modell"
+          className="border border-purple bg-purple text-white text-base rounded-[40px] h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
+          path="/add-husmodell"
+        />
+      </div>
+      <div className="p-8 grid grid-cols-4 gap-x-6 gap-y-[40px]">
+        {houseModels &&
+          houseModels.length > 0 &&
+          houseModels?.map((item: any, index: number) => {
+            return (
+              <div key={index}>
+                <div className="w-full h-[243px] mb-4">
+                  <img
+                    src={item?.Husdetaljer?.photo}
+                    alt="house"
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                </div>
+                <h4 className="text-darkBlack font-medium mb-1">
+                  {item?.Husdetaljer?.Hustittel}
+                </h4>
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="text-secondary text-sm">
+                    <span className="text-black font-semibold">
+                      {item?.Husdetaljer?.BRATotal}
+                    </span>{" "}
+                    m<sup>2</sup>
+                  </div>
+                  <div className="h-[12px] w-[1px] border-l border-[#DCDFEA]"></div>
+                  <div className="text-secondary text-sm">
+                    <span className="text-black font-semibold">
+                      {item?.Husdetaljer?.Soverom}
+                    </span>{" "}
+                    soverom
+                  </div>
+                  <div className="h-[12px] w-[1px] border-l border-[#DCDFEA]"></div>
+                  <div className="text-secondary text-sm">
+                    <span className="text-black font-semibold">
+                      {item?.Husdetaljer?.Bad}
+                    </span>{" "}
+                    bad
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 justify-between">
+                  <div className="flex flex-col gap-1">
+                    <p className="text-secondary text-sm">Pris fra</p>
+                    <h5 className="text-black text-base font-semibold">
+                      {item?.Husdetaljer?.pris}
+                    </h5>
+                  </div>
+                  <div
+                    className="border-purple border-2 rounded-[40px] py-2 px-5 text-purple font-medium h-[40px] flex items-center justify-center cursor-pointer"
+                    onClick={() => navigate(`/se-husmodell/${item?.id}`)}
+                  >
+                    Utforske
+                  </div>
+                </div>
+              </div>
+            );
+          })}
       </div>
     </>
   );

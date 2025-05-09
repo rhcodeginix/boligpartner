@@ -12,14 +12,14 @@ interface TabsProps {
 
 const Tabs: React.FC<TabsProps> = ({ tabs, setActiveTab, activeTab }) => {
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-2">
       {tabs.map((tab, index) => (
         <button
           key={index}
-          className={`border-b-[3px] text-darkBlack py-3 px-5 ${
+          className={`py-2 px-3 rounded-lg ${
             activeTab === index
-              ? "border-primary font-semibold bg-lightPurple rounded-t-[12px]"
-              : "border-transparent"
+              ? "font-semibold text-purple shadow-shadow1"
+              : "text-black"
           } ${setActiveTab ? "cursor-pointer" : "cursor-auto"}`}
           onClick={() => (setActiveTab ? setActiveTab(index) : undefined)}
         >

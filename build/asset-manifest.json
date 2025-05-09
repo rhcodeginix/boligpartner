@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.295570cf.css",
-    "main.js": "/static/js/main.3ca6a6dc.js",
+    "main.css": "/static/css/main.d79a846a.css",
+    "main.js": "/static/js/main.70dac091.js",
     "static/js/453.315213a9.chunk.js": "/static/js/453.315213a9.chunk.js",
     "static/media/Img_product_3d_img1.png": "/static/media/Img_product_3d_img1.65392a8a99c118933916.png",
     "static/media/Ic_logo.svg": "/static/media/Ic_logo.f93094d3ad1c627dec4331dcfdf84527.svg",
@@ -12,19 +12,16 @@
     "static/media/Ic_delete_purple.svg": "/static/media/Ic_delete_purple.e86d0ef5ee16d2148126c2aa19d63041.svg",
     "static/media/Ic_trash.svg": "/static/media/Ic_trash.470840ab3fb61eb8b0c47fe0899784ba.svg",
     "static/media/Ic_x_circle.svg": "/static/media/Ic_x_circle.d0042930fd1caed79d02556d7abbfece.svg",
-    "static/media/Ic_file.svg": "/static/media/Ic_file.324c8ee680fc673c1552b8b82bb6f9d3.svg",
     "static/media/Ic_info_circle.svg": "/static/media/Ic_info_circle.f235c5d49af556aa298afcd66ae739cd.svg",
-    "static/media/Ic_search.svg": "/static/media/Ic_search.d0212c92f08c853ef9e4c155ff66b447.svg",
     "static/media/Ic_download_primary.svg": "/static/media/Ic_download_primary.61971a5f2140e0283ac19ce7e3fe513b.svg",
-    "static/media/Ic_filter.svg": "/static/media/Ic_filter.bc265c4279d0c97384b9abd3c2aa39ad.svg",
     "static/media/Ic_close.svg": "/static/media/Ic_close.92ec46151263d65efaf8b92ffe2ac500.svg",
     "static/media/Ic_chevron_up.svg": "/static/media/Ic_chevron_up.70a7dde1eded3ff447c7485f89ecdbc4.svg",
-    "main.295570cf.css.map": "/static/css/main.295570cf.css.map",
-    "main.3ca6a6dc.js.map": "/static/js/main.3ca6a6dc.js.map",
+    "main.d79a846a.css.map": "/static/css/main.d79a846a.css.map",
+    "main.70dac091.js.map": "/static/js/main.70dac091.js.map",
     "453.315213a9.chunk.js.map": "/static/js/453.315213a9.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.295570cf.css",
-    "static/js/main.3ca6a6dc.js"
+    "static/css/main.d79a846a.css",
+    "static/js/main.70dac091.js"
   ]
 }

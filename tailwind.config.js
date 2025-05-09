@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {},
     colors: {
-      black: "#344054",
+      black: "#30374F",
       darkBlack: "#101828",
       primary: "#6941C6",
       lightPurple: "#F9F5FF",
@@ -15,13 +15,14 @@ module.exports = {
       gray: "#667085",
       lightGreen: "#ECFDF3",
       darkGreen: "#027A48",
-      purple: "#7F56D9",
+      purple: "#7839EE",
       white: "#fff",
       gray2: "#D0D5DD",
       gray3: "#F9F9FB",
       red: "red",
       green: "#12B76A",
       green2: "#008E6D",
+      secondary: "#5D6B98",
     },
     borderColor: {
       gray1: "#D0D5DD",

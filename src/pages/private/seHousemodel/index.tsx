@@ -44,7 +44,7 @@ export const SeHouseModel = () => {
           <div className="bg-lightPurple py-4 px-6">
             <div className="flex items-center gap-3 mb-6">
               <Link to={"/Husmodell"} className="text-gray text-sm font-medium">
-                Husmodeller
+                Husmodell
               </Link>
               <ChevronRight className="text-gray2 w-4 h-4" />
               <span className="text-primary text-sm font-medium">
