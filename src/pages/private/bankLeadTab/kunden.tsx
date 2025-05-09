@@ -12,7 +12,11 @@ import {
   FormMessage,
 } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
-import { fetchBankLeadData, phoneNumberValidations } from "../../../lib/utils";
+import {
+  fetchAdminDataByEmail,
+  fetchBankLeadData,
+  phoneNumberValidations,
+} from "../../../lib/utils";
 import { parsePhoneNumber } from "react-phone-number-input";
 import { InputMobile } from "../../../components/ui/inputMobile";
 import { Input } from "../../../components/ui/input";
@@ -105,6 +109,17 @@ export const Kunden: React.FC<{
       ],
     },
   });
+  const [createData, setCreateData] = useState<any>(null);
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        setCreateData(data);
+      }
+    };
+
+    getData();
+  }, []);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -166,7 +181,20 @@ export const Kunden: React.FC<{
       remove(index);
     }
   };
+  const [permission, setPermission] = useState<any>(null);
+  const email = sessionStorage.getItem("Iplot_admin");
 
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        const finalSupData = data?.supplier;
+        setPermission(finalSupData);
+      }
+    };
+
+    getData();
+  }, []);
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setActiveTab(1);
 
@@ -201,6 +229,12 @@ export const Kunden: React.FC<{
           Kunden: BankData,
           updatedAt: formatDate(new Date()),
           createdAt: formatDate(new Date()),
+          createDataBy: {
+            email: createData?.email,
+            photo: createData?.photo,
+            name: createData?.name,
+          },
+          supplierId: email !== "andre.finger@gmail.com" ? permission : null,
         });
         toast.success("Added successfully", { position: "top-right" });
         navigate(`/bank-leads/${uniqueId}`);

@@ -19,3 +19,4 @@ export { Bankleads } from "./bankleads";
 export { MyLeads } from "./myLeads";
 export { MyLeadsDetail } from "./myLeads/myLeadsDetail";
 export { BankleadsTabs } from "./bankLeadTab";
+export { AllBankLeads } from "./allBankLeads";

@@ -3,6 +3,7 @@ import { Layout } from "./layouts";
 import {
   AddSuppliers,
   AddUsers,
+  AllBankLeads,
   Bankleads,
   BankleadsTabs,
   ConstructedPlot,
@@ -63,8 +64,9 @@ export const routes = createBrowserRouter([
       { path: "/se-bankleads", element: <Bankleads /> },
       { path: "/my-leads", element: <MyLeads /> },
       { path: "/my-leads-details/*", element: <MyLeadsDetail /> },
-      { path: "/bank-leads", element: <BankleadsTabs /> },
-      { path: "/bank-leads/*", element: <BankleadsTabs /> },
+      { path: "/add-bank-leads", element: <BankleadsTabs /> },
+      { path: "/edit-bank-leads/*", element: <BankleadsTabs /> },
+      { path: "/bank-leads/*", element: <AllBankLeads /> },
     ],
   },
 ]);
