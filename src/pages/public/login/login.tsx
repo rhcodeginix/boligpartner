@@ -68,7 +68,7 @@ export const Login = () => {
               position: "top-right",
             });
             sessionStorage.setItem("Iplot_admin", data.email);
-            navigate("/dashboard");
+            navigate("/Husmodell");
           }
         } else {
           const isPasswordCorrect = bcrypt.compareSync(
@@ -78,7 +78,7 @@ export const Login = () => {
           if (isPasswordCorrect) {
             toast.success("Login successfully", { position: "top-right" });
             sessionStorage.setItem("Iplot_admin", data.email);
-            navigate("/dashboard");
+            navigate("/Husmodell");
           } else {
             toast.error("Incorrect password", { position: "top-right" });
           }

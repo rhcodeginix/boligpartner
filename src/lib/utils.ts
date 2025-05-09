@@ -17,7 +17,7 @@ export function cn(...inputs: ClassValue[]) {
 export const fetchHusmodellData = async (id: string) => {
   try {
     if (id) {
-      const husmodellDocRef = doc(db, "house_model", id);
+      const husmodellDocRef = doc(db, "housemodell_configure_broker", id);
       const docSnap = await getDoc(husmodellDocRef);
 
       if (docSnap.exists()) {

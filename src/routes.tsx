@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Layout } from "./layouts";
 import {
-  Dashboard,
+  Inventory,
   EditHouseModel,
   Husmodeller,
   Login,
@@ -23,8 +23,8 @@ export const routes = createBrowserRouter([
     path: "/",
     element: <Layout />,
     children: [
-      { path: "/dashboard", element: <Dashboard /> },
-      { path: "/Husmodeller", element: <Husmodeller /> },
+      { path: "/Inventory", element: <Inventory /> },
+      { path: "/Husmodell", element: <Husmodeller /> },
       { path: "/se-husmodell/*", element: <SeHouseModel /> },
       { path: "/edit-husmodell/*", element: <EditHouseModel /> },
       { path: "/add-husmodell", element: <EditHouseModel /> },

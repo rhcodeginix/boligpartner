@@ -27,30 +27,17 @@ import {
 } from "../../../components/ui/select";
 import { TextArea } from "../../../components/ui/textarea";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  collection,
-  doc,
-  getDocs,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../config/firebaseConfig";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
-import {
-  fetchAdminDataByEmail,
-  fetchHusmodellData,
-  fetchSupplierData,
-} from "../../../lib/utils";
+import { fetchAdminDataByEmail, fetchHusmodellData } from "../../../lib/utils";
 import { Spinner } from "../../../components/Spinner";
 import FileInfo from "../../../components/FileInfo";
 import Modal from "../../../components/common/modal";
 
 const formSchema = z.object({
-  Leverandører: z
-    .string()
-    .min(1, { message: "Leverandører must må spesifiseres." }),
   TypeObjekt: z.string().min(1, { message: "Velg en Type Objekt." }),
   photo: z.union([
     z
@@ -232,26 +219,18 @@ export const Husdetaljer: React.FC<{
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const [loading, setLoading] = useState(true);
-  const [suppliers, setSuppliers] = useState<any>([]);
-  const [oldSupplierId, setOldSupplierId] = useState<any | null>(null);
   const [createData, setCreateData] = useState<any>(null);
-
-  const [permission, setPermission] = useState<any>(null);
-  const email = sessionStorage.getItem("Iplot_admin");
 
   useEffect(() => {
     const getData = async () => {
       const data = await fetchAdminDataByEmail();
       if (data) {
         setCreateData(data);
-
-        const finalData = data?.supplier;
-        setPermission(finalData);
       }
     };
 
     getData();
-  }, [permission]);
+  }, []);
 
   useEffect(() => {
     if (!id) {
@@ -264,9 +243,6 @@ export const Husdetaljer: React.FC<{
         Object.entries(data.Husdetaljer).forEach(([key, value]) => {
           if (value !== undefined && value !== null) {
             form.setValue(key as any, value);
-            if (key === "Leverandører") {
-              setOldSupplierId(value);
-            }
           }
         });
       }
@@ -274,37 +250,7 @@ export const Husdetaljer: React.FC<{
     };
 
     getData();
-  }, [form, id, suppliers]);
-
-  const fetchSuppliersData = async () => {
-    try {
-      if ((permission && permission) || email !== "andre.finger@gmail.com") {
-        const singleData: any = await fetchSupplierData(permission);
-
-        const filterData = [];
-        if (singleData) {
-          filterData.push(singleData);
-        }
-
-        if (filterData) {
-          setSuppliers(filterData);
-        }
-      } else {
-        const querySnapshot = await getDocs(collection(db, "suppliers"));
-        const data: any = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setSuppliers(data);
-      }
-    } catch (error) {
-      console.error("Error fetching husmodell data:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchSuppliersData();
-  }, [permission]);
+  }, [form, id]);
 
   const navigate = useNavigate();
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -530,60 +476,8 @@ export const Husdetaljer: React.FC<{
           .replace(",", "");
       };
 
-      const formatter = new Intl.DateTimeFormat("nb-NO", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
-
-      const newSupplierId = data.Leverandører;
-
-      if (oldSupplierId && newSupplierId !== oldSupplierId) {
-        const newSupplierDocRef = doc(db, "suppliers", newSupplierId);
-        const newSupplierData = await fetchSupplierData(newSupplierId);
-
-        await updateDoc(newSupplierDocRef, {
-          ...newSupplierData,
-          id: newSupplierId,
-          updatedAt: formatter.format(new Date()),
-          Produkter: newSupplierData?.Produkter + 1,
-        });
-
-        const oldSupplierDocRef = doc(db, "suppliers", oldSupplierId);
-        const oldSupplierData = await fetchSupplierData(oldSupplierId);
-
-        await updateDoc(oldSupplierDocRef, {
-          ...oldSupplierData,
-          id: oldSupplierId,
-          documents:
-            data?.documents && data?.documents.length > 0
-              ? data?.documents
-              : null,
-          updatedAt: formatter.format(new Date()),
-          Produkter: Math.max(
-            oldSupplierData?.Produkter === 0
-              ? 0
-              : oldSupplierData?.Produkter - 1
-          ),
-        });
-      } else {
-        const newSupplierDocRef = doc(db, "suppliers", newSupplierId);
-        const newSupplierData = await fetchSupplierData(newSupplierId);
-
-        await updateDoc(newSupplierDocRef, {
-          ...newSupplierData,
-          id: newSupplierId,
-          documents:
-            data?.documents && data?.documents.length > 0
-              ? data?.documents
-              : null,
-          updatedAt: formatter.format(new Date()),
-          Produkter: newSupplierData?.Produkter + 1,
-        });
-      }
-
       const uniqueId = id ? id : uuidv4();
-      const husmodellDocRef = doc(db, "house_model", uniqueId);
+      const husmodellDocRef = doc(db, "housemodell_configure_broker", uniqueId);
 
       const husdetaljerData = {
         ...data,
@@ -615,7 +509,6 @@ export const Husdetaljer: React.FC<{
 
       navigate(`/edit-husmodell/${uniqueId}`);
       setActiveTab(1);
-      setOldSupplierId(null);
     } catch (error) {
       console.error("Firestore operation failed:", error);
       toast.error("Something went wrong. Please try again.", {
@@ -701,61 +594,6 @@ export const Husdetaljer: React.FC<{
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-6 w-[80%] shadow-shadow2 px-6 py-5 rounded-lg">
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Leverandører"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Leverandører
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Select Leverandører" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    {suppliers?.map(
-                                      (sup: any, index: number) => {
-                                        return (
-                                          <SelectItem
-                                            value={sup?.id}
-                                            key={index}
-                                          >
-                                            {sup?.company_name}
-                                          </SelectItem>
-                                        );
-                                      }
-                                    )}
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
                   <div className="col-span-2">
                     <p
                       className={`${
@@ -2438,7 +2276,7 @@ export const Husdetaljer: React.FC<{
             </div>
           </div>
           <div className="flex justify-end w-full gap-5 items-center sticky bottom-0 bg-white z-50 border-t border-gray2 p-4 left-0">
-            <Link to={"/Husmodeller"} className="w-1/2 sm:w-auto">
+            <Link to={"/Husmodell"} className="w-1/2 sm:w-auto">
               <Button
                 text="Avbryt"
                 className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"

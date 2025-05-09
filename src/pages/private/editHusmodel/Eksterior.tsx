@@ -127,7 +127,7 @@ export const Eksterior: React.FC<{
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
-      const husmodellDocRef = doc(db, "house_model", id);
+      const husmodellDocRef = doc(db, "housemodell_configure_broker", id);
 
       const husdetaljerData = {
         ...data,

@@ -43,10 +43,7 @@ export const SeHouseModel = () => {
         <>
           <div className="bg-lightPurple py-4 px-6">
             <div className="flex items-center gap-3 mb-6">
-              <Link
-                to={"/Husmodeller"}
-                className="text-gray text-sm font-medium"
-              >
+              <Link to={"/Husmodell"} className="text-gray text-sm font-medium">
                 Husmodeller
               </Link>
               <ChevronRight className="text-gray2 w-4 h-4" />

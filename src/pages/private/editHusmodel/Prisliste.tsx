@@ -171,7 +171,7 @@ export const Prisliste: React.FC<{ setActiveTab: any }> = ({
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
-      const husmodellDocRef = doc(db, "house_model", id);
+      const husmodellDocRef = doc(db, "housemodell_configure_broker", id);
 
       const husdetaljerData = {
         ...data,
@@ -188,7 +188,7 @@ export const Prisliste: React.FC<{ setActiveTab: any }> = ({
       });
       toast.success("Updated successfully", { position: "top-right" });
 
-      navigate(`/Husmodeller`);
+      navigate(`/Husmodell`);
     } catch (error) {
       console.error("Firestore operation failed:", error);
       toast.error("Something went wrong. Please try again.", {

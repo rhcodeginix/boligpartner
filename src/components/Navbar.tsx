@@ -72,20 +72,9 @@ export const Navbar: React.FC = () => {
         </Link>
         <div className="flex items-center gap-1">
           <Link
-            to={"/dashboard"}
+            to={"/Husmodell"}
             className={`text-base font-medium py-2 px-3 rounded-[6px] ${
-              currentPath === "/dashboard"
-                ? "bg-lightPurple text-primary"
-                : "text-black"
-            }`}
-          >
-            Dashboard
-          </Link>
-
-          <Link
-            to={"/Husmodeller"}
-            className={`text-base font-medium py-2 px-3 rounded-[6px] ${
-              currentPath === "/Husmodeller" ||
+              currentPath === "/Husmodell" ||
               currentPath.startsWith("/se-husmodell/") ||
               currentPath === "/add-husmodell" ||
               currentPath.startsWith("/edit-husmodell/")
@@ -94,6 +83,16 @@ export const Navbar: React.FC = () => {
             }`}
           >
             Husmodell
+          </Link>
+          <Link
+            to={"/Inventory"}
+            className={`text-base font-medium py-2 px-3 rounded-[6px] ${
+              currentPath === "/Inventory"
+                ? "bg-lightPurple text-primary"
+                : "text-black"
+            }`}
+          >
+            Inventory
           </Link>
         </div>
         <div className="flex items-center gap-4 relative">
