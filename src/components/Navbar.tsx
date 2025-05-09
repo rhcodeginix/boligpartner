@@ -1,8 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Ic_logo from "../assets/images/Ic_logo.svg";
-import Ic_bell from "../assets/images/Ic_bell.svg";
-import Ic_search from "../assets/images/Ic_search.svg";
-import Ic_settings from "../assets/images/Ic_settings.svg";
 import Ic_chevron_up from "../assets/images/Ic_chevron_up.svg";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -52,19 +49,11 @@ export const Navbar: React.FC = () => {
   };
   const [isPhoto, setIsPhoto] = useState(null);
 
-  const [HusmodellPermission, setHusmodellPermission] = useState<any>(null);
-  const email = sessionStorage.getItem("Iplot_admin");
-
   useEffect(() => {
     const getData = async () => {
       const data = await fetchAdminDataByEmail();
       if (data) {
         setIsPhoto(data?.photo);
-
-        const husmodellData = data?.modulePermissions?.find(
-          (item: any) => item.name === "Husmodell"
-        );
-        setHusmodellPermission(husmodellData?.permissions);
       }
     };
 
@@ -92,88 +81,22 @@ export const Navbar: React.FC = () => {
           >
             Dashboard
           </Link>
+
           <Link
-            to={"/Leverandorer"}
+            to={"/Husmodeller"}
             className={`text-base font-medium py-2 px-3 rounded-[6px] ${
-              currentPath === "/Leverandorer" ||
-              currentPath.startsWith("/edit-til-leverandor/") ||
-              currentPath === "/legg-til-leverandor"
+              currentPath === "/Husmodeller" ||
+              currentPath.startsWith("/se-husmodell/") ||
+              currentPath === "/add-husmodell" ||
+              currentPath.startsWith("/edit-husmodell/")
                 ? "bg-lightPurple text-primary"
                 : "text-black"
             }`}
           >
-            Leverandører
-          </Link>
-          {(email === "andre.finger@gmail.com" ||
-            HusmodellPermission?.add === true ||
-            HusmodellPermission?.delete === true ||
-            HusmodellPermission?.edit === true) && (
-            <Link
-              to={"/Husmodeller"}
-              className={`text-base font-medium py-2 px-3 rounded-[6px] ${
-                currentPath === "/Husmodeller" ||
-                currentPath.startsWith("/se-husmodell/") ||
-                currentPath === "/add-husmodell" ||
-                currentPath.startsWith("/edit-husmodell/")
-                  ? "bg-lightPurple text-primary"
-                  : "text-black"
-              }`}
-            >
-              Husmodeller
-            </Link>
-          )}
-          {loginUser && loginUser === "andre.finger@gmail.com" && (
-            <Link
-              to={"/Brukeradministrasjon"}
-              className={`text-base font-medium py-2 px-3 rounded-[6px] ${
-                currentPath === "/Brukeradministrasjon" ||
-                currentPath.startsWith("/edit-til-bruker") ||
-                currentPath.startsWith("/legg-til-bruker")
-                  ? "bg-lightPurple text-primary"
-                  : "text-black"
-              }`}
-            >
-              Brukeradministrasjon
-            </Link>
-          )}
-          {email === "andre.finger@gmail.com" && (
-            <Link
-              to={"/my-leads"}
-              className={`text-base font-medium py-2 px-3 rounded-[6px] ${
-                currentPath === "/my-leads" ||
-                currentPath.startsWith("/my-leads-details/")
-                  ? "bg-lightPurple text-primary"
-                  : "text-black"
-              }`}
-            >
-              Min Lead
-            </Link>
-          )}
-          <Link
-            to={"/bank-leads"}
-            className={`text-base font-medium py-2 px-3 rounded-[6px] ${
-              currentPath === "/bank-leads" ||
-              currentPath.startsWith("/add-bank-leads") ||
-              currentPath.startsWith("/edit-bank-leads/")
-                ? "bg-lightPurple text-primary"
-                : "text-black"
-            }`}
-          >
-            Bank Leads
+            Husmodell
           </Link>
         </div>
         <div className="flex items-center gap-4 relative">
-          <div className="flex items-center gap-1">
-            <div className="h-[40px] w-[40px] flex items-center justify-center">
-              <img src={Ic_search} alt="search" />
-            </div>
-            <div className="h-[40px] w-[40px] flex items-center justify-center">
-              <img src={Ic_settings} alt="setting" />
-            </div>
-            <div className="h-[40px] w-[40px] flex items-center justify-center">
-              <img src={Ic_bell} alt="bell" />
-            </div>
-          </div>
           <div
             className="flex items-center gap-2 cursor-pointer"
             onClick={toggleDropdown}
