@@ -500,7 +500,7 @@ export const Eksterior: React.FC<{
                             <div className="w-[100px]">
                               <img
                                 src={`${product?.Hovedbilde[0]}`}
-                                alt="floor image"
+                                alt="floor"
                                 className="w-[100px] h-[76px] border border-[#EFF1F5] rounded-[4px]"
                               />
                             </div>

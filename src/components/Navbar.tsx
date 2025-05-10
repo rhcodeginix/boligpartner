@@ -1,64 +1,10 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Ic_logo from "../assets/images/Ic_logo.svg";
-import Ic_chevron_up from "../assets/images/Ic_chevron_up.svg";
-import { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
-import { fetchAdminDataByEmail } from "../lib/utils";
+import Ic_Avatar from "../assets/images/Ic_Avatar.svg";
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
   const currentPath = location.pathname;
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
-  const [loginUser, setLoginUser] = useState(null);
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
-  };
-  useEffect(() => {
-    const user: any = sessionStorage.getItem("Iplot_admin");
-    setLoginUser(user);
-  }, [loginUser]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      sessionStorage.removeItem("Iplot_admin");
-      setIsDropdownOpen(false);
-      navigate("/login");
-      toast.success("Logout successfully", { position: "top-right" });
-    } catch (error) {
-      console.error("Error logging out:", error);
-    }
-  };
-  const [isPhoto, setIsPhoto] = useState(null);
-
-  useEffect(() => {
-    const getData = async () => {
-      const data = await fetchAdminDataByEmail();
-      if (data) {
-        setIsPhoto(data?.photo);
-      }
-    };
-
-    getData();
-  }, []);
   return (
     <>
       <div
@@ -97,17 +43,15 @@ export const Navbar: React.FC = () => {
         </div>
         <div className="flex items-center gap-4 relative">
           <div
-            className="flex items-center gap-2 cursor-pointer"
-            onClick={toggleDropdown}
+            className="flex items-center gap-2"
+            // onClick={toggleDropdown}
           >
-            {isPhoto && (
-              <div className="h-[40px] w-[40px]">
-                <img src={isPhoto} alt="profile" className="rounded-full" />
-              </div>
-            )}
-            <img src={Ic_chevron_up} alt="arrow" className="rotate-180" />
+            <div className="h-[40px] w-[40px]">
+              <img src={Ic_Avatar} alt="profile" className="rounded-full" />
+            </div>
+            {/* <img src={Ic_chevron_up} alt="arrow" className="rotate-180" /> */}
           </div>
-          {isDropdownOpen && (
+          {/* {isDropdownOpen && (
             <div
               className="absolute right-0 mt-2 w-48 bg-white shadow-shadow1 rounded-md shadow-lg p-2 top-10 border border-gray2"
               ref={dropdownRef}
@@ -120,7 +64,7 @@ export const Navbar: React.FC = () => {
                 Logout
               </Link>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </>
