@@ -51,20 +51,6 @@ export const Navbar: React.FC = () => {
             </div>
             {/* <img src={Ic_chevron_up} alt="arrow" className="rotate-180" /> */}
           </div>
-          {/* {isDropdownOpen && (
-            <div
-              className="absolute right-0 mt-2 w-48 bg-white shadow-shadow1 rounded-md shadow-lg p-2 top-10 border border-gray2"
-              ref={dropdownRef}
-            >
-              <Link
-                to={"/login"}
-                className="block px-4 py-2 text-sm hover:bg-lightPurple text-black w-full text-left cursor-pointer"
-                onClick={handleLogout}
-              >
-                Logout
-              </Link>
-            </div>
-          )} */}
         </div>
       </div>
     </>

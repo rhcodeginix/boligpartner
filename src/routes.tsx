@@ -5,7 +5,7 @@ import { Inventory, EditHouseModel, Husmodeller, SeHouseModel } from "./pages";
 export const routes = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/login" replace />,
+    element: <Navigate to="/Husmodell" replace />,
   },
   {
     path: "/",
