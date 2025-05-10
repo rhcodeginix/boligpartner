@@ -28,7 +28,7 @@ import { db, storage } from "../../../config/firebaseConfig";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
-import { fetchAdminDataByEmail, fetchHusmodellData } from "../../../lib/utils";
+import { fetchHusmodellData } from "../../../lib/utils";
 import { Spinner } from "../../../components/Spinner";
 import {
   ChevronDown,
@@ -164,18 +164,6 @@ export const Husdetaljer: React.FC<{
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const [loading, setLoading] = useState(true);
-  const [createData, setCreateData] = useState<any>(null);
-
-  useEffect(() => {
-    const getData = async () => {
-      const data = await fetchAdminDataByEmail();
-      if (data) {
-        setCreateData(data);
-      }
-    };
-
-    getData();
-  }, []);
 
   useEffect(() => {
     if (!id) {
@@ -349,7 +337,9 @@ export const Husdetaljer: React.FC<{
       if (data.VideoLink && !/^https?:\/\//i.test(data.VideoLink)) {
         data.VideoLink = `https://${data.VideoLink}`;
       }
-
+      if (data.TittelVideo === null || data.TittelVideo === undefined) {
+        delete data.TittelVideo;
+      }
       const formatDate = (date: Date) => {
         return date
           .toLocaleString("sv-SE", { timeZone: "UTC" })
@@ -379,9 +369,10 @@ export const Husdetaljer: React.FC<{
           updatedAt: formatDate(new Date()),
           createdAt: formatDate(new Date()),
           createDataBy: {
-            email: createData?.email,
-            photo: createData?.photo,
-            name: createData?.name,
+            email: "andre.fenger@gmail.com",
+            photo:
+              "https://firebasestorage.googleapis.com/v0/b/l-plot.firebasestorage.app/o/images%2F1742809941044_Ic_profile_image.svg?alt=media&token=1a58ec1e-c9a3-4c50-aab8-13e0993184b5",
+            name: "André Fenger",
           },
         });
         toast.success("Added successfully", { position: "top-right" });
