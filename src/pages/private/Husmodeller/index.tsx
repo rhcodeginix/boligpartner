@@ -102,7 +102,8 @@ export const Husmodeller = () => {
                   </div>
                   <div
                     className="border-purple border-2 rounded-[40px] py-2 px-5 text-purple font-medium h-[40px] flex items-center justify-center cursor-pointer"
-                    onClick={() => navigate(`/se-husmodell/${item?.id}`)}
+                    // onClick={() => navigate(`/se-husmodell/${item?.id}`)}
+                    onClick={() => navigate(`/edit-husmodell/${item?.id}`)}
                   >
                     Utforske
                   </div>

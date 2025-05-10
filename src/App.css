@@ -54,8 +54,8 @@ input[type="number"] {
 .toggle-container {
   display: inline-block;
   position: relative;
-  width: 40px;
-  height: 24px;
+  width: 32px;
+  height: 20px;
 }
 .react-datepicker-wrapper {
   display: flex;
@@ -78,20 +78,20 @@ input[type="number"] {
   background-color: white;
   border-radius: 50%;
   box-shadow: 0px 2px 4px 0px #07070740;
-  height: 18px;
-  left: 3px;
+  height: 16px;
+  left: 2px;
   position: absolute;
-  top: 3px;
+  top: 2px;
   transition: transform 0.3s ease;
-  width: 18px;
+  width: 16px;
 }
 
 .toggle-input:checked + .toggle-label {
-  background-color: #7f56d9;
+  background-color: #444CE7;
 }
 
 .toggle-input:checked + .toggle-label::after {
-  transform: translateX(16px);
+  transform: translateX(12px);
 }
 /* ----- */
 
@@ -168,4 +168,39 @@ input[type="date"]::-webkit-inner-spin-button,
 input[type="date"]::-webkit-calendar-picker-indicator {
   display: none;
   -webkit-appearance: none;
+}
+
+
+/* Style for the drawer */
+.drawer {
+  position: fixed;
+  top: 0;
+  right: -100%; /* Initially hidden off the screen */
+  width: 518px; /* Set the drawer width */
+  height: 100vh;
+  background-color: white;
+  transition: right 0.3s ease-in-out;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Style when the drawer is open */
+.drawer.open {
+  right: 0; /* Slide in from the right */
+}
+
+/* Overlay background to darken the rest of the screen */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999; /* Just below the drawer */
+  display: none;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.overlay.show {
+  display: block;
 }

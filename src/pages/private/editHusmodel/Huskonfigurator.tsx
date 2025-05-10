@@ -1,30 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Eksterior } from "./Eksterior";
-import Modal from "../../../components/common/modal";
-import { AddNewCat } from "./AddNewCat";
-import Ic_trash from "../../../assets/images/Ic_trash.svg";
-import Button from "../../../components/common/button";
-import { useLocation } from "react-router-dom";
+import Ic_upload_blue_img from "../../../assets/images/Ic_upload_blue_img.svg";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "../../../components/Spinner";
 import { fetchHusmodellData } from "../../../lib/utils";
-import { Pencil } from "lucide-react";
+import Button from "../../../components/common/button";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../../config/firebaseConfig";
+import { toast } from "react-hot-toast";
+import * as pdfjsLib from "pdfjs-dist";
+import { Pencil, Trash2 } from "lucide-react";
+import Modal from "../../../components/common/modal";
 
 export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   setActiveTab,
 }) => {
-  const [activeTabData, setActiveTabData] = useState(0);
-  const [AddCategory, setAddCategory] = useState(false);
-  const [Category, setCategory] = useState<any>([]);
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const [editCategory, setEditCategory] = useState<null | {
-    index: number;
-    data: any;
-  }>(null);
-
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const [loading, setLoading] = useState(true);
+  const [roomsData, setRoomsData] = useState<any>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!id) {
@@ -33,159 +28,393 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     }
     const getData = async () => {
       const data = await fetchHusmodellData(id);
-      if (data && data.Huskonfigurator) {
-        setCategory(data.Huskonfigurator.hovedkategorinavn);
+
+      if (data && data?.Plantegninger) {
+        setRoomsData(data?.Plantegninger);
       }
       setLoading(false);
     };
 
     getData();
   }, [id]);
+  useEffect(() => {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+  }, []);
 
-  const handleToggleSubCategoryPopup = () => {
-    if (AddCategory) {
-      setAddCategory(false);
-      setEditCategory(null);
-    } else {
-      setAddCategory(true);
+  const file3DInputRef = React.useRef<HTMLInputElement | null>(null);
+  const convertPdfToImage = async (pdfData: string) => {
+    try {
+      const loadingTask = pdfjsLib.getDocument({
+        data: atob(pdfData.split(",")[1]),
+      });
+      const pdfDocument = await loadingTask.promise;
+
+      const page = await pdfDocument.getPage(1);
+
+      const canvas = document.createElement("canvas");
+      if (!canvas) return;
+
+      const context = canvas.getContext("2d");
+      if (!context) return;
+
+      const viewport = page.getViewport({ scale: 1.0 });
+
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      await page.render({
+        canvasContext: context,
+        viewport: viewport,
+      }).promise;
+
+      const imgDataUrl = canvas.toDataURL("image/png");
+      return imgDataUrl;
+    } catch (err) {
+      console.error("Error loading PDF document:", err);
     }
   };
-  const handleDragStart = (index: number) => {
-    setDraggedIndex(index);
+  const handleFileUpload = async (files: FileList) => {
+    if (!files.length) return;
+
+    const formData = new FormData();
+    formData.append("file", files[0]);
+    setLoading(true);
+    try {
+      const response = await fetch(
+        "https://iplotnor-hf-floor-plan-api.hf.space/upload",
+        {
+          method: "POST",
+          headers: {
+            accept: "application/json",
+          },
+          body: formData,
+          mode: "cors",
+        }
+      );
+
+      if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+
+      const data = await response.json();
+      if (data && data?.pdf_id) {
+        const PDFresponse = await fetch(
+          `https://iplotnor-hf-floor-plan-api.hf.space/analyze/${data?.pdf_id}`,
+          {
+            method: "POST",
+            headers: {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              description: "string",
+            }),
+            mode: "cors",
+          }
+        );
+
+        if (!PDFresponse.ok) {
+          throw new Error(`HTTP error! status: ${PDFresponse.status}`);
+        }
+
+        const PDFdata = await PDFresponse.json();
+        if (PDFdata) {
+          let base64PDF: string | undefined;
+
+          const reader = new FileReader();
+          reader.onloadend = async () => {
+            base64PDF = reader.result as string;
+
+            if (base64PDF) {
+              const imageBase64 = await convertPdfToImage(base64PDF);
+
+              if (imageBase64) {
+                const husmodellDocRef = doc(
+                  db,
+                  "housemodell_configure_broker",
+                  String(id)
+                );
+
+                const docSnap = await getDoc(husmodellDocRef);
+                const existingData = docSnap.exists()
+                  ? docSnap.data().Plantegninger || []
+                  : [];
+                const newIndex = existingData.length + 1;
+                const updatedPdfData = {
+                  ...PDFdata,
+                  image: imageBase64,
+                  title: `floor ${newIndex}`,
+                };
+                setRoomsData((prev: any) => [...prev, updatedPdfData]);
+
+                const finalData = [];
+                finalData.push(updatedPdfData);
+
+                const updatedPlantegninger = [...existingData, ...finalData];
+                const formatDate = (date: Date) => {
+                  return date
+                    .toLocaleString("sv-SE", { timeZone: "UTC" })
+                    .replace(",", "");
+                };
+                await updateDoc(husmodellDocRef, {
+                  Plantegninger: updatedPlantegninger,
+                  id: id,
+                  updatedAt: formatDate(new Date()),
+                });
+                toast.success(PDFdata.message, {
+                  position: "top-right",
+                });
+                setLoading(false);
+              }
+            }
+          };
+          reader.readAsDataURL(files[0]);
+        }
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      setLoading(false);
+      toast.error("File upload error!", {
+        position: "top-right",
+      });
+    }
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
+  const handle3DDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+  const handle3DFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files) {
+      await handleFileUpload(event.target.files);
+    }
   };
 
-  const handleDrop = (index: number) => {
-    if (draggedIndex === null || draggedIndex === index) return;
+  const handle3DClick = async () => {
+    file3DInputRef.current?.click();
+  };
 
-    const updatedCategories = [...Category];
-    const draggedItem = updatedCategories[draggedIndex];
+  const handle3DDrop = async (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    if (event.dataTransfer.files) {
+      await handleFileUpload(event.dataTransfer.files);
+    }
+  };
 
-    updatedCategories.splice(draggedIndex, 1);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [editedFloorName, setEditedFloorName] = useState<string>("");
+  const [confirmDeleteIndex, setConfirmDeleteIndex] = useState<number | null>(
+    null
+  );
+  const handleDeleteFloor = async (indexToDelete: number) => {
+    const husmodellDocRef = doc(db, "housemodell_configure_broker", String(id));
 
-    updatedCategories.splice(index, 0, draggedItem);
+    try {
+      const docSnap = await getDoc(husmodellDocRef);
+      const existingData = docSnap.exists()
+        ? docSnap.data().Plantegninger || []
+        : [];
 
-    setCategory(updatedCategories);
-    setDraggedIndex(null);
+      const updatedData = existingData.filter(
+        (_: any, i: any) => i !== indexToDelete
+      );
+
+      await updateDoc(husmodellDocRef, {
+        Plantegninger: updatedData,
+        updatedAt: new Date().toISOString(),
+      });
+
+      setRoomsData(updatedData);
+      setConfirmDeleteIndex(null);
+
+      toast.success("Floor deleted successfully!", { position: "top-right" });
+    } catch (error) {
+      console.error("Error deleting floor:", error);
+      toast.error("Failed to delete floor", { position: "top-right" });
+    }
+  };
+  const handleConfirmPopup = () => {
+    if (confirmDeleteIndex) {
+      setConfirmDeleteIndex(null);
+    } else {
+      setConfirmDeleteIndex(confirmDeleteIndex);
+    }
   };
 
   return (
     <>
-      <h3 className="text-darkBlack text-2xl font-semibold mb-8 px-6">
-        Her konfigurerer du husmodellen
-      </h3>
-      <div className="flex gap-6 px-6 relative">
-        <div className="w-[20%] flex flex-col bg-[#F9FAFB] p-3 pb-0 rounded-lg gap-3 h-full max-h-[690px] overflow-y-auto overFlowAutoY sticky top-[80px]">
-          {Category.map((tab: any, index: number) => (
-            <div
-              key={index}
-              draggable
-              onDragStart={() => handleDragStart(index)}
-              onDragOver={handleDragOver}
-              onDrop={() => handleDrop(index)}
-              className={`bg-white cursor-pointer rounded-lg flex items-center justify-between gap-2 px-5 ${
-                activeTabData === index
-                  ? "border-2 border-primary bg-lightPurple rounded-t-[12px]"
-                  : "border border-gray2"
-              }`}
-              onClick={() => setActiveTabData(index)}
-            >
-              <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold">
-                <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
-                  {index + 1}
-                </span>
-                {tab.navn}
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setEditCategory({ index, data: tab });
-                    setAddCategory(true);
-                  }}
-                >
-                  <Pencil className="w-5 h-5 text-primary" />
-                </div>
-
-                <div
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setCategory((prev: any[]) =>
-                      prev.filter((_, i) => i !== index)
-                    );
-                    setActiveTabData(0);
-                  }}
-                  className="w-5 h-5"
-                >
-                  <img src={Ic_trash} alt="delete" className="w-full h-full" />
-                </div>
-              </div>
-            </div>
-          ))}
+      <div className="px-8 py-6">
+        <h3 className="text-darkBlack text-2xl font-semibold mb-2">
+          Last opp plantegningen din
+        </h3>
+        <p className="text-secondary text-lg">
+          Our AI will auto detect your floor plan and how you customisation
+          options
+        </p>
+      </div>
+      <div className="px-8 pb-[156px]">
+        <div
+          className="relative p-2 rounded-lg w-max"
+          style={{
+            boxShadow: "0px 2px 4px -2px #1018280F, 0px 4px 8px -2px #1018281A",
+          }}
+        >
           <div
-            className="sticky bottom-0 mb-3 bg-purple border-gray2 rounded-lg p-3 flex items-center gap-2 text-white font-semibold text-sm cursor-pointer"
-            onClick={() => setAddCategory(true)}
+            className="border border-gray2 border-dashed rounded-lg px-3 flex-col items-center justify-center laptop:px-[42px] py-4 flex gap-6 cursor-pointer w-full"
+            onClick={handle3DClick}
+            onDrop={handle3DDrop}
+            onDrag={handle3DDragOver}
           >
-            <div className="w-5 h-5 rounded-full flex items-center justify-center text-darkBlack text-xs font-semibold bg-white">
-              +
+            <img src={Ic_upload_blue_img} alt="upload" />
+            <div className="flex items-center justify-center flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[36px] py-2 px-4">
+                  Bla gjennom
+                </span>
+                <p className="text-gray text-sm text-center truncate w-full">
+                  Slipp filen her for å laste den opp
+                </p>
+              </div>
+              <p className="text-gray text-sm truncate w-full text-center">
+                Filformater: Kun PDF, maks 2 MB
+              </p>
             </div>
-            Legg til nytt rom/kategori
+            <input
+              type="file"
+              ref={file3DInputRef}
+              className="hidden"
+              accept=".pdf"
+              onChange={handle3DFileChange}
+            />
           </div>
         </div>
 
-        {Category.length > 0 ? (
-          <div className="w-[80%] mb-[130px]">
-            <Eksterior
-              setActiveTab={setActiveTab}
-              labelName={Category[activeTabData]?.navn || ""}
-              Category={Category}
-              activeTabData={activeTabData}
-              setCategory={setCategory}
-            />
-          </div>
-        ) : (
-          <div className="w-full">
-            <div
-              className="text-purple font-semibold text-base cursor-pointer flex justify-end w-full"
-              onClick={() => setActiveTab(2)}
-            >
-              Hopp over steget
-            </div>
-            <div className="flex justify-end w-full gap-5 items-center fixed bottom-0 bg-white z-50 border-t border-gray2 p-4 left-0">
-              <div
-                onClick={() => {
-                  setActiveTab(0);
-                }}
-                className="w-1/2 sm:w-auto"
-              >
-                <Button
-                  text="Avbryt"
-                  className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
-                />
+        <div className="grid grid-cols-3 gap-6 w-full mt-8">
+          {roomsData && roomsData.length > 0
+            ? roomsData.map((item: any, index: number) => {
+                const isEditing = editIndex === index;
+
+                return (
+                  <div
+                    key={index}
+                    className="relative shadow-shadow2 cursor-pointer p-4 rounded-lg flex flex-col gap-4"
+                    onClick={() => {
+                      setActiveTab(2);
+                      navigate(`?pdf_id=${item?.pdf_id}`);
+                    }}
+                  >
+                    <div className="flex gap-2 items-center justify-between mb-4">
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          value={editedFloorName}
+                          onChange={(e) => setEditedFloorName(e.target.value)}
+                          className="border border-gray1 rounded px-2 py-1 w-full"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      ) : (
+                        <span className="text-darkBlack font-medium">
+                          {item?.title || `Floor ${index + 1}`}
+                        </span>
+                      )}
+                      <div className="flex items-center gap-3">
+                        {isEditing ? (
+                          <button
+                            className="bg-purple text-white px-4 py-2 rounded text-sm self-end"
+                            onClick={async (e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const updatedRooms = [...roomsData];
+                              updatedRooms[index] = {
+                                ...updatedRooms[index],
+                                title: editedFloorName,
+                              };
+
+                              setRoomsData(updatedRooms);
+                              setEditIndex(null);
+
+                              const husmodellDocRef = doc(
+                                db,
+                                "housemodell_configure_broker",
+                                String(id)
+                              );
+
+                              await updateDoc(husmodellDocRef, {
+                                Plantegninger: updatedRooms,
+                                updatedAt: new Date().toISOString(),
+                              });
+
+                              toast.success("Name updated!", {
+                                position: "top-right",
+                              });
+                            }}
+                          >
+                            Oppdater
+                          </button>
+                        ) : (
+                          <Pencil
+                            className="w-6 h-6 text-purple cursor-pointer"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setEditIndex(index);
+                              setEditedFloorName(
+                                item?.title || `Floor ${index + 1}`
+                              );
+                            }}
+                          />
+                        )}
+
+                        <Trash2
+                          className="w-6 h-6 text-red cursor-pointer"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setConfirmDeleteIndex(index);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <img
+                      src={item?.image}
+                      alt="floor"
+                      className="w-full h-[200px] object-cover"
+                    />
+                  </div>
+                );
+              })
+            : "No Data Found!"}
+        </div>
+      </div>
+
+      {confirmDeleteIndex !== null && (
+        <Modal onClose={handleConfirmPopup} isOpen={true}>
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <p className="text-lg font-bold">
+                Er du sikker på at du vil slette?
+              </p>
+              <div className="flex justify-center mt-5 w-full gap-5 items-center">
+                <div
+                  onClick={() => setConfirmDeleteIndex(null)}
+                  className="w-1/2 sm:w-auto"
+                >
+                  <Button
+                    text="Avbryt"
+                    className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  />
+                </div>
+                <div onClick={() => handleDeleteFloor(confirmDeleteIndex)}>
+                  <Button
+                    text="Bekrefte"
+                    className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  />
+                </div>
               </div>
             </div>
           </div>
-        )}
-      </div>
-      {AddCategory && (
-        <Modal onClose={handleToggleSubCategoryPopup} isOpen={true}>
-          <div className="bg-white relative rounded-[12px] p-6 md:m-0 w-full sm:w-[518px]">
-            <h4 className="mb-[20px] text-darkBlack font-medium text-xl">
-              Legg til ny underkategori
-            </h4>
-            <AddNewCat
-              onClose={handleToggleSubCategoryPopup}
-              setCategory={setCategory}
-              editData={editCategory}
-            />
-          </div>
         </Modal>
       )}
+
       {loading && <Spinner />}
     </>
   );

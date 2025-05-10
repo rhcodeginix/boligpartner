@@ -13,8 +13,8 @@ import { Input } from "../../../components/ui/input";
 import { useEffect } from "react";
 
 const formSchema = z.object({
-  Hovedkategorinavn: z.string().min(1, {
-    message: "Hovedkategorinavn må bestå av minst 2 tegn.",
+  Hovedkategoriname: z.string().min(1, {
+    message: "Hovedkategoriname må bestå av minst 2 tegn.",
   }),
   isSelected: z.boolean().optional(),
 });
@@ -28,13 +28,13 @@ export const AddNewCat: React.FC<{
     resolver: zodResolver(formSchema),
   });
   useEffect(() => {
-    if (editData?.data?.navn) {
-      form.setValue("Hovedkategorinavn", editData?.data?.navn);
+    if (editData?.data?.name) {
+      form.setValue("Hovedkategoriname", editData?.data?.name);
     }
     if (editData?.data?.isSelected) {
       form.setValue("isSelected", editData?.data?.isSelected);
     }
-  }, [form, editData?.data?.navn, editData?.data?.isSelected]);
+  }, [form, editData?.data?.name, editData?.data?.isSelected]);
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     onClose();
     if (editData) {
@@ -43,7 +43,7 @@ export const AddNewCat: React.FC<{
           idx === editData.index
             ? {
                 ...cat,
-                navn: data.Hovedkategorinavn,
+                name: data.Hovedkategoriname,
                 isSelected: data.isSelected ?? false,
               }
             : cat
@@ -53,9 +53,8 @@ export const AddNewCat: React.FC<{
       setCategory((prev: any) => [
         ...prev,
         {
-          navn: data.Hovedkategorinavn,
-          Beskrivelse: "",
-          Kategorinavn: [],
+          name: data.Hovedkategoriname,
+          // Kategoriname: null,
           isSelected: data.isSelected ?? false,
         },
       ]);
@@ -71,7 +70,7 @@ export const AddNewCat: React.FC<{
           <div>
             <FormField
               control={form.control}
-              name="Hovedkategorinavn"
+              name="Hovedkategoriname"
               render={({ field, fieldState }) => (
                 <FormItem>
                   <p
@@ -79,12 +78,12 @@ export const AddNewCat: React.FC<{
                       fieldState.error ? "text-red" : "text-black"
                     } mb-[6px] text-sm font-medium`}
                   >
-                    Hovedkategorinavn
+                    Hovedkategoriname
                   </p>
                   <FormControl>
                     <div className="relative">
                       <Input
-                        placeholder="Skriv inn Hovedkategorinavn"
+                        placeholder="Skriv inn Hovedkategoriname"
                         {...field}
                         className={`bg-white rounded-[8px] border text-black
                                           ${

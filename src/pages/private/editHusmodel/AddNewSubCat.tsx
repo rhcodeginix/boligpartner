@@ -103,7 +103,7 @@ export const AddNewSubCat: React.FC<{
           onSubmit={form.handleSubmit(onSubmit)}
           className="relative w-full"
         >
-          <div>
+          <div className="p-6">
             <FormField
               control={form.control}
               name="Kategorinavn"
@@ -136,7 +136,13 @@ export const AddNewSubCat: React.FC<{
               )}
             />
           </div>
-          <div className="flex justify-end w-full gap-5 items-center left-0 mt-8">
+          <div
+            className="flex fixed bottom-0 justify-end w-full gap-5 items-center left-0 px-8 py-4"
+            style={{
+              boxShadow:
+                "0px -3px 4px -2px #1018280F, 0px -4px 8px -2px #1018281A",
+            }}
+          >
             <div onClick={() => form.reset()} className="w-1/2 sm:w-auto">
               <Button
                 text="Avbryt"

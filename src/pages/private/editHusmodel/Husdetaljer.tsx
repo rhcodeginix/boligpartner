@@ -11,10 +11,7 @@ import {
   FormMessage,
 } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
-import Ic_upload_photo from "../../../assets/images/Ic_upload_photo.svg";
-import Ic_build_housing from "../../../assets/images/Ic_build_housing.svg";
-import Ic_delete_purple from "../../../assets/images/Ic_delete_purple.svg";
-import Ic_garaje from "../../../assets/images/Ic_garaje.svg";
+import Ic_upload_blue_img from "../../../assets/images/Ic_upload_blue_img.svg";
 import { Input } from "../../../components/ui/input";
 import {
   Select,
@@ -33,7 +30,14 @@ import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 import { fetchAdminDataByEmail, fetchHusmodellData } from "../../../lib/utils";
 import { Spinner } from "../../../components/Spinner";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  House,
+  HousePlus,
+  Trash2,
+  Warehouse,
+} from "lucide-react";
 
 const formSchema = z.object({
   TypeObjekt: z.string().min(1, { message: "Velg en Type Objekt." }),
@@ -148,12 +152,6 @@ const formSchema = z.object({
         message: "Please enter a valid YouTube URL.",
       }
     ),
-  VelgBoligtype: z
-    .string({
-      required_error: "Velg en boligtype",
-    })
-    .min(1, "Velg en boligtype"),
-  VelgEgenskaperBoligtype: z.array(z.string()).optional(),
 });
 
 export const Husdetaljer: React.FC<{
@@ -400,21 +398,6 @@ export const Husdetaljer: React.FC<{
   };
   const selectedHouseType = form.watch("TypeObjekt");
 
-  const VelgboligType = [
-    "Funkis",
-    "Moderne",
-    "Herskapelig",
-    "Tradisjonelt",
-    "Tomannsbolig",
-  ];
-
-  const boligOptions = [
-    "Tomannsbolig",
-    "Med utleiedal",
-    "Ett plan",
-    "Med garasje",
-  ];
-
   const [isOpen, setIsOpen] = useState<{ [key: string]: boolean }>({
     section1: false,
     section2: false,
@@ -472,17 +455,17 @@ export const Husdetaljer: React.FC<{
                         {[
                           {
                             label: "Bolig",
-                            icon: Ic_build_housing,
+                            icon: <House />,
                             value: "bolig",
                           },
                           {
                             label: "Hytte",
-                            icon: Ic_build_housing,
+                            icon: <HousePlus />,
                             value: "hytte",
                           },
                           {
                             label: "Garasje",
-                            icon: Ic_garaje,
+                            icon: <Warehouse />,
                             value: "garasje",
                           },
                         ].map((item: any, index: number) => (
@@ -492,14 +475,20 @@ export const Husdetaljer: React.FC<{
                               form.setValue("TypeObjekt", item.value);
                               form.clearErrors("TypeObjekt");
                             }}
-                            className={`border-2 rounded-lg p-2 cursor-pointer ${
+                            className={`border-2 rounded-lg py-2 px-4 shadow-shadow2 cursor-pointer flex items-center gap-2 ${
                               selectedHouseType === item.value
                                 ? "border-purple"
                                 : "border-gray1"
                             }`}
                           >
-                            <div className="bg-[#F9FAFB] rounded-[8px] h-[125px] w-[198px] flex items-center justify-center mb-2">
-                              <img src={item.icon} alt={item.label} />
+                            <div
+                              className={`${
+                                selectedHouseType === item.value
+                                  ? "text-[#444CE7]"
+                                  : "text-[#5D6B98]"
+                              }`}
+                            >
+                              {item.icon}
                             </div>
                             <div className="text-darkBlack text-sm text-center font-medium">
                               {item.label}
@@ -512,108 +501,6 @@ export const Husdetaljer: React.FC<{
                           {form.formState.errors.TypeObjekt.message}
                         </p>
                       )}
-                    </div>
-                    <div className="col-span-2">
-                      <FormField
-                        control={form.control}
-                        name={`VelgBoligtype`}
-                        render={({ field, fieldState }) => (
-                          <FormItem>
-                            <p className="text-black mb-3 text-base font-semibold">
-                              Velg boligtype
-                            </p>
-                            <FormControl>
-                              <div className="flex items-center gap-5">
-                                {VelgboligType.map((option) => (
-                                  <div
-                                    key={option}
-                                    className="relative flex items-center gap-2"
-                                  >
-                                    <input
-                                      className={`bg-white rounded-[8px] border text-black
-        ${
-          fieldState?.error ? "border-red" : "border-gray1"
-        } h-4 w-4 accent-primary`}
-                                      type="radio"
-                                      value={option}
-                                      onChange={(e) => {
-                                        form.setValue(
-                                          "VelgBoligtype",
-                                          e.target.value
-                                        );
-                                      }}
-                                      checked={field.value === option}
-                                    />
-                                    <p
-                                      className={`text-gray text-sm font-medium`}
-                                    >
-                                      {option}
-                                    </p>
-                                  </div>
-                                ))}
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <div className="col-span-2">
-                      <FormField
-                        control={form.control}
-                        name={`VelgEgenskaperBoligtype`}
-                        render={({ field, fieldState }) => (
-                          <FormItem>
-                            <p className="text-black mb-3 text-base font-semibold">
-                              Velg egenskaper til boligtype
-                            </p>
-                            <FormControl>
-                              <div className="flex items-center gap-5">
-                                {boligOptions.map((option) => (
-                                  <div
-                                    key={option}
-                                    className="relative flex items-center gap-2"
-                                  >
-                                    <input
-                                      className={`bg-white rounded-[8px] border text-black
-        ${
-          fieldState?.error ? "border-red" : "border-gray1"
-        } h-4 w-4 accent-primary`}
-                                      type="checkbox"
-                                      value={option}
-                                      checked={field.value?.includes(option)}
-                                      onChange={(e) => {
-                                        const checked = e.target.checked;
-                                        const currentValues = field.value || [];
-
-                                        if (checked) {
-                                          form.setValue(
-                                            "VelgEgenskaperBoligtype",
-                                            [...currentValues, option]
-                                          );
-                                        } else {
-                                          form.setValue(
-                                            "VelgEgenskaperBoligtype",
-                                            currentValues.filter(
-                                              (val) => val !== option
-                                            )
-                                          );
-                                        }
-                                      }}
-                                    />
-                                    <p
-                                      className={`text-gray text-sm font-medium`}
-                                    >
-                                      {option}
-                                    </p>
-                                  </div>
-                                ))}
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
                     </div>
                     <div>
                       <FormField
@@ -711,30 +598,27 @@ export const Husdetaljer: React.FC<{
                             </p>
                             <FormControl>
                               <div className="flex items-center gap-5 w-full">
-                                {uploadPhoto && (
-                                  <img
-                                    src={uploadPhoto}
-                                    alt="logo"
-                                    height="140px"
-                                    width="140px"
-                                  />
-                                )}
-                                <div className="relative w-full">
+                                <div
+                                  className="relative w-max p-2 rounded-lg"
+                                  style={{
+                                    boxShadow:
+                                      "0px 2px 4px -2px #1018280F, 0px 4px 8px -2px #1018281A",
+                                  }}
+                                >
                                   <div
-                                    className="border border-gray2 rounded-[8px] px-3 laptop:px-6 py-4 flex justify-center items-center flex-col gap-3 cursor-pointer w-full"
+                                    className="border border-gray2 border-dashed rounded-lg px-3 laptop:px-[42px] py-4 flex justify-center items-center flex-col gap-3 cursor-pointer w-full"
                                     onDragOver={handleDragOver}
                                     onClick={handleClick}
                                     onDrop={handleDrop}
                                   >
-                                    <img src={Ic_upload_photo} alt="upload" />
                                     <p className="text-gray text-sm text-center truncate w-full">
                                       <span className="text-primary font-medium truncate">
-                                        Klikk for opplasting
+                                        Bla gjennom
                                       </span>{" "}
-                                      eller dra-og-slipp
+                                      Slipp filen her for å laste den opp
                                     </p>
                                     <p className="text-gray text-sm text-center truncate w-full">
-                                      SVG, PNG, JPG or GIF (maks. 800x400px)
+                                      Filformater: Kun PDF, maks 2 MB
                                     </p>
                                     <input
                                       type="file"
@@ -746,6 +630,24 @@ export const Husdetaljer: React.FC<{
                                     />
                                   </div>
                                 </div>
+                                {uploadPhoto && (
+                                  <div className="relative">
+                                    <img
+                                      src={uploadPhoto}
+                                      alt="logo"
+                                      height="140px"
+                                      width="140px"
+                                    />
+                                    <div
+                                      className="bg-white rounded-full w-6 h-6 flex items-center justify-center absolute bottom-2 right-2 cursor-pointer"
+                                      onClick={() => {
+                                        form.resetField("photo");
+                                      }}
+                                    >
+                                      <Trash2 className="text-red w-4 h-4" />
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -753,9 +655,10 @@ export const Husdetaljer: React.FC<{
                         )}
                       />
                     </div>
+                    <div className="border-t border-[#DCDFEA] w-full"></div>
                     <div className="col-span-2">
                       <p className={`text-black mb-[6px] text-sm font-medium`}>
-                        Illustrasjoner
+                        Andre bilder og 3D-visning
                       </p>
                       <div className="grid grid-cols-2 gap-6">
                         <div>
@@ -798,23 +701,36 @@ export const Husdetaljer: React.FC<{
                             <FormItem className="w-full">
                               <FormControl>
                                 <div className="flex items-center gap-5 w-full">
-                                  <div className="relative w-full">
+                                  <div
+                                    className="relative w-full p-2 rounded-lg"
+                                    style={{
+                                      boxShadow:
+                                        "0px 2px 4px -2px #1018280F, 0px 4px 8px -2px #1018281A",
+                                    }}
+                                  >
                                     <div
-                                      className="border border-gray2 rounded-[8px] px-3 laptop:px-6 py-4 flex justify-center items-center flex-col gap-3 cursor-pointer w-full"
-                                      onDragOver={handle3DDragOver}
+                                      className="border border-gray2 border-dashed rounded-lg px-3 laptop:px-[42px] py-4 flex justify-center items-start gap-6 cursor-pointer w-full"
                                       onClick={handle3DClick}
                                       onDrop={handle3DDrop}
+                                      onDrag={handle3DDragOver}
                                     >
-                                      <img src={Ic_upload_photo} alt="upload" />
-                                      <p className="text-gray text-sm text-center truncate w-full">
-                                        <span className="text-primary font-medium truncate">
-                                          Klikk for opplasting
-                                        </span>{" "}
-                                        eller dra-og-slipp
-                                      </p>
-                                      <p className="text-gray text-sm text-center truncate w-full">
-                                        SVG, PNG, JPG or GIF (maks. 800x400px)
-                                      </p>
+                                      <img
+                                        src={Ic_upload_blue_img}
+                                        alt="upload"
+                                      />
+                                      <div className="flex items-start justify-start flex-col gap-3">
+                                        <div className="flex items-center gap-3">
+                                          <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[36px] py-2 px-4">
+                                            Bla gjennom
+                                          </span>
+                                          <p className="text-gray text-sm text-center truncate w-full">
+                                            Slipp filen her for å laste den opp
+                                          </p>
+                                        </div>
+                                        <p className="text-gray text-sm truncate w-full">
+                                          Filformater: Kun PDF, maks 2 MB
+                                        </p>
+                                      </div>
                                       <input
                                         type="file"
                                         ref={file3DInputRef}
@@ -846,7 +762,7 @@ export const Husdetaljer: React.FC<{
                                 className="object-cover w-full h-full rounded-lg"
                               />
                               <div
-                                className="absolute top-2 right-2 bg-[#FFFFFFCC] rounded-[12px] p-[6px] cursor-pointer"
+                                className="absolute bottom-2 right-2 bg-white rounded-full w-6 h-6 p-1 flex items-center justify-center cursor-pointer"
                                 onClick={() => {
                                   const updatedFiles = upload3DPhoto.filter(
                                     (_: any, i: number) => i !== index
@@ -854,7 +770,7 @@ export const Husdetaljer: React.FC<{
                                   form.setValue("photo3D", updatedFiles);
                                 }}
                               >
-                                <img src={Ic_delete_purple} alt="delete" />
+                                <Trash2 className="text-red h-4 w-4" />
                               </div>
                             </div>
                           ))}
@@ -1432,7 +1348,7 @@ export const Husdetaljer: React.FC<{
                         )}
                       />
                     </div>
-                    <div className="">
+                    <div className="col-span-2">
                       <FormField
                         control={form.control}
                         name="PlantegningerFasader"
@@ -1447,24 +1363,29 @@ export const Husdetaljer: React.FC<{
                             </p>
                             <FormControl>
                               <div className="flex items-center gap-5 w-full">
-                                <div className="relative w-full">
+                                <div
+                                  className="relative w-max p-2 rounded-lg"
+                                  style={{
+                                    boxShadow:
+                                      "0px 2px 4px -2px #1018280F, 0px 4px 8px -2px #1018281A",
+                                  }}
+                                >
                                   <div
-                                    className="border border-gray2 rounded-[8px] px-3 laptop:px-6 py-4 flex justify-center items-center flex-col gap-3 cursor-pointer w-full"
+                                    className="border border-gray2 border-dashed rounded-lg px-3 laptop:px-[42px] py-4 flex justify-center items-center flex-col gap-3 cursor-pointer w-full"
                                     onDragOver={
                                       handlePlantegningerFasaderDragOver
                                     }
                                     onClick={handlePlantegningerFasaderClick}
                                     onDrop={handlePlantegningerFasaderDrop}
                                   >
-                                    <img src={Ic_upload_photo} alt="upload" />
                                     <p className="text-gray text-sm text-center truncate w-full">
                                       <span className="text-primary font-medium truncate">
-                                        Klikk for opplasting
+                                        Bla gjennom
                                       </span>{" "}
-                                      eller dra-og-slipp
+                                      Slipp filen her for å laste den opp
                                     </p>
                                     <p className="text-gray text-sm text-center truncate w-full">
-                                      SVG, PNG, JPG or GIF (maks. 800x400px)
+                                      Filformater: Kun PDF, maks 2 MB
                                     </p>
                                     <input
                                       type="file"
@@ -1481,47 +1402,46 @@ export const Husdetaljer: React.FC<{
                                     />
                                   </div>
                                 </div>
+                                {uploadPlantegningerFasaderPhoto && (
+                                  <div className="mt-5 flex items-center gap-5 flex-wrap">
+                                    {uploadPlantegningerFasaderPhoto?.map(
+                                      (file: any, index: number) => (
+                                        <div
+                                          className="relative h-[140px] w-[140px]"
+                                          key={index}
+                                        >
+                                          <img
+                                            src={file}
+                                            alt="logo"
+                                            className="object-cover w-full h-full rounded-lg"
+                                          />
+                                          <div
+                                            className="bg-white rounded-full w-6 h-6 flex items-center justify-center absolute bottom-2 right-2 cursor-pointer"
+                                            onClick={() => {
+                                              const updatedFiles =
+                                                uploadPlantegningerFasaderPhoto.filter(
+                                                  (_: any, i: number) =>
+                                                    i !== index
+                                                );
+                                              form.setValue(
+                                                "PlantegningerFasader",
+                                                updatedFiles
+                                              );
+                                            }}
+                                          >
+                                            <Trash2 className="text-red w-4 h-4" />
+                                          </div>
+                                        </div>
+                                      )
+                                    )}
+                                  </div>
+                                )}
                               </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                    </div>
-                    <div>
-                      {uploadPlantegningerFasaderPhoto && (
-                        <div className="mt-5 flex items-center gap-5 flex-wrap">
-                          {uploadPlantegningerFasaderPhoto?.map(
-                            (file: any, index: number) => (
-                              <div
-                                className="relative h-[140px] w-[140px]"
-                                key={index}
-                              >
-                                <img
-                                  src={file}
-                                  alt="logo"
-                                  className="object-cover w-full h-full rounded-lg"
-                                />
-                                <div
-                                  className="absolute top-2 right-2 bg-[#FFFFFFCC] rounded-[12px] p-[6px] cursor-pointer"
-                                  onClick={() => {
-                                    const updatedFiles =
-                                      uploadPlantegningerFasaderPhoto.filter(
-                                        (_: any, i: number) => i !== index
-                                      );
-                                    form.setValue(
-                                      "PlantegningerFasader",
-                                      updatedFiles
-                                    );
-                                  }}
-                                >
-                                  <img src={Ic_delete_purple} alt="delete" />
-                                </div>
-                              </div>
-                            )
-                          )}
-                        </div>
-                      )}
                     </div>
                     <div>
                       <FormField
