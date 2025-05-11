@@ -119,9 +119,6 @@ export const Eksterior: React.FC<{
       const newVal = newData[key];
 
       if (key === "rooms" && Array.isArray(oldVal) && Array.isArray(newVal)) {
-        const indexToUpdate = oldVal.length > 0 ? oldVal.length - 1 : 0;
-        console.log(indexToUpdate);
-
         const mergedRooms: any[] = [];
 
         for (let i = 0; i < newVal.length; i++) {
@@ -361,8 +358,6 @@ export const Eksterior: React.FC<{
   const title = form.watch(
     `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.navn`
   );
-
-  console.log(form.formState.errors);
 
   return (
     <>

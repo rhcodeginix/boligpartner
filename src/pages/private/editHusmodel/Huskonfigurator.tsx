@@ -5,11 +5,42 @@ import { Spinner } from "../../../components/Spinner";
 import { fetchHusmodellData } from "../../../lib/utils";
 import Button from "../../../components/common/button";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../../../config/firebaseConfig";
+import { db, storage } from "../../../config/firebaseConfig";
 import { toast } from "react-hot-toast";
 import * as pdfjsLib from "pdfjs-dist";
 import { Pencil, Trash2 } from "lucide-react";
 import Modal from "../../../components/common/modal";
+import { ref, uploadString, getDownloadURL } from "firebase/storage";
+
+const uploadBase64Image = async (base64: string) => {
+  if (!base64) return;
+
+  // Optional: validate base64 size estimate
+  const base64Size =
+    base64.length * (3 / 4) -
+    (base64.endsWith("==") ? 2 : base64.endsWith("=") ? 1 : 0);
+  if (base64Size > 2 * 1024 * 1024) {
+    toast.error("Image size must be less than 2MB.", {
+      position: "top-right",
+    });
+    return;
+  }
+
+  const fileType = "images";
+  const timestamp = Date.now();
+  const fileName = `${timestamp}_image.png`; // or .jpg depending on content
+  const storageRef = ref(storage, `${fileType}/${fileName}`);
+
+  try {
+    // Upload base64 (data URL)
+    const snapshot = await uploadString(storageRef, base64, "data_url");
+    const url = await getDownloadURL(snapshot.ref);
+
+    return url;
+  } catch (error) {
+    console.error(`Error uploading base64`, error);
+  }
+};
 
 export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   setActiveTab,
@@ -73,6 +104,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
       console.error("Error loading PDF document:", err);
     }
   };
+
   const handleFileUpload = async (files: FileList) => {
     if (!files.length) return;
 
@@ -96,78 +128,59 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
 
       const data = await response.json();
       if (data && data?.pdf_id) {
-        const PDFresponse = await fetch(
-          `https://iplotnor-hf-floor-plan-api.hf.space/analyze/${data?.pdf_id}`,
-          {
-            method: "POST",
-            headers: {
-              accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              description: "string",
-            }),
-            mode: "cors",
-          }
-        );
+        let base64PDF: string | undefined;
 
-        if (!PDFresponse.ok) {
-          throw new Error(`HTTP error! status: ${PDFresponse.status}`);
-        }
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          base64PDF = reader.result as string;
 
-        const PDFdata = await PDFresponse.json();
-        if (PDFdata) {
-          let base64PDF: string | undefined;
+          if (base64PDF) {
+            const imageBase64 = await convertPdfToImage(base64PDF);
 
-          const reader = new FileReader();
-          reader.onloadend = async () => {
-            base64PDF = reader.result as string;
+            if (imageBase64) {
+              const finalImageUrl = await uploadBase64Image(imageBase64);
+              const husmodellDocRef = doc(
+                db,
+                "housemodell_configure_broker",
+                String(id)
+              );
 
-            if (base64PDF) {
-              const imageBase64 = await convertPdfToImage(base64PDF);
+              const docSnap = await getDoc(husmodellDocRef);
+              const existingData = docSnap.exists()
+                ? docSnap.data().Plantegninger || []
+                : [];
+              const newIndex = existingData.length + 1;
 
-              if (imageBase64) {
-                const husmodellDocRef = doc(
-                  db,
-                  "housemodell_configure_broker",
-                  String(id)
-                );
+              const updatedPdfData = {
+                ...data,
+                image: finalImageUrl,
+                title: `Floor ${newIndex}`,
+              };
+              setRoomsData((prev: any) => [...prev, updatedPdfData]);
 
-                const docSnap = await getDoc(husmodellDocRef);
-                const existingData = docSnap.exists()
-                  ? docSnap.data().Plantegninger || []
-                  : [];
-                const newIndex = existingData.length + 1;
-                const updatedPdfData = {
-                  ...PDFdata,
-                  image: imageBase64,
-                  title: `floor ${newIndex}`,
-                };
-                setRoomsData((prev: any) => [...prev, updatedPdfData]);
+              const finalData = [];
+              finalData.push(updatedPdfData);
 
-                const finalData = [];
-                finalData.push(updatedPdfData);
+              const updatedPlantegninger = [...existingData, ...finalData];
 
-                const updatedPlantegninger = [...existingData, ...finalData];
-                const formatDate = (date: Date) => {
-                  return date
-                    .toLocaleString("sv-SE", { timeZone: "UTC" })
-                    .replace(",", "");
-                };
-                await updateDoc(husmodellDocRef, {
-                  Plantegninger: updatedPlantegninger,
-                  id: id,
-                  updatedAt: formatDate(new Date()),
-                });
-                toast.success(PDFdata.message, {
-                  position: "top-right",
-                });
-                setLoading(false);
-              }
+              const formatDate = (date: Date) => {
+                return date
+                  .toLocaleString("sv-SE", { timeZone: "UTC" })
+                  .replace(",", "");
+              };
+              await updateDoc(husmodellDocRef, {
+                Plantegninger: updatedPlantegninger,
+                id: id,
+                updatedAt: formatDate(new Date()),
+              });
+              toast.success(data.message, {
+                position: "top-right",
+              });
+              setLoading(false);
             }
-          };
-          reader.readAsDataURL(files[0]);
-        }
+          }
+        };
+        reader.readAsDataURL(files[0]);
       }
     } catch (error) {
       console.error("Upload error:", error);

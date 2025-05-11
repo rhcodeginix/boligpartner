@@ -62,55 +62,12 @@ export const ProductFormDrawer: React.FC<{
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
     // onSubmit(newProduct)
     // Send full form data to parent component
     if (typeof onSubmitProp === "function") {
       onSubmitProp(data); // pass the whole form data
     }
     onClose();
-    // const updatedName = data.Kategorinavn;
-
-    // const existingCategories =
-    //   formData.getValues(`hovedkategorinavn.${activeTabData}.Kategorinavn`) ||
-    //   [];
-
-    // if (editIndex !== null && existingCategories[editIndex]) {
-    //   // Edit existing
-    //   const updatedCategories = [...existingCategories];
-    //   updatedCategories[editIndex].navn = updatedName;
-
-    //   setCategory((prev: any) => {
-    //     const updatedCategory = [...prev];
-    //     updatedCategory[activeTabData] = {
-    //       ...updatedCategory[activeTabData],
-    //       Kategorinavn: updatedCategories,
-    //     };
-    //     return updatedCategory;
-    //   });
-
-    //   formData.setValue(
-    //     `hovedkategorinavn.${activeTabData}.Kategorinavn`,
-    //     updatedCategories,
-    //     { shouldValidate: true }
-    //   );
-    // } else {
-    //   // Add new
-    //   const newSubCategory = { navn: updatedName, produkter: [] };
-    //   setCategory((prev: any) => {
-    //     const updatedCategory = [...prev];
-    //     updatedCategory[activeTabData] = {
-    //       ...updatedCategory[activeTabData],
-    //       Kategorinavn: [...existingCategories, newSubCategory],
-    //     };
-    //     return updatedCategory;
-    //   });
-    //   formData.setValue(
-    //     `hovedkategorinavn.${activeTabData}.Kategorinavn`,
-    //     [...existingCategories, newSubCategory],
-    //     { shouldValidate: true }
-    //   );
-    // }
   };
 
   const file3DInputRef = React.useRef<HTMLInputElement | null>(null);
