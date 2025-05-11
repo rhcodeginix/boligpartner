@@ -30,7 +30,7 @@ export const Navbar: React.FC = () => {
           >
             Husmodell
           </Link>
-          <Link
+          {/* <Link
             to={"/Inventory"}
             className={`text-base font-medium py-2 px-3 rounded-[6px] ${
               currentPath === "/Inventory"
@@ -39,7 +39,7 @@ export const Navbar: React.FC = () => {
             }`}
           >
             Inventory
-          </Link>
+          </Link> */}
         </div>
         <div className="flex items-center gap-4 relative">
           <div
