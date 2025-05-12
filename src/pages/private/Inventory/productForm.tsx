@@ -35,6 +35,10 @@ const productSchema = z.object({
   Produktbeskrivelse: z
     .string()
     .min(1, "Produktbeskrivelse må bestå av minst 1 tegn."),
+  Labour: z.string().min(1, "Arbeid må bestå av minst 1 tegn."),
+  LabourPris: z.string().min(1, {
+    message: "Arbeidspris må bestå av minst 1 tegn.",
+  }),
 });
 
 const formSchema = z.object({
@@ -56,6 +60,8 @@ export const ProductFormDrawer: React.FC<{
           pris: "",
           IncludingOffer: false,
           Produktbeskrivelse: "",
+          Labour: "",
+          LabourPris: "",
         },
       ],
     },
@@ -84,6 +90,13 @@ export const ProductFormDrawer: React.FC<{
   );
 
   const delieverBy = ["Boligpartner", "Salgskontor"];
+  const Labour = [
+    "Per Sq.ft",
+    "Per Hours",
+    "Per Day",
+    "Per Unit",
+    "Per Labour",
+  ];
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "produkter",
@@ -314,9 +327,55 @@ export const ProductFormDrawer: React.FC<{
                                       }}
                                       checked={field.value === option}
                                     />
-                                    <p
-                                      className={`text-gray text-sm font-medium`}
-                                    >
+                                    <p className={`text-black text-sm`}>
+                                      {option}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="col-span-2 border-t border-[#DCDFEA]"></div>
+                    <div className="col-span-2">
+                      <FormField
+                        control={form.control}
+                        name={`produkter.${index}.Labour`}
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <p
+                              className={`mb-2 ${
+                                fieldState.error ? "text-red" : "text-black"
+                              } text-sm font-medium`}
+                            >
+                              Arbeid
+                            </p>
+                            <FormControl>
+                              <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                                {Labour.map((option) => (
+                                  <div
+                                    key={option}
+                                    className="relative flex items-center gap-2"
+                                  >
+                                    <input
+                                      className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-primary`}
+                                      type="radio"
+                                      value={option}
+                                      onChange={(e) => {
+                                        form.setValue(
+                                          `produkter.${index}.Labour`,
+                                          e.target.value
+                                        );
+                                      }}
+                                      checked={field.value === option}
+                                    />
+                                    <p className={`text-black text-sm`}>
                                       {option}
                                     </p>
                                   </div>
@@ -541,6 +600,8 @@ export const ProductFormDrawer: React.FC<{
                   pris: "",
                   IncludingOffer: false,
                   Produktbeskrivelse: "",
+                  Labour: "",
+                  LabourPris: "",
                 })
               }
             >
