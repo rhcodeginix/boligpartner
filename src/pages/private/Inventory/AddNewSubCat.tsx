@@ -48,25 +48,25 @@ export const AddNewSubCat: React.FC<{
   }, [defaultValue, editIndex]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    onClose();
     const updatedName = data.Kategorinavn;
 
     const existingCategories =
       formData.getValues(`hovedkategorinavn.${activeTabData}.Kategorinavn`) ||
       [];
-    // setCategory((prev: any) => {
-    //   const updatedCategory = [...prev];
-    //   updatedCategory[activeTabData] = {
-    //     ...updatedCategory[activeTabData],
-    //     Kategorinavn: [...existingCategories, newSubCategory],
-    //   };
-    //   return updatedCategory;
-    // });
-    // formData.setValue(
-    //   `hovedkategorinavn.${activeTabData}.Kategorinavn`,
-    //   [...existingCategories, newSubCategory],
-    //   { shouldValidate: true }
-    // );
+
+    const isNameExists = existingCategories.some(
+      (category: { navn: string }) => category.navn === updatedName
+    );
+
+    if (isNameExists) {
+      // If name exists, show an error message or alert
+      form.setError("Kategorinavn", {
+        type: "manual",
+        message: "Kategorinavnet finnes allerede.",
+      });
+      return;
+    }
+
     if (editIndex !== null && existingCategories[editIndex]) {
       // Edit existing
       const updatedCategories = [...existingCategories];
@@ -103,6 +103,8 @@ export const AddNewSubCat: React.FC<{
         { shouldValidate: true }
       );
     }
+    onClose();
+
     form.reset();
   };
   return (

@@ -245,6 +245,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               onClose={handleToggleSubCategoryPopup}
               setCategory={setCategory}
               editData={editCategory}
+              Category={Category}
             />
           </div>
         </Modal>

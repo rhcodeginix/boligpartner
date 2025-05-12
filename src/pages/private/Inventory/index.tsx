@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "../../../components/common/modal";
 import Ic_trash from "../../../assets/images/Ic_trash.svg";
 import Img_noTask from "../../../assets/images/Img_noTask.png";
 import Button from "../../../components/common/button";
-// import { Spinner } from "../../../components/Spinner";
+import { Spinner } from "../../../components/Spinner";
 import { Pencil, Plus } from "lucide-react";
 import { AddNewCat } from "../editHusmodel/AddNewCat";
 import { Customization } from "./customization";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../../config/firebaseConfig";
 
 export const Inventory = () => {
-  const [activeTabData, setActiveTabData] = useState<number>(0);
+  const [activeTabData, setActiveTabData] = useState<number | null>(null);
   const [AddCategory, setAddCategory] = useState(false);
   const [Category, setCategory] = useState<any>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -18,7 +20,7 @@ export const Inventory = () => {
     data: any;
   }>(null);
 
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const handleToggleSubCategoryPopup = () => {
     if (AddCategory) {
@@ -50,6 +52,44 @@ export const Inventory = () => {
     setDraggedIndex(null);
   };
 
+  useEffect(() => {
+    const fetchInventoryData = async () => {
+      const inventoryRef = collection(db, "inventory");
+      const inventorySnapshot = await getDocs(inventoryRef);
+
+      const result = [];
+
+      for (const docSnap of inventorySnapshot.docs) {
+        const mainData = docSnap.data();
+        const mainId = docSnap.id;
+
+        const kategorinavnRef = collection(
+          db,
+          "inventory",
+          mainId,
+          "Kategorinavn"
+        );
+        const kategorinavnSnapshot = await getDocs(kategorinavnRef);
+
+        const kategorinavnData = kategorinavnSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        result.push({
+          id: mainId,
+          ...mainData,
+          Kategorinavn: kategorinavnData,
+        });
+      }
+      setCategory(result);
+      setActiveTabData(0);
+
+      setLoading(false);
+    };
+
+    fetchInventoryData();
+  }, []);
   return (
     <>
       <div className="p-8 flex gap-3 items-center justify-between bg-lightPurple">
@@ -178,11 +218,12 @@ export const Inventory = () => {
               onClose={handleToggleSubCategoryPopup}
               setCategory={setCategory}
               editData={editCategory}
+              Category={Category}
             />
           </div>
         </Modal>
       )}
-      {/* {loading && <Spinner />} */}
+      {loading && <Spinner />}
     </>
   );
 };

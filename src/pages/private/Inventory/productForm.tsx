@@ -79,9 +79,10 @@ export const ProductFormDrawer: React.FC<{
 
   const file3DInputRef = React.useRef<HTMLInputElement | null>(null);
 
-  const handle3DClick = () => {
+  const handle3DClick = useCallback(() => {
     file3DInputRef.current?.click();
-  };
+  }, []);
+
   const handle3DDragOver = useCallback(
     (event: any) => event.preventDefault(),
     []

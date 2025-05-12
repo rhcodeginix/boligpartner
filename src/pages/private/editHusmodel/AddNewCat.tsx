@@ -23,7 +23,8 @@ export const AddNewCat: React.FC<{
   onClose: any;
   setCategory: any;
   editData: any;
-}> = ({ onClose, setCategory, editData }) => {
+  Category: any;
+}> = ({ onClose, setCategory, editData, Category }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -36,6 +37,24 @@ export const AddNewCat: React.FC<{
     }
   }, [form, editData?.data?.name, editData?.data?.isSelected]);
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const isDuplicate = Category.some((cat: any, idx: number) => {
+      if (editData) {
+        return (
+          idx !== editData.index &&
+          cat.name.toLowerCase() === data.Hovedkategoriname.toLowerCase()
+        );
+      }
+      return cat.name.toLowerCase() === data.Hovedkategoriname.toLowerCase();
+    });
+
+    if (isDuplicate) {
+      form.setError("Hovedkategoriname", {
+        type: "manual",
+        message: "Kategorinavnet finnes allerede.",
+      });
+      return;
+    }
+
     onClose();
     if (editData) {
       setCategory((prev: any) =>
@@ -139,10 +158,13 @@ export const AddNewCat: React.FC<{
             />
           </div>
           <div className="flex justify-end w-full gap-5 items-center left-0 mt-8">
-            <div onClick={() => {
-          form.reset();
-          onClose();
-        }} className="w-1/2 sm:w-auto">
+            <div
+              onClick={() => {
+                form.reset();
+                onClose();
+              }}
+              className="w-1/2 sm:w-auto"
+            >
               <Button
                 text="Avbryt"
                 className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-12 py-2 flex items-center gap-2"
