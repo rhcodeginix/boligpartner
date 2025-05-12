@@ -128,7 +128,7 @@ export const Inventory = () => {
                 </div>
               ))
             ) : (
-              <div className="h-full flex items-center justify-center p-[32px]">
+              <div className="h-full flex items-center justify-center">
                 <div className="flex flex-col items-center justify-center">
                   <img src={Img_noTask} alt="no_data" />
                   <h3 className="text-black font-semibold text-center mb-1.5">

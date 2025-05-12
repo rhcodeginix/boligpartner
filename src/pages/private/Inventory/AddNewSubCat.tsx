@@ -10,6 +10,7 @@ import {
 } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
 import { Input } from "../../../components/ui/input";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   Kategorinavn: z.string().min(1, {
@@ -38,6 +39,13 @@ export const AddNewSubCat: React.FC<{
       Kategorinavn: defaultValue || "",
     },
   });
+  useEffect(() => {
+    if (editIndex != null && defaultValue) {
+      form.setValue("Kategorinavn", defaultValue);
+    } else {
+      form.setValue("Kategorinavn", "");
+    }
+  }, [defaultValue, editIndex]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     onClose();
@@ -95,6 +103,7 @@ export const AddNewSubCat: React.FC<{
         { shouldValidate: true }
       );
     }
+    form.reset();
   };
   return (
     <>
@@ -128,6 +137,7 @@ export const AddNewSubCat: React.FC<{
                                               : "border-gray1"
                                           } `}
                         type="text"
+                        value={field.value || ""}
                       />
                     </div>
                   </FormControl>

@@ -59,7 +59,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
           // Call analyze API for this specific pdfId
           const PDFresponse = await fetch(
-            `https://iplotnor-hf-floor-plan-api.hf.space/analyze/${pdfId}`,
+            `https://iplotnor-hf-api-version-2.hf.space/analyze/${pdfId}`,
             {
               method: "POST",
               headers: {

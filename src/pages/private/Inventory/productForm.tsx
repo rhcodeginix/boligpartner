@@ -14,7 +14,7 @@ import { toast } from "react-hot-toast";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../config/firebaseConfig";
 import React, { useCallback, useState } from "react";
-import { Plus, X } from "lucide-react";
+import { Plus, Trash2, X } from "lucide-react";
 import { TextArea } from "../../../components/ui/textarea";
 
 const fileSchema = z.union([
@@ -69,11 +69,12 @@ export const ProductFormDrawer: React.FC<{
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // onSubmit(newProduct)
-    // Send full form data to parent component
+
     if (typeof onSubmitProp === "function") {
-      onSubmitProp(data); // pass the whole form data
+      onSubmitProp(data);
     }
     onClose();
+    form.reset();
   };
 
   const file3DInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -387,6 +388,85 @@ export const ProductFormDrawer: React.FC<{
                         )}
                       />
                     </div>
+                    <div>
+                      <FormField
+                        control={form.control}
+                        name={`produkter.${index}.LabourPris`}
+                        render={({ field, fieldState }) => {
+                          const initialValue = form.getValues(
+                            `produkter.${index}.LabourPris`
+                          );
+                          return (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } text-sm font-medium mb-2`}
+                              >
+                                Arbeidspris
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Skriv inn Arbeidspris"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    inputMode="numeric"
+                                    type="text"
+                                    onChange={({ target: { value } }: any) => {
+                                      let cleaned = value
+                                        .replace(/[^\d-]/g, "")
+                                        .replace(/(?!^)-/g, "");
+
+                                      const isNegative =
+                                        cleaned.startsWith("-");
+
+                                      const numericPart = cleaned.replace(
+                                        /-/g,
+                                        ""
+                                      );
+
+                                      let formatted = "";
+
+                                      if (numericPart) {
+                                        formatted = new Intl.NumberFormat(
+                                          "no-NO"
+                                        ).format(Number(numericPart));
+                                        if (isNegative) {
+                                          formatted = "-" + formatted;
+                                        }
+                                      } else {
+                                        formatted = isNegative ? "-" : "";
+                                      }
+
+                                      field.onChange({
+                                        target: {
+                                          name: `produkter.${index}.LabourPris`,
+                                          value: formatted,
+                                        },
+                                      });
+                                    }}
+                                    value={initialValue || ""}
+                                  />
+                                  <div className="bg-white absolute top-[1px] right-[1px] rounded-lg h-[calc(100%-2px)] flex items-center p-2 justify-center">
+                                    <div className="text-darkBlack font-semibold">
+                                      NOK
+                                    </div>
+                                  </div>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    </div>
+                    <div className="col-span-2 border-t border-[#DCDFEA]"></div>
                     <div className="col-span-2">
                       <FormField
                         control={form.control}
@@ -568,7 +648,7 @@ export const ProductFormDrawer: React.FC<{
                               className="object-cover h-full w-full rounded-lg"
                             />
                             <div
-                              className="absolute top-2 right-2 bg-[#FFFFFFCC] rounded-[12px] p-[6px] cursor-pointer"
+                              className="absolute bottom-2 right-2 bg-[#FFFFFFCC] rounded-full p-[6px] cursor-pointer"
                               onClick={() => {
                                 const updatedFiles = upload3DPhoto.filter(
                                   (_, i) => i !== imgIndex
@@ -579,7 +659,7 @@ export const ProductFormDrawer: React.FC<{
                                 );
                               }}
                             >
-                              <X className="text-red" />
+                              <Trash2 className="text-red w-4 h-4" />
                             </div>
                           </div>
                         ))}

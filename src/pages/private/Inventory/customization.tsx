@@ -1,18 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
 import Ic_x_circle from "../../../assets/images/Ic_x_circle.svg";
-import { Pencil, Plus, X } from "lucide-react";
+import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { AddNewSubCat } from "./AddNewSubCat";
 import Img_noTask from "../../../assets/images/Img_noTask.png";
 // import { doc, updateDoc } from "firebase/firestore";
 import Drawer from "../../../components/ui/drawer";
 import { ProductFormDrawer } from "./productForm";
 import { toast } from "react-hot-toast";
+import { EditProductFormDrawer } from "./editProductForm";
 // import { db } from "../../../config/firebaseConfig";
 // import { fetchHusmodellData } from "../../../lib/utils";
 
@@ -34,6 +35,10 @@ const productSchema = z.object({
   Produktbeskrivelse: z
     .string()
     .min(1, "Produktbeskrivelse må bestå av minst 1 tegn."),
+  Labour: z.string().min(1, "Arbeid må bestå av minst 1 tegn."),
+  LabourPris: z.string().min(1, {
+    message: "Arbeidspris må bestå av minst 1 tegn.",
+  }),
 });
 
 const categorySchema = z.object({
@@ -57,6 +62,9 @@ export const Customization: React.FC<{
   setCategory: any;
 }> = ({ Category, activeTabData, setCategory }) => {
   const [activeSubTabData, setActiveSubTabData] = useState(0);
+  useEffect(() => {
+    setActiveSubTabData(0);
+  }, [activeTabData]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -75,11 +83,12 @@ export const Customization: React.FC<{
                   IncludingOffer: false,
                   Produktbeskrivelse: "",
                   delieverBy: "",
+                  Labour: "",
+                  LabourPris: "",
                 },
               ],
             },
           ],
-          // Kategorinavn: null,
         },
       ],
     },
@@ -89,16 +98,16 @@ export const Customization: React.FC<{
     `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`
   );
 
-  // const { remove } = useFieldArray({
-  //   control: form.control,
-  //   name: `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
-  // });
+  const { remove } = useFieldArray({
+    control: form.control,
+    name: `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
+  });
 
-  // const removeProduct = (index: number) => {
-  //   if (produkter.length > 1) {
-  //     remove(index);
-  //   }
-  // };
+  const removeProduct = (index: number) => {
+    if (produkter.length > 1) {
+      remove(index);
+    }
+  };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // const rooms = {
@@ -144,22 +153,8 @@ export const Customization: React.FC<{
 
   const [AddSubCategory, setAddSubCategory] = useState(false);
 
-  // useEffect(() => {
-  //   form.setValue("hovedkategorinavn", Category);
-  // }, [form, Category]);
-
   useEffect(() => {
     if (Array.isArray(Category) && Category.length > 0) {
-      // const formatted = Category.map((cat: any, index: number) => ({
-      //   name: cat.name,
-      //   Kategorinavn:
-      //     index === activeTabData
-      //       ? cat.Kategorinavn && cat.Kategorinavn.length > 0
-      //         ? cat.Kategorinavn
-      //         : null
-      //       : null,
-      // }));
-
       form.setValue("hovedkategorinavn", Category);
     }
   }, [form, Category]);
@@ -193,6 +188,8 @@ export const Customization: React.FC<{
               IncludingOffer: product.IncludingOffer || false,
               Produktbeskrivelse: product.Produktbeskrivelse || "",
               delieverBy: product.delieverBy || "",
+              Labour: product.Labour || "",
+              LabourPris: product.LabourPris || "",
             };
           });
         }
@@ -209,6 +206,7 @@ export const Customization: React.FC<{
       )
     ),
   ]);
+  const [editSubCatIndex, setEditSubCatIndex] = useState<number | null>(null);
 
   const handleToggleSubCategoryPopup = () => {
     if (AddSubCategory) {
@@ -265,8 +263,6 @@ export const Customization: React.FC<{
     setDragOverProductIndex(null);
   };
 
-  const [editSubCatIndex, setEditSubCatIndex] = useState<number | null>(null);
-
   const [isProductDrawerOpen, setIsProductDrawerOpen] = useState(false);
 
   const handleproductDrawer = () => {
@@ -279,6 +275,24 @@ export const Customization: React.FC<{
   const title = form.watch(
     `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.navn`
   );
+  const handleCloseSubCategoryDrawer = () => {
+    setEditSubCatIndex(null);
+    setAddSubCategory(false);
+  };
+
+  const [isEditProductDrawerOpen, setIsEditProductDrawerOpen] = useState(false);
+  const [EditProductIndex, setEditProductIndex] = useState<any>(null);
+  const [editProductData, setEditProductData] = useState<any>(null);
+
+  const handleEditproductDrawer = () => {
+    if (isEditProductDrawerOpen) {
+      setIsEditProductDrawerOpen(false);
+      setEditProductData(null);
+      setEditProductIndex(null);
+    } else {
+      setIsEditProductDrawerOpen(true);
+    }
+  };
 
   return (
     <>
@@ -294,8 +308,8 @@ export const Customization: React.FC<{
             </div>
             <div className="border-t border-gray2"></div>
             <div className="p-4">
-              <div className="flex items-center gap-6 h-[48px] mb-8 border border-[#EFF1F5] rounded-lg bg-[#F9F9FB] p-2">
-                {hovedkategorinavn?.length > 0 && (
+              <div className="flex items-center justify-between gap-6 h-[48px] mb-8 border border-[#EFF1F5] rounded-lg bg-[#F9F9FB] p-2">
+                {hovedkategorinavn?.length > 0 ? (
                   <div className="flex items-center gap-4 overflow-x-auto overflowXAuto">
                     {hovedkategorinavn?.map((cat: any, index: number) => (
                       <div
@@ -347,6 +361,10 @@ export const Customization: React.FC<{
                       </div>
                     ))}
                   </div>
+                ) : (
+                  <p className="text-secondary text-sm">
+                    No Customisation Category added
+                  </p>
                 )}
 
                 <div
@@ -361,7 +379,7 @@ export const Customization: React.FC<{
                 <>
                   <div className="flex items-center gap-3 justify-between mb-5">
                     <h4 className="text-darkBlack text-base font-semibold">
-                      {title}
+                      {title} options
                     </h4>
                     <div
                       className="text-purple border-2 border-purple rounded-[40px] py-2 px-4 font-semibold text-base flex items-center gap-1 cursor-pointer h-full"
@@ -372,20 +390,6 @@ export const Customization: React.FC<{
                       <Plus />
                       Add {title}
                     </div>
-                    {/* <div
-                  className={`flex items-center gap-1 font-medium ${
-                    produkter.length === 1
-                      ? "text-gray cursor-not-allowed text-opacity-55"
-                      : "text-purple cursor-pointer"
-                  }`}
-                  onClick={() => {
-                    if (produkter.length > 1) {
-                      removeProduct(index);
-                    }
-                  }}
-                >
-                  <X /> Slett produkt
-                </div> */}
                   </div>
                   <div className="grid grid-cols-2">
                     {produkter?.map((product, index) => {
@@ -402,18 +406,38 @@ export const Customization: React.FC<{
                           onDrop={() => handleDrop()}
                         >
                           <div className="flex gap-4 p-3">
-                            <div className="w-[100px]">
+                            <div className="w-[20%]">
                               <img
                                 src={`${product?.Hovedbilde[0]}`}
                                 alt="floor"
-                                className="w-[100px] h-[76px] border border-[#EFF1F5] rounded-[4px]"
+                                className="w-full h-full border border-[#EFF1F5] rounded-[4px]"
                               />
                             </div>
-                            <div className="w-full">
-                              <h4 className="text-darkBlack text-sm mb-1">
-                                {product?.Produktnavn}
-                              </h4>
-                              <div className="mb-2 flex items-center gap-2">
+                            <div className="w-[80%]">
+                              <div className="flex items-center gap-1 justify-between mb-2">
+                                <h4 className="text-darkBlack text-sm truncate">
+                                  {product?.Produktnavn}
+                                </h4>
+                                <div className="flex items-center gap-2">
+                                  <Pencil
+                                    className="text-purple w-5 h-5 cursor-pointer"
+                                    onClick={() => {
+                                      setEditProductIndex(index);
+                                      setEditProductData(product);
+                                      setIsEditProductDrawerOpen(true);
+                                    }}
+                                  />
+                                  <Trash2
+                                    className="text-red w-5 h-5 cursor-pointer"
+                                    onClick={() => {
+                                      if (produkter.length > 1) {
+                                        removeProduct(index);
+                                      }
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="mb-3 flex items-center gap-2">
                                 <p className="text-secondary text-xs">
                                   Deliver by:
                                 </p>
@@ -475,20 +499,20 @@ export const Customization: React.FC<{
         </form>
       </Form>
 
-      <Drawer isOpen={AddSubCategory} onClose={handleToggleSubCategoryPopup}>
+      <Drawer isOpen={AddSubCategory} onClose={handleCloseSubCategoryDrawer}>
         <h4 className="text-darkBlack font-medium text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-6">
           {editSubCatIndex !== null
             ? "Rediger underkategori"
             : "Legg til ny underkategori"}
           <X
-            onClick={handleToggleSubCategoryPopup}
+            onClick={handleCloseSubCategoryDrawer}
             className="text-primary cursor-pointer"
           />
         </h4>
         <AddNewSubCat
           onClose={() => {
-            setAddSubCategory(false);
             setEditSubCatIndex(null);
+            setAddSubCategory(false);
           }}
           formData={form}
           activeTabData={activeTabData}
@@ -521,6 +545,38 @@ export const Customization: React.FC<{
               `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
               [...existingProducts, ...formData.produkter]
             );
+          }}
+        />
+      </Drawer>
+      <Drawer
+        isOpen={isEditProductDrawerOpen}
+        onClose={handleEditproductDrawer}
+      >
+        <h4 className="text-darkBlack font-medium text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-6">
+          Legg til nye gulvfliser
+          <X
+            onClick={handleEditproductDrawer}
+            className="text-primary cursor-pointer"
+          />
+        </h4>
+        <EditProductFormDrawer
+          onClose={() => setIsEditProductDrawerOpen(false)}
+          defaultValues={editProductData}
+          onSubmit={(formData) => {
+            const existingProducts = form.getValues(
+              `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`
+            );
+
+            const updatedProducts = existingProducts.map((product, idx) =>
+              idx === EditProductIndex ? formData : product
+            );
+
+            form.setValue(
+              `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
+              updatedProducts
+            );
+
+            handleEditproductDrawer();
           }}
         />
       </Drawer>
