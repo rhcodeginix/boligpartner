@@ -70,20 +70,6 @@ export const Eksterior: React.FC<{
       hovedkategorinavn: [
         {
           name: "",
-          // Kategorinavn: [
-          //   {
-          //     navn: "",
-          //     produkter: [
-          //       {
-          //         Produktnavn: "",
-          //         Hovedbilde: [],
-          //         pris: "",
-          //         IncludingOffer: false,
-          //         Produktbeskrivelse: "",
-          //       },
-          //     ],
-          //   },
-          // ],
           Kategorinavn: null,
         },
       ],
@@ -244,6 +230,13 @@ export const Eksterior: React.FC<{
   }, [form, Category, activeTabData]);
 
   const prevProductsRef = useRef<any[]>([]);
+
+  useEffect(() => {
+    const value = form.watch(`hovedkategorinavn.${activeTabData}`);
+    if (value !== undefined) {
+      form.setValue(`hovedkategorinavn.${activeTabData}`, value);
+    }
+  }, [activeTabData, form]);
 
   useEffect(() => {
     const updatedProducts = form.watch(
