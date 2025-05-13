@@ -72,7 +72,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
   }, []);
 
-  const file3DInputRef = React.useRef<HTMLInputElement | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
   const convertPdfToImage = async (pdfData: string) => {
     try {
       const loadingTask = pdfjsLib.getDocument({
@@ -289,10 +289,12 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     }
   };
 
-  const handle3DDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    event.stopPropagation();
   };
-  const handle3DFileChange = async (
+
+  const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.files) {
@@ -300,17 +302,20 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     }
   };
 
-  const handle3DClick = async () => {
-    file3DInputRef.current?.click();
+  const handleClick = async () => {
+    fileInputRef.current?.click();
   };
 
-  const handle3DDrop = async (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    if (event.dataTransfer.files) {
-      await handleFileUpload(event.dataTransfer.files);
+    event.stopPropagation();
+
+    const file = event.dataTransfer.files;
+
+    if (file) {
+      handleFileUpload(file);
     }
   };
-
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editedFloorName, setEditedFloorName] = useState<string>("");
   const [confirmDeleteIndex, setConfirmDeleteIndex] = useState<number | null>(
@@ -371,9 +376,10 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
         >
           <div
             className="border border-gray2 border-dashed rounded-lg px-3 flex-col items-center justify-center laptop:px-[42px] py-4 flex gap-6 cursor-pointer w-full"
-            onClick={handle3DClick}
-            onDrop={handle3DDrop}
-            onDrag={handle3DDragOver}
+            onClick={handleClick}
+            onDrop={handleDrop}
+            onDragStart={handleDragOver}
+            onDragOver={(e) => e.preventDefault()}
           >
             <img src={Ic_upload_blue_img} alt="upload" />
             <div className="flex items-center justify-center flex-col gap-3">
@@ -391,10 +397,10 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
             </div>
             <input
               type="file"
-              ref={file3DInputRef}
+              ref={fileInputRef}
               className="hidden"
               accept=".pdf,image/*"
-              onChange={handle3DFileChange}
+              onChange={handleFileChange}
             />
           </div>
         </div>
