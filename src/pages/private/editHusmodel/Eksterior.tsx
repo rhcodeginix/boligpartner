@@ -545,7 +545,7 @@ export const Eksterior: React.FC<{
               }}
             />
             <Button
-              text="Lagre"
+              text="Lukk og lagre"
               className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2"
               type="submit"
             />

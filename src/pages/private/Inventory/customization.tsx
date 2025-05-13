@@ -36,9 +36,7 @@ const productSchema = z.object({
     .string()
     .min(1, "Produktbeskrivelse må bestå av minst 1 tegn."),
   Labour: z.string().min(1, "Arbeid må bestå av minst 1 tegn."),
-  LabourPris: z.string().min(1, {
-    message: "Arbeidspris må bestå av minst 1 tegn.",
-  }),
+  LabourPris: z.string().optional(),
 });
 
 const categorySchema = z.object({
@@ -166,7 +164,7 @@ export const Customization: React.FC<{
   //       }
   //     }
 
-  //     toast.success("Inventar oppdatert!", { position: "top-right" });
+  //     toast.success("Romkonfigurator oppdatert!", { position: "top-right" });
   //   } catch (error) {
   //     console.error("Firestore update failed:", error);
   //     toast.error("Noe gikk galt. Prøv igjen.", { position: "top-right" });
@@ -243,7 +241,7 @@ export const Customization: React.FC<{
   //       }
   //     }
 
-  //     toast.success("Inventar oppdatert!", { position: "top-right" });
+  //     toast.success("Romkonfigurator oppdatert!", { position: "top-right" });
   //     SetUpdateId(null);
   //   } catch (error) {
   //     console.error("Firestore update failed:", error);
@@ -889,7 +887,7 @@ export const Customization: React.FC<{
                         className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
                       />
                       <Button
-                        text="Lagre"
+                        text="Neste"
                         className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2"
                         type="submit"
                       />

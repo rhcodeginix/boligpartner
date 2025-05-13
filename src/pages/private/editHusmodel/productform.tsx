@@ -451,7 +451,8 @@ export const ProductFormDrawer: React.FC<{
                                         Slipp filen her for å laste den opp
                                       </p>
                                       <p className="text-gray text-sm text-center truncate w-full">
-                                        Filformater: Kun PDF, maks 2 MB
+                                        Filformater: Kun JPEG, JPG, PNG, maks 2
+                                        MB
                                       </p>
                                       <input
                                         type="file"
@@ -562,7 +563,7 @@ export const ProductFormDrawer: React.FC<{
               />
             </div>
             <Button
-              text="Lagre"
+              text="Neste"
               className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-12 py-2 flex items-center gap-2"
               type="submit"
             />

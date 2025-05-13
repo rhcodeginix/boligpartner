@@ -127,8 +127,8 @@ export const HusmodellerTable = () => {
         ),
       },
       {
-        accessorKey: "husdetaljer",
-        header: "Husdetaljer",
+        accessorKey: "Kundedetaljer",
+        header: "Kundedetaljer",
         cell: ({ row }) => (
           <p className="text-sm text-gray">
             <span className="font-bold">
@@ -338,7 +338,7 @@ export const HusmodellerTable = () => {
                 </div>
                 <div onClick={() => handleDelete(selectedId)}>
                   <Button
-                    text="Bekrefte"
+                    text="Bekreft"
                     className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   />
                 </div>

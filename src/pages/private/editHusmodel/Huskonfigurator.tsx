@@ -358,8 +358,8 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           Last opp plantegningen din
         </h3>
         <p className="text-secondary text-lg">
-          Our AI will auto detect your floor plan and how you customisation
-          options
+          AI har analysert plantegningen og identifisert rommene du kan
+          konfigurere. Du kan fritt legge til nye rom eller fjerne eksisterende.
         </p>
       </div>
       <div className="px-8 pb-[156px]">
@@ -386,7 +386,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                 </p>
               </div>
               <p className="text-gray text-sm truncate w-full text-center">
-                Filformater: Kun PDF, maks 2 MB
+                Filformater: Kun JPEG, JPG, PNG, PDF maks 2 MB
               </p>
             </div>
             <input
@@ -516,7 +516,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                 </div>
                 <div onClick={() => handleDeleteFloor(confirmDeleteIndex)}>
                   <Button
-                    text="Bekrefte"
+                    text="Bekreft"
                     className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   />
                 </div>

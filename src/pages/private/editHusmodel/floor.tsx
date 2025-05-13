@@ -156,8 +156,9 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             {FloorData?.title}
           </h1>
           <p className="text-secondary text-lg">
-            Our AI will auto detect your floor plan and how you customisation
-            options
+            AI har analysert plantegningen og identifisert rommene du kan
+            konfigurere. Du kan fritt legge til nye rom eller fjerne
+            eksisterende.
           </p>
         </div>
       </div>
@@ -175,11 +176,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           </div>
         </div>
         <div className="w-[75%] border border-[#B9C0D4] rounded-lg overflow-hidden h-[551px]">
-          <img
-            src={FloorData?.image}
-            alt="floor"
-            className="w-full h-full object-cover"
-          />
+          <img src={FloorData?.image} alt="floor" className="w-full h-full" />
         </div>
       </div>
       <div className="flex justify-end w-full gap-5 items-center fixed bottom-0 bg-white z-50 border-t border-gray2 p-4 left-0">
@@ -198,7 +195,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           }}
         />
         <Button
-          text="Lagre"
+          text="Neste"
           className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
           onClick={() => {
             setActiveTab(3);

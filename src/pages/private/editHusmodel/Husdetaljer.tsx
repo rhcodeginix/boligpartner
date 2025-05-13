@@ -609,7 +609,7 @@ export const Husdetaljer: React.FC<{
                                       Slipp filen her for å laste den opp
                                     </p>
                                     <p className="text-gray text-sm text-center truncate w-full">
-                                      Filformater: Kun PDF, maks 2 MB
+                                      Filformater: Kun JPEG, JPG, PNG, maks 2 MB
                                     </p>
                                     <input
                                       type="file"
@@ -719,7 +719,8 @@ export const Husdetaljer: React.FC<{
                                           </p>
                                         </div>
                                         <p className="text-gray text-sm truncate w-full">
-                                          Filformater: Kun PDF, maks 2 MB
+                                          Filformater: Kun JPEG, JPG, PNG, maks
+                                          2 MB
                                         </p>
                                       </div>
                                       <input
@@ -1376,7 +1377,7 @@ export const Husdetaljer: React.FC<{
                                       Slipp filen her for å laste den opp
                                     </p>
                                     <p className="text-gray text-sm text-center truncate w-full">
-                                      Filformater: Kun PDF, maks 2 MB
+                                      Filformater: Kun JPEG, JPG, PNG, maks 2 MB
                                     </p>
                                     <input
                                       type="file"
@@ -1513,7 +1514,7 @@ export const Husdetaljer: React.FC<{
               />
             </Link>
             <Button
-              text="Lagre"
+              text="Neste"
               className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
               type="submit"
             />

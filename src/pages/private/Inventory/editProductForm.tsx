@@ -36,9 +36,7 @@ const formSchema = z.object({
     .string()
     .min(1, "Produktbeskrivelse må bestå av minst 1 tegn."),
   Labour: z.string().min(1, "Arbeid må bestå av minst 1 tegn."),
-  LabourPris: z.string().min(1, {
-    message: "Arbeidspris må bestå av minst 1 tegn.",
-  }),
+  LabourPris: z.string().optional(),
 });
 
 export const EditProductFormDrawer: React.FC<{
@@ -84,13 +82,7 @@ export const EditProductFormDrawer: React.FC<{
   );
 
   const delieverBy = ["Boligpartner", "Salgskontor"];
-  const Labour = [
-    "Per Sq.ft",
-    "Per Hours",
-    "Per Day",
-    "Per Unit",
-    "Per Labour",
-  ];
+  const Labour = ["Per m2", "Per time", "Per dag", "Per stykk", "Per ansatt"];
 
   const upload3DPhoto = form.watch(`Hovedbilde`);
   return (
@@ -296,7 +288,7 @@ export const EditProductFormDrawer: React.FC<{
                             fieldState.error ? "text-red" : "text-black"
                           } text-sm font-medium`}
                         >
-                          Arbeid
+                          Pris er oppgitt per
                         </p>
                         <FormControl>
                           <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
@@ -516,7 +508,7 @@ export const EditProductFormDrawer: React.FC<{
                                     Slipp filen her for å laste den opp
                                   </p>
                                   <p className="text-gray text-sm text-center truncate w-full">
-                                    Filformater: Kun PDF, maks 2 MB
+                                    Filformater: Kun JPEG, JPG, PNG, maks 2 MB
                                   </p>
                                   <input
                                     type="file"
@@ -602,7 +594,7 @@ export const EditProductFormDrawer: React.FC<{
               />
             </div>
             <Button
-              text="Lagre"
+              text="Neste"
               className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-12 py-2 flex items-center gap-2"
               type="submit"
             />

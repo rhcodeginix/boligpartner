@@ -42,15 +42,15 @@ export const Husmodeller = () => {
       <div className="p-8 flex gap-3 items-center justify-between bg-lightPurple">
         <div>
           <h1 className="text-darkBlack font-medium text-[32px] mb-2">
-            Husmodell du la til
+            Velg ønsket serie
           </h1>
           <p className="text-secondary text-lg">
-            Here is the list of house model you have added you can always add a
-            new house form add house model
+            Velg ønsket serie og du vil kunne konfigurere boligen i henhold til
+            ønsket seier
           </p>
         </div>
         <Button
-          text="Legg til ny modell"
+          text="Lag ny serie"
           className="border border-purple bg-purple text-white text-base rounded-[40px] h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
           path="/add-husmodell"
         />
@@ -105,7 +105,7 @@ export const Husmodeller = () => {
                     // onClick={() => navigate(`/se-husmodell/${item?.id}`)}
                     onClick={() => navigate(`/edit-husmodell/${item?.id}`)}
                   >
-                    Utforske
+                    Velg serie
                   </div>
                 </div>
               </div>

@@ -115,8 +115,9 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             {FloorData?.title}
           </h1>
           <p className="text-secondary text-lg">
-            Our AI will auto detect your floor plan and how you customisation
-            options
+            AI har analysert plantegningen og identifisert rommene du kan
+            konfigurere. Du kan fritt legge til nye rom eller fjerne
+            eksisterende.
           </p>
         </div>
       </div>
@@ -226,7 +227,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               />
             </div>
             <Button
-              text="Lagre"
+              text="Neste"
               className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
               onClick={() => {
                 setActiveTabData(0);

@@ -6,39 +6,14 @@ import { Husdetaljer } from "./Husdetaljer";
 import { Huskonfigurator } from "./Huskonfigurator";
 import { Floor } from "./floor";
 import { AllFloor } from "./allFloor";
-// import { fetchHusmodellData, formatCurrency } from "../../../lib/utils";
-// import { Spinner } from "../../../components/Spinner";
 
 export const EditHouseModel = () => {
   const [activeTab, setActiveTab] = useState(0);
-  const tabData = [{ label: "Husdetaljer" }, { label: "Plantegninger" }];
+  const tabData = [{ label: "Kundedetaljer" }, { label: "Plantegninger" }];
   const location = useLocation();
-  // const [loading, setLoading] = useState(true);
-  // const pathSegments = location.pathname.split("/");
-  // const id = pathSegments.length > 2 ? pathSegments[2] : null;
-  // const [house, setHouse] = useState<any | null>(null);
-  // useEffect(() => {
-  //   if (!id) {
-  //     setLoading(false);
-  //     return;
-  //   }
-  //   const getData = async () => {
-  //     const data = await fetchHusmodellData(id);
-  //     if (data && data.Husdetaljer) {
-  //       setHouse(data?.Husdetaljer);
-  //     }
-  //     setLoading(false);
-  //   };
-  //   if (id) {
-  //     getData();
-  //   }
-  // }, [id]);
 
   return (
     <>
-      {/* {loading ? (
-        <Spinner />
-      ) : ( */}
       <>
         {(activeTab === 0 || activeTab === 1) && (
           <div className="py-4 px-6 bg-lightPurple">
@@ -100,7 +75,6 @@ export const EditHouseModel = () => {
         {activeTab === 2 && <Floor setActiveTab={setActiveTab} />}
         {activeTab === 3 && <AllFloor setActiveTab={setActiveTab} />}
       </>
-      {/* )} */}
     </>
   );
 };

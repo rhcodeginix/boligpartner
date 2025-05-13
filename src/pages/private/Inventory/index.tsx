@@ -95,14 +95,15 @@ export const Inventory = () => {
       <div className="p-8 flex gap-3 items-center justify-between bg-lightPurple">
         <div>
           <h1 className="text-darkBlack font-medium text-[32px] mb-2">
-            Inventar
+            Romkonfigurator
           </h1>
           <p className="text-secondary text-lg">
-            Hovedkategorier med varer, leverandør, pris og arbeidsstruktur
+            Her legger du til produkter, leverandør, pris og bilder for hvert
+            produkt.
           </p>
         </div>
         <Button
-          text="Legg til husmodell"
+          text="Lag ny serie"
           className="border border-purple bg-purple text-white text-base rounded-[40px] h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
           path="/add-husmodell"
         />

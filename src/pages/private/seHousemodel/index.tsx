@@ -11,7 +11,7 @@ import { Spinner } from "../../../components/Spinner";
 export const SeHouseModel = () => {
   const [activeTab, setActiveTab] = useState(0);
 
-  const tabData = [{ label: "Husdetaljer" }, { label: "Prisliste" }];
+  const tabData = [{ label: "Kundedetaljer" }, { label: "Prisliste" }];
 
   const location = useLocation();
   const pathSegments = location.pathname.split("/");

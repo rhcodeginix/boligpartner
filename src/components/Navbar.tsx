@@ -28,7 +28,7 @@ export const Navbar: React.FC = () => {
                 : "text-black"
             }`}
           >
-            Husmodell
+            Boligkonfigurator
           </Link>
           <Link
             to={"/Inventory"}
@@ -38,7 +38,7 @@ export const Navbar: React.FC = () => {
                 : "text-black"
             }`}
           >
-            Inventar
+            Romkonfigurator
           </Link>
         </div>
         <div className="flex items-center gap-4 relative">
