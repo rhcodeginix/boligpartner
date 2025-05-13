@@ -7,7 +7,7 @@ import Button from "../../../components/common/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "../../../components/Spinner";
 import { fetchHusmodellData } from "../../../lib/utils";
-import { ChevronRight, Pencil, Plus } from "lucide-react";
+import { ChevronRight, Pencil, Plus, X } from "lucide-react";
 
 export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
   const navigate = useNavigate();
@@ -83,6 +83,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
     getData();
   }, [id, pdfId]);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   return (
     <>
@@ -110,15 +111,30 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           <ChevronRight className="text-[#5D6B98] w-4 h-4" />
           <span className="text-gray text-sm">Detaljer om gulvet</span>
         </div>
-        <div className="flex flex-col gap-2">
-          <h1 className="text-darkBlack font-semibold text-[32px]">
-            {FloorData?.title}
-          </h1>
-          <p className="text-secondary text-lg">
-            AI har analysert plantegningen og identifisert rommene du kan
-            konfigurere. Du kan fritt legge til nye rom eller fjerne
-            eksisterende.
-          </p>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-darkBlack font-semibold text-[32px]">
+              {FloorData?.title}
+            </h1>
+            <p className="text-secondary text-lg">
+              AI har analysert plantegningen og identifisert rommene du kan
+              konfigurere. Du kan fritt legge til nye rom eller fjerne
+              eksisterende.
+            </p>
+          </div>
+          {activeTabData !== null && (
+            // <img
+            //   src={FloorData?.image}
+            //   alt="floor"
+            //   className="w-[120px] h-[120px] rounded-lg"
+            // />
+            <img
+              src={FloorData?.image}
+              alt="floor"
+              className="w-[120px] h-[120px] rounded-lg cursor-pointer"
+              onClick={() => setIsImageModalOpen(true)}
+            />
+          )}
         </div>
       </div>
       <div className="flex gap-6 px-6 pt-6 pb-[156px]">
@@ -203,11 +219,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               setCategory={setCategory}
             />
           ) : (
-            <img
-              src={FloorData?.image}
-              alt="floor"
-              className="w-full h-full object-cover"
-            />
+            <img src={FloorData?.image} alt="floor" className="w-full h-full" />
           )}
         </div>
       </div>
@@ -252,6 +264,25 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         </Modal>
       )}
       {loading && <Spinner />}
+
+      {isImageModalOpen && (
+        <Modal onClose={() => setIsImageModalOpen(false)} isOpen={true}>
+          <div className="relative bg-white rounded-[12px] p-4 w-full sm:w-[90vw] max-w-[800px]">
+            <button
+              onClick={() => setIsImageModalOpen(false)}
+              className="absolute top-3 right-3"
+            >
+              <X className="text-primary" />
+            </button>
+
+            <img
+              src={FloorData?.image}
+              alt="Full view"
+              className="w-full h-auto rounded-lg"
+            />
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

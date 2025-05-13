@@ -68,10 +68,8 @@ export const Husmodeller = () => {
                     className="w-full h-full object-cover rounded-lg"
                   />
                 </div>
-                <h4 className="text-darkBlack font-medium mb-1">
-                  {item?.Husdetaljer?.Hustittel}
-                </h4>
-                <div className="flex items-center gap-4 mb-3">
+
+                {/* <div className="flex items-center gap-4 mb-3">
                   <div className="text-secondary text-sm">
                     <span className="text-black font-semibold">
                       {item?.Husdetaljer?.BRATotal}
@@ -92,14 +90,17 @@ export const Husmodeller = () => {
                     </span>{" "}
                     bad
                   </div>
-                </div>
+                </div> */}
                 <div className="flex items-center gap-2 justify-between">
-                  <div className="flex flex-col gap-1">
+                  {/* <div className="flex flex-col gap-1">
                     <p className="text-secondary text-sm">Pris fra</p>
                     <h5 className="text-black text-base font-semibold">
                       {item?.Husdetaljer?.pris}
                     </h5>
-                  </div>
+                  </div> */}
+                  <h4 className="text-darkBlack font-medium">
+                    {item?.Husdetaljer?.Hustittel}
+                  </h4>
                   <div
                     className="border-purple border-2 rounded-[40px] py-2 px-5 text-purple font-medium h-[40px] flex items-center justify-center cursor-pointer"
                     // onClick={() => navigate(`/se-husmodell/${item?.id}`)}
