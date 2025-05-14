@@ -7,8 +7,9 @@ import { Spinner } from "../../../components/Spinner";
 import { Pencil, Plus } from "lucide-react";
 import { AddNewCat } from "../editHusmodel/AddNewCat";
 import { Customization } from "./customization";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
+import toast from "react-hot-toast";
 
 export const Inventory = () => {
   const [activeTabData, setActiveTabData] = useState<number | null>(null);
@@ -116,58 +117,72 @@ export const Inventory = () => {
           </div>
           <div className="flex flex-col p-4 pb-0 rounded-lg gap-3 h-full max-h-[calc(100%-129px)] overflow-y-auto overFlowAutoY sticky top-[80px]">
             {Category.length > 0 ? (
-              Category.map((tab: any, index: number) => (
-                <div
-                  key={index}
-                  draggable
-                  onDragStart={() => handleDragStart(index)}
-                  onDragOver={handleDragOver}
-                  onDrop={() => handleDrop(index)}
-                  className={`bg-white cursor-pointer rounded-lg flex items-center justify-between gap-1 px-3 ${
-                    activeTabData === index
-                      ? "border-2 border-primary bg-lightPurple rounded-t-[12px]"
-                      : "border border-gray2"
-                  }`}
-                  onClick={() => setActiveTabData(index)}
-                >
-                  <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold">
-                    <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
-                      {index + 1}
-                    </span>
-                    <span className="w-[135px] truncate">{tab.name}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <div
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setEditCategory({ index, data: tab });
-                        setAddCategory(true);
-                      }}
-                    >
-                      <Pencil className="w-5 h-5 text-primary" />
+              Category.map((tab: any, index: number) => {
+                return (
+                  <div
+                    key={index}
+                    draggable
+                    onDragStart={() => handleDragStart(index)}
+                    onDragOver={handleDragOver}
+                    onDrop={() => handleDrop(index)}
+                    className={`bg-white cursor-pointer rounded-lg flex items-center justify-between gap-1 px-3 ${
+                      activeTabData === index
+                        ? "border-2 border-primary bg-lightPurple rounded-t-[12px]"
+                        : "border border-gray2"
+                    }`}
+                    onClick={() => setActiveTabData(index)}
+                  >
+                    <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold">
+                      <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
+                        {index + 1}
+                      </span>
+                      <span className="w-[135px] truncate">{tab.name}</span>
                     </div>
+                    <div className="flex items-center gap-1.5">
+                      <div
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setEditCategory({ index, data: tab });
+                          setAddCategory(true);
+                        }}
+                      >
+                        <Pencil className="w-5 h-5 text-primary" />
+                      </div>
 
-                    <div
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setCategory((prev: any[]) =>
-                          prev.filter((_, i) => i !== index)
-                        );
-                        setActiveTabData(0);
-                      }}
-                      className="w-5 h-5"
-                    >
-                      <img
-                        src={Ic_trash}
-                        alt="delete"
-                        className="w-full h-full"
-                      />
+                      <div
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+
+                          const docRef = doc(db, "inventory", tab?.id);
+
+                          try {
+                            await deleteDoc(docRef);
+                            toast.success("Delete successfully", {
+                              position: "top-right",
+                            });
+
+                            setCategory((prev: any[]) =>
+                              prev.filter((_, i) => i !== index)
+                            );
+                            setActiveTabData(0);
+                          } catch (error) {
+                            console.error("Error deleting category:", error);
+                          }
+                        }}
+                        className="w-5 h-5"
+                      >
+                        <img
+                          src={Ic_trash}
+                          alt="delete"
+                          className="w-full h-full"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="h-full flex items-center justify-center">
                 <div className="flex flex-col items-center justify-center">

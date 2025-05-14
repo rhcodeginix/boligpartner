@@ -9,7 +9,7 @@ import Ic_x_circle from "../../../assets/images/Ic_x_circle.svg";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { AddNewSubCat } from "./AddNewSubCat";
 import Img_noTask from "../../../assets/images/Img_noTask.png";
-import { collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import Drawer from "../../../components/ui/drawer";
 import { ProductFormDrawer } from "./productForm";
 import { v4 as uuidv4 } from "uuid";
@@ -37,10 +37,12 @@ const productSchema = z.object({
     .min(1, "Produktbeskrivelse må bestå av minst 1 tegn."),
   Labour: z.string().min(1, "Arbeid må bestå av minst 1 tegn."),
   LabourPris: z.string().optional(),
+  produktId: z.string().optional(),
 });
 
 const categorySchema = z.object({
   navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
+  id: z.string().optional(),
   produkter: z.array(productSchema).min(1, "Minst ett produkt er påkrevd."),
 });
 const mainCategorySchema = z.object({
@@ -84,6 +86,7 @@ export const Customization: React.FC<{
                   delieverBy: "",
                   Labour: "",
                   LabourPris: "",
+                  produktId: "",
                 },
               ],
             },
@@ -107,355 +110,11 @@ export const Customization: React.FC<{
       remove(index);
     }
   };
-  // const onSubmit = async (data: z.infer<typeof formSchema>) => {
-  //   try {
-  //     const hovedkategorinavn = data?.hovedkategorinavn;
-
-  //     if (!Array.isArray(hovedkategorinavn) || hovedkategorinavn.length === 0) {
-  //       toast.error("Ingen kategorier funnet.");
-  //       return;
-  //     }
-
-  //     for (const mainCategory of hovedkategorinavn) {
-  //       const { name, isSelected, Kategorinavn = [] } = mainCategory;
-  //       if (!name) continue;
-  //       const uniqueId = uuidv4();
-
-  //       const inventoryDocRef = doc(db, "inventory", uniqueId);
-  //       const inventorySnap = await getDoc(inventoryDocRef);
-
-  //       const inventoryData = {
-  //         name,
-  //         isSelected,
-  //         [inventorySnap.exists() ? "updatedAt" : "createdAt"]:
-  //           new Date().toISOString(),
-  //       };
-
-  //       await setDoc(inventoryDocRef, inventoryData, { merge: true });
-
-  //       const validKategorinavn = Kategorinavn.filter(
-  //         (cat: any) =>
-  //           typeof cat.navn === "string" &&
-  //           cat.navn.trim() !== "" &&
-  //           Array.isArray(cat.produkter) &&
-  //           cat.produkter.length > 0
-  //       );
-
-  //       const subCollectionRef = collection(inventoryDocRef, "Kategorinavn");
-
-  //       for (const kategori of validKategorinavn) {
-  //         const { navn, produkter = [] } = kategori;
-
-  //         const uniqueCategoryId = uuidv4();
-
-  //         const kategoriDocRef = doc(subCollectionRef, uniqueCategoryId);
-
-  //         const kategoriData = {
-  //           navn,
-  //           timestamp: new Date().toISOString(),
-  //           produkter: produkter.map((produkt) => ({
-  //             ...produkt,
-  //             produktId: uuidv4(),
-  //             timestamp: new Date().toISOString(),
-  //           })),
-  //         };
-
-  //         await setDoc(kategoriDocRef, kategoriData, { merge: true });
-  //       }
-  //     }
-
-  //     toast.success("Romkonfigurator oppdatert!", { position: "top-right" });
-  //   } catch (error) {
-  //     console.error("Firestore update failed:", error);
-  //     toast.error("Noe gikk galt. Prøv igjen.", { position: "top-right" });
-  //   }
-  // };
-
-  // const onSubmit = async (data: z.infer<typeof formSchema>) => {
-  //   try {
-  //     const hovedkategorinavn = data?.hovedkategorinavn;
-
-  //     if (!Array.isArray(hovedkategorinavn) || hovedkategorinavn.length === 0) {
-  //       toast.error("Ingen kategorier funnet.");
-  //       return;
-  //     }
-
-  //     // ✅ Step 1: Check for existing inventory ID or create a new one
-  //     const inventoryId =
-  //       form.getValues("hovedkategorinavn")?.[activeTabData]?.id || uuidv4(); // <--- use given id or generate new
-  //     const inventoryDocRef = doc(db, "inventory", inventoryId);
-  //     const inventorySnap = await getDoc(inventoryDocRef);
-
-  //     const inventoryData = {
-  //       updatedAt: new Date().toISOString(),
-  //       ...(inventorySnap.exists()
-  //         ? {}
-  //         : { createdAt: new Date().toISOString() }),
-  //     };
-
-  //     await setDoc(inventoryDocRef, inventoryData, { merge: true });
-
-  //     // ✅ Step 2: Loop through main categories
-  //     for (const mainCategory of hovedkategorinavn) {
-  //       const { name, isSelected, Kategorinavn = [] } = mainCategory;
-  //       if (!name) continue;
-
-  //       // Update inventory doc with category info
-  //       await setDoc(
-  //         inventoryDocRef,
-  //         {
-  //           name,
-  //           isSelected,
-  //           updatedAt: new Date().toISOString(),
-  //         },
-  //         { merge: true }
-  //       );
-
-  //       // ✅ Step 3: Loop through valid subcategories
-  //       const validKategorinavn = Kategorinavn.filter(
-  //         (cat) =>
-  //           typeof cat.navn === "string" &&
-  //           cat.navn.trim() !== "" &&
-  //           Array.isArray(cat.produkter) &&
-  //           cat.produkter.length > 0
-  //       );
-
-  //       const subCollectionRef = collection(inventoryDocRef, "Kategorinavn");
-
-  //       for (const kategori of validKategorinavn) {
-  //         const { navn, produkter = [] } = kategori;
-
-  //         const kategoriDocRef = doc(subCollectionRef, uuidv4());
-
-  //         const kategoriData = {
-  //           navn,
-  //           timestamp: new Date().toISOString(),
-  //           produkter: produkter.map((produkt) => ({
-  //             ...produkt,
-  //             produktId: uuidv4(),
-  //             timestamp: new Date().toISOString(),
-  //           })),
-  //         };
-
-  //         await setDoc(kategoriDocRef, kategoriData, { merge: true });
-  //       }
-  //     }
-
-  //     toast.success("Romkonfigurator oppdatert!", { position: "top-right" });
-  //     SetUpdateId(null);
-  //   } catch (error) {
-  //     console.error("Firestore update failed:", error);
-  //     toast.error("Noe gikk galt. Prøv igjen.", { position: "top-right" });
-  //   }
-  // };
-
-  // const onSubmit = async (data: z.infer<typeof formSchema>) => {
-  //   try {
-  //     const hovedkategorinavn = data?.hovedkategorinavn;
-
-  //     if (
-  //       !Array.isArray(hovedkategorinavn) ||
-  //       hovedkategorinavn.length === 0 ||
-  //       !hovedkategorinavn[activeTabData]
-  //     ) {
-  //       toast.error("Ingen gyldig kategori funnet.");
-  //       return;
-  //     }
-
-  //     // ✅ Get single main category by index
-  //     const mainCategory = hovedkategorinavn[activeTabData];
-  //     const { name, isSelected, Kategorinavn = [] } = mainCategory;
-  //     if (!name) return;
-
-  //     const inventoryId =
-  //       form.getValues("hovedkategorinavn")?.[activeTabData]?.id || uuidv4();
-  //     const inventoryDocRef = doc(db, "inventory", inventoryId);
-  //     const inventorySnap = await getDoc(inventoryDocRef);
-
-  //     // ✅ Update inventory with selected category info
-  //     await setDoc(
-  //       inventoryDocRef,
-  //       {
-  //         name,
-  //         isSelected,
-  //         [inventorySnap.exists() ? "updatedAt" : "createdAt"]:
-  //           new Date().toISOString(),
-  //       },
-  //       { merge: true }
-  //     );
-
-  //     // ✅ Filter valid subcategories
-  //     const validKategorinavn = Kategorinavn.filter(
-  //       (cat) =>
-  //         typeof cat.navn === "string" &&
-  //         cat.navn.trim() !== "" &&
-  //         Array.isArray(cat.produkter) &&
-  //         cat.produkter.length > 0
-  //     );
-
-  //     const subCollectionRef = collection(inventoryDocRef, "Kategorinavn");
-
-  //     for (const kategori of validKategorinavn) {
-  //       const { navn, produkter = [] } = kategori;
-
-  //       const kategoriDocRef = doc(subCollectionRef, uuidv4());
-
-  //       const kategoriData = {
-  //         navn,
-  //         timestamp: new Date().toISOString(),
-  //         produkter: produkter.map((produkt) => ({
-  //           ...produkt,
-  //           produktId: uuidv4(),
-  //           timestamp: new Date().toISOString(),
-  //         })),
-  //       };
-
-  //       await setDoc(kategoriDocRef, kategoriData, { merge: true });
-  //     }
-
-  //     toast.success("Kategori oppdatert!", { position: "top-right" });
-  //   } catch (error) {
-  //     console.error("Firestore update failed:", error);
-  //     toast.error("Noe gikk galt. Prøv igjen.", { position: "top-right" });
-  //   }
-  // };
-
-  // const onSubmit = async (data: z.infer<typeof formSchema>) => {
-  //   try {
-  //     const hovedkategorinavn = data?.hovedkategorinavn;
-
-  //     if (
-  //       !Array.isArray(hovedkategorinavn) ||
-  //       hovedkategorinavn.length === 0 ||
-  //       !hovedkategorinavn[activeTabData]
-  //     ) {
-  //       toast.error("Ingen gyldig kategori funnet.");
-  //       return;
-  //     }
-
-  //     const mainCategory = hovedkategorinavn[activeTabData];
-  //     const { name, isSelected, Kategorinavn = [] } = mainCategory;
-  //     if (!name) return;
-
-  //     const inventoryId =
-  //       form.getValues("hovedkategorinavn")?.[activeTabData]?.id || uuidv4();
-  //     const inventoryDocRef = doc(db, "inventory", inventoryId);
-  //     const inventorySnap = await getDoc(inventoryDocRef);
-
-  //     const validKategorinavn = Kategorinavn.filter(
-  //       (cat) =>
-  //         typeof cat.navn === "string" &&
-  //         cat.navn.trim() !== "" &&
-  //         Array.isArray(cat.produkter) &&
-  //         cat.produkter.length > 0
-  //     ).map((cat: any) => ({
-  //       ...cat,
-  //       id: cat.id || uuidv4(),
-  //       produkter: cat.produkter.map((produkt: any) => ({
-  //         ...produkt,
-  //         produktId: produkt.produktId || uuidv4(),
-  //         timestamp: new Date().toISOString(),
-  //       })),
-  //       timestamp: new Date().toISOString(),
-  //     }));
-
-  //     const categoryData = {
-  //       id: inventoryId,
-  //       name,
-  //       isSelected,
-  //       Kategorinavn: validKategorinavn,
-  //       [inventorySnap.exists() ? "updatedAt" : "createdAt"]:
-  //         new Date().toISOString(),
-  //     };
-
-  //     await setDoc(inventoryDocRef, categoryData, { merge: true });
-
-  //     toast.success("Kategori oppdatert!", { position: "top-right" });
-  //   } catch (error) {
-  //     console.error("Firestore update failed:", error);
-  //     toast.error("Noe gikk galt. Prøv igjen.", { position: "top-right" });
-  //   }
-  // };
-
-  // const onSubmit = async (data: z.infer<typeof formSchema>) => {
-  //   try {
-  //     const hovedkategorinavn = data?.hovedkategorinavn;
-
-  //     if (
-  //       !Array.isArray(hovedkategorinavn) ||
-  //       hovedkategorinavn.length === 0 ||
-  //       !hovedkategorinavn[activeTabData]
-  //     ) {
-  //       toast.error("Ingen gyldig kategori funnet.");
-  //       return;
-  //     }
-
-  //     const mainCategory = hovedkategorinavn[activeTabData];
-  //     const { name, isSelected, Kategorinavn = [] } = mainCategory;
-  //     if (!name) return;
-
-  //     const inventoryId =
-  //       form.getValues("hovedkategorinavn")?.[activeTabData]?.id || uuidv4();
-  //     const inventoryDocRef = doc(db, "inventory", inventoryId);
-  //     const inventorySnap = await getDoc(inventoryDocRef);
-
-  //     // Save main inventory document (without Kategorinavn)
-  //     await setDoc(
-  //       inventoryDocRef,
-  //       {
-  //         id: inventoryId,
-  //         name,
-  //         isSelected,
-  //         [inventorySnap.exists() ? "updatedAt" : "createdAt"]:
-  //           new Date().toISOString(),
-  //       },
-  //       { merge: true }
-  //     );
-
-  //     // ✅ Handle subcollection
-  //     const validKategorinavn: any = Kategorinavn.filter(
-  //       (cat) =>
-  //         typeof cat.navn === "string" &&
-  //         cat.navn.trim() !== "" &&
-  //         Array.isArray(cat.produkter) &&
-  //         cat.produkter.length > 0
-  //     );
-
-  //     const subCollectionRef = collection(inventoryDocRef, "Kategorinavn");
-
-  //     // Optional: Clear existing subcollection before rewriting (if needed)
-  //     // NOTE: Firestore has no direct way to delete all docs in a subcollection, you'd need to read & delete manually
-
-  //     for (const cat of validKategorinavn) {
-  //       const kategoriId = cat.id || uuidv4();
-  //       const kategoriDocRef = doc(subCollectionRef, kategoriId);
-
-  //       const kategoriData = {
-  //         id: kategoriId,
-  //         navn: cat.navn,
-  //         timestamp: new Date().toISOString(),
-  //         produkter: cat.produkter.map((produkt: any) => ({
-  //           ...produkt,
-  //           produktId: produkt.produktId || uuidv4(),
-  //           timestamp: new Date().toISOString(),
-  //         })),
-  //       };
-
-  //       await setDoc(kategoriDocRef, kategoriData, { merge: true });
-  //     }
-
-  //     toast.success("Kategori oppdatert!", { position: "top-right" });
-  //   } catch (error) {
-  //     console.error("Firestore update failed:", error);
-  //     toast.error("Noe gikk galt. Prøv igjen.", { position: "top-right" });
-  //   }
-  // };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       const hovedkategorinavn = data?.hovedkategorinavn;
 
-      // Ensure valid data is provided for the selected category
       if (
         !Array.isArray(hovedkategorinavn) ||
         hovedkategorinavn.length === 0 ||
@@ -467,18 +126,16 @@ export const Customization: React.FC<{
 
       const mainCategory = hovedkategorinavn[activeTabData];
       const { name, isSelected, Kategorinavn = [] } = mainCategory;
+
       if (!name) return;
 
-      // Get inventory ID from the form or generate a new one
       const inventoryId =
         form.getValues("hovedkategorinavn")?.[activeTabData]?.id || uuidv4();
 
       const inventoryDocRef = doc(db, "inventory", inventoryId);
 
-      // Check if the document exists to decide whether to update or create
       const inventorySnap = await getDoc(inventoryDocRef);
 
-      // Save main inventory document (without Kategorinavn)
       await setDoc(
         inventoryDocRef,
         {
@@ -491,36 +148,9 @@ export const Customization: React.FC<{
         { merge: true }
       );
       // -----
-      // const validKategorinavn: any = Kategorinavn.filter(
-      //   (cat) =>
-      //     typeof cat.navn === "string" &&
-      //     cat.navn.trim() !== "" &&
-      //     Array.isArray(cat.produkter) &&
-      //     cat.produkter.length > 0
-      // );
-
-      // const subCollectionRef = collection(inventoryDocRef, "Kategorinavn");
-
-      // for (const cat of validKategorinavn) {
-      //   const kategoriId = cat?.id || uuidv4();
-      //   const kategoriDocRef = doc(subCollectionRef, kategoriId);
-
-      //   const kategoriData = {
-      //     id: kategoriId,
-      //     navn: cat.navn,
-      //     timestamp: new Date().toISOString(),
-      //     produkter: cat.produkter.map((produkt: any) => ({
-      //       ...produkt,
-      //       produktId: produkt.produktId || uuidv4(),
-      //       timestamp: new Date().toISOString(),
-      //     })),
-      //   };
-
-      //   await setDoc(kategoriDocRef, kategoriData, { merge: true });
-      // }
 
       const validKategorinavn: any = Kategorinavn.filter(
-        (cat) =>
+        (cat: any) =>
           typeof cat.navn === "string" &&
           cat.navn.trim() !== "" &&
           Array.isArray(cat.produkter) &&
@@ -529,30 +159,29 @@ export const Customization: React.FC<{
 
       const subCollectionRef = collection(inventoryDocRef, "Kategorinavn");
 
-      // Loop through each category
       for (const cat of validKategorinavn) {
-        const kategoriId = cat.id || uuidv4(); // Use existing id or create a new one
+        const kategoriId = cat.id || uuidv4();
         const kategoriDocRef = doc(subCollectionRef, kategoriId);
 
         const kategoriData = {
           id: kategoriId,
           navn: cat.navn,
           timestamp: new Date().toISOString(),
-          produkter: cat.produkter.map((produkt: any) => ({
-            ...produkt,
-            produktId: produkt.produktId || uuidv4(),
-            timestamp: new Date().toISOString(),
-          })),
+          produkter: cat.produkter.map((produkt: any) => {
+            const isExisting = !!produkt.produktId;
+
+            return {
+              ...produkt,
+              produktId: isExisting ? produkt.produktId : uuidv4(),
+              timestamp: new Date().toISOString(),
+            };
+          }),
         };
 
-        // Check if the document exists and update, otherwise create a new one
-        const kategoriSnap = await getDoc(kategoriDocRef);
-        if (kategoriSnap.exists()) {
-          // If the document exists, update it
-          await setDoc(kategoriDocRef, kategoriData, { merge: true });
-        } else {
-          // If it doesn't exist, create a new document
+        if (!cat.id) {
           await setDoc(kategoriDocRef, kategoriData);
+        } else {
+          await setDoc(kategoriDocRef, kategoriData, { merge: true });
         }
       }
 
@@ -602,6 +231,7 @@ export const Customization: React.FC<{
               delieverBy: product.delieverBy || "",
               Labour: product.Labour || "",
               LabourPris: product.LabourPris || "",
+              produktId: product.produktId || "",
             };
           });
         }
@@ -705,7 +335,6 @@ export const Customization: React.FC<{
       setIsEditProductDrawerOpen(true);
     }
   };
-  // console.log(form.getValues("hovedkategorinavn")?.[activeTabData]);
 
   return (
     <>
@@ -748,9 +377,10 @@ export const Customization: React.FC<{
                         <img
                           src={Ic_x_circle}
                           alt="close"
-                          onClick={(e) => {
+                          onClick={async (e) => {
                             e.preventDefault();
                             e.stopPropagation();
+
                             const updatedCategories = hovedkategorinavn.filter(
                               (_, i) => i !== index
                             );
@@ -769,6 +399,37 @@ export const Customization: React.FC<{
                               updatedCategories,
                               { shouldValidate: true }
                             );
+
+                            try {
+                              const inventoryId =
+                                form.getValues("hovedkategorinavn")?.[
+                                  activeTabData
+                                ]?.id;
+                              if (inventoryId) {
+                                const inventoryDocRef = doc(
+                                  db,
+                                  "inventory",
+                                  inventoryId
+                                );
+                                const subCollectionRef = collection(
+                                  inventoryDocRef,
+                                  "Kategorinavn"
+                                );
+
+                                if (cat?.id) {
+                                  const categoryDocRef = doc(
+                                    subCollectionRef,
+                                    cat.id
+                                  );
+                                  await deleteDoc(categoryDocRef);
+                                }
+                              }
+                            } catch (error) {
+                              console.error(
+                                "Failed to delete category from Firestore:",
+                                error
+                              );
+                            }
                           }}
                         />
                       </div>
@@ -843,9 +504,80 @@ export const Customization: React.FC<{
                                     />
                                     <Trash2
                                       className="text-red w-5 h-5 cursor-pointer"
-                                      onClick={() => {
-                                        if (produkter.length > 1) {
-                                          removeProduct(index);
+                                      onClick={async () => {
+                                        const productId = product?.produktId;
+
+                                        removeProduct(index);
+
+                                        try {
+                                          if (productId) {
+                                            const inventoryId =
+                                              form.getValues(
+                                                "hovedkategorinavn"
+                                              )?.[activeTabData]?.id;
+                                            const categoryData = form.getValues(
+                                              `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}`
+                                            );
+                                            const categoryId = categoryData?.id;
+
+                                            if (
+                                              !inventoryId ||
+                                              !categoryId ||
+                                              !productId
+                                            ) {
+                                              console.warn(
+                                                "Missing inventoryId, categoryId, or productId"
+                                              );
+                                              return;
+                                            }
+
+                                            const inventoryDocRef = doc(
+                                              db,
+                                              "inventory",
+                                              inventoryId
+                                            );
+                                            const categoryDocRef = doc(
+                                              inventoryDocRef,
+                                              "Kategorinavn",
+                                              categoryId
+                                            );
+
+                                            const categorySnap = await getDoc(
+                                              categoryDocRef
+                                            );
+                                            if (!categorySnap.exists()) {
+                                              console.error(
+                                                "Category doc not found"
+                                              );
+                                              return;
+                                            }
+
+                                            const categoryDocData =
+                                              categorySnap.data();
+                                            const existingProdukter =
+                                              categoryDocData.produkter || [];
+
+                                            const updatedProdukter =
+                                              existingProdukter.filter(
+                                                (prod: any) =>
+                                                  prod.produktId !== productId
+                                              );
+
+                                            await setDoc(
+                                              categoryDocRef,
+                                              {
+                                                produkter: updatedProdukter,
+                                                updatedAt:
+                                                  new Date().toISOString(),
+                                              },
+                                              { merge: true }
+                                            );
+                                          }
+                                        } catch (error) {
+                                          console.error(
+                                            "Failed to delete product from Firestore:",
+                                            error
+                                          );
                                         }
                                       }}
                                     />

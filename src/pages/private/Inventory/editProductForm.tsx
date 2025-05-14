@@ -37,6 +37,7 @@ const formSchema = z.object({
     .min(1, "Produktbeskrivelse må bestå av minst 1 tegn."),
   Labour: z.string().min(1, "Arbeid må bestå av minst 1 tegn."),
   LabourPris: z.string().optional(),
+  produktId: z.string().optional(),
 });
 
 export const EditProductFormDrawer: React.FC<{
@@ -57,6 +58,7 @@ export const EditProductFormDrawer: React.FC<{
       form.setValue("Produktnavn", defaultValues?.Produktnavn);
       form.setValue("delieverBy", defaultValues?.delieverBy);
       form.setValue("pris", defaultValues?.pris);
+      form.setValue("produktId", defaultValues?.produktId);
     }
   }, [defaultValues]);
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
