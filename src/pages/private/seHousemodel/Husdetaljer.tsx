@@ -216,10 +216,18 @@ export const Husdetaljer: React.FC<{ husmodellData: any }> = ({
                   </tr>
                   <tr>
                     <td className="text-left pb-[16px] text-gray text-sm whitespace-nowrap">
-                      L x B:
+                      Lengde
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
-                      {husmodellData?.LB}
+                      {husmodellData?.Lengde}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="text-left pb-[16px] text-gray text-sm whitespace-nowrap">
+                      Bredde
+                    </td>
+                    <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
+                      {husmodellData?.Bredde}
                     </td>
                   </tr>
                   <tr>
