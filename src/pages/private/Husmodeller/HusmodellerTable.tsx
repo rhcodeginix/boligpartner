@@ -47,7 +47,7 @@ export const HusmodellerTable = () => {
   const handleDelete = async (id: string) => {
     try {
       await deleteDoc(doc(db, "housemodell_configure_broker", id));
-      toast.success("Delete successfully", { position: "top-right" });
+      toast.success("Slettet", { position: "top-right" });
       fetchHusmodellData();
       setShowConfirm(false);
     } catch (error) {

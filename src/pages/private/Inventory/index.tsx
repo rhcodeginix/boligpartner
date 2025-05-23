@@ -159,7 +159,7 @@ export const Inventory = () => {
 
                           try {
                             await deleteDoc(docRef);
-                            toast.success("Delete successfully", {
+                            toast.success("Slettet", {
                               position: "top-right",
                             });
 

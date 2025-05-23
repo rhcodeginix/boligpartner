@@ -11,152 +11,152 @@ import {
   FormMessage,
 } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
-import Ic_upload_blue_img from "../../../assets/images/Ic_upload_blue_img.svg";
+// import Ic_upload_blue_img from "../../../assets/images/Ic_upload_blue_img.svg";
 import { Input } from "../../../components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../components/ui/select";
-import { TextArea } from "../../../components/ui/textarea";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectGroup,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "../../../components/ui/select";
+// import { TextArea } from "../../../components/ui/textarea";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
-import { db, storage } from "../../../config/firebaseConfig";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { db } from "../../../config/firebaseConfig";
+// import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 import { fetchHusmodellData, phoneNumberValidations } from "../../../lib/utils";
 import { Spinner } from "../../../components/Spinner";
-import {
-  // ChevronDown,
-  // ChevronUp,
-  House,
-  HousePlus,
-  Trash2,
-  Warehouse,
-} from "lucide-react";
+// import {
+//   // ChevronDown,
+//   // ChevronUp,
+//   House,
+//   HousePlus,
+//   Trash2,
+//   Warehouse,
+// } from "lucide-react";
 import { InputMobile } from "../../../components/ui/inputMobile";
 import { parsePhoneNumber } from "react-phone-number-input";
 
 const formSchema = z.object({
-  TypeObjekt: z.string().min(1, { message: "Velg en Type Objekt." }),
-  photo: z.union([
-    z
-      .instanceof(File)
-      .refine((file: any) => file === null || file.size <= 10 * 1024 * 1024, {
-        message: "Filstørrelsen må være mindre enn 10 MB.",
-      }),
-    z.string(),
-  ]),
-  PlantegningerFasader: z
-    .array(
-      z.union([
-        z
-          .instanceof(File)
-          .refine(
-            (file: any) => file === null || file.size <= 10 * 1024 * 1024,
-            {
-              message: "Filstørrelsen må være mindre enn 10 MB.",
-            }
-          ),
-        z.string(),
-      ])
-    )
-    .min(1, "Minst ett bilde kreves."),
-  photo3D: z
-    .array(
-      z.union([
-        z
-          .instanceof(File)
-          .refine(
-            (file: any) => file === null || file.size <= 10 * 1024 * 1024,
-            {
-              message: "Filstørrelsen må være mindre enn 10 MB.",
-            }
-          ),
-        z.string(),
-      ])
-    )
-    .min(1, "Minst ett bilde kreves."),
-  husmodell_name: z.string().min(1, {
-    message: "Navn på husmodell må bestå av minst 2 tegn.",
-  }),
-  link_3D_image: z
-    .string()
-    .min(1, {
-      message: "Link til 3D bilde må bestå av minst 2 tegn.",
-    })
-    .optional(),
-  pris: z.string().min(1, {
-    message: "Pris må bestå av minst 1 tegn.",
-  }),
-  BRATotal: z.string().min(1, {
-    message: "BRA total (bruksareal) må bestå av minst 2 tegn.",
-  }),
-  PRom: z.string().min(1, {
-    message: "GUA (Gulvareal) må bestå av minst 2 tegn.",
-  }),
-  Mønehøyde: z.number().min(1, {
-    message: "Mønehøyde areal må bestå av minst 2 tegn.",
-  }),
-  Gesimshøyde: z.number().min(1, {
-    message: "Gesimshøyde areal må bestå av minst 2 tegn.",
-  }),
-  Lengde: z.string().min(1, {
-    message: "Lengde areal må bestå av minst 2 tegn.",
-  }),
-  Bredde: z.string().min(1, {
-    message: "Bredde areal må bestå av minst 2 tegn.",
-  }),
-  Takvinkel: z.number().min(1, {
-    message: "Takvinkel areal må bestå av minst 2 tegn.",
-  }),
-  BebygdAreal: z.number().min(1, {
-    message: "Bebygd areal (BYA) må bestå av minst 2 tegn.",
-  }),
-  Soverom: z.number().min(1, {
-    message: "Soverom må bestå av minst 2 tegn.",
-  }),
-  InnvendigBod: z.number().min(1, {
-    message: "InnvendigBod må bestå av minst 2 tegn.",
-  }),
-  Bad: z.number().min(1, {
-    message: "Bad må bestå av minst 2 tegn.",
-  }),
-  Energimerking: z
-    .string()
-    .min(1, { message: "Energimerking must må spesifiseres." }),
-  TilgjengeligBolig: z
-    .string()
-    .min(1, { message: "TilgjengeligBolig must må spesifiseres." }),
-  Tomtetype: z.string().min(1, { message: "Tomtetype must må spesifiseres." }),
-  Hustittel: z.string().min(1, {
-    message: "Hustittel må bestå av minst 2 tegn.",
-  }),
-  OmHusmodellen: z.string().min(1, {
-    message: "OmHusmodellen må bestå av minst 2 tegn.",
-  }),
-  TittelVideo: z
-    .string()
-    .min(1, {
-      message: "Tittel på video må bestå av minst 2 tegn.",
-    })
-    .optional(),
-  VideoLink: z
-    .string()
-    .refine(
-      (val) =>
-        val === "" ||
-        /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[a-zA-Z0-9_-]+$/.test(
-          val
-        ),
-      {
-        message: "Please enter a valid YouTube URL.",
-      }
-    ),
+  // TypeObjekt: z.string().min(1, { message: "Velg en Type Objekt." }),
+  // photo: z.union([
+  //   z
+  //     .instanceof(File)
+  //     .refine((file: any) => file === null || file.size <= 10 * 1024 * 1024, {
+  //       message: "Filstørrelsen må være mindre enn 10 MB.",
+  //     }),
+  //   z.string(),
+  // ]),
+  // PlantegningerFasader: z
+  //   .array(
+  //     z.union([
+  //       z
+  //         .instanceof(File)
+  //         .refine(
+  //           (file: any) => file === null || file.size <= 10 * 1024 * 1024,
+  //           {
+  //             message: "Filstørrelsen må være mindre enn 10 MB.",
+  //           }
+  //         ),
+  //       z.string(),
+  //     ])
+  //   )
+  //   .min(1, "Minst ett bilde kreves."),
+  // photo3D: z
+  //   .array(
+  //     z.union([
+  //       z
+  //         .instanceof(File)
+  //         .refine(
+  //           (file: any) => file === null || file.size <= 10 * 1024 * 1024,
+  //           {
+  //             message: "Filstørrelsen må være mindre enn 10 MB.",
+  //           }
+  //         ),
+  //       z.string(),
+  //     ])
+  //   )
+  //   .min(1, "Minst ett bilde kreves."),
+  // husmodell_name: z.string().min(1, {
+  //   message: "Navn på husmodell må bestå av minst 2 tegn.",
+  // }),
+  // link_3D_image: z
+  //   .string()
+  //   .min(1, {
+  //     message: "Link til 3D bilde må bestå av minst 2 tegn.",
+  //   })
+  //   .optional(),
+  // pris: z.string().min(1, {
+  //   message: "Pris må bestå av minst 1 tegn.",
+  // }),
+  // BRATotal: z.string().min(1, {
+  //   message: "BRA total (bruksareal) må bestå av minst 2 tegn.",
+  // }),
+  // PRom: z.string().min(1, {
+  //   message: "GUA (Gulvareal) må bestå av minst 2 tegn.",
+  // }),
+  // Mønehøyde: z.number().min(1, {
+  //   message: "Mønehøyde areal må bestå av minst 2 tegn.",
+  // }),
+  // Gesimshøyde: z.number().min(1, {
+  //   message: "Gesimshøyde areal må bestå av minst 2 tegn.",
+  // }),
+  // Lengde: z.string().min(1, {
+  //   message: "Lengde areal må bestå av minst 2 tegn.",
+  // }),
+  // Bredde: z.string().min(1, {
+  //   message: "Bredde areal må bestå av minst 2 tegn.",
+  // }),
+  // Takvinkel: z.number().min(1, {
+  //   message: "Takvinkel areal må bestå av minst 2 tegn.",
+  // }),
+  // BebygdAreal: z.number().min(1, {
+  //   message: "Bebygd areal (BYA) må bestå av minst 2 tegn.",
+  // }),
+  // Soverom: z.number().min(1, {
+  //   message: "Soverom må bestå av minst 2 tegn.",
+  // }),
+  // InnvendigBod: z.number().min(1, {
+  //   message: "InnvendigBod må bestå av minst 2 tegn.",
+  // }),
+  // Bad: z.number().min(1, {
+  //   message: "Bad må bestå av minst 2 tegn.",
+  // }),
+  // Energimerking: z
+  //   .string()
+  //   .min(1, { message: "Energimerking must må spesifiseres." }),
+  // TilgjengeligBolig: z
+  //   .string()
+  //   .min(1, { message: "TilgjengeligBolig must må spesifiseres." }),
+  // Tomtetype: z.string().min(1, { message: "Tomtetype must må spesifiseres." }),
+  // Hustittel: z.string().min(1, {
+  //   message: "Hustittel må bestå av minst 2 tegn.",
+  // }),
+  // OmHusmodellen: z.string().min(1, {
+  //   message: "OmHusmodellen må bestå av minst 2 tegn.",
+  // }),
+  // TittelVideo: z
+  //   .string()
+  //   .min(1, {
+  //     message: "Tittel på video må bestå av minst 2 tegn.",
+  //   })
+  //   .optional(),
+  // VideoLink: z
+  //   .string()
+  //   .refine(
+  //     (val) =>
+  //       val === "" ||
+  //       /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[a-zA-Z0-9_-]+$/.test(
+  //         val
+  //       ),
+  //     {
+  //       message: "Please enter a valid YouTube URL.",
+  //     }
+  //   ),
   Kundenavn: z.string().min(1, {
     message: "Kundenavn må bestå av minst 2 tegn.",
   }),
@@ -185,7 +185,7 @@ const formSchema = z.object({
     .string()
     .email({ message: "Vennligst skriv inn en gyldig e-postadresse." })
     .min(1, { message: "E-posten må være på minst 2 tegn." }),
-  Kundenummer: z.number().min(1, {
+  Kundenummer: z.string().min(1, {
     message: "Kundenummer må bestå av minst 2 tegn.",
   }),
 });
@@ -222,160 +222,160 @@ export const Husdetaljer: React.FC<{
   }, [form, id]);
 
   const navigate = useNavigate();
-  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
-  const file3DInputRef = React.useRef<HTMLInputElement | null>(null);
-  const filePlantegningerFasaderPhotoInputRef =
-    React.useRef<HTMLInputElement | null>(null);
-  const uploadPhoto: any = form.watch("photo");
-  const uploadPlantegningerFasaderPhoto: any = form.watch(
-    "PlantegningerFasader"
-  );
-  const upload3DPhoto: any = form.watch("photo3D");
+  // const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+  // const file3DInputRef = React.useRef<HTMLInputElement | null>(null);
+  // const filePlantegningerFasaderPhotoInputRef =
+  //   React.useRef<HTMLInputElement | null>(null);
+  // const uploadPhoto: any = form.watch("photo");
+  // const uploadPlantegningerFasaderPhoto: any = form.watch(
+  //   "PlantegningerFasader"
+  // );
+  // const upload3DPhoto: any = form.watch("photo3D");
 
-  const uploadFile = async (file: File, fieldName: any) => {
-    if (!file) return;
+  // const uploadFile = async (file: File, fieldName: any) => {
+  //   if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error("Image size must be less than 2MB.", {
-        position: "top-right",
-      });
-      return;
-    }
-    const fileType = "images";
-    const timestamp = Date.now();
-    const fileName = `${timestamp}_${file.name}`;
-    const storageRef = ref(storage, `${fileType}/${fileName}`);
+  //   if (file.size > 2 * 1024 * 1024) {
+  //     toast.error("Image size must be less than 2MB.", {
+  //       position: "top-right",
+  //     });
+  //     return;
+  //   }
+  //   const fileType = "images";
+  //   const timestamp = Date.now();
+  //   const fileName = `${timestamp}_${file.name}`;
+  //   const storageRef = ref(storage, `${fileType}/${fileName}`);
 
-    try {
-      const snapshot = await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(snapshot.ref);
+  //   try {
+  //     const snapshot = await uploadBytes(storageRef, file);
+  //     const url = await getDownloadURL(snapshot.ref);
 
-      form.setValue(fieldName, url);
-      form.clearErrors(fieldName);
-    } catch (error) {
-      console.error(`Error uploading file for ${fieldName}:`, error);
-    }
-  };
+  //     form.setValue(fieldName, url);
+  //     form.clearErrors(fieldName);
+  //   } catch (error) {
+  //     console.error(`Error uploading file for ${fieldName}:`, error);
+  //   }
+  // };
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.files?.[0]) {
-      await uploadFile(event.target.files[0], "photo");
-    }
-  };
+  // const handleFileChange = async (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   if (event.target.files?.[0]) {
+  //     await uploadFile(event.target.files[0], "photo");
+  //   }
+  // };
 
-  const handleClick = () => {
-    fileInputRef.current?.click();
-  };
+  // const handleClick = () => {
+  //   fileInputRef.current?.click();
+  // };
 
-  const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    if (event.dataTransfer.files?.[0]) {
-      await uploadFile(event.dataTransfer.files[0], "photo");
-    }
-  };
-  const handleFileUpload = async (files: FileList, fieldName: any) => {
-    if (!files.length) return;
+  // const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
+  //   event.preventDefault();
+  //   if (event.dataTransfer.files?.[0]) {
+  //     await uploadFile(event.dataTransfer.files[0], "photo");
+  //   }
+  // };
+  // const handleFileUpload = async (files: FileList, fieldName: any) => {
+  //   if (!files.length) return;
 
-    const uploadPromises = Array.from(files).map(async (file) => {
-      if (file.size > 2 * 1024 * 1024) {
-        toast.error("Image size must be less than 2MB.", {
-          position: "top-right",
-        });
-        return null;
-      }
+  //   const uploadPromises = Array.from(files).map(async (file) => {
+  //     if (file.size > 2 * 1024 * 1024) {
+  //       toast.error("Image size must be less than 2MB.", {
+  //         position: "top-right",
+  //       });
+  //       return null;
+  //     }
 
-      const fileType = "images";
-      const timestamp = Date.now();
-      const fileName = `${timestamp}_${file.name}`;
-      const storageRef = ref(storage, `${fileType}/${fileName}`);
+  //     const fileType = "images";
+  //     const timestamp = Date.now();
+  //     const fileName = `${timestamp}_${file.name}`;
+  //     const storageRef = ref(storage, `${fileType}/${fileName}`);
 
-      try {
-        const snapshot = await uploadBytes(storageRef, file);
-        return await getDownloadURL(snapshot.ref);
-      } catch (error) {
-        console.error("Error uploading file:", error);
-        return null;
-      }
-    });
+  //     try {
+  //       const snapshot = await uploadBytes(storageRef, file);
+  //       return await getDownloadURL(snapshot.ref);
+  //     } catch (error) {
+  //       console.error("Error uploading file:", error);
+  //       return null;
+  //     }
+  //   });
 
-    const uploadedUrls = (await Promise.all(uploadPromises)).filter(
-      Boolean
-    ) as string[];
+  //   const uploadedUrls = (await Promise.all(uploadPromises)).filter(
+  //     Boolean
+  //   ) as string[];
 
-    let existingImages = form.getValues(fieldName) || [];
-    if (!Array.isArray(existingImages)) {
-      existingImages = [];
-    }
+  //   let existingImages = form.getValues(fieldName) || [];
+  //   if (!Array.isArray(existingImages)) {
+  //     existingImages = [];
+  //   }
 
-    if (uploadedUrls.length) {
-      const newImages = [...existingImages, ...uploadedUrls];
-      form.setValue(fieldName, newImages);
-      form.clearErrors(fieldName);
-    }
-  };
+  //   if (uploadedUrls.length) {
+  //     const newImages = [...existingImages, ...uploadedUrls];
+  //     form.setValue(fieldName, newImages);
+  //     form.clearErrors(fieldName);
+  //   }
+  // };
 
-  const handlePlantegningerFasaderFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.files) {
-      await handleFileUpload(event.target.files, "PlantegningerFasader");
-    }
-  };
+  // const handlePlantegningerFasaderFileChange = async (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   if (event.target.files) {
+  //     await handleFileUpload(event.target.files, "PlantegningerFasader");
+  //   }
+  // };
 
-  const handlePlantegningerFasaderClick = () => {
-    filePlantegningerFasaderPhotoInputRef.current?.click();
-  };
+  // const handlePlantegningerFasaderClick = () => {
+  //   filePlantegningerFasaderPhotoInputRef.current?.click();
+  // };
 
-  const handlePlantegningerFasaderDrop = async (
-    event: React.DragEvent<HTMLDivElement>
-  ) => {
-    event.preventDefault();
-    if (event.dataTransfer.files) {
-      await handleFileUpload(event.dataTransfer.files, "PlantegningerFasader");
-    }
-  };
+  // const handlePlantegningerFasaderDrop = async (
+  //   event: React.DragEvent<HTMLDivElement>
+  // ) => {
+  //   event.preventDefault();
+  //   if (event.dataTransfer.files) {
+  //     await handleFileUpload(event.dataTransfer.files, "PlantegningerFasader");
+  //   }
+  // };
 
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-  };
-  const handle3DDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-  };
-  const handlePlantegningerFasaderDragOver = (
-    event: React.DragEvent<HTMLDivElement>
-  ) => {
-    event.preventDefault();
-  };
+  // const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+  //   event.preventDefault();
+  // };
+  // const handle3DDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+  //   event.preventDefault();
+  // };
+  // const handlePlantegningerFasaderDragOver = (
+  //   event: React.DragEvent<HTMLDivElement>
+  // ) => {
+  //   event.preventDefault();
+  // };
 
-  const handle3DFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.files) {
-      await handleFileUpload(event.target.files, "photo3D");
-    }
-  };
+  // const handle3DFileChange = async (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   if (event.target.files) {
+  //     await handleFileUpload(event.target.files, "photo3D");
+  //   }
+  // };
 
-  const handle3DClick = () => {
-    file3DInputRef.current?.click();
-  };
+  // const handle3DClick = () => {
+  //   file3DInputRef.current?.click();
+  // };
 
-  const handle3DDrop = async (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    if (event.dataTransfer.files) {
-      await handleFileUpload(event.dataTransfer.files, "photo3D");
-    }
-  };
+  // const handle3DDrop = async (event: React.DragEvent<HTMLDivElement>) => {
+  //   event.preventDefault();
+  //   if (event.dataTransfer.files) {
+  //     await handleFileUpload(event.dataTransfer.files, "photo3D");
+  //   }
+  // };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
-      if (data.VideoLink && !/^https?:\/\//i.test(data.VideoLink)) {
-        data.VideoLink = `https://${data.VideoLink}`;
-      }
-      if (data.TittelVideo === null || data.TittelVideo === undefined) {
-        delete data.TittelVideo;
-      }
+      // if (data.VideoLink && !/^https?:\/\//i.test(data.VideoLink)) {
+      //   data.VideoLink = `https://${data.VideoLink}`;
+      // }
+      // if (data.TittelVideo === null || data.TittelVideo === undefined) {
+      //   delete data.TittelVideo;
+      // }
       const formatDate = (date: Date) => {
         return date
           .toLocaleString("sv-SE", { timeZone: "UTC" })
@@ -387,7 +387,7 @@ export const Husdetaljer: React.FC<{
 
       const husdetaljerData = {
         ...data,
-        link_3D_image: data.link_3D_image || null,
+        // link_3D_image: data.link_3D_image || null,
         id: uniqueId,
       };
 
@@ -396,7 +396,7 @@ export const Husdetaljer: React.FC<{
           Husdetaljer: husdetaljerData,
           updatedAt: formatDate(new Date()),
         });
-        toast.success("Updated successfully", {
+        toast.success("Lagret", {
           position: "top-right",
         });
       } else {
@@ -423,19 +423,7 @@ export const Husdetaljer: React.FC<{
       });
     }
   };
-  const selectedHouseType = form.watch("TypeObjekt");
-
-  // const [isOpen, setIsOpen] = useState<{ [key: string]: boolean }>({
-  //   section1: false,
-  //   section2: false,
-  // });
-
-  // const toggleAccordion = (sectionId: string) => {
-  //   setIsOpen((prev) => ({
-  //     ...prev,
-  //     [sectionId]: !prev[sectionId],
-  //   }));
-  // };
+  // const selectedHouseType = form.watch("TypeObjekt");
 
   return (
     <>
@@ -470,7 +458,7 @@ export const Husdetaljer: React.FC<{
                 </div>
                 {isOpen.section1 && ( */}
                 <div className="grid grid-cols-2 gap-6 w-[100%] border-[#EFF1F5] border-t p-4">
-                  <div className="col-span-2">
+                  {/* <div className="col-span-2">
                     <p
                       className={`${
                         form.formState.errors.TypeObjekt
@@ -1309,7 +1297,7 @@ export const Husdetaljer: React.FC<{
                               </SelectTrigger>
                               <SelectContent className="bg-white">
                                 <SelectGroup>
-                                  <SelectItem value="Flat">Flat</SelectItem>
+                                  <SelectItem value="Flat tomt">Flat tomt</SelectItem>
                                   <SelectItem value="Skrånet">
                                     Skrånet
                                   </SelectItem>
@@ -1322,7 +1310,7 @@ export const Husdetaljer: React.FC<{
                       )}
                     />
                   </div>
-                  <div className="border-t border-[#DCDFEA] w-full col-span-2"></div>
+                  <div className="border-t border-[#DCDFEA] w-full col-span-2"></div> */}
                   <div className="col-span-2">
                     <p className={`text-black text-sm font-medium`}>
                       KundeInformation
@@ -1514,7 +1502,7 @@ export const Husdetaljer: React.FC<{
                   )}
                 </div>
                 {isOpen.section2 && ( */}
-                <div className="grid grid-cols-2 gap-6 w-[100%] border-[#EFF1F5] border-t p-4">
+                {/* <div className="grid grid-cols-2 gap-6 w-[100%] border-[#EFF1F5] border-t p-4">
                   <div className="col-span-2">
                     <FormField
                       control={form.control}
@@ -1739,7 +1727,7 @@ export const Husdetaljer: React.FC<{
                       )}
                     />
                   </div>
-                </div>
+                </div> */}
                 {/* )} */}
               </div>
             </div>
