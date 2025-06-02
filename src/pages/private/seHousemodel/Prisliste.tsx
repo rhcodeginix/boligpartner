@@ -60,7 +60,7 @@ export const Prisliste: React.FC<{ husmodellData: any }> = ({
                         </p>
                       </div>
                       <h4 className="text-black font-medium text-base">
-                        {item?.pris ? `${item.pris} NOK` : "inkl. i tilbud"}
+                        {item?.pris ? `kr ${item.pris}` : "inkl. i tilbud"}
                       </h4>
                     </div>
                   );
@@ -74,7 +74,7 @@ export const Prisliste: React.FC<{ husmodellData: any }> = ({
                   </p>
                 </div>
                 <div className="border border-gray2 rounded-lg bg-white py-[10px] px-[14px] flex items-center justify-center text-darkBlack font-medium text-base">
-                  221.800 NOK
+                  kr 221 800
                 </div>
               </div>
               <div className="border-t border-gray2"></div>
@@ -86,7 +86,7 @@ export const Prisliste: React.FC<{ husmodellData: any }> = ({
                   </p>
                 </div>
                 <h4 className="text-black font-bold text-base">
-                  {formattedNumberOfByggekostnader} NOK
+                  kr {formattedNumberOfByggekostnader}
                 </h4>
               </div>
             </div>
@@ -128,7 +128,7 @@ export const Prisliste: React.FC<{ husmodellData: any }> = ({
                       </p>
                     </div>
                     <h4 className="text-black font-medium text-base">
-                      {item?.pris ? `${item.pris} NOK` : "inkl. i tilbud"}
+                      {item?.pris ? `kr ${item.pris}` : "inkl. i tilbud"}
                     </h4>
                   </div>
                 );
@@ -142,7 +142,7 @@ export const Prisliste: React.FC<{ husmodellData: any }> = ({
                 </p>
               </div>
               <h4 className="text-black font-bold text-base">
-                {formattedNumber} NOK
+                kr {formattedNumber}
               </h4>
             </div>
           </div>

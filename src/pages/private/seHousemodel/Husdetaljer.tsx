@@ -276,14 +276,14 @@ export const Husdetaljer: React.FC<{ husmodellData: any }> = ({
                       {husmodellData?.TilgjengeligBolig}
                     </td>
                   </tr>
-                  <tr>
+                  {/* <tr>
                     <td className="text-left pb-[16px] text-gray text-sm whitespace-nowrap">
                       Tomtetype
                     </td>
                     <td className="text-left pb-[16px] text-darkBlack text-sm font-semibold whitespace-nowrap">
                       {husmodellData?.Tomtetype}
                     </td>
-                  </tr>
+                  </tr> */}
                 </tbody>
               </table>
             </div>
