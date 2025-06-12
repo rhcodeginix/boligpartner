@@ -146,7 +146,7 @@ export function convertTimestamp(seconds: number, nanoseconds: number): string {
 }
 
 export const fetchAdminDataByEmail = async () => {
-  const email: string | null = sessionStorage.getItem("Iplot_admin");
+  const email: string | null = localStorage.getItem("Iplot_admin_bolig");
 
   if (email) {
     try {

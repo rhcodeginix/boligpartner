@@ -15,6 +15,7 @@ import { ProductFormDrawer } from "./productform";
 import { toast } from "react-hot-toast";
 import { db } from "../../../config/firebaseConfig";
 import { fetchHusmodellData } from "../../../lib/utils";
+import { ViewProductDetail } from "./ViewDetailProduct";
 
 const fileSchema = z.union([
   z
@@ -340,7 +341,6 @@ export const Eksterior: React.FC<{
   const [editSubCatIndex, setEditSubCatIndex] = useState<number | null>(null);
 
   const [isProductDrawerOpen, setIsProductDrawerOpen] = useState(false);
-
   const handleproductDrawer = () => {
     if (isProductDrawerOpen) {
       setIsProductDrawerOpen(false);
@@ -352,6 +352,18 @@ export const Eksterior: React.FC<{
     `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.navn`
   );
 
+  const [isView, setIsView] = useState(false);
+  const [ViewSubCat, setViewSubCat] = useState<any | null>(null);
+
+  const handleproductViewDrawer = () => {
+    if (isView) {
+      setIsView(false);
+      setViewSubCat(null);
+    } else {
+      setIsView(true);
+    }
+  };
+
   return (
     <>
       <Form {...form}>
@@ -359,7 +371,7 @@ export const Eksterior: React.FC<{
           <div>
             <div className="p-4">
               <div
-                className="flex items-center gap-2.5 mb-2.5"
+                className="flex items-center gap-2.5 mb-2.5 cursor-pointer"
                 onClick={() => {
                   setActiveTab(2);
                 }}
@@ -510,7 +522,13 @@ export const Eksterior: React.FC<{
                                     ? product?.pris
                                     : "Standard"}
                                 </span>
-                                <span className="text-purple font-medium text-sm cursor-pointer">
+                                <span
+                                  className="text-purple font-medium text-sm cursor-pointer"
+                                  onClick={() => {
+                                    handleproductViewDrawer();
+                                    setViewSubCat(product);
+                                  }}
+                                >
                                   View Details
                                 </span>
                               </div>
@@ -594,6 +612,16 @@ export const Eksterior: React.FC<{
             );
           }}
         />
+      </Drawer>
+      <Drawer isOpen={isView} onClose={handleproductViewDrawer}>
+        <h4 className="text-darkBlack font-semibold text-2xl flex items-center gap-2 justify-between p-6">
+          Information about {ViewSubCat?.Produktnavn}
+          <X
+            onClick={handleproductViewDrawer}
+            className="text-primary cursor-pointer"
+          />
+        </h4>
+        <ViewProductDetail editData={ViewSubCat} />
       </Drawer>
     </>
   );

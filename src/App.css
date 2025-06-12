@@ -87,7 +87,7 @@ input[type="number"] {
 }
 
 .toggle-input:checked + .toggle-label {
-  background-color: #444CE7;
+  background-color: #444ce7;
 }
 
 .toggle-input:checked + .toggle-label::after {
@@ -170,13 +170,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   -webkit-appearance: none;
 }
 
-
 /* Style for the drawer */
 .drawer {
   position: fixed;
   top: 0;
   right: -100%; /* Initially hidden off the screen */
-  width: 518px; /* Set the drawer width */
+  width: 576px; /* Set the drawer width */
   height: 100vh;
   background-color: white;
   transition: right 0.3s ease-in-out;
