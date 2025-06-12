@@ -457,7 +457,7 @@ export const Husdetaljer: React.FC<{
                   )}
                 </div>
                 {isOpen.section1 && ( */}
-                <div className="grid grid-cols-2 gap-6 w-[100%] border-[#EFF1F5] border-t p-4">
+                <div className="grid grid-cols-2 gap-6 w-[100%] p-4">
                   {/* <div className="col-span-2">
                     <p
                       className={`${
@@ -1484,7 +1484,7 @@ export const Husdetaljer: React.FC<{
                 </div>
                 {/* // )} */}
               </div>
-              <div className="border-[#EFF1F5] border rounded-lg overflow-hidden">
+              <div className="rounded-lg overflow-hidden">
                 {/* <div
                   className={`bg-white flex justify-between items-center w-full p-4 cursor-pointer duration-1000 ${
                     isOpen ? "active" : ""

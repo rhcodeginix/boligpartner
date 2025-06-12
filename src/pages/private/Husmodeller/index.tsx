@@ -62,11 +62,15 @@ export const Husmodeller = () => {
             return (
               <div key={index}>
                 <div className="w-full h-[243px] mb-4">
-                  <img
-                    src={item?.Husdetaljer?.photo}
-                    alt="house"
-                    className="w-full h-full object-cover rounded-lg"
-                  />
+                  {item?.Husdetaljer?.photo ? (
+                    <img
+                      src={item?.Husdetaljer?.photo}
+                      alt="house"
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-[#6670853b] rounded-lg"></div>
+                  )}
                 </div>
 
                 {/* <div className="flex items-center gap-4 mb-3">
