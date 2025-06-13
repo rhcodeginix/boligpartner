@@ -1,6 +1,12 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Layout } from "./layouts";
-import { Inventory, EditHouseModel, Husmodeller, SeHouseModel } from "./pages";
+import {
+  Inventory,
+  EditHouseModel,
+  Husmodeller,
+  SeHouseModel,
+  BoligConfiurator,
+} from "./pages";
 import { AuthLayout } from "./layouts/AuthLayout";
 import { Login } from "./pages/public";
 
@@ -18,6 +24,7 @@ export const routes = createBrowserRouter([
     path: "/",
     element: <Layout />,
     children: [
+      { path: "Bolig-configurator", element: <BoligConfiurator /> },
       { path: "Inventory", element: <Inventory /> },
       { path: "Husmodell", element: <Husmodeller /> },
       { path: "se-husmodell/*", element: <SeHouseModel /> },

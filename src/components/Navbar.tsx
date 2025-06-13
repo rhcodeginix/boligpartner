@@ -91,6 +91,20 @@ export const Navbar: React.FC = () => {
             Boligkonfigurator
           </Link>
           <Link
+            to={"/Bolig-configurator"}
+            className={`text-base font-medium py-2 px-3 rounded-[6px] ${
+              currentPath === "/Bolig-configurator"
+                ? "bg-lightPurple text-primary"
+                : "text-black"
+            }`}
+            onClick={() => {
+              const currIndex = 0;
+              localStorage.setItem("currIndex", currIndex.toString());
+            }}
+          >
+            Mine tiltak
+          </Link>
+          <Link
             to={"/Inventory"}
             className={`text-base font-medium py-2 px-3 rounded-[6px] ${
               currentPath === "/Inventory"
