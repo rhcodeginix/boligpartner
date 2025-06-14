@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import VerticalWizard from "../../../../components/ui/stepper/verticalStepper";
 import { Prosjektdetaljer } from "./Prosjektdetaljer";
 import { Leveransedetaljer } from "./Leveransedetaljer";
@@ -14,8 +14,11 @@ import { TrappogLuker } from "./TrappogLuker";
 import { BalkongTerrasse } from "./BalkongTerrasse";
 import { ListverkogBelistning } from "./ListverkogBelistning";
 import { VentilasjonSentralstøvsuger } from "./VentilasjonSentralstøvsuger";
+import { Brannvern } from "./Brannvern";
+import { TekniskeInstallasjoner } from "./TekniskeInstallasjoner";
+import { SluttføringDokumentasjon } from "./SluttføringDokumentasjon";
 
-export const Oppmelding = () => {
+export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
   const [currentStep, setCurrentStep] = useState<number>(1);
 
   useEffect(() => {
@@ -161,6 +164,30 @@ export const Oppmelding = () => {
           handleNext={handleNext}
           handlePrevious={handlePrevious}
         />
+      ),
+    },
+    {
+      id: 15,
+      title: "Brannvern",
+      content: (
+        <Brannvern handleNext={handleNext} handlePrevious={handlePrevious} />
+      ),
+    },
+    {
+      id: 16,
+      title: "Tekniske Installasjoner",
+      content: (
+        <TekniskeInstallasjoner
+          handleNext={handleNext}
+          handlePrevious={handlePrevious}
+        />
+      ),
+    },
+    {
+      id: 17,
+      title: "Sluttføring og Dokumentasjon",
+      content: (
+        <SluttføringDokumentasjon handlePrevious={handlePrevious} Next={Next} />
       ),
     },
   ];
