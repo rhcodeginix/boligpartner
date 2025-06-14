@@ -99,7 +99,12 @@ export const Navbar: React.FC = () => {
             }`}
             onClick={() => {
               const currIndex = 0;
-              localStorage.setItem("currIndex", currIndex.toString());
+              const currVerticalIndex = 1;
+              localStorage.setItem("currIndexBolig", currIndex.toString());
+              localStorage.setItem(
+                "currVerticalIndex",
+                currVerticalIndex.toString()
+              );
             }}
           >
             Mine tiltak

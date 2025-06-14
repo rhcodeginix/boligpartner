@@ -21,7 +21,7 @@ const Stepper: React.FC<StepperProps> = ({
 
   useEffect(() => {
     if (typeof window !== "undefined" && currIndex) {
-      localStorage.setItem("currIndex", currIndex.toString());
+      localStorage.setItem("currIndexBolig", currIndex.toString());
     }
     const currentStepEl = stepRefs.current[currIndex];
     if (currentStepEl) {
@@ -33,7 +33,7 @@ const Stepper: React.FC<StepperProps> = ({
     if (index <= currIndex) {
       setCurrIndex(index);
     }
-    localStorage.setItem("currIndex", index.toString());
+    localStorage.setItem("currIndexBolig", index.toString());
   };
 
   return (

@@ -103,7 +103,7 @@ export const Prosjektdetaljer: React.FC<{ handleNext: any }> = ({
               Prosjektdetaljer
             </div>
             <div className="p-4 md:p-5">
-              <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
                 <div>
                   <FormField
                     control={form.control}
@@ -113,7 +113,7 @@ export const Prosjektdetaljer: React.FC<{ handleNext: any }> = ({
                         <p
                           className={`${
                             fieldState.error ? "text-red" : "text-black"
-                          } mb-[6px] text-sm font-medium`}
+                          } mb-[6px] text-sm`}
                         >
                           Kundenr*
                         </p>
@@ -149,7 +149,7 @@ export const Prosjektdetaljer: React.FC<{ handleNext: any }> = ({
                         <p
                           className={`${
                             fieldState.error ? "text-red" : "text-black"
-                          } mb-[6px] text-sm font-medium`}
+                          } mb-[6px] text-sm`}
                         >
                           Tiltakshaver*
                         </p>
@@ -182,7 +182,7 @@ export const Prosjektdetaljer: React.FC<{ handleNext: any }> = ({
                         <p
                           className={`${
                             fieldState.error ? "text-red" : "text-black"
-                          } mb-[6px] text-sm font-medium`}
+                          } mb-[6px] text-sm`}
                         >
                           Byggeadresse*
                         </p>
@@ -215,7 +215,7 @@ export const Prosjektdetaljer: React.FC<{ handleNext: any }> = ({
                         <p
                           className={`${
                             fieldState.error ? "text-red" : "text-black"
-                          } mb-[6px] text-sm font-medium`}
+                          } mb-[6px] text-sm`}
                         >
                           Postnr*
                         </p>
@@ -248,7 +248,7 @@ export const Prosjektdetaljer: React.FC<{ handleNext: any }> = ({
                         <p
                           className={`${
                             fieldState.error ? "text-red" : "text-black"
-                          } mb-[6px] text-sm font-medium`}
+                          } mb-[6px] text-sm`}
                         >
                           Poststed*
                         </p>
@@ -281,7 +281,7 @@ export const Prosjektdetaljer: React.FC<{ handleNext: any }> = ({
                         <p
                           className={`${
                             fieldState.error ? "text-red" : "text-black"
-                          } mb-[6px] text-sm font-medium`}
+                          } mb-[6px] text-sm`}
                         >
                           Kommune*
                         </p>
@@ -317,7 +317,7 @@ export const Prosjektdetaljer: React.FC<{ handleNext: any }> = ({
                         <p
                           className={`${
                             fieldState.error ? "text-red" : "text-black"
-                          } mb-[6px] text-sm font-medium`}
+                          } mb-[6px] text-sm`}
                         >
                           Tlf. Mobil*
                         </p>
@@ -350,7 +350,7 @@ export const Prosjektdetaljer: React.FC<{ handleNext: any }> = ({
                         <p
                           className={`${
                             fieldState.error ? "text-red" : "text-black"
-                          } mb-[6px] text-sm font-medium`}
+                          } mb-[6px] text-sm`}
                         >
                           Tlf. privat*
                         </p>
@@ -378,7 +378,7 @@ export const Prosjektdetaljer: React.FC<{ handleNext: any }> = ({
                   <p
                     className={`${
                       form.formState.errors.Hustype ? "text-red" : "text-black"
-                    } mb-[6px] text-sm font-medium`}
+                    } mb-[6px] text-sm`}
                   >
                     Hustype*
                   </p>
@@ -458,7 +458,7 @@ export const Prosjektdetaljer: React.FC<{ handleNext: any }> = ({
                         <p
                           className={`mb-2 ${
                             fieldState.error ? "text-red" : "text-black"
-                          } text-sm font-medium`}
+                          } text-sm`}
                         >
                           Finansiering*
                         </p>
@@ -602,7 +602,7 @@ export const Prosjektdetaljer: React.FC<{ handleNext: any }> = ({
                         <p
                           className={`${
                             fieldState.error ? "text-red" : "text-black"
-                          } mb-[6px] text-sm font-medium`}
+                          } mb-[6px] text-sm`}
                         >
                           Tegn.nummer*
                         </p>
@@ -738,7 +738,7 @@ export const Prosjektdetaljer: React.FC<{ handleNext: any }> = ({
                 />
               </div>
               <Button
-                text="Lagre"
+                text="Neste"
                 className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                 type="submit"
               />

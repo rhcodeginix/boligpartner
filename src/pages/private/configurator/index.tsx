@@ -9,7 +9,7 @@ export const BoligConfiurator = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const savedIndex = localStorage.getItem("currIndex");
+      const savedIndex = localStorage.getItem("currIndexBolig");
       if (savedIndex) {
         setCurrIndex(Number(savedIndex));
       } else {
@@ -18,16 +18,16 @@ export const BoligConfiurator = () => {
     }
   }, [currIndex]);
 
-  // const handleNext = () => {
-  //   if (typeof currIndex === "number" && currIndex < steps.length - 1) {
-  //     setCurrIndex(currIndex + 1);
-  //   }
-  // };
-  // const handlePrevious = () => {
-  //   if (typeof currIndex === "number" && currIndex > 0) {
-  //     setCurrIndex(currIndex - 1);
-  //   }
-  // };
+  const handleNext = () => {
+    if (typeof currIndex === "number" && currIndex < steps.length - 1) {
+      setCurrIndex(currIndex + 1);
+    }
+  };
+  const handlePrevious = () => {
+    if (typeof currIndex === "number" && currIndex > 0) {
+      setCurrIndex(currIndex - 1);
+    }
+  };
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currIndex]);
