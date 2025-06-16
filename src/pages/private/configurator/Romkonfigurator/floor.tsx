@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "../../../../components/Spinner";
-import { fetchHusmodellData } from "../../../../lib/utils";
+import { fetchRoomData } from "../../../../lib/utils";
 import Button from "../../../../components/common/button";
-import { ChevronRight } from "lucide-react";
 // import Ic_multiple_stars from "../../../../assets/images/Ic_multiple_stars.svg";
 import { toast } from "react-hot-toast";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -33,7 +32,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
     setLoading(true);
 
     const getData = async () => {
-      const data: any = await fetchHusmodellData(id);
+      const data: any = await fetchRoomData(id);
       if (data) {
         const finalData = data?.Plantegninger.find(
           (item: any) => String(item?.pdf_id) === String(pdfId)
@@ -46,11 +45,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
       }
       try {
         if (pdfId) {
-          const husmodellDocRef = doc(
-            db,
-            "housemodell_configure_broker",
-            String(id)
-          );
+          const husmodellDocRef = doc(db, "room_configurator", String(id));
 
           const docSnap = await getDoc(husmodellDocRef);
           const existingData = docSnap.exists()
@@ -110,7 +105,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           toast.success(PDFdata.message, {
             position: "top-right",
           });
-          setActiveTab(3);
+          setActiveTab(2);
         }
       } catch (error) {
         console.error("Upload error:", error);
@@ -127,30 +122,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
   return (
     <>
-      <div className="py-4 px-6 bg-lightPurple">
-        <div className="flex items-center gap-1.5 mb-6">
-          <Link to={"/Husmodell"} className="text-primary text-sm font-medium">
-            Husmodeller
-          </Link>
-          <ChevronRight className="text-[#5D6B98] w-4 h-4" />
-          <div
-            onClick={() => {
-              setActiveTab(1);
-
-              const params = new URLSearchParams(location.search);
-              params.delete("pdf_id");
-
-              navigate(`${location.pathname}?${params.toString()}`, {
-                replace: true,
-              });
-            }}
-            className="text-primary text-sm font-medium cursor-pointer"
-          >
-            Legg til nytt hus
-          </div>
-          <ChevronRight className="text-[#5D6B98] w-4 h-4" />
-          <span className="text-gray text-sm">Detaljer om gulvet</span>
-        </div>
+      <div className="py-4 px-6">
         <div className="flex flex-col gap-2">
           <h1 className="text-darkBlack font-semibold text-[32px]">
             {FloorData?.title}
@@ -165,7 +137,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
       <div className="flex gap-6 px-6 pt-6 pb-[156px]">
         <div className="w-[25%] border border-[#EFF1F5] rounded-lg shadow-shadow2">
           <div className="p-4 border-b border-[#EFF1F5] text-darkBlack text-lg font-medium">
-            {FloorData?.title} Information
+            Romoversikt
           </div>
           <div className="p-4 flex items-center justify-center h-[490px] flex-col gap-6">
             {/* <img src={Ic_multiple_stars} alt="star" /> */}
@@ -184,7 +156,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           text="Avbryt"
           className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
           onClick={() => {
-            setActiveTab(1);
+            setActiveTab(0);
 
             const params = new URLSearchParams(location.search);
             params.delete("pdf_id");
@@ -198,7 +170,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           text="Neste"
           className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
           onClick={() => {
-            setActiveTab(3);
+            setActiveTab(2);
           }}
         />
       </div>

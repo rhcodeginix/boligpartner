@@ -596,7 +596,7 @@ export const ProductFormDrawer: React.FC<{
                 }
               >
                 <Plus />
-                Add other product
+                Legg til et annet produkt
               </div>
             )}
           </div>

@@ -140,14 +140,14 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
       <div className="flex gap-6 px-6 pt-6 pb-[156px]">
         <div className="w-[25%] border border-[#EFF1F5] rounded-lg shadow-shadow2 h-[690px]">
           <div className="p-4 border-b border-[#EFF1F5] text-darkBlack text-lg font-medium flex items-center justify-between gap-2">
-            <span className="truncate">{FloorData?.title} Information</span>
+            <span className="truncate">Romoversikt</span>
             <div
               className="flex items-center text-purple gap-2 cursor-pointer"
               onClick={() => setAddCategory(true)}
             >
               <Plus />
               <span className="text-sm font-medium whitespace-nowrap">
-                Add new
+                Nytt rom
               </span>
             </div>
           </div>

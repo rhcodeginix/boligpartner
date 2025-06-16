@@ -437,7 +437,7 @@ export const Customization: React.FC<{
                   </div>
                 ) : (
                   <p className="text-secondary text-sm">
-                    No Customisation Category added
+                    Ingen tilpasningskategori lagt til
                   </p>
                 )}
 
@@ -446,7 +446,7 @@ export const Customization: React.FC<{
                   onClick={() => setAddSubCategory(true)}
                 >
                   <Plus />
-                  Legg til kategori
+                  Legg til produkt
                 </div>
               </div>
               {hovedkategorinavn.length > 0 ? (
@@ -462,7 +462,7 @@ export const Customization: React.FC<{
                       }}
                     >
                       <Plus />
-                      Add {title}
+                      Legge til {title}
                     </div>
                   </div>
                   <div className="">
@@ -635,8 +635,8 @@ export const Customization: React.FC<{
                         No Customisation Category added
                       </h3>
                       <p className="text-sm text-center text-secondary">
-                        Once you add the Customisation Category then you can{" "}
-                        <br /> add different Product Options
+                        Når du har lagt til tilpasningskategorien, kan du legge{" "}
+                        <br /> til forskjellige produktalternativer.
                       </p>
                     </div>
                   </div>

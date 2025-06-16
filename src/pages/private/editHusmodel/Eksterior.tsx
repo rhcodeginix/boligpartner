@@ -508,6 +508,25 @@ export const Eksterior: React.FC<{
     "text" in errorObj &&
     !!errorObj.text;
 
+  useEffect(() => {
+    if (
+      produkter &&
+      produkter.length > 0 &&
+      !produkter.some((p: any) => p.isSelected)
+    ) {
+      const updatedProducts = produkter.map((p: any, index: number) => ({
+        ...p,
+        isSelected: index === 0,
+      }));
+
+      form.setValue(
+        `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
+        updatedProducts,
+        { shouldValidate: true }
+      );
+    }
+  }, [produkter]);
+
   return (
     <>
       <Form {...form}>
@@ -522,12 +541,12 @@ export const Eksterior: React.FC<{
               >
                 <ArrowLeft className="text-purple" />
                 <span className="text-purple text-sm font-medium">
-                  Back to Floor 1 plan
+                  Tilbake til plantegning
                 </span>
               </div>
               <div className="flex items-center justify-between gap-2">
                 <h4 className="text-darkBlack font-semibold text-xl">
-                  Add Customisation Option for {labelName}
+                  Legg til konfigurasjon for {labelName}
                 </h4>
               </div>
             </div>
@@ -598,7 +617,7 @@ export const Eksterior: React.FC<{
                   onClick={() => setAddSubCategory(true)}
                 >
                   <Plus />
-                  Legg til kategori
+                  Legg til produkt
                 </div>
               </div>
               {hovedkategorinavn.length > 0 && (
@@ -617,7 +636,7 @@ export const Eksterior: React.FC<{
                         }}
                       >
                         <Plus />
-                        Add {title}
+                        Legge til {title}
                       </div>
                     )}
                     {/* <div
@@ -872,7 +891,7 @@ export const Eksterior: React.FC<{
       </Drawer>
       <Drawer isOpen={isView} onClose={handleproductViewDrawer}>
         <h4 className="text-darkBlack font-semibold text-2xl flex items-center gap-2 justify-between p-6">
-          Information about {ViewSubCat?.Produktnavn}
+          Informasjon om {ViewSubCat?.Produktnavn}
           <X
             onClick={handleproductViewDrawer}
             className="text-primary cursor-pointer"

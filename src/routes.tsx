@@ -25,6 +25,7 @@ export const routes = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: "Bolig-configurator", element: <BoligConfiurator /> },
+      { path: "Bolig-configurator/*", element: <BoligConfiurator /> },
       { path: "Inventory", element: <Inventory /> },
       { path: "Husmodell", element: <Husmodeller /> },
       { path: "se-husmodell/*", element: <SeHouseModel /> },

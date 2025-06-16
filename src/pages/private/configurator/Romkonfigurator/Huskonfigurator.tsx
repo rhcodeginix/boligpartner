@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Ic_upload_blue_img from "../../../../assets/images/Ic_upload_blue_img.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "../../../../components/Spinner";
-import { fetchHusmodellData } from "../../../../lib/utils";
+import { fetchRoomData } from "../../../../lib/utils";
 import Button from "../../../../components/common/button";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../../config/firebaseConfig";
@@ -59,7 +59,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
       return;
     }
     const getData = async () => {
-      const data = await fetchHusmodellData(id);
+      const data = await fetchRoomData(id);
 
       if (data && data?.Plantegninger) {
         setRoomsData(data?.Plantegninger);
@@ -155,11 +155,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
 
         if (imageBase64) {
           const finalImageUrl = await uploadBase64Image(imageBase64);
-          const husmodellDocRef = doc(
-            db,
-            "housemodell_configure_broker",
-            String(id)
-          );
+          const husmodellDocRef = doc(db, "room_configurator", String(id));
 
           const docSnap = await getDoc(husmodellDocRef);
           const existingData = docSnap.exists()
@@ -237,7 +233,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     null
   );
   const handleDeleteFloor = async (indexToDelete: number) => {
-    const husmodellDocRef = doc(db, "housemodell_configure_broker", String(id));
+    const husmodellDocRef = doc(db, "room_configurator", String(id));
 
     try {
       const docSnap = await getDoc(husmodellDocRef);
@@ -331,7 +327,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                     key={index}
                     className="relative shadow-shadow2 cursor-pointer p-4 rounded-lg flex flex-col gap-4"
                     onClick={() => {
-                      setActiveTab(2);
+                      setActiveTab(1);
                       navigate(`?pdf_id=${item?.pdf_id}`);
                     }}
                   >
@@ -367,7 +363,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
 
                               const husmodellDocRef = doc(
                                 db,
-                                "housemodell_configure_broker",
+                                "room_configurator",
                                 String(id)
                               );
 

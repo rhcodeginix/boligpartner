@@ -84,7 +84,10 @@ const formSchema = z.object({
 //   handleNext,
 // }) => {
 export const Prosjektdetaljer = forwardRef(
-  ({ handleNext }: { handleNext: any }, ref: any) => {
+  (
+    { handleNext, Prev }: { handleNext: () => void; Prev: () => void },
+    ref: any
+  ) => {
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
     });
@@ -744,7 +747,17 @@ export const Prosjektdetaljer = forwardRef(
                 </div>
               </div>
               <div className="flex justify-end w-full gap-5 items-center sticky bottom-0 bg-white z-50 border-t border-[#B9C0D4] rounded-b-lg p-4">
-                <div onClick={() => form.reset()}>
+                <div
+                  onClick={() => {
+                    form.reset();
+                    Prev();
+                    const currIndex = 0;
+                    localStorage.setItem(
+                      "currIndexBolig",
+                      currIndex.toString()
+                    );
+                  }}
+                >
                   <Button
                     text="Avbryt"
                     className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"

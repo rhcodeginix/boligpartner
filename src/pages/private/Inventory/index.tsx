@@ -188,10 +188,10 @@ export const Inventory = () => {
                 <div className="flex flex-col items-center justify-center">
                   <img src={Img_noTask} alt="no_data" />
                   <h3 className="text-black font-semibold text-center mb-1.5">
-                    No Housing Configuration <br /> Elements Added
+                    Ingen boligkonfigurasjon <br /> Elementer lagt til
                   </h3>
                   <p className="text-sm text-center text-secondary">
-                    Please Click on Add New button <br /> to add Element
+                    Klikk på Legg til ny-knappen <br /> for å legge til element
                   </p>
                 </div>
               </div>
@@ -208,7 +208,7 @@ export const Inventory = () => {
             <div className="flex items-center gap-2 w-full justify-center border-2 border-primary rounded-[40px] p-2">
               <Plus />
               <span className="text-base font-medium whitespace-nowrap">
-                Add new
+                Nytt rom
               </span>
             </div>
           </div>

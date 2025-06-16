@@ -34,12 +34,12 @@ export const BoligConfiurator = () => {
 
   const steps = [
     {
-      name: "Oppmelding av tiltak",
-      component: <Oppmelding Next={handleNext} />,
-    },
-    {
       name: "Romkonfigurator",
       component: <Romkonfigurator Prev={handlePrevious} Next={handleNext} />,
+    },
+    {
+      name: "Oppmelding av tiltak",
+      component: <Oppmelding Next={handleNext} Prev={handlePrevious} />,
     },
     {
       name: "Oppsummering",

@@ -2,14 +2,17 @@ import React, { useEffect, useState } from "react";
 import Modal from "../../../../components/common/modal";
 import Ic_trash from "../../../../assets/images/Ic_trash.svg";
 import Button from "../../../../components/common/button";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "../../../../components/Spinner";
-import { fetchHusmodellData } from "../../../../lib/utils";
+import { fetchRoomData } from "../../../../lib/utils";
 import { ChevronRight, Pencil, Plus, X } from "lucide-react";
 import { AddNewCat } from "../../editHusmodel/AddNewCat";
-import { Eksterior } from "../../editHusmodel/Eksterior";
+import { Eksterior } from "./Eksterior";
 
-export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
+export const AllFloor: React.FC<{ setActiveTab: any; Next: any }> = ({
+  setActiveTab,
+  Next,
+}) => {
   const navigate = useNavigate();
   const [activeTabData, setActiveTabData] = useState<number | null>(null);
   const [AddCategory, setAddCategory] = useState(false);
@@ -70,7 +73,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
     }
 
     const getData = async () => {
-      const data: any = await fetchHusmodellData(id);
+      const data: any = await fetchRoomData(id);
       if (data) {
         const finalData = data?.Plantegninger.find(
           (item: any) => String(item?.pdf_id) === String(pdfId)
@@ -87,18 +90,13 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
   return (
     <>
-      <div className="py-4 px-6 bg-lightPurple">
+      <div className="py-4 px-6">
         <div className="flex items-center gap-1.5 mb-6">
-          <Link to={"/Husmodell"} className="text-primary text-sm font-medium">
-            Husmodeller
-          </Link>
-          <ChevronRight className="text-[#5D6B98] w-4 h-4" />
           <div
             onClick={() => {
               setActiveTab(1);
 
               const params = new URLSearchParams(location.search);
-              params.delete("pdf_id");
 
               navigate(`${location.pathname}?${params.toString()}`, {
                 replace: true,
@@ -140,19 +138,19 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
       <div className="flex gap-6 px-6 pt-6 pb-[156px]">
         <div className="w-[25%] border border-[#EFF1F5] rounded-lg shadow-shadow2 h-[690px]">
           <div className="p-4 border-b border-[#EFF1F5] text-darkBlack text-lg font-medium flex items-center justify-between gap-2">
-            <span className="truncate">{FloorData?.title} Information</span>
+            <span className="truncate">Romoversikt</span>
             <div
               className="flex items-center text-purple gap-2 cursor-pointer"
               onClick={() => setAddCategory(true)}
             >
               <Plus />
               <span className="text-sm font-medium whitespace-nowrap">
-                Add new
+                Nytt rom
               </span>
             </div>
           </div>
           <div className="flex flex-col p-4 pb-0 rounded-lg gap-3 h-full max-h-[calc(100%-90px)] overflow-y-auto overFlowAutoY sticky top-[80px]">
-            {Category.length > 0
+            {Category && Category?.length > 0
               ? Category.map((tab: any, index: number) => (
                   <div
                     key={index}
@@ -217,6 +215,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               Category={Category}
               activeTabData={activeTabData}
               setCategory={setCategory}
+              Next={Next}
             />
           ) : (
             <img src={FloorData?.image} alt="floor" className="w-full h-full" />
@@ -229,7 +228,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           <div className="flex items-center gap-5">
             <div
               onClick={() => {
-                setActiveTab(2);
+                setActiveTab(1);
               }}
               className="w-1/2 sm:w-auto"
             >

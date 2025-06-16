@@ -165,7 +165,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
       <div className="flex gap-6 px-6 pt-6 pb-[156px]">
         <div className="w-[25%] border border-[#EFF1F5] rounded-lg shadow-shadow2">
           <div className="p-4 border-b border-[#EFF1F5] text-darkBlack text-lg font-medium">
-            {FloorData?.title} Information
+            Romoversikt
           </div>
           <div className="p-4 flex items-center justify-center h-[490px] flex-col gap-6">
             {/* <img src={Ic_multiple_stars} alt="star" /> */}

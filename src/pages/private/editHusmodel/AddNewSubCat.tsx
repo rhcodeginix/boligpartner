@@ -89,7 +89,6 @@ export const AddNewSubCat: React.FC<{
         { shouldValidate: true }
       );
     } else {
-      // Add new
       const newSubCategory = {
         navn: updatedName,
         productOptions: updatedOption,

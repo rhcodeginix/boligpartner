@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -40,9 +40,10 @@ import { phoneNumberValidations } from "../../../lib/utils";
 // } from "lucide-react";
 import { InputMobile } from "../../../components/ui/inputMobile";
 import { parsePhoneNumber } from "react-phone-number-input";
+import ApiUtils from "../../../api";
+import Ic_search_location from "../../../assets/images/Ic_search_location.svg";
 
 const formSchema = z.object({
-  // TypeObjekt: z.string().min(1, { message: "Velg en Type Objekt." }),
   // photo: z.union([
   //   z
   //     .instanceof(File)
@@ -51,112 +52,9 @@ const formSchema = z.object({
   //     }),
   //   z.string(),
   // ]),
-  // PlantegningerFasader: z
-  //   .array(
-  //     z.union([
-  //       z
-  //         .instanceof(File)
-  //         .refine(
-  //           (file: any) => file === null || file.size <= 10 * 1024 * 1024,
-  //           {
-  //             message: "Filstørrelsen må være mindre enn 10 MB.",
-  //           }
-  //         ),
-  //       z.string(),
-  //     ])
-  //   )
-  //   .min(1, "Minst ett bilde kreves."),
-  // photo3D: z
-  //   .array(
-  //     z.union([
-  //       z
-  //         .instanceof(File)
-  //         .refine(
-  //           (file: any) => file === null || file.size <= 10 * 1024 * 1024,
-  //           {
-  //             message: "Filstørrelsen må være mindre enn 10 MB.",
-  //           }
-  //         ),
-  //       z.string(),
-  //     ])
-  //   )
-  //   .min(1, "Minst ett bilde kreves."),
   // husmodell_name: z.string().min(1, {
   //   message: "Navn på husmodell må bestå av minst 2 tegn.",
   // }),
-  // link_3D_image: z
-  //   .string()
-  //   .min(1, {
-  //     message: "Link til 3D bilde må bestå av minst 2 tegn.",
-  //   })
-  //   .optional(),
-  // pris: z.string().min(1, {
-  //   message: "Pris må bestå av minst 1 tegn.",
-  // }),
-  // BRATotal: z.string().min(1, {
-  //   message: "BRA total (bruksareal) må bestå av minst 2 tegn.",
-  // }),
-  // PRom: z.string().min(1, {
-  //   message: "GUA (Gulvareal) må bestå av minst 2 tegn.",
-  // }),
-  // Mønehøyde: z.number().min(1, {
-  //   message: "Mønehøyde areal må bestå av minst 2 tegn.",
-  // }),
-  // Gesimshøyde: z.number().min(1, {
-  //   message: "Gesimshøyde areal må bestå av minst 2 tegn.",
-  // }),
-  // Lengde: z.string().min(1, {
-  //   message: "Lengde areal må bestå av minst 2 tegn.",
-  // }),
-  // Bredde: z.string().min(1, {
-  //   message: "Bredde areal må bestå av minst 2 tegn.",
-  // }),
-  // Takvinkel: z.number().min(1, {
-  //   message: "Takvinkel areal må bestå av minst 2 tegn.",
-  // }),
-  // BebygdAreal: z.number().min(1, {
-  //   message: "Bebygd areal (BYA) må bestå av minst 2 tegn.",
-  // }),
-  // Soverom: z.number().min(1, {
-  //   message: "Soverom må bestå av minst 2 tegn.",
-  // }),
-  // InnvendigBod: z.number().min(1, {
-  //   message: "InnvendigBod må bestå av minst 2 tegn.",
-  // }),
-  // Bad: z.number().min(1, {
-  //   message: "Bad må bestå av minst 2 tegn.",
-  // }),
-  // Energimerking: z
-  //   .string()
-  //   .min(1, { message: "Energimerking must må spesifiseres." }),
-  // TilgjengeligBolig: z
-  //   .string()
-  //   .min(1, { message: "TilgjengeligBolig must må spesifiseres." }),
-  // Tomtetype: z.string().min(1, { message: "Tomtetype must må spesifiseres." }),
-  // Hustittel: z.string().min(1, {
-  //   message: "Hustittel må bestå av minst 2 tegn.",
-  // }),
-  // OmHusmodellen: z.string().min(1, {
-  //   message: "OmHusmodellen må bestå av minst 2 tegn.",
-  // }),
-  // TittelVideo: z
-  //   .string()
-  //   .min(1, {
-  //     message: "Tittel på video må bestå av minst 2 tegn.",
-  //   })
-  //   .optional(),
-  // VideoLink: z
-  //   .string()
-  //   .refine(
-  //     (val) =>
-  //       val === "" ||
-  //       /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[a-zA-Z0-9_-]+$/.test(
-  //         val
-  //       ),
-  //     {
-  //       message: "Please enter a valid YouTube URL.",
-  //     }
-  //   ),
   Kundenavn: z.string().min(1, {
     message: "Kundenavn må bestå av minst 2 tegn.",
   }),
@@ -316,56 +214,8 @@ export const Husdetaljer: React.FC<{
   //   }
   // };
 
-  // const handlePlantegningerFasaderFileChange = async (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   if (event.target.files) {
-  //     await handleFileUpload(event.target.files, "PlantegningerFasader");
-  //   }
-  // };
-
-  // const handlePlantegningerFasaderClick = () => {
-  //   filePlantegningerFasaderPhotoInputRef.current?.click();
-  // };
-
-  // const handlePlantegningerFasaderDrop = async (
-  //   event: React.DragEvent<HTMLDivElement>
-  // ) => {
-  //   event.preventDefault();
-  //   if (event.dataTransfer.files) {
-  //     await handleFileUpload(event.dataTransfer.files, "PlantegningerFasader");
-  //   }
-  // };
-
   // const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
   //   event.preventDefault();
-  // };
-  // const handle3DDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-  //   event.preventDefault();
-  // };
-  // const handlePlantegningerFasaderDragOver = (
-  //   event: React.DragEvent<HTMLDivElement>
-  // ) => {
-  //   event.preventDefault();
-  // };
-
-  // const handle3DFileChange = async (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   if (event.target.files) {
-  //     await handleFileUpload(event.target.files, "photo3D");
-  //   }
-  // };
-
-  // const handle3DClick = () => {
-  //   file3DInputRef.current?.click();
-  // };
-
-  // const handle3DDrop = async (event: React.DragEvent<HTMLDivElement>) => {
-  //   event.preventDefault();
-  //   if (event.dataTransfer.files) {
-  //     await handleFileUpload(event.dataTransfer.files, "photo3D");
-  //   }
   // };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -445,7 +295,34 @@ export const Husdetaljer: React.FC<{
       });
     }
   };
-  // const selectedHouseType = form.watch("TypeObjekt");
+
+  const [formData, setFormData] = useState({
+    address: "",
+  });
+  const [addressData, setAddressData] = useState<any>(null);
+
+  const kartInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleKartInputChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.value;
+    setFormData((prev) => ({ ...prev, address: value }));
+
+    if (value) {
+      try {
+        const response = await ApiUtils.getAddress(value);
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+        }
+
+        const json = await response.json();
+        setAddressData(json.adresser);
+      } catch (error: any) {
+        console.error(error?.message);
+      }
+    }
+  };
 
   return (
     <>
@@ -480,67 +357,7 @@ export const Husdetaljer: React.FC<{
                 </div>
                 {isOpen.section1 && ( */}
                 <div className="grid grid-cols-2 gap-6 w-[100%] p-4">
-                  {/* <div className="col-span-2">
-                    <p
-                      className={`${
-                        form.formState.errors.TypeObjekt
-                          ? "text-red"
-                          : "text-black"
-                      } mb-[6px] text-sm font-medium`}
-                    >
-                      Type objekt
-                    </p>
-                    <div className="flex gap-4 items-center">
-                      {[
-                        {
-                          label: "Bolig",
-                          icon: <House />,
-                          value: "bolig",
-                        },
-                        {
-                          label: "Hytte",
-                          icon: <HousePlus />,
-                          value: "hytte",
-                        },
-                        {
-                          label: "Garasje",
-                          icon: <Warehouse />,
-                          value: "garasje",
-                        },
-                      ].map((item: any, index: number) => (
-                        <div
-                          key={index}
-                          onClick={() => {
-                            form.setValue("TypeObjekt", item.value);
-                            form.clearErrors("TypeObjekt");
-                          }}
-                          className={`border-2 rounded-lg py-2 px-4 shadow-shadow1 cursor-pointer flex items-center gap-2 ${
-                            selectedHouseType === item.value
-                              ? "border-purple"
-                              : "border-gray2"
-                          }`}
-                        >
-                          <div
-                            className={`${
-                              selectedHouseType === item.value
-                                ? "text-[#444CE7]"
-                                : "text-[#5D6B98]"
-                            }`}
-                          >
-                            {item.icon}
-                          </div>
-                          <div className="text-darkBlack text-sm text-center font-medium">
-                            {item.label}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    {form.formState.errors.TypeObjekt && (
-                      <p className="text-red text-sm mt-1">
-                        {form.formState.errors.TypeObjekt.message}
-                      </p>
-                    )}
-                  </div>
+                  {/*
                   <div>
                     <FormField
                       control={form.control}
@@ -566,52 +383,6 @@ export const Husdetaljer: React.FC<{
                                               : "border-gray1"
                                           } `}
                                 type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="pris"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Pris fra
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Pris fra"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                inputMode="numeric"
-                                type="text"
-                                onChange={({ target: { value } }: any) =>
-                                  field.onChange({
-                                    target: {
-                                      name: "pris",
-                                      value: value.replace(/\D/g, "")
-                                        ? new Intl.NumberFormat("no-NO").format(
-                                            Number(value.replace(/\D/g, ""))
-                                          )
-                                        : "",
-                                    },
-                                  })
-                                }
                               />
                             </div>
                           </FormControl>
@@ -692,647 +463,7 @@ export const Husdetaljer: React.FC<{
                       )}
                     />
                   </div>
-                  <div className="border-t border-[#DCDFEA] w-full"></div>
-                  <div className="col-span-2">
-                    <p className={`text-black mb-[6px] text-sm font-medium`}>
-                      Andre bilder og 3D-visning
-                    </p>
-                    <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <FormField
-                          control={form.control}
-                          name="link_3D_image"
-                          render={({ field, fieldState }) => (
-                            <FormItem>
-                              <p
-                                className={`${
-                                  fieldState.error ? "text-red" : "text-black"
-                                } mb-[6px] text-sm font-medium`}
-                              >
-                                Link til 3D bilde
-                              </p>
-                              <FormControl>
-                                <div className="relative">
-                                  <Input
-                                    placeholder="Legg til 3D link fra Norkart"
-                                    {...field}
-                                    className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                    type="text"
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      <FormField
-                        control={form.control}
-                        name="photo"
-                        render={() => (
-                          <FormItem className="w-full">
-                            <FormControl>
-                              <div className="flex items-center gap-5 w-full">
-                                <div
-                                  className="relative w-full p-2 rounded-lg"
-                                  style={{
-                                    boxShadow:
-                                      "0px 2px 4px -2px #1018280F, 0px 4px 8px -2px #1018281A",
-                                  }}
-                                >
-                                  <div
-                                    className="border border-gray2 border-dashed rounded-lg px-3 laptop:px-[42px] py-4 flex justify-center items-start gap-6 cursor-pointer w-full"
-                                    onClick={handle3DClick}
-                                    onDrop={handle3DDrop}
-                                    onDrag={handle3DDragOver}
-                                  >
-                                    <img
-                                      src={Ic_upload_blue_img}
-                                      alt="upload"
-                                    />
-                                    <div className="flex items-start justify-start flex-col gap-3">
-                                      <div className="flex items-center gap-3">
-                                        <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[36px] py-2 px-4">
-                                          Bla gjennom
-                                        </span>
-                                        <p className="text-gray text-sm text-center truncate w-full">
-                                          Slipp filen her for å laste den opp
-                                        </p>
-                                      </div>
-                                      <p className="text-gray text-sm truncate w-full">
-                                        Filformater: Kun JPEG, JPG, PNG, maks 2
-                                        MB
-                                      </p>
-                                    </div>
-                                    <input
-                                      type="file"
-                                      ref={file3DInputRef}
-                                      className="hidden"
-                                      accept=".svg, .png, .jpg, .jpeg, .gif"
-                                      onChange={handle3DFileChange}
-                                      name="photo3D"
-                                      multiple
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    {upload3DPhoto && (
-                      <div className="mt-5 flex items-center gap-5 flex-wrap">
-                        {upload3DPhoto?.map((file: any, index: number) => (
-                          <div
-                            className="relative h-[140px] w-[140px]"
-                            key={index}
-                          >
-                            <img
-                              src={file}
-                              alt="logo"
-                              className="object-cover w-full h-full rounded-lg"
-                            />
-                            <div
-                              className="absolute bottom-2 right-2 bg-white rounded-full w-6 h-6 p-1 flex items-center justify-center cursor-pointer"
-                              onClick={() => {
-                                const updatedFiles = upload3DPhoto.filter(
-                                  (_: any, i: number) => i !== index
-                                );
-                                form.setValue("photo3D", updatedFiles);
-                              }}
-                            >
-                              <Trash2 className="text-red h-4 w-4" />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="BRATotal"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            BRA total (bruksareal)
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn BRA total (bruksareal)"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="PRom"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            GUA (Gulvareal)
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn GUA (Gulvareal)"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Mønehøyde"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Mønehøyde
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Mønehøyde"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="number"
-                                onChange={(e: any) =>
-                                  field.onChange(Number(e.target.value) || "")
-                                }
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Gesimshøyde"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Gesimshøyde
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Gesimshøyde"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="number"
-                                onChange={(e: any) =>
-                                  field.onChange(Number(e.target.value) || "")
-                                }
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Takvinkel"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Takvinkel
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Takvinkel"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="number"
-                                onChange={(e: any) =>
-                                  field.onChange(Number(e.target.value) || "")
-                                }
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="BebygdAreal"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Bebygd areal (BYA)
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Bebygd areal (BYA)"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="number"
-                                onChange={(e: any) =>
-                                  field.onChange(Number(e.target.value) || "")
-                                }
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Lengde"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Lengde
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Lengde"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Bredde"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Bredde
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Bredde"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Soverom"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Soverom
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Soverom"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="number"
-                                onChange={(e: any) =>
-                                  field.onChange(Number(e.target.value) || "")
-                                }
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Bad"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Bad
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Bad"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="number"
-                                onChange={(e: any) =>
-                                  field.onChange(Number(e.target.value) || "")
-                                }
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="InnvendigBod"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Innvendig bod
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Innvendig bod"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="number"
-                                onChange={(e: any) =>
-                                  field.onChange(Number(e.target.value) || "")
-                                }
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Energimerking"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Energimerking
-                          </p>
-                          <FormControl>
-                            <Select
-                              onValueChange={(value) => {
-                                field.onChange(value);
-                              }}
-                              value={field.value}
-                            >
-                              <SelectTrigger
-                                className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                              >
-                                <SelectValue placeholder="Enter Energimerking" />
-                              </SelectTrigger>
-                              <SelectContent className="bg-white">
-                                <SelectGroup>
-                                  <SelectItem value="A">A</SelectItem>
-                                  <SelectItem value="B">B</SelectItem>
-                                  <SelectItem value="C">C</SelectItem>
-                                  <SelectItem value="D">D</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="TilgjengeligBolig"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Tilgjengelig bolig
-                          </p>
-                          <FormControl>
-                            <Select
-                              onValueChange={(value) => {
-                                field.onChange(value);
-                              }}
-                              value={field.value}
-                            >
-                              <SelectTrigger
-                                className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                              >
-                                <SelectValue placeholder="Enter Tilgjengelig bolig" />
-                              </SelectTrigger>
-                              <SelectContent className="bg-white">
-                                <SelectGroup>
-                                  <SelectItem value="Ja">Ja</SelectItem>
-                                  <SelectItem value="Nei">Nei</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Tomtetype"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Tomtetype
-                          </p>
-                          <FormControl>
-                            <Select
-                              onValueChange={(value) => {
-                                field.onChange(value);
-                              }}
-                              value={field.value}
-                            >
-                              <SelectTrigger
-                                className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                              >
-                                <SelectValue placeholder="Enter Tomtetype" />
-                              </SelectTrigger>
-                              <SelectContent className="bg-white">
-                                <SelectGroup>
-                                  <SelectItem value="Flat tomt">Flat tomt</SelectItem>
-                                  <SelectItem value="Skrånet">
-                                    Skrånet
-                                  </SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="border-t border-[#DCDFEA] w-full col-span-2"></div> */}
+                  */}
                   <div className="col-span-2">
                     <p className={`text-black text-sm font-medium`}>
                       KundeInformation
@@ -1396,7 +527,54 @@ export const Husdetaljer: React.FC<{
                                               : "border-gray1"
                                           } `}
                                 type="text"
+                                ref={kartInputRef}
+                                onChange={handleKartInputChange}
+                                value={formData?.address}
                               />
+                              {formData?.address &&
+                                addressData &&
+                                addressData.length > 0 && (
+                                  <div
+                                    className="absolute top-[45px] left-0 bg-white rounded-[8px] w-full h-auto max-h-[200px] overflow-y-auto overFlowYAuto"
+                                    style={{
+                                      zIndex: 999,
+                                      boxShadow:
+                                        "rgba(16, 24, 40, 0.09) 0px 4px 6px -2px, rgba(16, 24, 40, 0.09) 0px 12px 16px -4px",
+                                    }}
+                                  >
+                                    {addressData &&
+                                      addressData?.map(
+                                        (address: any, index: number) => (
+                                          <div
+                                            className="p-2 desktop:p-3 flex items-center gap-2 hover:bg-lightPurple cursor-pointer"
+                                            key={index}
+                                            onClick={() => {
+                                              form.setValue(
+                                                "Anleggsadresse",
+                                                `${address.adressetekst} ${address.postnummer} ${address.poststed}`
+                                              );
+                                              setAddressData(null);
+                                              setFormData({
+                                                address: `${address.adressetekst} ${address.postnummer} ${address.poststed}`,
+                                              });
+                                            }}
+                                          >
+                                            <img
+                                              src={Ic_search_location}
+                                              alt="location"
+                                              className="w-6 h-6 md:w-auto md:h-auto"
+                                            />
+                                            <div>
+                                              <span className="text-black font-medium text-sm md:text-base">
+                                                {`${address.adressetekst}  ${address.postnummer} ${address.poststed}` ||
+                                                  "N/A"}
+                                              </span>
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                  </div>
+                                )}
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -1504,254 +682,8 @@ export const Husdetaljer: React.FC<{
                     />
                   </div>
                 </div>
-                {/* // )} */}
               </div>
-              <div className="rounded-lg overflow-hidden">
-                {/* <div
-                  className={`bg-white flex justify-between items-center w-full p-4 cursor-pointer duration-1000 ${
-                    isOpen ? "active" : ""
-                  }`}
-                  onClick={() => toggleAccordion("section2")}
-                >
-                  <span className="text-black text-lg font-medium">
-                    Husbeskrivelse og plantegninger
-                  </span>
-
-                  {isOpen.section1 ? (
-                    <ChevronUp className="text-purple" />
-                  ) : (
-                    <ChevronDown className="text-purple" />
-                  )}
-                </div>
-                {isOpen.section2 && ( */}
-                {/* <div className="grid grid-cols-2 gap-6 w-[100%] border-[#EFF1F5] border-t p-4">
-                  <div className="col-span-2">
-                    <FormField
-                      control={form.control}
-                      name="Hustittel"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Hustittel
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Hustittel"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <FormField
-                      control={form.control}
-                      name="OmHusmodellen"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Om husmodellen
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <TextArea
-                                placeholder="Skriv inn Om husmodellen"
-                                {...field}
-                                className={`h-[300px] bg-white rounded-[8px] border text-black
-                                  ${
-                                    fieldState?.error
-                                      ? "border-red"
-                                      : "border-gray1"
-                                  } `}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <FormField
-                      control={form.control}
-                      name="PlantegningerFasader"
-                      render={({ fieldState }) => (
-                        <FormItem className="w-full">
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Plantegninger og fasader
-                          </p>
-                          <FormControl>
-                            <div className="flex items-center gap-5 w-full">
-                              <div
-                                className="relative w-max p-2 rounded-lg"
-                                style={{
-                                  boxShadow:
-                                    "0px 2px 4px -2px #1018280F, 0px 4px 8px -2px #1018281A",
-                                }}
-                              >
-                                <div
-                                  className="border border-gray2 border-dashed rounded-lg px-3 laptop:px-[42px] py-4 flex justify-center items-center flex-col gap-3 cursor-pointer w-full"
-                                  onDragOver={
-                                    handlePlantegningerFasaderDragOver
-                                  }
-                                  onClick={handlePlantegningerFasaderClick}
-                                  onDrop={handlePlantegningerFasaderDrop}
-                                >
-                                  <p className="text-gray text-sm text-center truncate w-full">
-                                    <span className="text-primary font-medium truncate">
-                                      Bla gjennom
-                                    </span>{" "}
-                                    Slipp filen her for å laste den opp
-                                  </p>
-                                  <p className="text-gray text-sm text-center truncate w-full">
-                                    Filformater: Kun JPEG, JPG, PNG, maks 2 MB
-                                  </p>
-                                  <input
-                                    type="file"
-                                    ref={filePlantegningerFasaderPhotoInputRef}
-                                    className="hidden"
-                                    accept=".svg, .png, .jpg, .jpeg, .gif"
-                                    onChange={
-                                      handlePlantegningerFasaderFileChange
-                                    }
-                                    name="PlantegningerFasader"
-                                    multiple
-                                  />
-                                </div>
-                              </div>
-                              {uploadPlantegningerFasaderPhoto && (
-                                <div className="mt-5 flex items-center gap-5 flex-wrap">
-                                  {uploadPlantegningerFasaderPhoto?.map(
-                                    (file: any, index: number) => (
-                                      <div
-                                        className="relative h-[140px] w-[140px]"
-                                        key={index}
-                                      >
-                                        <img
-                                          src={file}
-                                          alt="logo"
-                                          className="object-cover w-full h-full rounded-lg"
-                                        />
-                                        <div
-                                          className="bg-white rounded-full w-6 h-6 flex items-center justify-center absolute bottom-2 right-2 cursor-pointer"
-                                          onClick={() => {
-                                            const updatedFiles =
-                                              uploadPlantegningerFasaderPhoto.filter(
-                                                (_: any, i: number) =>
-                                                  i !== index
-                                              );
-                                            form.setValue(
-                                              "PlantegningerFasader",
-                                              updatedFiles
-                                            );
-                                          }}
-                                        >
-                                          <Trash2 className="text-red w-4 h-4" />
-                                        </div>
-                                      </div>
-                                    )
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="TittelVideo"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Tittel på video
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Tittel på video"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="VideoLink"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm font-medium`}
-                          >
-                            Video link
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Video link"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div> */}
-                {/* )} */}
-              </div>
+              <div className="rounded-lg overflow-hidden"></div>
             </div>
           </div>
           <div className="flex justify-end w-full gap-5 items-center fixed bottom-0 bg-white z-50 border-t border-gray2 p-4 left-0">

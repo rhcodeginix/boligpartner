@@ -18,7 +18,10 @@ import { Brannvern } from "./Brannvern";
 import { TekniskeInstallasjoner } from "./TekniskeInstallasjoner";
 import { SluttføringDokumentasjon } from "./SluttføringDokumentasjon";
 
-export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
+export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
+  Next,
+  Prev,
+}) => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [invalidSteps, setInvalidSteps] = useState<number[]>([]);
 
@@ -81,6 +84,7 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
             formRefs.current[1] = ref;
           }}
           handleNext={handleNext}
+          Prev={Prev}
         />
       ),
     },
