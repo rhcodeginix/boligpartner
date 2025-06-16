@@ -35,6 +35,14 @@ export const Husmodeller = () => {
     fetchHusmodellData();
   }, []);
 
+  const [imageLoaded, setImageLoaded] = useState<{ [key: number]: boolean }>(
+    {}
+  );
+
+  const handleImageLoad = (index: number) => {
+    setImageLoaded((prev) => ({ ...prev, [index]: true }));
+  };
+
   return (
     <>
       {isLoading && <Spinner />}
@@ -59,9 +67,11 @@ export const Husmodeller = () => {
         {houseModels &&
           houseModels.length > 0 &&
           houseModels?.map((item: any, index: number) => {
+            const loaded = imageLoaded[index];
+
             return (
               <div key={index}>
-                <div className="w-full h-[243px] mb-4">
+                {/* <div className="w-full h-[243px] mb-4">
                   {item?.Husdetaljer?.photo ? (
                     <img
                       src={item?.Husdetaljer?.photo}
@@ -71,37 +81,29 @@ export const Husmodeller = () => {
                   ) : (
                     <div className="w-full h-full bg-[#6670853b] rounded-lg"></div>
                   )}
+                </div> */}
+                <div className="w-full h-[243px] mb-4 relative">
+                  {!loaded && (
+                    <div
+                      className="w-full h-full rounded-md custom-shimmer"
+                      style={{ borderRadius: "8px" }}
+                    ></div>
+                  )}
+                  {item?.Husdetaljer?.photo && (
+                    <img
+                      src={item?.Husdetaljer?.photo}
+                      alt="house"
+                      className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
+                        loaded ? "opacity-100" : "opacity-0"
+                      }`}
+                      onLoad={() => handleImageLoad(index)}
+                      onError={() => handleImageLoad(index)}
+                      loading="lazy"
+                    />
+                  )}
                 </div>
 
-                {/* <div className="flex items-center gap-4 mb-3">
-                  <div className="text-secondary text-sm">
-                    <span className="text-black font-semibold">
-                      {item?.Husdetaljer?.BRATotal}
-                    </span>{" "}
-                    m<sup>2</sup>
-                  </div>
-                  <div className="h-[12px] w-[1px] border-l border-[#DCDFEA]"></div>
-                  <div className="text-secondary text-sm">
-                    <span className="text-black font-semibold">
-                      {item?.Husdetaljer?.Soverom}
-                    </span>{" "}
-                    soverom
-                  </div>
-                  <div className="h-[12px] w-[1px] border-l border-[#DCDFEA]"></div>
-                  <div className="text-secondary text-sm">
-                    <span className="text-black font-semibold">
-                      {item?.Husdetaljer?.Bad}
-                    </span>{" "}
-                    bad
-                  </div>
-                </div> */}
                 <div className="flex items-center gap-2 justify-between">
-                  {/* <div className="flex flex-col gap-1">
-                    <p className="text-secondary text-sm">Pris fra</p>
-                    <h5 className="text-black text-base font-semibold">
-                      {item?.Husdetaljer?.pris}
-                    </h5>
-                  </div> */}
                   <h4 className="text-darkBlack font-medium">
                     {item?.Husdetaljer?.husmodell_name}
                   </h4>
