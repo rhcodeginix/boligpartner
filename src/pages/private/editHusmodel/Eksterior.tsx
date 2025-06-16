@@ -61,6 +61,11 @@ const categorySchema = z.discriminatedUnion("productOptions", [
   }),
   z.object({
     navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
+    productOptions: z.literal("Single Select"),
+    produkter: z.array(productSchema).min(1, "Minst ett produkt er påkrevd."),
+  }),
+  z.object({
+    navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
     productOptions: z.literal("Text"),
     text: z.string().min(1, "Kommentar er påkrevd."),
   }),
@@ -650,16 +655,16 @@ export const Eksterior: React.FC<{
                   ) : (
                     <div className="grid grid-cols-2 gap-2">
                       {produkter?.map((product, index) => {
-                        // const isSelected = product?.isSelected;
+                        const isSelected = product?.isSelected;
 
                         return (
                           <div
                             // className="cursor-move border-[#EFF1F5] border rounded-lg"
-                            // className={`cursor-pointer border rounded-lg ${
-                            //   isSelected
-                            //     ? "border-2 border-purple bg-lightPurple bg-opacity-10"
-                            //     : "border-[#EFF1F5]"
-                            // }`}
+                            className={`cursor-pointer border rounded-lg ${
+                              isSelected
+                                ? "border-2 border-purple bg-lightPurple bg-opacity-10"
+                                : "border-[#EFF1F5]"
+                            }`}
                             key={index}
                             draggable
                             onDragStart={() => setDraggingProductIndex(index)}
@@ -668,21 +673,38 @@ export const Eksterior: React.FC<{
                               setDragOverProductIndex(index);
                             }}
                             onDrop={() => handleDrop()}
-                            // onClick={() => {
-                            //   const updatedProducts = produkter.map(
-                            //     (p: any, i: number) => ({
-                            //       ...p,
-                            //       isSelected:
-                            //         i === index ? !p.isSelected : p.isSelected,
-                            //     })
-                            //   );
+                            onClick={() => {
+                              const productOptions = form.getValues(
+                                `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
+                              );
 
-                            //   form.setValue(
-                            //     `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
-                            //     updatedProducts,
-                            //     { shouldValidate: true }
-                            //   );
-                            // }}
+                              let updatedProducts;
+
+                              if (productOptions === "Single Select") {
+                                updatedProducts = produkter.map(
+                                  (p: any, i: number) => ({
+                                    ...p,
+                                    isSelected: i === index,
+                                  })
+                                );
+                              } else {
+                                updatedProducts = produkter.map(
+                                  (p: any, i: number) => ({
+                                    ...p,
+                                    isSelected:
+                                      i === index
+                                        ? !p.isSelected
+                                        : p.isSelected,
+                                  })
+                                );
+                              }
+
+                              form.setValue(
+                                `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
+                                updatedProducts,
+                                { shouldValidate: true }
+                              );
+                            }}
                           >
                             <div className="flex gap-4 p-3">
                               {product?.Hovedbilde?.[0] && (
