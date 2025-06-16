@@ -89,6 +89,12 @@ export const Eksterior: React.FC<{
 }> = ({ setActiveTab, labelName, Category, activeTabData, setCategory }) => {
   const [activeSubTabData, setActiveSubTabData] = useState(0);
 
+  useEffect(() => {
+    if (activeTabData) {
+      setActiveSubTabData(0);
+    }
+  }, [activeTabData]);
+
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id: any = pathSegments.length > 2 ? pathSegments[2] : null;
@@ -603,7 +609,7 @@ export const Eksterior: React.FC<{
                     </h4>
                     {form.watch(
                       `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
-                    ) === "Multi Select" && (
+                    ) !== "Text" && (
                       <div
                         className="text-purple border-2 border-purple rounded-[40px] py-2 px-4 font-semibold text-base flex items-center gap-1 cursor-pointer h-full"
                         onClick={() => {

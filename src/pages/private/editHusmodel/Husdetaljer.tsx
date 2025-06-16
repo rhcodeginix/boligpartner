@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -28,8 +28,8 @@ import { db } from "../../../config/firebaseConfig";
 // import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
-import { fetchHusmodellData, phoneNumberValidations } from "../../../lib/utils";
-import { Spinner } from "../../../components/Spinner";
+import { phoneNumberValidations } from "../../../lib/utils";
+// import { Spinner } from "../../../components/Spinner";
 // import {
 //   // ChevronDown,
 //   // ChevronUp,
@@ -199,27 +199,27 @@ export const Husdetaljer: React.FC<{
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!id) {
-      setLoading(false);
-      return;
-    }
-    const getData = async () => {
-      const data = await fetchHusmodellData(id);
-      if (data && data.Husdetaljer) {
-        Object.entries(data.Husdetaljer).forEach(([key, value]) => {
-          if (value !== undefined && value !== null) {
-            form.setValue(key as any, value);
-          }
-        });
-      }
-      setLoading(false);
-    };
+  // useEffect(() => {
+  //   if (!id) {
+  //     setLoading(false);
+  //     return;
+  //   }
+  //   const getData = async () => {
+  //     const data = await fetchHusmodellData(id);
+  //     if (data && data.Husdetaljer) {
+  //       Object.entries(data.Husdetaljer).forEach(([key, value]) => {
+  //         if (value !== undefined && value !== null) {
+  //           form.setValue(key as any, value);
+  //         }
+  //       });
+  //     }
+  //     setLoading(false);
+  //   };
 
-    getData();
-  }, [form, id]);
+  //   getData();
+  // }, [form, id]);
 
   const navigate = useNavigate();
   // const fileInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -1767,7 +1767,7 @@ export const Husdetaljer: React.FC<{
               type="submit"
             />
           </div>
-          {loading && <Spinner />}
+          {/* {loading && <Spinner />} */}
         </form>
       </Form>
     </>

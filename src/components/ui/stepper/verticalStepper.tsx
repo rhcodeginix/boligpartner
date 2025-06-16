@@ -22,9 +22,9 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
   setCurrentStep,
 }) => {
   const handleStepClick = (stepId: number) => {
-    if (stepId < currentStep) {
-      setCurrentStep(stepId);
-    }
+    // if (stepId < currentStep) {
+    setCurrentStep(stepId);
+    // }
     localStorage.setItem("currVerticalIndex", stepId.toString());
   };
 
@@ -47,9 +47,10 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
 
                 <div
                   onClick={() => handleStepClick(step.id)}
-                  className={`flex items-start space-x-4 rounded-lg transition-all ${
-                    step.id < currentStep ? "cursor-pointer" : "cursor-default"
-                  } relative z-40`}
+                  // className={`flex items-start space-x-4 rounded-lg transition-all ${
+                  //   step.id < currentStep ? "cursor-pointer" : "cursor-default"
+                  // } relative z-40`}
+                  className={`flex items-start space-x-4 rounded-lg transition-all cursor-pointer relative z-40`}
                 >
                   <div
                     className={`w-6 h-6 flex items-center text-xs rounded-full justify-center ${
