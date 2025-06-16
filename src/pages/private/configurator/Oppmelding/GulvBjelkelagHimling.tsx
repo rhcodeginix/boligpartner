@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../components/ui/select";
+import { forwardRef, useImperativeHandle } from "react";
 
 const formSchema = z.object({
   BjelkelagForsterkesFølgende: z.string().optional(),
@@ -39,520 +40,531 @@ const formSchema = z.object({
   LydhimlingDetalj: z.boolean().optional(),
 });
 
-export const GulvBjelkelagHimling: React.FC<{
-  handleNext: any;
-  handlePrevious: any;
-}> = ({ handleNext, handlePrevious }) => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
+export const GulvBjelkelagHimling = forwardRef(
+  (
+    {
+      handleNext,
+      handlePrevious,
+    }: { handleNext: () => void; handlePrevious: () => void },
+    ref
+  ) => {
+    const form = useForm<z.infer<typeof formSchema>>({
+      resolver: zodResolver(formSchema),
+    });
+    useImperativeHandle(ref, () => ({
+      validateForm: async () => {
+        const valid = await form.trigger();
+        return valid;
+      },
+    }));
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
-    handleNext();
-    localStorage.setItem("currVerticalIndex", String(5));
-  };
-  const Thermogulv = form.watch("Thermogulv");
-  const ThermogulvEkstra = form.watch("ThermogulvEkstra");
+    const onSubmit = async (data: z.infer<typeof formSchema>) => {
+      console.log(data);
+      handleNext();
+      localStorage.setItem("currVerticalIndex", String(5));
+    };
+    const Thermogulv = form.watch("Thermogulv");
+    const ThermogulvEkstra = form.watch("ThermogulvEkstra");
 
-  return (
-    <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
-          <div className="border border-[#B9C0D4] rounded-lg">
-            <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4]">
-              Gulv, bjelkelag og himling
-            </div>
-            <div className="p-4 md:p-5">
-              <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
-                <div>
-                  <FormField
-                    control={form.control}
-                    name="BjelkelagForsterkesFølgende"
-                    render={({ field, fieldState }) => (
-                      <FormItem>
-                        <p
-                          className={`${
-                            fieldState.error ? "text-red" : "text-black"
-                          } mb-[6px] text-sm`}
-                        >
-                          Bjelkelag forsterkes for påstøp i følgende rom
-                        </p>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder="Skriv her"
-                              {...field}
-                              className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                              type="text"
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div>
-                  <FormField
-                    control={form.control}
-                    name="DetaljnummerPåstøp"
-                    render={({ field, fieldState }) => (
-                      <FormItem>
-                        <p
-                          className={`${
-                            fieldState.error ? "text-red" : "text-black"
-                          } mb-[6px] text-sm`}
-                        >
-                          Detaljnummer (påstøp)
-                        </p>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder="Skriv detaljnummer"
-                              {...field}
-                              className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                              type="number"
-                              onChange={(e: any) =>
-                                field.onChange(Number(e.target.value) || "")
-                              }
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div>
-                  <FormField
-                    control={form.control}
-                    name="IkkeRelevantTiltak"
-                    render={({ field }) => (
-                      <FormItem>
-                        <p
-                          className={`text-sm flex gap-2 items-baseline ${
-                            field.value ? "text-black" : "text-black"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            id="IkkeRelevantTiltak"
-                            checked={field.value || false}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                          Ikke relevant for dette tiltak
-                        </p>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div>
-                  <FormField
-                    control={form.control}
-                    name="StandardUtførelse"
-                    render={({ field }) => (
-                      <FormItem>
-                        <p
-                          className={`text-sm flex gap-2 items-baseline ${
-                            field.value ? "text-black" : "text-black"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            id="StandardUtførelse"
-                            checked={field.value || false}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                          Standard utførelse
-                        </p>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div>
-                  <FormField
-                    control={form.control}
-                    name="RomskjemaOverflateskjema"
-                    render={({ field }) => (
-                      <FormItem>
-                        <p
-                          className={`text-sm flex gap-2 items-baseline ${
-                            field.value ? "text-black" : "text-black"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            id="RomskjemaOverflateskjema"
-                            checked={field.value || false}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                          Se romskjema/overflateskjema
-                        </p>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div>
-                  <FormField
-                    control={form.control}
-                    name="LydgulvDetaljNr"
-                    render={({ field }) => (
-                      <FormItem>
-                        <p
-                          className={`text-sm flex gap-2 items-baseline ${
-                            field.value ? "text-black" : "text-black"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            id="LydgulvDetaljNr"
-                            checked={field.value || false}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                          Lydgulv iht. detalj nr. 1431
-                        </p>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div>
-                  <FormField
-                    control={form.control}
-                    name="Thermogulv"
-                    render={({ field }) => (
-                      <FormItem>
-                        <p
-                          className={`mb-[6px] text-sm flex gap-2 items-baseline ${
-                            field.value ? "text-black" : "text-black"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            id="Thermogulv"
-                            checked={field.value || false}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                          Thermogulv «Standard» 22x620x1820mm
-                        </p>
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="ThermogulvText"
-                    render={({ field, fieldState }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="relative">
-                            <Select
-                              onValueChange={(value) => {
-                                field.onChange(value);
-                              }}
-                              value={field.value}
-                              disabled={Thermogulv}
-                            >
-                              <SelectTrigger
+    return (
+      <>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
+            <div className="border border-[#B9C0D4] rounded-lg">
+              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4]">
+                Gulv, bjelkelag og himling
+              </div>
+              <div className="p-4 md:p-5">
+                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="BjelkelagForsterkesFølgende"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Bjelkelag forsterkes for påstøp i følgende rom
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv her"
+                                {...field}
                                 className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="DetaljnummerPåstøp"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Detaljnummer (påstøp)
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv detaljnummer"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="number"
+                                onChange={(e: any) =>
+                                  field.onChange(Number(e.target.value) || "")
+                                }
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="IkkeRelevantTiltak"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="IkkeRelevantTiltak"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Ikke relevant for dette tiltak
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="StandardUtførelse"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="StandardUtførelse"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Standard utførelse
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="RomskjemaOverflateskjema"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="RomskjemaOverflateskjema"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Se romskjema/overflateskjema
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="LydgulvDetaljNr"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="LydgulvDetaljNr"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Lydgulv iht. detalj nr. 1431
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="Thermogulv"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`mb-[6px] text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="Thermogulv"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Thermogulv «Standard» 22x620x1820mm
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="ThermogulvText"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <Select
+                                onValueChange={(value) => {
+                                  field.onChange(value);
+                                }}
+                                value={field.value}
+                                disabled={Thermogulv}
+                              >
+                                <SelectTrigger
+                                  className={`bg-white rounded-[8px] border text-black
                               ${
                                 fieldState?.error
                                   ? "border-red"
                                   : "border-gray1"
                               } `}
-                              >
-                                <SelectValue placeholder="Velg tykkelse" />
-                              </SelectTrigger>
-                              <SelectContent className="bg-white">
-                                <SelectGroup>
-                                  <SelectItem value="Abc">Abc</SelectItem>
-                                  <SelectItem value="Xyz">Xyz</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div>
-                  <FormField
-                    control={form.control}
-                    name="ThermogulvEkstra"
-                    render={({ field }) => (
-                      <FormItem>
-                        <p
-                          className={`mb-[6px] text-sm flex gap-2 items-baseline ${
-                            field.value ? "text-black" : "text-black"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            id="ThermogulvEkstra"
-                            checked={field.value || false}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                          Thermogulv «Ekstra» 25 mm
-                        </p>
-                      </FormItem>
-                    )}
-                  />
+                                >
+                                  <SelectValue placeholder="Velg tykkelse" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white">
+                                  <SelectGroup>
+                                    <SelectItem value="Abc">Abc</SelectItem>
+                                    <SelectItem value="Xyz">Xyz</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="ThermogulvEkstra"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`mb-[6px] text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="ThermogulvEkstra"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Thermogulv «Ekstra» 25 mm
+                          </p>
+                        </FormItem>
+                      )}
+                    />
 
-                  <FormField
-                    control={form.control}
-                    name="ThermogulvEkstraText"
-                    render={({ field, fieldState }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="relative">
-                            <Select
-                              onValueChange={(value) => {
-                                field.onChange(value);
-                              }}
-                              value={field.value}
-                              disabled={ThermogulvEkstra}
-                            >
-                              <SelectTrigger
-                                className={`bg-white rounded-[8px] border text-black
+                    <FormField
+                      control={form.control}
+                      name="ThermogulvEkstraText"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <Select
+                                onValueChange={(value) => {
+                                  field.onChange(value);
+                                }}
+                                value={field.value}
+                                disabled={ThermogulvEkstra}
+                              >
+                                <SelectTrigger
+                                  className={`bg-white rounded-[8px] border text-black
                               ${
                                 fieldState?.error
                                   ? "border-red"
                                   : "border-gray1"
                               } `}
-                              >
-                                <SelectValue placeholder="Velg tykkelse" />
-                              </SelectTrigger>
-                              <SelectContent className="bg-white">
-                                <SelectGroup>
-                                  <SelectItem value="Abc">Abc</SelectItem>
-                                  <SelectItem value="Xyz">Xyz</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div>
-                  <FormField
-                    control={form.control}
-                    name="LoftSkalInnredes"
-                    render={({ field }) => (
-                      <FormItem>
-                        <p
-                          className={`text-sm flex gap-2 items-baseline ${
-                            field.value ? "text-black" : "text-black"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            id="LoftSkalInnredes"
-                            checked={field.value || false}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                          Loft skal innredes
-                        </p>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div>
-                  <FormField
-                    control={form.control}
-                    name="GulvplaterEkstra"
-                    render={({ field }) => (
-                      <FormItem>
-                        <p
-                          className={`text-sm flex gap-2 items-baseline ${
-                            field.value ? "text-black" : "text-black"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            id="GulvplaterEkstra"
-                            checked={field.value || false}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                          Gulvplater «Ekstra» 22 mm
-                        </p>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div>
-                  <FormField
-                    control={form.control}
-                    name="AltGulv"
-                    render={({ field, fieldState }) => (
-                      <FormItem>
-                        <p
-                          className={`${
-                            fieldState.error ? "text-red" : "text-black"
-                          } mb-[6px] text-sm`}
-                        >
-                          Alt (gulv)
-                        </p>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder="Skriv her"
-                              {...field}
-                              className={`bg-white rounded-[8px] border text-black
+                                >
+                                  <SelectValue placeholder="Velg tykkelse" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white">
+                                  <SelectGroup>
+                                    <SelectItem value="Abc">Abc</SelectItem>
+                                    <SelectItem value="Xyz">Xyz</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="LoftSkalInnredes"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="LoftSkalInnredes"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Loft skal innredes
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="GulvplaterEkstra"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="GulvplaterEkstra"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Gulvplater «Ekstra» 22 mm
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="AltGulv"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Alt (gulv)
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv her"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
                                           ${
                                             fieldState?.error
                                               ? "border-red"
                                               : "border-gray1"
                                           } `}
-                              type="text"
+                                type="text"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="HimlingStandard"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="HimlingStandard"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
                             />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div>
-                  <FormField
-                    control={form.control}
-                    name="HimlingStandard"
-                    render={({ field }) => (
-                      <FormItem>
-                        <p
-                          className={`text-sm flex gap-2 items-baseline ${
-                            field.value ? "text-black" : "text-black"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            id="HimlingStandard"
-                            checked={field.value || false}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                          Himling standard (ubehandlet gips)
-                        </p>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div>
-                  <FormField
-                    control={form.control}
-                    name="RomskjemaOverflateskjemaHimling"
-                    render={({ field }) => (
-                      <FormItem>
-                        <p
-                          className={`text-sm flex gap-2 items-baseline ${
-                            field.value ? "text-black" : "text-black"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            id="RomskjemaOverflateskjemaHimling"
-                            checked={field.value || false}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                          Se romskjema/overflateskjema (himling)
-                        </p>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div>
-                  <FormField
-                    control={form.control}
-                    name={`HimlingDatert`}
-                    render={({ field, fieldState }: any) => (
-                      <FormItem>
-                        <p
-                          className={`${
-                            fieldState.error ? "text-red" : ""
-                          } mb-[6px] text-sm`}
-                        >
-                          Himling datert
-                        </p>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder="Velg dato"
-                              {...field}
-                              className={`bg-white rounded-[8px] border text-black
+                            Himling standard (ubehandlet gips)
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="RomskjemaOverflateskjemaHimling"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="RomskjemaOverflateskjemaHimling"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Se romskjema/overflateskjema (himling)
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name={`HimlingDatert`}
+                      render={({ field, fieldState }: any) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : ""
+                            } mb-[6px] text-sm`}
+                          >
+                            Himling datert
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Velg dato"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
                                           ${
                                             fieldState?.error
                                               ? "border-red"
                                               : "border-gray1"
                                           } `}
-                              type="date"
+                                type="date"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="LydhimlingDetalj"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="LydhimlingDetalj"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
                             />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div>
-                  <FormField
-                    control={form.control}
-                    name="LydhimlingDetalj"
-                    render={({ field }) => (
-                      <FormItem>
-                        <p
-                          className={`text-sm flex gap-2 items-baseline ${
-                            field.value ? "text-black" : "text-black"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            id="LydhimlingDetalj"
-                            checked={field.value || false}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                          Lydhimling iht. detalj 1431
-                        </p>
-                      </FormItem>
-                    )}
-                  />
+                            Lydhimling iht. detalj 1431
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex justify-end w-full gap-5 items-center sticky bottom-0 bg-white z-50 border-t border-[#B9C0D4] rounded-b-lg p-4">
-              <div
-                onClick={() => {
-                  form.reset();
-                  handlePrevious();
-                  localStorage.setItem("currVerticalIndex", String(3));
-                }}
-              >
+              <div className="flex justify-end w-full gap-5 items-center sticky bottom-0 bg-white z-50 border-t border-[#B9C0D4] rounded-b-lg p-4">
+                <div
+                  onClick={() => {
+                    form.reset();
+                    handlePrevious();
+                    localStorage.setItem("currVerticalIndex", String(3));
+                  }}
+                >
+                  <Button
+                    text="Tilbake"
+                    className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  />
+                </div>
                 <Button
-                  text="Tilbake"
-                  className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  text="Neste"
+                  className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  type="submit"
                 />
               </div>
-              <Button
-                text="Neste"
-                className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
-                type="submit"
-              />
             </div>
-          </div>
-        </form>
-      </Form>
-    </>
-  );
-};
+          </form>
+        </Form>
+      </>
+    );
+  }
+);

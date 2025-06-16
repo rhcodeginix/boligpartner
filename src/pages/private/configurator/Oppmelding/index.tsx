@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import VerticalWizard from "../../../../components/ui/stepper/verticalStepper";
 import { Prosjektdetaljer } from "./Prosjektdetaljer";
 import { Leveransedetaljer } from "./Leveransedetaljer";
@@ -20,6 +20,7 @@ import { SluttføringDokumentasjon } from "./SluttføringDokumentasjon";
 
 export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
   const [currentStep, setCurrentStep] = useState<number>(1);
+  const [invalidSteps, setInvalidSteps] = useState<number[]>([]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -31,31 +32,66 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
       }
     }
   }, [currentStep]);
-  const handleNext = () => {
+  // const handleNext = () => {
+  //   if (currentStep < wizardSteps.length) {
+  //     const nextStep = currentStep + 1;
+
+  //     setCurrentStep(nextStep);
+  //   }
+  // };
+
+  const handleNext = async () => {
+    const currentStepComponent = wizardSteps[currentStep - 1]?.content;
+
+    if (typeof currentStepComponent?.props?.validateForm === "function") {
+      const isValid = await currentStepComponent.props.validateForm();
+      if (!isValid) {
+        if (!invalidSteps.includes(currentStep)) {
+          setInvalidSteps([...invalidSteps, currentStep]);
+        }
+        return;
+      } else {
+        // Remove from invalidSteps if it was previously marked invalid
+        setInvalidSteps(invalidSteps.filter((id) => id !== currentStep));
+      }
+    }
+
     if (currentStep < wizardSteps.length) {
       const nextStep = currentStep + 1;
-
       setCurrentStep(nextStep);
     }
   };
+
   const handlePrevious = () => {
     if (currentStep > 1) {
       const prevStep = currentStep - 1;
       setCurrentStep(prevStep);
     }
   };
+  const formRefs = useRef<Record<number, any>>({});
 
   const wizardSteps = [
     {
       id: 1,
       title: "Prosjektdetaljer",
-      content: <Prosjektdetaljer handleNext={handleNext} />,
+      content: (
+        <Prosjektdetaljer
+          // ref={(ref) => (formRefs.current[1] = ref)}
+          ref={(ref: any): void => {
+            formRefs.current[1] = ref;
+          }}
+          handleNext={handleNext}
+        />
+      ),
     },
     {
       id: 2,
       title: "Leveransedetaljer",
       content: (
         <Leveransedetaljer
+          ref={(ref: any): void => {
+            formRefs.current[2] = ref;
+          }}
           handleNext={handleNext}
           handlePrevious={handlePrevious}
         />
@@ -68,6 +104,9 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
         <GrunnerOgSkorstein
           handleNext={handleNext}
           handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[3] = ref;
+          }}
         />
       ),
     },
@@ -78,6 +117,9 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
         <GulvBjelkelagHimling
           handleNext={handleNext}
           handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[4] = ref;
+          }}
         />
       ),
     },
@@ -85,14 +127,26 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
       id: 5,
       title: "Yttervegger",
       content: (
-        <Yttervegger handleNext={handleNext} handlePrevious={handlePrevious} />
+        <Yttervegger
+          handleNext={handleNext}
+          handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[5] = ref;
+          }}
+        />
       ),
     },
     {
       id: 6,
       title: "Innervegger",
       content: (
-        <Innervegger handleNext={handleNext} handlePrevious={handlePrevious} />
+        <Innervegger
+          handleNext={handleNext}
+          handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[6] = ref;
+          }}
+        />
       ),
     },
     {
@@ -102,6 +156,9 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
         <TakogTaktekking
           handleNext={handleNext}
           handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[7] = ref;
+          }}
         />
       ),
     },
@@ -109,14 +166,26 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
       id: 8,
       title: "Dører",
       content: (
-        <Dører handleNext={handleNext} handlePrevious={handlePrevious} />
+        <Dører
+          handleNext={handleNext}
+          handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[8] = ref;
+          }}
+        />
       ),
     },
     {
       id: 9,
       title: "Vinduer",
       content: (
-        <Vinduer handleNext={handleNext} handlePrevious={handlePrevious} />
+        <Vinduer
+          handleNext={handleNext}
+          handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[9] = ref;
+          }}
+        />
       ),
     },
     {
@@ -126,6 +195,9 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
         <KjøkkenGarderobeBad
           handleNext={handleNext}
           handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[10] = ref;
+          }}
         />
       ),
     },
@@ -133,7 +205,13 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
       id: 11,
       title: "Trapp og Luker",
       content: (
-        <TrappogLuker handleNext={handleNext} handlePrevious={handlePrevious} />
+        <TrappogLuker
+          handleNext={handleNext}
+          handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[11] = ref;
+          }}
+        />
       ),
     },
     {
@@ -143,6 +221,9 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
         <BalkongTerrasse
           handleNext={handleNext}
           handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[12] = ref;
+          }}
         />
       ),
     },
@@ -153,6 +234,9 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
         <ListverkogBelistning
           handleNext={handleNext}
           handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[13] = ref;
+          }}
         />
       ),
     },
@@ -163,6 +247,9 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
         <VentilasjonSentralstøvsuger
           handleNext={handleNext}
           handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[14] = ref;
+          }}
         />
       ),
     },
@@ -170,7 +257,13 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
       id: 15,
       title: "Brannvern",
       content: (
-        <Brannvern handleNext={handleNext} handlePrevious={handlePrevious} />
+        <Brannvern
+          handleNext={handleNext}
+          handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[15] = ref;
+          }}
+        />
       ),
     },
     {
@@ -180,6 +273,9 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
         <TekniskeInstallasjoner
           handleNext={handleNext}
           handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[16] = ref;
+          }}
         />
       ),
     },
@@ -187,7 +283,13 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
       id: 17,
       title: "Sluttføring og Dokumentasjon",
       content: (
-        <SluttføringDokumentasjon handlePrevious={handlePrevious} Next={Next} />
+        <SluttføringDokumentasjon
+          handlePrevious={handlePrevious}
+          Next={Next}
+          ref={(ref: any): void => {
+            formRefs.current[17] = ref;
+          }}
+        />
       ),
     },
   ];
@@ -208,6 +310,9 @@ export const Oppmelding: React.FC<{ Next: any }> = ({ Next }) => {
           steps={wizardSteps}
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
+          invalidSteps={invalidSteps}
+          formRefs={formRefs}
+          setInvalidSteps={setInvalidSteps}
         />
       </div>
     </>
