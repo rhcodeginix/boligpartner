@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Button from "../../../components/common/button";
+// import Button from "../../../components/common/button";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { Spinner } from "../../../components/Spinner";
@@ -49,11 +49,11 @@ export const Husmodeller = () => {
             ønsket seier
           </p>
         </div>
-        <Button
+        {/* <Button
           text="Lag ny serie"
           className="border border-purple bg-purple text-white text-base rounded-[40px] h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
           path="/add-husmodell"
-        />
+        /> */}
       </div>
       <div className="p-8 grid grid-cols-4 gap-x-6 gap-y-[40px]">
         {houseModels &&
@@ -103,7 +103,7 @@ export const Husmodeller = () => {
                     </h5>
                   </div> */}
                   <h4 className="text-darkBlack font-medium">
-                    {item?.Husdetaljer?.Hustittel}
+                    {item?.Husdetaljer?.husmodell_name}
                   </h4>
                   <div
                     className="border-purple border-2 rounded-[40px] py-2 px-5 text-purple font-medium h-[40px] flex items-center justify-center cursor-pointer"

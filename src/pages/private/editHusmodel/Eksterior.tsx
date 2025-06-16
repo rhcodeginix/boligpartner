@@ -26,21 +26,45 @@ const fileSchema = z.union([
   z.string(),
 ]);
 
+// const productSchema = z.object({
+//   Produktnavn: z.string().min(1, "Produktnavn må bestå av minst 1 tegn."),
+//   delieverBy: z.string().min(1, "Lever innen må bestå av minst 1 tegn."),
+//   Hovedbilde: z.array(fileSchema).min(1, "Minst én fil må lastes opp."),
+//   pris: z.string().nullable(),
+//   IncludingOffer: z.boolean().optional(),
+//   Produktbeskrivelse: z
+//     .string()
+//     .min(1, "Produktbeskrivelse må bestå av minst 1 tegn."),
+//   isSelected: z.boolean().optional(),
+// });
+
 const productSchema = z.object({
-  Produktnavn: z.string().min(1, "Produktnavn må bestå av minst 1 tegn."),
-  delieverBy: z.string().min(1, "Lever innen må bestå av minst 1 tegn."),
-  Hovedbilde: z.array(fileSchema).min(1, "Minst én fil må lastes opp."),
-  pris: z.string().nullable(),
+  Produktnavn: z.string().optional(),
+  delieverBy: z.string().optional(),
+  Hovedbilde: z.array(fileSchema).optional(),
+  pris: z.string().nullable().optional(),
   IncludingOffer: z.boolean().optional(),
-  Produktbeskrivelse: z
-    .string()
-    .min(1, "Produktbeskrivelse må bestå av minst 1 tegn."),
+  Produktbeskrivelse: z.string().optional(),
+  isSelected: z.boolean().optional(),
 });
 
-const categorySchema = z.object({
-  navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
-  produkter: z.array(productSchema).min(1, "Minst ett produkt er påkrevd."),
-});
+// const categorySchema = z.object({
+//   navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
+//   productOptions: z.string({ required_error: "Required" }),
+//   produkter: z.array(productSchema).min(1, "Minst ett produkt er påkrevd."),
+// });
+const categorySchema = z.discriminatedUnion("productOptions", [
+  z.object({
+    navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
+    productOptions: z.literal("Multi Select"),
+    produkter: z.array(productSchema).min(1, "Minst ett produkt er påkrevd."),
+  }),
+  z.object({
+    navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
+    productOptions: z.literal("Text"),
+    text: z.string().min(1, "Kommentar er påkrevd."),
+  }),
+]);
 const mainCategorySchema = z.object({
   name: z.string().min(1, "Hovedkategorinavn må bestå av minst 1 tegn."),
   Kategorinavn: z.array(categorySchema).optional().nullable(),
@@ -214,21 +238,115 @@ export const Eksterior: React.FC<{
   //   form.setValue("hovedkategorinavn", Category);
   // }, [form, Category]);
 
+  // useEffect(() => {
+  //   if (Array.isArray(Category) && Category.length > 0) {
+  //     const formatted = Category.map((cat: any, index: number) => ({
+  //       name: cat.name,
+  //       Kategorinavn:
+  //         index === activeTabData
+  //           ? cat.Kategorinavn && cat.Kategorinavn.length > 0
+  //             ? cat.Kategorinavn
+  //             : null
+  //           : null,
+  //     }));
+
+  //     form.setValue("hovedkategorinavn", formatted);
+  //   }
+  // }, [form, Category, activeTabData]);
+
   useEffect(() => {
     if (Array.isArray(Category) && Category.length > 0) {
-      const formatted = Category.map((cat: any, index: number) => ({
-        name: cat.name,
-        Kategorinavn:
-          index === activeTabData
-            ? cat.Kategorinavn && cat.Kategorinavn.length > 0
-              ? cat.Kategorinavn
-              : null
-            : null,
-      }));
+      const requiredCategoriesWithProducts = {
+        Himlling: [
+          {
+            Produktnavn: "I henhold til leveransebeskrivelse",
+          },
+          {
+            Produktnavn: "Mdf panel",
+          },
+          {
+            Produktnavn: "Takplate 60x120",
+          },
+          {
+            Produktnavn: "Eget valg",
+          },
+        ],
+        Vegger: [
+          {
+            Produktnavn: "I henhold til leveransebeskrivelse",
+          },
+          {
+            Produktnavn: "5 bords kostmald mdf plate",
+          },
+          {
+            Produktnavn: "Ubehandlet sponplate",
+          },
+          {
+            Produktnavn: "Eget valg",
+          },
+        ],
+        Gulv: [
+          {
+            Produktnavn: "Lokalleveranse",
+          },
+          {
+            Produktnavn: "Eikeparkett 3 stavs",
+          },
+          {
+            Produktnavn: "Eikeparkett 1 stavs",
+          },
+          {
+            Produktnavn: "Laminat 1 stavs",
+          },
+          {
+            Produktnavn: "Eget valg",
+          },
+        ],
+        Lister: [
+          {
+            Produktnavn: "I henhold til leveransebeskrivelse",
+          },
+          {
+            Produktnavn: "Annen signatur",
+          },
+          {
+            Produktnavn: "Uten lister for listefri løsning",
+          },
+          {
+            Produktnavn: "Eget valg",
+          },
+        ],
+        Kommentar: [],
+      };
+
+      const formatted = Category.map((cat: any, index: number) => {
+        const existingKategorinavn =
+          index === activeTabData && Array.isArray(cat.Kategorinavn)
+            ? cat.Kategorinavn
+            : [];
+
+        const existingNames = existingKategorinavn.map((k: any) => k.navn);
+
+        const missing = Object.entries(requiredCategoriesWithProducts)
+          .filter(([name]) => !existingNames.includes(name))
+          .map(([name, produkter]) => ({
+            navn: name,
+            productOptions: name === "Kommentar" ? "Text" : "Multi Select",
+            produkter,
+          }));
+
+        return {
+          name: cat.name,
+          Kategorinavn:
+            index === activeTabData
+              ? [...existingKategorinavn, ...missing]
+              : null,
+        };
+      });
 
       form.setValue("hovedkategorinavn", formatted);
     }
-  }, [form, Category, activeTabData]);
+  }, [activeTabData]);
 
   const prevProductsRef = useRef<any[]>([]);
 
@@ -302,8 +420,10 @@ export const Eksterior: React.FC<{
 
       const hasNavn = item.navn.trim() !== "";
       const hasSubTabNavn = item?.[activeSubTabData]?.navn?.trim() !== "";
+      const hasSubTabProductOptions =
+        item?.[activeSubTabData]?.productOptions?.trim() !== "";
 
-      return hasNavn || hasSubTabNavn;
+      return hasNavn || hasSubTabNavn || hasSubTabProductOptions;
     });
 
     return filteredCategories.length > 0 ? filteredCategories : [];
@@ -364,6 +484,19 @@ export const Eksterior: React.FC<{
     }
   };
 
+  const [editProductIndex, setEditProductIndex] = useState<number | null>(null);
+  const [isEditProductDrawerOpen, setIsEditProductDrawerOpen] = useState(false);
+
+  const errorObj: any =
+    form.formState.errors?.hovedkategorinavn?.[activeTabData]?.Kategorinavn?.[
+      activeSubTabData
+    ];
+
+  const hasTextError =
+    errorObj?.productOptions === "Text" &&
+    "text" in errorObj &&
+    !!errorObj.text;
+
   return (
     <>
       <Form {...form}>
@@ -413,6 +546,10 @@ export const Eksterior: React.FC<{
                         >
                           <Pencil className="w-5 h-5 text-primary" />
                         </div>
+                        {/* {cat.navn !== "Himlling" &&
+                          cat.navn !== "Vegger" &&
+                          cat.navn !== "Gulv" &&
+                          cat.navn !== "Lister" && ( */}
                         <img
                           src={Ic_x_circle}
                           alt="close"
@@ -439,6 +576,7 @@ export const Eksterior: React.FC<{
                             );
                           }}
                         />
+                        {/* )} */}
                       </div>
                     ))}
                   </div>
@@ -458,15 +596,19 @@ export const Eksterior: React.FC<{
                     <h4 className="text-darkBlack text-base font-semibold">
                       {title}
                     </h4>
-                    <div
-                      className="text-purple border-2 border-purple rounded-[40px] py-2 px-4 font-semibold text-base flex items-center gap-1 cursor-pointer h-full"
-                      onClick={() => {
-                        setIsProductDrawerOpen(true);
-                      }}
-                    >
-                      <Plus />
-                      Add {title}
-                    </div>
+                    {form.watch(
+                      `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
+                    ) === "Multi Select" && (
+                      <div
+                        className="text-purple border-2 border-purple rounded-[40px] py-2 px-4 font-semibold text-base flex items-center gap-1 cursor-pointer h-full"
+                        onClick={() => {
+                          setIsProductDrawerOpen(true);
+                        }}
+                      >
+                        <Plus />
+                        Add {title}
+                      </div>
+                    )}
                     {/* <div
                   className={`flex items-center gap-1 font-medium ${
                     produkter.length === 1
@@ -482,47 +624,132 @@ export const Eksterior: React.FC<{
                   <X /> Slett produkt
                 </div> */}
                   </div>
-                  <div className="grid grid-cols-2">
-                    {produkter?.map((product, index) => {
-                      return (
-                        <div
-                          className="cursor-move border-[#EFF1F5] border rounded-lg"
-                          key={index}
-                          draggable
-                          onDragStart={() => setDraggingProductIndex(index)}
-                          onDragOver={(e) => {
-                            e.preventDefault();
-                            setDragOverProductIndex(index);
-                          }}
-                          onDrop={() => handleDrop()}
-                        >
-                          <div className="flex gap-4 p-3">
-                            <div className="w-[100px]">
-                              <img
-                                src={`${product?.Hovedbilde[0]}`}
-                                alt="floor"
-                                className="w-[100px] h-[76px] border border-[#EFF1F5] rounded-[4px]"
-                              />
-                            </div>
-                            <div className="w-full">
-                              <h4 className="text-darkBlack text-sm mb-1">
-                                {product?.Produktnavn}
-                              </h4>
-                              <div className="mb-2 flex items-center gap-2">
-                                <p className="text-secondary text-xs">
-                                  Deliver by:
-                                </p>
-                                <span className="text-darkBlack">
-                                  {product?.delieverBy}
-                                </span>
-                              </div>
-                              <div className="flex items-center justify-between gap-2">
-                                <span className="text-sm font-medium text-darkBlack">
-                                  {product?.IncludingOffer === false
-                                    ? product?.pris
-                                    : "Standard"}
-                                </span>
-                                <span
+                  {form.watch(
+                    `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
+                  ) === "Text" ? (
+                    <div className="mb-4">
+                      <textarea
+                        className={`h-[130px] bg-white rounded-[8px] text-black p-2 w-full resize-none text-sm
+                        ${hasTextError ? "border-red" : "border-gray1"} border
+                        flex w-full rounded-[8px] border-input bg-white text-black px-[14px] py-[10px] text-base focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:shadow-none focus-visible:shadow-none resize-none border-input file:border-0 file:bg-transparent file:text-sm file:font-medium focus:bg-lightYellow2 focus:shadow-none focus-visible:shadow-none placeholder:text-[#667085] placeholder:text-opacity-55 placeholder:text-base disabled:text-[#767676] focus:shadow-shadow1`}
+                        placeholder="Skriv kommentar..."
+                        value={
+                          form.watch(
+                            `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.text`
+                          ) || ""
+                        }
+                        onChange={(e) => {
+                          form.setValue(
+                            `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.text`,
+                            e.target.value,
+                            { shouldValidate: true }
+                          );
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2">
+                      {produkter?.map((product, index) => {
+                        // const isSelected = product?.isSelected;
+
+                        return (
+                          <div
+                            // className="cursor-move border-[#EFF1F5] border rounded-lg"
+                            // className={`cursor-pointer border rounded-lg ${
+                            //   isSelected
+                            //     ? "border-2 border-purple bg-lightPurple bg-opacity-10"
+                            //     : "border-[#EFF1F5]"
+                            // }`}
+                            key={index}
+                            draggable
+                            onDragStart={() => setDraggingProductIndex(index)}
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              setDragOverProductIndex(index);
+                            }}
+                            onDrop={() => handleDrop()}
+                            // onClick={() => {
+                            //   const updatedProducts = produkter.map(
+                            //     (p: any, i: number) => ({
+                            //       ...p,
+                            //       isSelected:
+                            //         i === index ? !p.isSelected : p.isSelected,
+                            //     })
+                            //   );
+
+                            //   form.setValue(
+                            //     `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
+                            //     updatedProducts,
+                            //     { shouldValidate: true }
+                            //   );
+                            // }}
+                          >
+                            <div className="flex gap-4 p-3">
+                              {product?.Hovedbilde?.[0] && (
+                                <div className="w-[100px]">
+                                  <img
+                                    src={`${product?.Hovedbilde?.[0]}`}
+                                    alt="floor"
+                                    className="w-[100px] h-[76px] border border-[#EFF1F5] rounded-[4px]"
+                                  />
+                                </div>
+                              )}
+                              <div className="w-full">
+                                <div className="flex items-center gap-2 justify-between">
+                                  <h4 className="text-darkBlack text-sm">
+                                    {product?.Produktnavn}
+                                  </h4>
+                                  {/* <div className="flex items-center gap-2 mt-1">
+                                  <Pencil
+                                    className="w-5 h-5 text-primary cursor-pointer"
+                                    onClick={() => {
+                                      setEditProductIndex(index);
+                                      setIsEditProductDrawerOpen(true);
+                                    }}
+                                  />
+                                  <Trash2
+                                    className="w-5 h-5 text-red cursor-pointer"
+                                    onClick={() => {
+                                      const updated = produkter.filter(
+                                        (_: any, i: number) => i !== index
+                                      );
+
+                                      form.setValue(
+                                        `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
+                                        updated,
+                                        { shouldValidate: true }
+                                      );
+                                    }}
+                                  />
+                                </div> */}
+                                </div>
+
+                                {product?.delieverBy && (
+                                  <div className="mb-2 flex items-center gap-2">
+                                    <p className="text-secondary text-xs">
+                                      Deliver by:
+                                    </p>
+                                    <span className="text-darkBlack">
+                                      {product?.delieverBy}
+                                    </span>
+                                  </div>
+                                )}
+                                {[
+                                  "Himlling",
+                                  "Vegger",
+                                  "Gulv",
+                                  "Lister",
+                                ].includes(title) ? (
+                                  ""
+                                ) : (
+                                  <div className="flex items-center justify-between gap-2">
+                                    <span className="text-sm font-medium text-darkBlack">
+                                      {product?.IncludingOffer === false
+                                        ? product?.pris
+                                        : "Standard"}
+                                    </span>
+
+                                    {/* <span
                                   className="text-purple font-medium text-sm cursor-pointer"
                                   onClick={() => {
                                     handleproductViewDrawer();
@@ -530,14 +757,16 @@ export const Eksterior: React.FC<{
                                   }}
                                 >
                                   View Details
-                                </span>
+                                </span> */}
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -585,8 +814,8 @@ export const Eksterior: React.FC<{
           editIndex={editSubCatIndex}
           defaultValue={
             editSubCatIndex !== null
-              ? hovedkategorinavn[editSubCatIndex]?.navn || ""
-              : ""
+              ? hovedkategorinavn[editSubCatIndex] || {}
+              : {}
           }
         />
       </Drawer>
@@ -622,6 +851,53 @@ export const Eksterior: React.FC<{
           />
         </h4>
         <ViewProductDetail editData={ViewSubCat} />
+      </Drawer>
+      <Drawer
+        isOpen={isEditProductDrawerOpen}
+        onClose={() => {
+          setIsEditProductDrawerOpen(false);
+          setEditProductIndex(null);
+        }}
+      >
+        <h4 className="text-darkBlack font-semibold text-2xl flex items-center gap-2 justify-between p-6">
+          Rediger produkt
+          <X
+            onClick={() => {
+              setIsEditProductDrawerOpen(false);
+              setEditProductIndex(null);
+            }}
+            className="text-primary cursor-pointer"
+          />
+        </h4>
+
+        {editProductIndex !== null && (
+          <ProductFormDrawer
+            onClose={() => {
+              setIsEditProductDrawerOpen(false);
+              setEditProductIndex(null);
+            }}
+            editData={form.watch(
+              `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${editProductIndex}`
+            )}
+            onSubmit={(updatedProduct) => {
+              const existingProducts =
+                form.getValues(
+                  `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`
+                ) || [];
+
+              const updatedProducts = [...existingProducts];
+              updatedProducts[editProductIndex] = updatedProduct.produkter?.[0];
+
+              form.setValue(
+                `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
+                updatedProducts
+              );
+
+              setIsEditProductDrawerOpen(false);
+              setEditProductIndex(null);
+            }}
+          />
+        )}
       </Drawer>
     </>
   );

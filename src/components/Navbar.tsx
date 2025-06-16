@@ -109,7 +109,7 @@ export const Navbar: React.FC = () => {
           >
             Mine tiltak
           </Link>
-          <Link
+          {/* <Link
             to={"/Inventory"}
             className={`text-base font-medium py-2 px-3 rounded-[6px] ${
               currentPath === "/Inventory"
@@ -118,7 +118,7 @@ export const Navbar: React.FC = () => {
             }`}
           >
             Romkonfigurator
-          </Link>
+          </Link> */}
         </div>
         <div className="flex items-center gap-2 md:gap-3 relative">
           <div

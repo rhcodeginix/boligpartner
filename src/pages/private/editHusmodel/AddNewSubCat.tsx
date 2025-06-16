@@ -10,11 +10,13 @@ import {
 } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
 import { Input } from "../../../components/ui/input";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   Kategorinavn: z.string().min(1, {
     message: "Kategorinavn må bestå av minst 2 tegn.",
   }),
+  productOptions: z.string({ required_error: "Required" }),
 });
 
 export const AddNewSubCat: React.FC<{
@@ -23,7 +25,7 @@ export const AddNewSubCat: React.FC<{
   activeTabData: any;
   setCategory: any;
   editIndex?: any;
-  defaultValue?: string;
+  defaultValue?: any;
 }> = ({
   onClose,
   formData,
@@ -34,14 +36,21 @@ export const AddNewSubCat: React.FC<{
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      Kategorinavn: defaultValue || "",
-    },
+    // defaultValues: {
+    //   Kategorinavn: defaultValue.navn || "",
+    // },
   });
+  useEffect(() => {
+    if (defaultValue) {
+      form.setValue("Kategorinavn", defaultValue?.navn);
+      form.setValue("productOptions", defaultValue?.productOptions);
+    }
+  }, [defaultValue]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     onClose();
     const updatedName = data.Kategorinavn;
+    const updatedOption = data.productOptions;
 
     const existingCategories =
       formData.getValues(`hovedkategorinavn.${activeTabData}.Kategorinavn`) ||
@@ -63,6 +72,7 @@ export const AddNewSubCat: React.FC<{
       // Edit existing
       const updatedCategories = [...existingCategories];
       updatedCategories[editIndex].navn = updatedName;
+      updatedCategories[editIndex].productOptions = updatedOption;
 
       setCategory((prev: any) => {
         const updatedCategory = [...prev];
@@ -80,7 +90,11 @@ export const AddNewSubCat: React.FC<{
       );
     } else {
       // Add new
-      const newSubCategory = { navn: updatedName, produkter: [] };
+      const newSubCategory = {
+        navn: updatedName,
+        productOptions: updatedOption,
+        produkter: [],
+      };
       setCategory((prev: any) => {
         const updatedCategory = [...prev];
         updatedCategory[activeTabData] = {
@@ -96,6 +110,9 @@ export const AddNewSubCat: React.FC<{
       );
     }
   };
+
+  const productOptions = ["Multi Select", "Single Select", "Text"];
+
   return (
     <>
       <Form {...form}>
@@ -103,7 +120,7 @@ export const AddNewSubCat: React.FC<{
           onSubmit={form.handleSubmit(onSubmit)}
           className="relative w-full"
         >
-          <div className="p-6">
+          <div className="p-6 flex flex-col gap-4">
             <FormField
               control={form.control}
               name="Kategorinavn"
@@ -135,6 +152,48 @@ export const AddNewSubCat: React.FC<{
                 </FormItem>
               )}
             />
+            <div>
+              <FormField
+                control={form.control}
+                name={`productOptions`}
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <p
+                      className={`mb-2 ${
+                        fieldState.error ? "text-red" : "text-black"
+                      } text-sm`}
+                    >
+                      Skorstein Enkel/Dobbel
+                    </p>
+                    <FormControl>
+                      <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                        {productOptions.map((option) => (
+                          <div
+                            key={option}
+                            className="relative flex items-center gap-2"
+                          >
+                            <input
+                              className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                              type="radio"
+                              value={option}
+                              onChange={(e) => {
+                                form.setValue(`productOptions`, e.target.value);
+                              }}
+                              checked={field.value === option}
+                            />
+                            <p className={`text-black text-sm`}>{option}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
           <div
             className="flex fixed bottom-0 justify-end w-full gap-5 items-center left-0 px-8 py-4"

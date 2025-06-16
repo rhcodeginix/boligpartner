@@ -23,7 +23,7 @@ import { Input } from "../../../components/ui/input";
 // } from "../../../components/ui/select";
 // import { TextArea } from "../../../components/ui/textarea";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 // import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import toast from "react-hot-toast";
@@ -392,13 +392,35 @@ export const Husdetaljer: React.FC<{
       };
 
       if (id) {
-        await updateDoc(husmodellDocRef, {
-          Husdetaljer: husdetaljerData,
-          updatedAt: formatDate(new Date()),
-        });
-        toast.success("Lagret", {
-          position: "top-right",
-        });
+        const docSnap = await getDoc(husmodellDocRef);
+
+        if (docSnap.exists()) {
+          const existingData = docSnap.data();
+          const currentHusdetaljer = existingData.Husdetaljer || {};
+
+          // Deep merge existing + new data
+          const updatedHusdetaljer = {
+            ...currentHusdetaljer,
+            ...husdetaljerData,
+          };
+
+          // Now update only merged result
+          await updateDoc(husmodellDocRef, {
+            Husdetaljer: updatedHusdetaljer,
+            updatedAt: new Date().toISOString(),
+          });
+
+          toast.success("Lagret", {
+            position: "top-right",
+          });
+        }
+        // await updateDoc(husmodellDocRef, {
+        //   Husdetaljer: husdetaljerData,
+        //   updatedAt: formatDate(new Date()),
+        // });
+        // toast.success("Lagret", {
+        //   position: "top-right",
+        // });
       } else {
         await setDoc(husmodellDocRef, {
           Husdetaljer: husdetaljerData,

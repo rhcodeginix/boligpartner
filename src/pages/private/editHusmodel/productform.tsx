@@ -13,7 +13,7 @@ import { Input } from "../../../components/ui/input";
 import { toast } from "react-hot-toast";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../config/firebaseConfig";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Plus, X } from "lucide-react";
 import { TextArea } from "../../../components/ui/textarea";
 
@@ -44,7 +44,8 @@ const formSchema = z.object({
 export const ProductFormDrawer: React.FC<{
   onClose: any;
   onSubmit: (data: z.infer<typeof formSchema>) => void;
-}> = ({ onClose, onSubmit: onSubmitProp }) => {
+  editData?: any;
+}> = ({ onClose, onSubmit: onSubmitProp, editData }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -60,6 +61,14 @@ export const ProductFormDrawer: React.FC<{
       ],
     },
   });
+
+  useEffect(() => {
+    if (editData) {
+      form.reset({
+        produkter: [editData],
+      });
+    }
+  }, [editData, form]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // onSubmit(newProduct)
@@ -107,19 +116,21 @@ export const ProductFormDrawer: React.FC<{
                   className="flex flex-col gap-[18px] p-4 bg-white border border-[#DCDFEA]"
                   key={index}
                 >
-                  <button
-                    type="button"
-                    className={`flex gap-2 items-end ml-auto ${
-                      produkter.length === 1
-                        ? "text-gray cursor-not-allowed"
-                        : "text-primary"
-                    }`}
-                    onClick={() => {
-                      if (produkter.length > 1) remove(index);
-                    }}
-                  >
-                    <X /> Fjern produkt
-                  </button>
+                  {!editData && (
+                    <button
+                      type="button"
+                      className={`flex gap-2 items-end ml-auto ${
+                        produkter.length === 1
+                          ? "text-gray cursor-not-allowed"
+                          : "text-primary"
+                      }`}
+                      onClick={() => {
+                        if (produkter.length > 1) remove(index);
+                      }}
+                    >
+                      <X /> Fjern produkt
+                    </button>
+                  )}
 
                   <div className="grid grid-cols-2 gap-6">
                     <div>
@@ -179,7 +190,7 @@ export const ProductFormDrawer: React.FC<{
                                 >
                                   Pris fra
                                 </p>
-                                <div className="flex items-center gap-3 text-black text-sm font-medium">
+                                {/* <div className="flex items-center gap-3 text-black text-sm font-medium">
                                   inkl. i tilbud
                                   <div className="toggle-container">
                                     <input
@@ -216,7 +227,45 @@ export const ProductFormDrawer: React.FC<{
                                       className="toggle-label"
                                     ></label>
                                   </div>
-                                </div>
+                                </div> */}
+                                <FormField
+                                  control={form.control}
+                                  name={`produkter.${index}.IncludingOffer`}
+                                  render={({ field }) => (
+                                    <div className="flex items-center gap-3 text-black text-sm font-medium">
+                                      inkl. i tilbud
+                                      <div className="toggle-container">
+                                        <input
+                                          type="checkbox"
+                                          id={
+                                            editData
+                                              ? `editData.toggleSwitch.${index}.IncludingOffer`
+                                              : `toggleSwitch.${index}.IncludingOffer`
+                                          }
+                                          className="toggle-input"
+                                          checked={field.value || false}
+                                          onChange={(e) => {
+                                            const checkedValue =
+                                              e.target.checked;
+                                            field.onChange(checkedValue);
+                                            form.setValue(
+                                              `produkter.${index}.pris`,
+                                              checkedValue ? null : ""
+                                            );
+                                          }}
+                                        />
+                                        <label
+                                          htmlFor={
+                                            editData
+                                              ? `editData.toggleSwitch.${index}.IncludingOffer`
+                                              : `toggleSwitch.${index}.IncludingOffer`
+                                          }
+                                          className="toggle-label"
+                                        ></label>
+                                      </div>
+                                    </div>
+                                  )}
+                                />
                               </div>
                               <FormControl>
                                 <div className="relative">
@@ -532,22 +581,24 @@ export const ProductFormDrawer: React.FC<{
               );
             })}
 
-            <div
-              className="p-6 flex items-center gap-2 text-primary text-sm font-medium cursor-pointer"
-              onClick={() =>
-                append({
-                  Produktnavn: "",
-                  delieverBy: "",
-                  Hovedbilde: [],
-                  pris: "",
-                  IncludingOffer: false,
-                  Produktbeskrivelse: "",
-                })
-              }
-            >
-              <Plus />
-              Add other product
-            </div>
+            {!editData && (
+              <div
+                className="p-6 flex items-center gap-2 text-primary text-sm font-medium cursor-pointer"
+                onClick={() =>
+                  append({
+                    Produktnavn: "",
+                    delieverBy: "",
+                    Hovedbilde: [],
+                    pris: "",
+                    IncludingOffer: false,
+                    Produktbeskrivelse: "",
+                  })
+                }
+              >
+                <Plus />
+                Add other product
+              </div>
+            )}
           </div>
           <div
             className="flex sticky bottom-0 justify-end w-full gap-5 items-center left-0 px-8 py-4 bg-white"
