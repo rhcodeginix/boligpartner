@@ -15,6 +15,7 @@ import Button from "../../../../components/common/button";
 import { toast } from "react-hot-toast";
 import { Pencil, Trash2 } from "lucide-react";
 import Modal from "../../../../components/common/modal";
+import Ic_mintomt from "../../../../assets/images/Ic_mintomt.svg";
 
 export const AllRoomkonfigurator: React.FC = () => {
   const navigate = useNavigate();
@@ -172,7 +173,7 @@ export const AllRoomkonfigurator: React.FC = () => {
                       </button>
                     ) : (
                       <Pencil
-                        className="w-6 h-6 text-purple cursor-pointer"
+                        className="w-5 h-5 text-purple cursor-pointer"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -184,7 +185,7 @@ export const AllRoomkonfigurator: React.FC = () => {
                     )}
 
                     <Trash2
-                      className="w-6 h-6 text-red cursor-pointer"
+                      className="w-5 h-5 text-red cursor-pointer"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -194,8 +195,8 @@ export const AllRoomkonfigurator: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="w-full h-[200px] relative">
-                  {!item?.Plantegninger?.[0]?.image && !loaded && (
+                {/* <div className="w-full h-[200px] relative">
+                  {!loaded && (
                     <div className="w-full h-full rounded-lg custom-shimmer"></div>
                   )}
                   {item?.Plantegninger?.[0]?.image && (
@@ -209,6 +210,29 @@ export const AllRoomkonfigurator: React.FC = () => {
                       onError={() => handleImageLoad(index)}
                       loading="lazy"
                     />
+                  )}
+                </div> */}
+                <div className="w-full h-[200px] relative">
+                  {item?.Plantegninger?.[0]?.image ? (
+                    <>
+                      {!loaded && (
+                        <div className="w-full h-full rounded-lg custom-shimmer absolute top-0 left-0"></div>
+                      )}
+                      <img
+                        src={item.Plantegninger[0].image}
+                        alt="floor"
+                        className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
+                          loaded ? "opacity-100" : "opacity-0"
+                        }`}
+                        onLoad={() => handleImageLoad(index)}
+                        onError={() => handleImageLoad(index)}
+                        loading="lazy"
+                      />
+                    </>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center rounded-lg border border-gray2">
+                      <img src={Ic_mintomt} alt="logo" />
+                    </div>
                   )}
                 </div>
               </div>
