@@ -41,8 +41,9 @@ const uploadBase64Image = async (base64: string) => {
   }
 };
 
-export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
+export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
   setActiveTab,
+  Next,
 }) => {
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
@@ -310,13 +311,22 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
       name: newConfiguratorName.trim(),
     });
 
-    navigate(`${newId}`);
+    navigate(`/Room-Configurator/${newId}`);
     setLoading(true);
     setShowConfiguratorModal(false);
   };
 
   return (
     <>
+      <div className="bg-lightPurple px-8 py-3">
+        <h3 className="text-darkBlack font-medium text-xl md:text-[24px] lg:text-[28px] desktop:text-[2rem] desktop:leading-[44.8px] mb-2">
+          Romkonfigurator
+        </h3>
+        <p className="text-secondary text-sm md:text-base desktop:text-lg">
+          Her laster du opp plantegninger som bruker AI til å trekke ut alle
+          rommene, du kan så konfigurere hvert enkelt rom.
+        </p>
+      </div>
       <div className="px-8 py-6">
         <h3 className="text-darkBlack text-2xl font-semibold mb-2">
           Opplasting av plantegninger
@@ -421,7 +431,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                                 updatedAt: new Date().toISOString(),
                               });
 
-                              toast.success("Name updated!", {
+                              toast.success("Navn oppdatert!", {
                                 position: "top-right",
                               });
                             }}
@@ -481,17 +491,16 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           text="Avbryt"
           className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
           onClick={() => {
-            setActiveTab(0);
             navigate("/Bolig-configurator");
           }}
         />
-        {/* <Button
+        <Button
           text="Neste"
           className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
           onClick={() => {
-            setActiveTab(2);
+            Next();
           }}
-        /> */}
+        />
       </div>
 
       {confirmDeleteIndex !== null && (
@@ -536,7 +545,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
               className="text-primary absolute top-2.5 right-2.5 w-5 h-5 cursor-pointer"
               onClick={() => {
                 setShowConfiguratorModal(false);
-                setActiveTab(0);
+                navigate("/Bolig-configurator");
               }}
             />
             <h2 className="text-lg font-bold mb-4">Opprett ny konfigurator</h2>

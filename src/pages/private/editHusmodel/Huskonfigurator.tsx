@@ -469,7 +469,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                                 updatedAt: new Date().toISOString(),
                               });
 
-                              toast.success("Name updated!", {
+                              toast.success("Navn oppdatert!", {
                                 position: "top-right",
                               });
                             }}

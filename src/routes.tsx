@@ -6,6 +6,7 @@ import {
   Husmodeller,
   SeHouseModel,
   BoligConfiurator,
+  BoligConfiuratorStepper,
 } from "./pages";
 import { AuthLayout } from "./layouts/AuthLayout";
 import { Login } from "./pages/public";
@@ -25,7 +26,8 @@ export const routes = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: "Bolig-configurator", element: <BoligConfiurator /> },
-      { path: "Bolig-configurator/*", element: <BoligConfiurator /> },
+      { path: "Room-Configurator", element: <BoligConfiuratorStepper /> },
+      { path: "Room-Configurator/*", element: <BoligConfiuratorStepper /> },
       { path: "Inventory", element: <Inventory /> },
       { path: "Husmodell", element: <Husmodeller /> },
       { path: "se-husmodell/*", element: <SeHouseModel /> },

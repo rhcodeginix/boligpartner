@@ -93,8 +93,8 @@ export const Navbar: React.FC = () => {
           <Link
             to={"/Bolig-configurator"}
             className={`text-base font-medium py-2 px-3 rounded-[6px] ${
-              currentPath === "/Bolig-configurator" ||
-              currentPath.startsWith("/Bolig-configurator/")
+              currentPath === "/Room-Configurator" ||
+              currentPath.startsWith("/Room-Configurator/")
                 ? "bg-lightPurple text-primary"
                 : "text-black"
             }`}

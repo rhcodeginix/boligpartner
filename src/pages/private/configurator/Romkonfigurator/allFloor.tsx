@@ -9,10 +9,7 @@ import { ChevronRight, Pencil, Plus, X } from "lucide-react";
 import { AddNewCat } from "../../editHusmodel/AddNewCat";
 import { Eksterior } from "./Eksterior";
 
-export const AllFloor: React.FC<{ setActiveTab: any; Next: any }> = ({
-  setActiveTab,
-  Next,
-}) => {
+export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
   const navigate = useNavigate();
   const [activeTabData, setActiveTabData] = useState<number | null>(null);
   const [AddCategory, setAddCategory] = useState(false);
@@ -90,6 +87,15 @@ export const AllFloor: React.FC<{ setActiveTab: any; Next: any }> = ({
 
   return (
     <>
+      <div className="bg-lightPurple px-8 py-3">
+        <h3 className="text-darkBlack font-medium text-xl md:text-[24px] lg:text-[28px] desktop:text-[2rem] desktop:leading-[44.8px] mb-2">
+          Romkonfigurator
+        </h3>
+        <p className="text-secondary text-sm md:text-base desktop:text-lg">
+          Her laster du opp plantegninger som bruker AI til å trekke ut alle
+          rommene, du kan så konfigurere hvert enkelt rom.
+        </p>
+      </div>
       <div className="py-4 px-6">
         <div className="flex items-center gap-1.5 mb-6">
           <div
@@ -219,7 +225,6 @@ export const AllFloor: React.FC<{ setActiveTab: any; Next: any }> = ({
               Category={Category}
               activeTabData={activeTabData}
               setCategory={setCategory}
-              Next={Next}
             />
           ) : (
             <img src={FloorData?.image} alt="floor" className="w-full h-full" />
@@ -237,7 +242,7 @@ export const AllFloor: React.FC<{ setActiveTab: any; Next: any }> = ({
               className="w-1/2 sm:w-auto"
             >
               <Button
-                text="Avbryt"
+                text="Tilbake"
                 className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
               />
             </div>

@@ -16,9 +16,7 @@ import { toast } from "react-hot-toast";
 import { Pencil, Trash2 } from "lucide-react";
 import Modal from "../../../../components/common/modal";
 
-export const AllRoomkonfigurator: React.FC<{ setActiveTab: any }> = ({
-  setActiveTab,
-}) => {
+export const AllRoomkonfigurator: React.FC = () => {
   const navigate = useNavigate();
   const [RoomConfigurator, setRoomConfigurator] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +68,7 @@ export const AllRoomkonfigurator: React.FC<{ setActiveTab: any }> = ({
 
       setConfirmDeleteIndex(null);
       fetchRoomConfiguratorData();
-      toast.success("Room Configurator deleted successfully!", {
+      toast.success("Romkonfiguratoren er slettet!", {
         position: "top-right",
       });
     } catch (error) {
@@ -97,7 +95,8 @@ export const AllRoomkonfigurator: React.FC<{ setActiveTab: any }> = ({
           className="border border-purple bg-purple text-white text-base rounded-[40px] h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
           //   path="/add-bolig-configu"
           onClick={() => {
-            setActiveTab(1);
+            // setActiveTab(1);
+            navigate("/Room-Configurator");
           }}
         />
       </div>
@@ -113,8 +112,8 @@ export const AllRoomkonfigurator: React.FC<{ setActiveTab: any }> = ({
                 key={index}
                 className="relative shadow-shadow2 cursor-pointer p-4 rounded-lg flex flex-col gap-4"
                 onClick={() => {
-                  setActiveTab(1);
-                  navigate(`${item?.id}`);
+                  // setActiveTab(1);
+                  navigate(`/Room-Configurator/${item?.id}`);
                 }}
               >
                 {/* <div className="flex gap-2 items-center justify-between mb-4">
@@ -164,7 +163,7 @@ export const AllRoomkonfigurator: React.FC<{ setActiveTab: any }> = ({
                             updatedAt: new Date().toISOString(),
                           });
 
-                          toast.success("Name updated!", {
+                          toast.success("Navn oppdatert!", {
                             position: "top-right",
                           });
                         }}

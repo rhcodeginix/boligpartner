@@ -17,7 +17,6 @@ import { House, Store, Warehouse } from "lucide-react";
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import ApiUtils from "../../../../api";
 import Ic_search_location from "../../../../assets/images/Ic_search_location.svg";
-import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   Kundenr: z.number({ required_error: "Kundenr er påkrevd." }),
@@ -103,7 +102,6 @@ export const Prosjektdetaljer = forwardRef(
         return result;
       },
     }));
-    const navigate = useNavigate();
     const selectedHouseType = form.watch("Hustype");
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -852,7 +850,6 @@ export const Prosjektdetaljer = forwardRef(
                       "currIndexBolig",
                       currIndex.toString()
                     );
-                    navigate("/Bolig-configurator");
                   }}
                 >
                   <Button

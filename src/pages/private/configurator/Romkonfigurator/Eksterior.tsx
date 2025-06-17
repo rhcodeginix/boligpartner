@@ -7,7 +7,7 @@ import { Form } from "../../../../components/ui/form";
 import Button from "../../../../components/common/button";
 import Ic_x_circle from "../../../../assets/images/Ic_x_circle.svg";
 import { ArrowLeft, Pencil, Plus, X } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { doc, updateDoc } from "firebase/firestore";
 import Drawer from "../../../../components/ui/drawer";
 import { toast } from "react-hot-toast";
@@ -86,16 +86,9 @@ export const Eksterior: React.FC<{
   Category: any;
   activeTabData: any;
   setCategory: any;
-  Next: any;
-}> = ({
-  setActiveTab,
-  labelName,
-  Category,
-  activeTabData,
-  setCategory,
-  Next,
-}) => {
+}> = ({ setActiveTab, labelName, Category, activeTabData, setCategory }) => {
   const [activeSubTabData, setActiveSubTabData] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (activeTabData) {
@@ -241,8 +234,14 @@ export const Eksterior: React.FC<{
       });
 
       toast.success("Lagret", { position: "top-right" });
-      // navigate(`/Husmodell`);
-      Next();
+      // navigate(`/Bolig-configurator`);
+      // Next();
+      const params = new URLSearchParams(location.search);
+      params.delete("pdf_id");
+      navigate(`${location.pathname}?${params.toString()}`, {
+        replace: true,
+      });
+      setActiveTab(1);
     } catch (error) {
       console.error("Firestore operation failed:", error);
       toast.error("Something went wrong. Please try again.", {
