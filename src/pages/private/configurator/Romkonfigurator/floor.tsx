@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Spinner } from "../../../../components/Spinner";
+// import { Spinner } from "../../../../components/Spinner";
 import { fetchRoomData } from "../../../../lib/utils";
 import Button from "../../../../components/common/button";
 // import Ic_multiple_stars from "../../../../assets/images/Ic_multiple_stars.svg";
@@ -150,9 +150,10 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           </div>
           <div className="p-4 flex items-center justify-center h-[490px] flex-col gap-6">
             {/* <img src={Ic_multiple_stars} alt="star" /> */}
-            <AnimatedStars />
+            {/* <AnimatedStars /> */}
             <p className="text-lg text-secondary text-center">
-              AI fetching the details <br /> about all rooms in this floor
+              MinTomt AI analyserer nå <br /> plantegninger og trekker ut
+              rommene
             </p>
           </div>
         </div>
@@ -183,7 +184,20 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           }}
         />
       </div>
-      {loading && <Spinner />}
+      {loading && (
+        <div
+          className="justify-center items-center h-full w-full fixed block top-0 left-0 bg-white opacity-75"
+          style={{ zIndex: 999 }}
+        >
+          <span
+            className="text-green-500 opacity-100 top-1/2 my-0 mx-auto block relative w-0 h-0"
+            style={{ top: "50%", zIndex: 9999 }}
+          >
+            {/* <div className="animate-spin rounded-full h-10 w-10"></div> */}
+            <AnimatedStars />
+          </span>
+        </div>
+      )}
     </>
   );
 };
