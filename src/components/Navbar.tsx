@@ -94,6 +94,7 @@ export const Navbar: React.FC = () => {
             to={"/Bolig-configurator"}
             className={`text-base font-medium py-2 px-3 rounded-[6px] ${
               currentPath === "/Room-Configurator" ||
+              currentPath === "/Bolig-configurator" ||
               currentPath.startsWith("/Room-Configurator/")
                 ? "bg-lightPurple text-primary"
                 : "text-black"
