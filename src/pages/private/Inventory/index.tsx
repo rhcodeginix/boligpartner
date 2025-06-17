@@ -136,7 +136,11 @@ export const Inventory = () => {
                       <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
                         {index + 1}
                       </span>
-                      <span className="w-[135px] truncate">{tab.name}</span>
+                      <span className="w-[135px] truncate">
+                        {tab?.name_no === "" || !tab?.name_no
+                          ? tab?.name
+                          : tab?.name_no}
+                      </span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <div

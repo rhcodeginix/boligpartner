@@ -296,9 +296,8 @@ export const Husdetaljer: React.FC<{
     }
   };
 
-  const [formData, setFormData] = useState({
-    address: "",
-  });
+  const [address, setAddress] = useState("");
+
   const [addressData, setAddressData] = useState<any>(null);
 
   const kartInputRef = useRef<HTMLInputElement | null>(null);
@@ -307,7 +306,7 @@ export const Husdetaljer: React.FC<{
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = e.target.value;
-    setFormData((prev) => ({ ...prev, address: value }));
+    setAddress(value);
 
     if (value) {
       try {
@@ -333,29 +332,9 @@ export const Husdetaljer: React.FC<{
               <h4 className="text-darkBlack font-bold text-2xl">
                 Kundeopplysninger
               </h4>
-              {/* <p className="text-secondary text-lg">
-                Enter your kundeopplysninger
-              </p> */}
             </div>
             <div className="flex flex-col gap-6">
               <div className="border-[#EFF1F5] border rounded-lg overflow-hidden">
-                {/* <div
-                  className={`bg-white flex justify-between items-center w-full p-4 cursor-pointer duration-1000 ${
-                    isOpen ? "active" : ""
-                  }`}
-                  onClick={() => toggleAccordion("section1")}
-                >
-                  <span className="text-black text-lg font-medium">
-                    Grunnleggende informasjon
-                  </span>
-
-                  {isOpen.section1 ? (
-                    <ChevronUp className="text-purple" />
-                  ) : (
-                    <ChevronDown className="text-purple" />
-                  )}
-                </div>
-                {isOpen.section1 && ( */}
                 <div className="grid grid-cols-2 gap-6 w-[100%] p-4">
                   {/*
                   <div>
@@ -529,9 +508,9 @@ export const Husdetaljer: React.FC<{
                                 type="text"
                                 ref={kartInputRef}
                                 onChange={handleKartInputChange}
-                                value={formData?.address}
+                                value={address}
                               />
-                              {formData?.address &&
+                              {address &&
                                 addressData &&
                                 addressData.length > 0 && (
                                   <div
@@ -554,9 +533,9 @@ export const Husdetaljer: React.FC<{
                                                 `${address.adressetekst} ${address.postnummer} ${address.poststed}`
                                               );
                                               setAddressData(null);
-                                              setFormData({
-                                                address: `${address.adressetekst} ${address.postnummer} ${address.poststed}`,
-                                              });
+                                              setAddress(
+                                                `${address.adressetekst} ${address.postnummer} ${address.poststed}`
+                                              );
                                             }}
                                           >
                                             <img

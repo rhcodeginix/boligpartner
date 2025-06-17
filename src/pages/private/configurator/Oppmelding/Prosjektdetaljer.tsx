@@ -14,7 +14,10 @@ import { parsePhoneNumber } from "react-phone-number-input";
 import { phoneNumberValidations } from "../../../../lib/utils";
 import { InputMobile } from "../../../../components/ui/inputMobile";
 import { House, Store, Warehouse } from "lucide-react";
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import ApiUtils from "../../../../api";
+import Ic_search_location from "../../../../assets/images/Ic_search_location.svg";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   Kundenr: z.number({ required_error: "Kundenr er påkrevd." }),
@@ -41,24 +44,27 @@ const formSchema = z.object({
         "Vennligst skriv inn et gyldig telefonnummer for det valgte landet.",
     }
   ),
-  TelefonPrivate: z.string().refine(
-    (value) => {
-      const parsedNumber = parsePhoneNumber(value);
-      const countryCode = parsedNumber?.countryCallingCode
-        ? `+${parsedNumber.countryCallingCode}`
-        : "";
-      const phoneNumber = parsedNumber?.nationalNumber || "";
-      if (countryCode !== "+47") {
-        return false;
+  TelefonPrivate: z
+    .string()
+    .refine(
+      (value) => {
+        const parsedNumber = parsePhoneNumber(value);
+        const countryCode = parsedNumber?.countryCallingCode
+          ? `+${parsedNumber.countryCallingCode}`
+          : "";
+        const phoneNumber = parsedNumber?.nationalNumber || "";
+        if (countryCode !== "+47") {
+          return false;
+        }
+        const validator = phoneNumberValidations[countryCode];
+        return validator ? validator(phoneNumber) : false;
+      },
+      {
+        message:
+          "Vennligst skriv inn et gyldig telefonnummer for det valgte landet.",
       }
-      const validator = phoneNumberValidations[countryCode];
-      return validator ? validator(phoneNumber) : false;
-    },
-    {
-      message:
-        "Vennligst skriv inn et gyldig telefonnummer for det valgte landet.",
-    }
-  ),
+    )
+    .optional(),
   Hustype: z.string({ required_error: "Hustype er påkrevd." }),
   Finansiering: z.string({ required_error: "Finansiering er påkrevd." }),
   Leveransebeskrivelse: z.string({
@@ -97,7 +103,7 @@ export const Prosjektdetaljer = forwardRef(
         return result;
       },
     }));
-
+    const navigate = useNavigate();
     const selectedHouseType = form.watch("Hustype");
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -106,6 +112,33 @@ export const Prosjektdetaljer = forwardRef(
       localStorage.setItem("currVerticalIndex", String(2));
     };
     const Finansiering = ["Privat", "Husbank"];
+
+    const [address, setAddress] = useState("");
+    const [addressData, setAddressData] = useState<any>(null);
+
+    const kartInputRef = useRef<HTMLInputElement | null>(null);
+
+    const handleKartInputChange = async (
+      e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+      const value = e.target.value;
+      setAddress(value);
+
+      if (value) {
+        try {
+          const response = await ApiUtils.getAddress(value);
+          if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+          }
+
+          const json = await response.json();
+          setAddressData(json.adresser);
+        } catch (error: any) {
+          console.error(error?.message);
+        }
+      }
+    };
+
     return (
       <>
         <Form {...form}>
@@ -210,7 +243,67 @@ export const Prosjektdetaljer = forwardRef(
                                               : "border-gray1"
                                           } `}
                                 type="text"
+                                ref={kartInputRef}
+                                onChange={handleKartInputChange}
+                                value={address}
+                                autoComplete="off"
                               />
+                              {address &&
+                                addressData &&
+                                addressData.length > 0 && (
+                                  <div
+                                    className="absolute top-[45px] left-0 bg-white rounded-[8px] w-full h-auto max-h-[300px] overflow-y-auto overFlowYAuto"
+                                    style={{
+                                      zIndex: 999,
+                                      boxShadow:
+                                        "rgba(16, 24, 40, 0.09) 0px 4px 6px -2px, rgba(16, 24, 40, 0.09) 0px 12px 16px -4px",
+                                    }}
+                                  >
+                                    {addressData &&
+                                      addressData?.map(
+                                        (address: any, index: number) => (
+                                          <div
+                                            className="p-2 flex items-center gap-2 hover:bg-lightPurple cursor-pointer"
+                                            key={index}
+                                            onClick={() => {
+                                              form.setValue(
+                                                "Byggeadresse",
+                                                `${address.adressetekst} ${address.postnummer} ${address.poststed}`
+                                              );
+                                              setAddressData(null);
+                                              setAddress(
+                                                `${address.adressetekst} ${address.postnummer} ${address.poststed}`
+                                              );
+                                              form.setValue(
+                                                "Postnr",
+                                                address.postnummer
+                                              );
+                                              form.setValue(
+                                                "Kommune",
+                                                Number(address.kommunenummer)
+                                              );
+                                              form.setValue(
+                                                "Poststed",
+                                                address.poststed
+                                              );
+                                            }}
+                                          >
+                                            <img
+                                              src={Ic_search_location}
+                                              alt="location"
+                                              className="w-6 h-6 md:w-7 md:h-7"
+                                            />
+                                            <div>
+                                              <span className="text-black font-medium text-sm">
+                                                {`${address.adressetekst}  ${address.postnummer} ${address.poststed}` ||
+                                                  "N/A"}
+                                              </span>
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                  </div>
+                                )}
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -243,6 +336,7 @@ export const Prosjektdetaljer = forwardRef(
                                               : "border-gray1"
                                           } `}
                                 type="text"
+                                disable
                               />
                             </div>
                           </FormControl>
@@ -276,6 +370,7 @@ export const Prosjektdetaljer = forwardRef(
                                               : "border-gray1"
                                           } `}
                                 type="text"
+                                disable
                               />
                             </div>
                           </FormControl>
@@ -312,6 +407,7 @@ export const Prosjektdetaljer = forwardRef(
                                 onChange={(e: any) =>
                                   field.onChange(Number(e.target.value) || "")
                                 }
+                                disable
                               />
                             </div>
                           </FormControl>
@@ -364,7 +460,7 @@ export const Prosjektdetaljer = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Tlf. privat*
+                            Tlf. privat
                           </p>
                           <FormControl>
                             <div className="relative">
@@ -756,6 +852,7 @@ export const Prosjektdetaljer = forwardRef(
                       "currIndexBolig",
                       currIndex.toString()
                     );
+                    navigate("/Bolig-configurator");
                   }}
                 >
                   <Button

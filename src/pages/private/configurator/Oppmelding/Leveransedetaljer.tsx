@@ -63,6 +63,8 @@ export const Leveransedetaljer = forwardRef(
       handleNext();
       localStorage.setItem("currVerticalIndex", String(3));
     };
+    const weekArray = Array.from({ length: 53 }, (_, i) => (i + 1).toString());
+
     return (
       <>
         <Form {...form}>
@@ -84,7 +86,8 @@ export const Leveransedetaljer = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Lass leveres byggeplass uke*
+                            {/* Lass leveres byggeplass uke* */}
+                            1. lass leveres byggeplass uke*
                           </p>
                           <FormControl>
                             <div className="relative">
@@ -106,8 +109,13 @@ export const Leveransedetaljer = forwardRef(
                                 </SelectTrigger>
                                 <SelectContent className="bg-white">
                                   <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
+                                    {weekArray.map((item, index) => {
+                                      return (
+                                        <SelectItem value={item} key={index}>
+                                          {item}
+                                        </SelectItem>
+                                      );
+                                    })}
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
@@ -151,8 +159,13 @@ export const Leveransedetaljer = forwardRef(
                                 </SelectTrigger>
                                 <SelectContent className="bg-white">
                                   <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
+                                    {weekArray.map((item, index) => {
+                                      return (
+                                        <SelectItem value={item} key={index}>
+                                          {item}
+                                        </SelectItem>
+                                      );
+                                    })}
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
@@ -196,8 +209,13 @@ export const Leveransedetaljer = forwardRef(
                                 </SelectTrigger>
                                 <SelectContent className="bg-white">
                                   <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
+                                    {weekArray.map((item, index) => {
+                                      return (
+                                        <SelectItem value={item} key={index}>
+                                          {item}
+                                        </SelectItem>
+                                      );
+                                    })}
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
@@ -241,8 +259,13 @@ export const Leveransedetaljer = forwardRef(
                                 </SelectTrigger>
                                 <SelectContent className="bg-white">
                                   <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
+                                    {weekArray.map((item, index) => {
+                                      return (
+                                        <SelectItem value={item} key={index}>
+                                          {item}
+                                        </SelectItem>
+                                      );
+                                    })}
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>

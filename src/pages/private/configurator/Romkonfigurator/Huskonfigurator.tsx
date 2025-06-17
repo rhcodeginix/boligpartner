@@ -4,18 +4,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "../../../../components/Spinner";
 import { fetchRoomData } from "../../../../lib/utils";
 import Button from "../../../../components/common/button";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../../config/firebaseConfig";
 import { toast } from "react-hot-toast";
 import * as pdfjsLib from "pdfjs-dist";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, X } from "lucide-react";
 import Modal from "../../../../components/common/modal";
+import { v4 as uuidv4 } from "uuid";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 
 const uploadBase64Image = async (base64: string) => {
   if (!base64) return;
 
-  // Optional: validate base64 size estimate
   const base64Size =
     base64.length * (3 / 4) -
     (base64.endsWith("==") ? 2 : base64.endsWith("=") ? 1 : 0);
@@ -28,11 +28,10 @@ const uploadBase64Image = async (base64: string) => {
 
   const fileType = "images";
   const timestamp = Date.now();
-  const fileName = `${timestamp}_image.png`; // or .jpg depending on content
+  const fileName = `${timestamp}_image.png`;
   const storageRef = ref(storage, `${fileType}/${fileName}`);
 
   try {
-    // Upload base64 (data URL)
     const snapshot = await uploadString(storageRef, base64, "data_url");
     const url = await getDownloadURL(snapshot.ref);
 
@@ -122,6 +121,10 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     formData.append("file", files[0]);
     setLoading(true);
     try {
+      let currentId: string | null = id;
+
+      setLoading(true);
+
       const response = await fetch(
         "https://iplotnor-hf-api-version-2.hf.space/upload",
         {
@@ -133,12 +136,15 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           mode: "cors",
         }
       );
+      setLoading(true);
 
       if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+      setLoading(true);
 
       const data = await response.json();
-      if (data && data?.pdf_id && id) {
+      if (data && data?.pdf_id && currentId) {
         const file = files[0];
+        setLoading(true);
 
         let imageBase64: string | undefined;
 
@@ -155,7 +161,11 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
 
         if (imageBase64) {
           const finalImageUrl = await uploadBase64Image(imageBase64);
-          const husmodellDocRef = doc(db, "room_configurator", String(id));
+          const husmodellDocRef = doc(
+            db,
+            "room_configurator",
+            String(currentId)
+          );
 
           const docSnap = await getDoc(husmodellDocRef);
           const existingData = docSnap.exists()
@@ -182,7 +192,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           };
           await updateDoc(husmodellDocRef, {
             Plantegninger: updatedPlantegninger,
-            id: id,
+            id: currentId,
             updatedAt: formatDate(new Date()),
           });
           toast.success(data.message, {
@@ -267,6 +277,44 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     }
   };
 
+  const [imageLoaded, setImageLoaded] = useState<{ [key: number]: boolean }>(
+    {}
+  );
+
+  const handleImageLoad = (index: number) => {
+    setImageLoaded((prev) => ({ ...prev, [index]: true }));
+  };
+
+  const [showConfiguratorModal, setShowConfiguratorModal] = useState(false);
+  const [newConfiguratorName, setNewConfiguratorName] = useState("");
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!id) {
+        setShowConfiguratorModal(true);
+      }
+    }, 200); // 1000ms = 1 second
+
+    return () => clearTimeout(timeout); // cleanup on unmount or re-run
+  }, [id]);
+
+  const handleCreateNewConfigurator = async () => {
+    const newId = uuidv4();
+    const formatDate = (date: Date) => {
+      return date.toLocaleString("sv-SE", { timeZone: "UTC" }).replace(",", "");
+    };
+    const newDocRef = doc(db, "room_configurator", newId);
+    await setDoc(newDocRef, {
+      createdAt: formatDate(new Date()),
+      updatedAt: formatDate(new Date()),
+      id: newId,
+      name: newConfiguratorName.trim(),
+    });
+
+    navigate(`${newId}`);
+    setLoading(true);
+    setShowConfiguratorModal(false);
+  };
+
   return (
     <>
       <div className="px-8 py-6">
@@ -279,7 +327,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           plantegningene.
         </p>
       </div>
-      <div className="px-8 pb-[156px]">
+      <div className="px-8 pb-[100px]">
         <div
           className="relative p-2 rounded-lg w-max"
           style={{
@@ -321,13 +369,14 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           {roomsData && roomsData.length > 0
             ? roomsData.map((item: any, index: number) => {
                 const isEditing = editIndex === index;
+                const loaded = imageLoaded[index];
 
                 return (
                   <div
                     key={index}
                     className="relative shadow-shadow2 cursor-pointer p-4 rounded-lg flex flex-col gap-4"
                     onClick={() => {
-                      setActiveTab(1);
+                      setActiveTab(2);
                       navigate(`?pdf_id=${item?.pdf_id}`);
                     }}
                   >
@@ -403,16 +452,46 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                         />
                       </div>
                     </div>
-                    <img
-                      src={item?.image}
-                      alt="floor"
-                      className="w-full h-[200px] object-cover"
-                    />
+                    <div className="w-full h-[200px] relative">
+                      {!loaded && (
+                        <div className="w-full h-full rounded-lg custom-shimmer"></div>
+                      )}
+                      {item?.image && (
+                        <img
+                          src={item?.image}
+                          alt="floor"
+                          className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
+                            loaded ? "opacity-100" : "opacity-0"
+                          }`}
+                          onLoad={() => handleImageLoad(index)}
+                          onError={() => handleImageLoad(index)}
+                          loading="lazy"
+                        />
+                      )}
+                    </div>
                   </div>
                 );
               })
             : "No Data Found!"}
         </div>
+      </div>
+
+      <div className="flex justify-end w-full gap-5 items-center fixed bottom-0 bg-white z-50 border-t border-gray2 p-4 left-0">
+        <Button
+          text="Avbryt"
+          className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+          onClick={() => {
+            setActiveTab(0);
+            navigate("/Bolig-configurator");
+          }}
+        />
+        {/* <Button
+          text="Neste"
+          className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+          onClick={() => {
+            setActiveTab(2);
+          }}
+        /> */}
       </div>
 
       {confirmDeleteIndex !== null && (
@@ -445,6 +524,44 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
       )}
 
       {loading && <Spinner />}
+
+      {showConfiguratorModal && (
+        <Modal
+          isOpen={true}
+          onClose={() => setShowConfiguratorModal(false)}
+          outSideClick={true}
+        >
+          <div className="p-6 bg-white rounded-lg shadow-lg relative">
+            <X
+              className="text-primary absolute top-2.5 right-2.5 w-5 h-5 cursor-pointer"
+              onClick={() => {
+                setShowConfiguratorModal(false);
+                setActiveTab(0);
+              }}
+            />
+            <h2 className="text-lg font-bold mb-4">Opprett ny konfigurator</h2>
+            <input
+              type="text"
+              value={newConfiguratorName}
+              onChange={(e) => setNewConfiguratorName(e.target.value)}
+              placeholder="Skriv inn navn på konfigurator"
+              className="bg-white rounded-[8px] border text-black border-gray1 flex h-11 w-full border-input px-[14px] py-[10px] text-base file:border-0 file:bg-transparent file:text-sm file:font-medium  focus-visible:outline-none focus:bg-lightYellow2 disabled:cursor-not-allowed disabled:bg-[#F5F5F5] disabled:hover:border-gray7 focus:shadow-none focus-visible:shadow-none placeholder:text-[#667085] placeholder:text-opacity-55 placeholder:text-base disabled:text-[#767676] focus:shadow-shadow1 mb-4"
+            />
+            <div className="flex justify-end gap-4">
+              <Button
+                text="Avbryt"
+                className="border border-gray2 text-black"
+                onClick={() => setNewConfiguratorName("")}
+              />
+              <Button
+                text="Opprett"
+                className="bg-purple text-white"
+                onClick={handleCreateNewConfigurator}
+              />
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

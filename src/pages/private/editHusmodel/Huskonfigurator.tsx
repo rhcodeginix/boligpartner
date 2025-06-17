@@ -356,6 +356,14 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     }
   };
 
+  const [imageLoaded, setImageLoaded] = useState<{ [key: number]: boolean }>(
+    {}
+  );
+
+  const handleImageLoad = (index: number) => {
+    setImageLoaded((prev) => ({ ...prev, [index]: true }));
+  };
+
   return (
     <>
       <div className="px-8 py-6">
@@ -367,7 +375,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           konfigurere. Du kan fritt legge til nye rom eller fjerne eksisterende.
         </p>
       </div>
-      <div className="px-8 pb-[156px]">
+      <div className="px-8 pb-[100px]">
         <div
           className="relative p-2 rounded-lg w-max"
           style={{
@@ -409,6 +417,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           {roomsData && roomsData.length > 0
             ? roomsData.map((item: any, index: number) => {
                 const isEditing = editIndex === index;
+                const loaded = imageLoaded[index];
 
                 return (
                   <div
@@ -491,11 +500,23 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                         />
                       </div>
                     </div>
-                    <img
-                      src={item?.image}
-                      alt="floor"
-                      className="w-full h-[200px] object-cover"
-                    />
+                    <div className="w-full h-[200px] relative">
+                      {!loaded && (
+                        <div className="w-full h-full rounded-lg custom-shimmer"></div>
+                      )}
+                      {item?.image && (
+                        <img
+                          src={item?.image}
+                          alt="floor"
+                          className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
+                            loaded ? "opacity-100" : "opacity-0"
+                          }`}
+                          onLoad={() => handleImageLoad(index)}
+                          onError={() => handleImageLoad(index)}
+                          loading="lazy"
+                        />
+                      )}
+                    </div>
                   </div>
                 );
               })

@@ -84,10 +84,7 @@ export const Husmodeller = () => {
                 </div> */}
                 <div className="w-full h-[243px] mb-4 relative">
                   {!loaded && (
-                    <div
-                      className="w-full h-full rounded-md custom-shimmer"
-                      style={{ borderRadius: "8px" }}
-                    ></div>
+                    <div className="w-full h-full rounded-lg custom-shimmer"></div>
                   )}
                   {item?.Husdetaljer?.photo && (
                     <img

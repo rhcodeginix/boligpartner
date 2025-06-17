@@ -544,7 +544,7 @@ export const Eksterior: React.FC<{
               <div
                 className="flex items-center gap-2.5 mb-2.5 cursor-pointer"
                 onClick={() => {
-                  setActiveTab(2);
+                  setActiveTab(3);
                 }}
               >
                 <ArrowLeft className="text-purple" />
@@ -836,7 +836,7 @@ export const Eksterior: React.FC<{
               text="Avbryt"
               className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
               onClick={() => {
-                setActiveTab(2);
+                setActiveTab(3);
               }}
             />
             <Button

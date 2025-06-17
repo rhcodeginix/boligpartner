@@ -156,7 +156,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           text="Avbryt"
           className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
           onClick={() => {
-            setActiveTab(0);
+            setActiveTab(1);
 
             const params = new URLSearchParams(location.search);
             params.delete("pdf_id");
@@ -170,7 +170,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           text="Neste"
           className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
           onClick={() => {
-            setActiveTab(2);
+            setActiveTab(3);
           }}
         />
       </div>
