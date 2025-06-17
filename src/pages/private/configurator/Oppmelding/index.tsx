@@ -103,7 +103,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
     {
       id: 3,
-      title: "Grunnmur og pipe/skorstein",
+      // title: "Grunnmur og pipe/skorstein",
+      title: "Betong- og murerarbeid",
       content: (
         <GrunnerOgSkorstein
           handleNext={handleNext}
@@ -116,7 +117,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
     {
       id: 4,
-      title: "Gulv, bjelkelag og himling",
+      // title: "Gulv, bjelkelag og himling",
+      title: "Bjelkelag, gulv, himling",
       content: (
         <GulvBjelkelagHimling
           handleNext={handleNext}
@@ -155,7 +157,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
     {
       id: 7,
-      title: "Tak og taktekking",
+      title: "Tak/Taktekking",
+      // title: "Tak og taktekking",
       content: (
         <TakogTaktekking
           handleNext={handleNext}
