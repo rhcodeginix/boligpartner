@@ -144,20 +144,18 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         </div>
       </div>
       <div className="flex gap-6 px-6 pt-6 pb-[156px]">
-        <div className="w-[25%] border border-[#EFF1F5] rounded-lg shadow-shadow2">
+        {/* <div className="w-[25%] border border-[#EFF1F5] rounded-lg shadow-shadow2">
           <div className="p-4 border-b border-[#EFF1F5] text-darkBlack text-lg font-medium">
             Romoversikt
           </div>
           <div className="p-4 flex items-center justify-center h-[490px] flex-col gap-6">
-            {/* <img src={Ic_multiple_stars} alt="star" /> */}
-            {/* <AnimatedStars /> */}
             <p className="text-lg text-secondary text-center">
               MinTomt AI analyserer nå <br /> plantegninger og trekker ut
               rommene
             </p>
           </div>
-        </div>
-        <div className="w-[75%] border border-[#B9C0D4] rounded-lg overflow-hidden h-[551px]">
+        </div> */}
+        <div className="border border-[#B9C0D4] rounded-lg overflow-hidden">
           <img src={FloorData?.image} alt="floor" className="w-full h-full" />
         </div>
       </div>
@@ -190,11 +188,16 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           style={{ zIndex: 999 }}
         >
           <span
-            className="text-green-500 opacity-100 top-1/2 my-0 mx-auto block relative w-0 h-0"
+            className="text-green-500 opacity-100 top-1/2 my-0 mx-auto block relative w-[280px] sm:w-[350px] h-0"
             style={{ top: "50%", zIndex: 9999 }}
           >
-            {/* <div className="animate-spin rounded-full h-10 w-10"></div> */}
-            <AnimatedStars />
+            <div className="p-4 flex items-center justify-center flex-col gap-6 w-full">
+              <AnimatedStars />
+              <p className="text-base md:text-lg text-secondary text-center">
+                MinTomt AI analyserer nå <br /> plantegninger og trekker ut
+                rommene
+              </p>
+            </div>
           </span>
         </div>
       )}
