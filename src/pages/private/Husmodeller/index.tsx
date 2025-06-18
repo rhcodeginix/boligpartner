@@ -47,12 +47,12 @@ export const Husmodeller = () => {
     <>
       {isLoading && <Spinner />}
 
-      <div className="p-8 flex gap-3 items-center justify-between bg-lightPurple">
+      <div className="px-4 md:px-6 py-5 md:py-8 desktop:p-8 flex gap-3 items-center justify-between bg-lightPurple">
         <div>
-          <h1 className="text-darkBlack font-medium text-[32px] mb-2">
+          <h1 className="text-darkBlack font-medium text-2xl md:text-[28px] desktop:text-[32px] mb-2">
             Velg ønsket serie
           </h1>
-          <p className="text-secondary text-lg">
+          <p className="text-secondary text-sm md:text-base desktop:text-lg">
             Velg ønsket serie og du vil kunne konfigurere boligen i henhold til
             ønsket seier
           </p>
@@ -63,7 +63,7 @@ export const Husmodeller = () => {
           path="/add-husmodell"
         /> */}
       </div>
-      <div className="p-8 grid grid-cols-4 gap-x-6 gap-y-[40px]">
+      <div className="px-4 md:px-6 py-5 md:py-8 desktop:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 desktop:gap-6">
         {houseModels &&
           houseModels.length > 0 &&
           houseModels?.map((item: any, index: number) => {
@@ -82,7 +82,7 @@ export const Husmodeller = () => {
                     <div className="w-full h-full bg-[#6670853b] rounded-lg"></div>
                   )}
                 </div> */}
-                <div className="w-full h-[243px] mb-4 relative">
+                <div className="w-full h-[243px] mb-2.5 md:mb-4 relative">
                   {!loaded && (
                     <div className="w-full h-full rounded-lg custom-shimmer"></div>
                   )}
@@ -105,7 +105,7 @@ export const Husmodeller = () => {
                     {item?.Husdetaljer?.husmodell_name}
                   </h4>
                   <div
-                    className="border-purple border-2 rounded-[40px] py-2 px-5 text-purple font-medium h-[40px] flex items-center justify-center cursor-pointer"
+                    className="border-purple border-2 rounded-[40px] py-2 px-5 text-purple font-medium h-[40px] flex items-center justify-center cursor-pointer whitespace-nowrap"
                     // onClick={() => navigate(`/se-husmodell/${item?.id}`)}
                     onClick={() => navigate(`/edit-husmodell/${item?.id}`)}
                   >

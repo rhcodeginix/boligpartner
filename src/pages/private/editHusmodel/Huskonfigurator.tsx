@@ -366,24 +366,24 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
 
   return (
     <>
-      <div className="px-8 py-6">
+      <div className="px-4 md:px-6 py-5 md:py-6 desktop:p-8">
         <h3 className="text-darkBlack text-2xl font-semibold mb-2">
           Last opp plantegningen din
         </h3>
-        <p className="text-secondary text-lg">
+        <p className="text-secondary text-sm md:text-base desktop:text-lg">
           AI har analysert plantegningen og identifisert rommene du kan
           konfigurere. Du kan fritt legge til nye rom eller fjerne eksisterende.
         </p>
       </div>
-      <div className="px-8 pb-[100px]">
+      <div className="px-4 md:px-6 py-5 md:py-6 desktop:p-8 pb-[100px]">
         <div
-          className="relative p-2 rounded-lg w-max"
+          className="relative p-2 rounded-lg md:w-max"
           style={{
             boxShadow: "0px 2px 4px -2px #1018280F, 0px 4px 8px -2px #1018281A",
           }}
         >
           <div
-            className="border border-gray2 border-dashed rounded-lg px-3 flex-col items-center justify-center laptop:px-[42px] py-4 flex gap-6 cursor-pointer w-full"
+            className="border border-gray2 border-dashed rounded-lg px-2 md:px-3 flex-col items-center justify-center laptop:px-[42px] py-2 md:py-4 flex gap-3 md:gap-6 cursor-pointer w-full"
             onClick={handleClick}
             onDrop={handleDrop}
             onDragStart={handleDragOver}
@@ -391,15 +391,15 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           >
             <img src={Ic_upload_blue_img} alt="upload" />
             <div className="flex items-center justify-center flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[36px] py-2 px-4">
+              <div className="flex items-center gap-2 md:gap-3">
+                <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[32px] md:h-[36px] py-2 px-2 md:px-4 text-sm md:text-base">
                   Bla gjennom
                 </span>
-                <p className="text-gray text-sm text-center truncate w-full">
+                <p className="text-gray text-xs md:text-sm text-center truncate w-full">
                   Slipp filen her for å laste den opp
                 </p>
               </div>
-              <p className="text-gray text-sm truncate w-full text-center">
+              <p className="text-gray text-xs md:text-sm truncate w-full text-center">
                 Filformater: Kun JPEG, JPG, PNG, PDF maks 2 MB
               </p>
             </div>
@@ -413,7 +413,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-6 w-full mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6 w-full mt-6 md:mt-8">
           {roomsData && roomsData.length > 0
             ? roomsData.map((item: any, index: number) => {
                 const isEditing = editIndex === index;
@@ -422,13 +422,13 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                 return (
                   <div
                     key={index}
-                    className="relative shadow-shadow2 cursor-pointer p-4 rounded-lg flex flex-col gap-4"
+                    className="relative shadow-shadow2 cursor-pointer p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4"
                     onClick={() => {
                       setActiveTab(2);
                       navigate(`?pdf_id=${item?.pdf_id}`);
                     }}
                   >
-                    <div className="flex gap-2 items-center justify-between mb-4">
+                    <div className="flex gap-1.5 md:gap-2 items-center justify-between">
                       {isEditing ? (
                         <input
                           type="text"
@@ -438,14 +438,14 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                           onClick={(e) => e.stopPropagation()}
                         />
                       ) : (
-                        <span className="text-darkBlack font-medium">
+                        <span className="text-darkBlack font-medium truncate">
                           {item?.title || `Floor ${index + 1}`}
                         </span>
                       )}
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 md:gap-3">
                         {isEditing ? (
                           <button
-                            className="bg-purple text-white px-4 py-2 rounded text-sm self-end"
+                            className="bg-purple text-white px-2 md:px-4 py-2 rounded text-sm self-end"
                             onClick={async (e) => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -478,7 +478,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                           </button>
                         ) : (
                           <Pencil
-                            className="w-6 h-6 text-purple cursor-pointer"
+                            className="w-5 h-5 text-purple cursor-pointer"
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -491,7 +491,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                         )}
 
                         <Trash2
-                          className="w-6 h-6 text-red cursor-pointer"
+                          className="w-5 h-5 text-red cursor-pointer"
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();

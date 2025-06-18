@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import Ic_chevron_up from "../assets/images/Ic_chevron_up.svg";
 import { fetchAdminDataByEmail } from "../lib/utils";
+import { Menu, X } from "lucide-react";
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
@@ -65,18 +66,29 @@ export const Navbar: React.FC = () => {
     getData();
   }, []);
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+
   return (
     <>
       <div
-        className="px-6 py-4 flex items-center border-b border-gray2 justify-between sticky top-0 bg-white"
+        className="px-4 md:px-6 py-4 flex items-center border-b border-gray2 justify-between sticky top-0 bg-white"
         style={{
           zIndex: 999,
         }}
       >
-        <Link to={"/"}>
-          <img src={Ic_logo} alt="logo" />
-        </Link>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
+          <Menu
+            onClick={toggleDrawer}
+            className="md:hidden text-primary"
+          />
+          <Link to={"/"}>
+            <img src={Ic_logo} alt="logo" className="w-[200px] lg:w-auto" />
+          </Link>
+        </div>
+        <div className="hidden md:flex items-center gap-1">
           <Link
             to={"/Husmodell"}
             className={`text-base font-medium py-2 px-3 rounded-[6px] ${
@@ -152,6 +164,72 @@ export const Navbar: React.FC = () => {
               </Link>
             </div>
           )}
+        </div>
+      </div>
+      <div
+        style={{
+          transition: "transform 1s, box-shadow 1s",
+          transform: isDrawerOpen ? "translateX(0)" : "translateX(-100%)",
+          background: isDrawerOpen ? "rgba(0, 0, 0, 0.6)" : "",
+          zIndex: 999999,
+        }}
+        className={`fixed top-0 left-0 w-full h-screen z-50`}
+      >
+        <div className="bg-white h-full px-4 sm:px-5 md:px-8 lg:px-10 big:px-[120px] w-[85%]">
+          <div className="flex items-center justify-between py-4 mb-4">
+            <div className="gap-[12px] flex items-center">
+              <img src={Ic_logo} alt="logo" className="w-[200px] lg:w-auto" />
+            </div>
+            <button onClick={toggleDrawer} className="text-3xl">
+              <X className="text-primary" />
+            </button>
+          </div>
+          <div className="flex flex-col items-start font-medium gap-3">
+            <Link
+              to={"/Husmodell"}
+              className={`text-base font-medium py-2 px-3 rounded-[6px] ${
+                currentPath === "/Husmodell" ||
+                currentPath.startsWith("/se-husmodell/") ||
+                currentPath === "/add-husmodell" ||
+                currentPath.startsWith("/edit-husmodell/")
+                  ? "bg-lightPurple text-primary"
+                  : "text-black"
+              }`}
+            >
+              Boligkonfigurator
+            </Link>
+            <Link
+              to={"/Bolig-configurator"}
+              className={`text-base font-medium py-2 px-3 rounded-[6px] ${
+                currentPath === "/Room-Configurator" ||
+                currentPath === "/Bolig-configurator" ||
+                currentPath.startsWith("/Room-Configurator/")
+                  ? "bg-lightPurple text-primary"
+                  : "text-black"
+              }`}
+              onClick={() => {
+                const currIndex = 0;
+                const currVerticalIndex = 1;
+                localStorage.setItem("currIndexBolig", currIndex.toString());
+                localStorage.setItem(
+                  "currVerticalIndex",
+                  currVerticalIndex.toString()
+                );
+              }}
+            >
+              Mine tiltak
+            </Link>
+            {/* <Link
+            to={"/Inventory"}
+            className={`text-base font-medium py-2 px-3 rounded-[6px] ${
+              currentPath === "/Inventory"
+                ? "bg-lightPurple text-primary"
+                : "text-black"
+            }`}
+          >
+            Romkonfigurator
+          </Link> */}
+          </div>
         </div>
       </div>
     </>

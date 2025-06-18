@@ -16,8 +16,8 @@ export const EditHouseModel = () => {
     <>
       <>
         {(activeTab === 0 || activeTab === 1) && (
-          <div className="py-4 px-6 bg-lightPurple">
-            <div className="flex items-center gap-1.5 mb-6">
+          <div className="py-4 px-4 md:px-6 bg-lightPurple">
+            <div className="flex items-center gap-1.5 mb-4 md:mb-6">
               <Link
                 to={"/Husmodell"}
                 className="text-primary text-sm font-medium"
@@ -27,20 +27,12 @@ export const EditHouseModel = () => {
               <ChevronRight className="text-[#5D6B98] w-4 h-4" />
               <span className="text-gray text-sm">Legg til nytt hus</span>
             </div>
-            <div className="flex items-center justify-between mb-5">
-              <h1 className="text-darkBlack font-semibold text-[32px]">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between mb-4 md:mb-5">
+              <h1 className="text-darkBlack font-semibold text-2xl md:text-[28px] desktop:text-[32px]">
                 Legg til nytt hus
               </h1>
-              {/* <div className="flex gap-3 items-center">
-                <p className="text-gray text-lg">
-                  Sum antatte anleggskostnader inkl. mva.
-                </p>
-                <h1 className="text-darkBlack font-bold text-[24px]">
-                  {house && house?.pris ? formatCurrency(house?.pris) : "0 NOK"}
-                </h1>
-              </div> */}
               <div>
-                <div className="border border-[#EFF1F5] bg-[#F9F9FB] p-1.5 rounded-lg">
+                <div className="border border-[#EFF1F5] bg-[#F9F9FB] p-1.5 rounded-lg w-max">
                   <Tabs
                     tabs={tabData}
                     activeTab={activeTab}
@@ -52,21 +44,6 @@ export const EditHouseModel = () => {
                 </div>
               </div>
             </div>
-            {/* {house && (
-              <div className="flex items-center gap-4 mb-6">
-                <img
-                  src={house?.photo}
-                  alt="house"
-                  className="w-[160px] rounded-lg"
-                />
-                <div>
-                  <h2 className="text-darkBlack font-semibold text-[20px]">
-                    {house?.husmodell_name}
-                  </h2>
-                  <p className="text-gray w-[900px]">{house?.Hustittel}</p>
-                </div>
-              </div>
-            )} */}
           </div>
         )}
 

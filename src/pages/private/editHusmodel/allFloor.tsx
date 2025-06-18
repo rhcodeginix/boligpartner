@@ -87,8 +87,8 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
   return (
     <>
-      <div className="py-4 px-6 bg-lightPurple">
-        <div className="flex items-center gap-1.5 mb-6">
+      <div className="py-4 px-4 md:px-6 bg-lightPurple">
+        <div className="flex items-center gap-1.5 mb-4 md:mb-6 flex-wrap">
           <Link to={"/Husmodell"} className="text-primary text-sm font-medium">
             Husmodeller
           </Link>
@@ -111,12 +111,12 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           <ChevronRight className="text-[#5D6B98] w-4 h-4" />
           <span className="text-gray text-sm">Detaljer om gulvet</span>
         </div>
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-2 md:gap-3">
           <div className="flex flex-col gap-2">
-            <h1 className="text-darkBlack font-semibold text-[32px]">
+            <h1 className="text-darkBlack font-semibold text-2xl md:text-[28px] desktop:text-[32px]">
               {FloorData?.title}
             </h1>
-            <p className="text-secondary text-lg">
+            <p className="text-secondary text-sm md:text-base desktop:text-lg">
               AI har analysert plantegningen og identifisert rommene du kan
               konfigurere. Du kan fritt legge til nye rom eller fjerne
               eksisterende.
@@ -137,9 +137,9 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           )}
         </div>
       </div>
-      <div className="flex gap-6 px-6 pt-6 pb-[156px]">
-        <div className="w-[25%] border border-[#EFF1F5] rounded-lg shadow-shadow2 h-[690px]">
-          <div className="p-4 border-b border-[#EFF1F5] text-darkBlack text-lg font-medium flex items-center justify-between gap-2">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6 px-4 md:px-6 pt-6 pb-[136px]">
+        <div className="w-full md:w-[25%] border border-[#EFF1F5] rounded-lg shadow-shadow2 h-[690px]">
+          <div className="p-3 md:p-4 border-b border-[#EFF1F5] text-darkBlack text-lg font-medium flex items-center justify-between gap-2">
             <span className="truncate">Romoversikt</span>
             <div
               className="flex items-center text-purple gap-2 cursor-pointer"
@@ -151,7 +151,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               </span>
             </div>
           </div>
-          <div className="flex flex-col p-4 pb-0 rounded-lg gap-3 h-full max-h-[calc(100%-90px)] overflow-y-auto overFlowAutoY sticky top-[80px]">
+          <div className="flex flex-col p-3 md:p-4 pb-0 rounded-lg gap-3 h-full max-h-[calc(100%-90px)] overflow-y-auto overFlowAutoY sticky top-[80px]">
             {Category.length > 0
               ? Category.map((tab: any, index: number) => (
                   <div
@@ -213,7 +213,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           </div>
         </div>
 
-        <div className="w-[75%] border border-[#EFF1F5] rounded-lg overflow-hidden h-max p-3">
+        <div className="w-full md:w-[75%] border border-[#EFF1F5] rounded-lg overflow-hidden h-max p-3">
           {activeTabData !== null ? (
             <Eksterior
               setActiveTab={setActiveTab}

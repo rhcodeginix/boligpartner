@@ -317,7 +317,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
 
   return (
     <>
-      <div className="bg-lightPurple px-8 py-3">
+      <div className="bg-lightPurple px-4 md:px-6 desktop:px-8 py-3">
         <h3 className="text-darkBlack font-medium text-xl md:text-[24px] lg:text-[28px] desktop:text-[2rem] desktop:leading-[44.8px] mb-2">
           Boligkonfigurator
         </h3>
@@ -325,7 +325,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           Her melder du opp huset til produksjon til BoligPartner.
         </p>
       </div>
-      <div className="px-8 my-12">
+      <div className="px-4 md:px-6 desktop:px-8 my-12">
         {/* <VerticalWizard /> */}
         <VerticalWizard
           steps={wizardSteps}

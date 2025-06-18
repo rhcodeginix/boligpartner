@@ -127,8 +127,8 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
   return (
     <>
-      <div className="py-4 px-6 bg-lightPurple">
-        <div className="flex items-center gap-1.5 mb-6">
+      <div className="py-4 px-4 md:px-6 bg-lightPurple">
+        <div className="flex items-center gap-1.5 mb-4 md:mb-6 flex-wrap">
           <Link to={"/Husmodell"} className="text-primary text-sm font-medium">
             Husmodeller
           </Link>
@@ -152,17 +152,17 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           <span className="text-gray text-sm">Detaljer om gulvet</span>
         </div>
         <div className="flex flex-col gap-2">
-          <h1 className="text-darkBlack font-semibold text-[32px]">
+          <h1 className="text-darkBlack font-semibold text-2xl md:text-[28px] desktop:text-[32px]">
             {FloorData?.title}
           </h1>
-          <p className="text-secondary text-lg">
+          <p className="text-secondary text-sm md:text-base desktop:text-lg">
             AI har analysert plantegningen og identifisert rommene du kan
             konfigurere. Du kan fritt legge til nye rom eller fjerne
             eksisterende.
           </p>
         </div>
       </div>
-      <div className="flex gap-6 px-6 pt-6 pb-[156px]">
+      <div className="flex gap-4 md:gap-6 px-4 md:px-6 pt-6 pb-[136px]">
         {/* <div className="w-[25%] border border-[#EFF1F5] rounded-lg shadow-shadow2">
           <div className="p-4 border-b border-[#EFF1F5] text-darkBlack text-lg font-medium">
             Romoversikt
@@ -174,7 +174,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             </p>
           </div>
         </div> */}
-        <div className="border border-[#B9C0D4] rounded-lg overflow-hidden">
+        <div className="w-full border border-[#B9C0D4] rounded-lg overflow-hidden">
           <img src={FloorData?.image} alt="floor" className="w-full h-full" />
         </div>
       </div>
