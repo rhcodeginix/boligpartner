@@ -268,15 +268,8 @@ import {
 } from "../../../../components/ui/form";
 import Button from "../../../../components/common/button";
 import { z } from "zod";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../../components/ui/select";
 import { forwardRef, useImperativeHandle } from "react";
+import { Input } from "../../../../components/ui/input";
 
 const formSchema = z.object({
   SeRomskjema: z.boolean().optional(),
@@ -284,8 +277,30 @@ const formSchema = z.object({
   mm100Pristillegg: z.boolean().optional(),
   InnvendigeHjørnelister: z.boolean().optional(),
   IkkeRelevantTiltak: z.boolean().optional(),
-  HjørnelisterTypeHulkil: z.string().optional(),
-  VeggerMotUtvendigMur: z.string().optional(),
+
+  Tekstboks: z.string().optional(),
+  StandardLeveranseLeveransebeskrivelse: z.boolean().optional(),
+  PakkeHusmalt: z.boolean().optional(),
+  BeisemaltFargePprisøkningFarge: z.boolean().optional(),
+  BeisemaltFargePprisøkningFargeText: z.string().optional(),
+  Ubehandlet: z.boolean().optional(),
+  prisøkning: z.string().optional(),
+  Galvlut: z.boolean().optional(),
+  Hvitmalt: z.boolean().optional(),
+  BeisemaltFargePprisøkningFarge2: z.boolean().optional(),
+  BeisemaltFargePprisøkningFarge2Text: z.string().optional(),
+  Ubehandlet2: z.boolean().optional(),
+  GestillVelclearSkarve: z.boolean().optional(),
+  Hvitmalt3: z.boolean().optional(),
+  BeisemaltFargePprisøkningFarge3: z.boolean().optional(),
+  BeisemaltFargePprisøkningFarge3Text: z.string().optional(),
+  Ubehandlet3: z.boolean().optional(),
+  TekstboksLightingOption: z.string().optional(),
+  CeilingStandardLeveranseValgteSignatur: z.boolean().optional(),
+  CeilingStandardLeveranseValgteSignaturText: z.string().optional(),
+  SeRomskjemaOverflateskJemaAvvik: z.boolean().optional(),
+  SeRomskjemaOverflateskJemaAvvikText: z.string().optional(),
+  LydhimlingIhtDetaljrNrFigB: z.boolean().optional(),
 });
 
 export const Innervegger = forwardRef(
@@ -311,12 +326,6 @@ export const Innervegger = forwardRef(
       handleNext();
       localStorage.setItem("currVerticalIndex", String(7));
     };
-
-    const VeggerMotUtvendigMur = [
-      "Ikke relevant",
-      "Standard 5.2",
-      "Standard 5.3",
-    ];
 
     return (
       <>
@@ -452,11 +461,10 @@ export const Innervegger = forwardRef(
                       )}
                     />
                   </div>
-                  {/* --- */}
                   <div>
                     <FormField
                       control={form.control}
-                      name="HjørnelisterTypeHulkil"
+                      name="Tekstboks"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -464,33 +472,122 @@ export const Innervegger = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Hjørnelister type hulkil 12x12
+                            Tekstboks
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                              <Input
+                                placeholder="Skriv inn"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="my-1 border-t border-[#DCDFEA] col-span-3"></div>
+                  <div className="col-span-3 text-darkBlack font-medium text-base">
+                    Interior Lighting
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="StandardLeveranseLeveransebeskrivelse"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="StandardLeveranseLeveransebeskrivelse"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Standard leveranse ihtl leveransebeskrivelse for
+                            valgte signatur
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="col-span-3 text-darkBlack font-medium text-sm">
+                    Lighting Options Row 1:
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="PakkeHusmalt"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="PakkeHusmalt"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Pakke 1: Husmalt
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="BeisemaltFargePprisøkningFarge"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="BeisemaltFargePprisøkningFarge"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Beisemalt i samme farge (prisøkning) Farge
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="BeisemaltFargePprisøkningFargeText"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv inn"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -501,46 +598,448 @@ export const Innervegger = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name={`VeggerMotUtvendigMur`}
+                      name="Ubehandlet"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="Ubehandlet"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Ubehandlet
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="prisøkning"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
-                            className={`mb-2 ${
+                            className={`${
                               fieldState.error ? "text-red" : "text-black"
-                            } text-sm`}
+                            } mb-[6px] text-sm`}
                           >
-                            Vegger mot utvendig mur
+                            prisøkning
                           </p>
                           <FormControl>
-                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
-                              {VeggerMotUtvendigMur.map((option) => (
-                                <div
-                                  key={option}
-                                  className="relative flex items-center gap-2"
-                                >
-                                  <input
-                                    className={`bg-white rounded-[8px] border text-black
-        ${
-          fieldState?.error ? "border-red" : "border-gray1"
-        } h-4 w-4 accent-[#444CE7]`}
-                                    type="radio"
-                                    value={option}
-                                    onChange={(e) => {
-                                      form.setValue(
-                                        `VeggerMotUtvendigMur`,
-                                        e.target.value
-                                      );
-                                    }}
-                                    checked={field.value === option}
-                                  />
-                                  <p className={`text-black text-sm`}>
-                                    {option}
-                                  </p>
-                                </div>
-                              ))}
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv inn"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
                             </div>
                           </FormControl>
                           <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="col-span-3 text-darkBlack font-medium text-sm">
+                    Lighting Options Row 2:
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="Galvlut"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="Galvlut"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Galvlut
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="Hvitmalt"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="Hvitmalt"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Hvitmalt
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="BeisemaltFargePprisøkningFarge2"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="BeisemaltFargePprisøkningFarge2"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Beisemalt i samme farge (prisøkning) Farge
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="BeisemaltFargePprisøkningFarge2Text"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv inn"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="Ubehandlet2"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="Ubehandlet2"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Ubehandlet
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="col-span-3 text-darkBlack font-medium text-sm">
+                    Lighting Options Row 3:
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="GestillVelclearSkarve"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="GestillVelclearSkarve"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Gestill (velclear ou skarve)
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="Hvitmalt3"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="Hvitmalt3"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Hvitmalt
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="BeisemaltFargePprisøkningFarge3"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="BeisemaltFargePprisøkningFarge3"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Beisemalt i samme farge (prisøkning) Farge
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="BeisemaltFargePprisøkningFarge3Text"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv inn"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="Ubehandlet3"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="Ubehandlet3"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Ubehandlet (prisøkning)
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="TekstboksLightingOption"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Tekstboks
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv inn"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="my-1 border-t border-[#DCDFEA] col-span-3"></div>
+                  <div className="col-span-3 text-darkBlack font-medium text-base">
+                    Ceiling
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="CeilingStandardLeveranseValgteSignatur"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="CeilingStandardLeveranseValgteSignatur"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Standard leveranse ihtl leveransebeskr for valgte
+                            signatur
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="CeilingStandardLeveranseValgteSignaturText"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv inn"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="SeRomskjemaOverflateskJemaAvvik"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="SeRomskjemaOverflateskJemaAvvik"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Se romskjema/overflatesk jema for avvik fra standard
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="SeRomskjemaOverflateskJemaAvvikText"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv inn"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="LydhimlingIhtDetaljrNrFigB"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="LydhimlingIhtDetaljrNrFigB"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Lydhimling iht. detaljr nr. 231-110 fig.B
+                          </p>
                         </FormItem>
                       )}
                     />

@@ -33,7 +33,10 @@ const formSchema = z.object({
 
 export const SluttføringDokumentasjon = forwardRef(
   (
-    { Next, handlePrevious }: { Next: () => void; handlePrevious: () => void },
+    {
+      handleNext,
+      handlePrevious,
+    }: { handleNext: () => void; handlePrevious: () => void },
     ref
   ) => {
     const form = useForm<z.infer<typeof formSchema>>({
@@ -48,7 +51,8 @@ export const SluttføringDokumentasjon = forwardRef(
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
       console.log(data);
-      Next();
+      handleNext();
+      localStorage.setItem("currVerticalIndex", String(18));
     };
     const StiftpakkeLimLeveresFor = ["17°", "21°", "34°"];
 

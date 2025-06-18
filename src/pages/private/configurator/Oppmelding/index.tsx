@@ -17,6 +17,7 @@ import { VentilasjonSentralstøvsuger } from "./VentilasjonSentralstøvsuger";
 import { Brannvern } from "./Brannvern";
 import { TekniskeInstallasjoner } from "./TekniskeInstallasjoner";
 import { SluttføringDokumentasjon } from "./SluttføringDokumentasjon";
+import { TakrennerBeslag } from "./TakrennerBeslag";
 
 export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
   Next,
@@ -292,9 +293,22 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
       content: (
         <SluttføringDokumentasjon
           handlePrevious={handlePrevious}
-          Next={Next}
+          handleNext={handleNext}
           ref={(ref: any): void => {
             formRefs.current[17] = ref;
+          }}
+        />
+      ),
+    },
+    {
+      id: 18,
+      title: "Takrenner/beslag",
+      content: (
+        <TakrennerBeslag
+          handlePrevious={handlePrevious}
+          Next={Next}
+          ref={(ref: any): void => {
+            formRefs.current[18] = ref;
           }}
         />
       ),
