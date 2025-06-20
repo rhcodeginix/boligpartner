@@ -48,6 +48,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
   const [loading, setLoading] = useState(true);
   const [roomsData, setRoomsData] = useState<any>([]);
   const navigate = useNavigate();
@@ -60,8 +61,11 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     const getData = async () => {
       const data = await fetchHusmodellData(id);
 
-      if (data && data?.Plantegninger) {
-        setRoomsData(data?.Plantegninger);
+      if (data && data.KundeInfo) {
+        const finalData = data.KundeInfo.find(
+          (item: any) => item.uniqueId === kundeId
+        );
+        setRoomsData(finalData?.Plantegninger);
       }
       setLoading(false);
     };
@@ -247,31 +251,43 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           );
 
           const docSnap = await getDoc(husmodellDocRef);
-          const existingData = docSnap.exists()
-            ? docSnap.data().Plantegninger || []
-            : [];
-          const newIndex = existingData.length + 1;
+          if (!docSnap.exists()) {
+            toast.error("Husmodell not found", { position: "top-right" });
+            return;
+          }
 
-          const updatedPdfData = {
-            ...data,
-            image: finalImageUrl,
-            title: `Floor ${newIndex}`,
-          };
-          setRoomsData((prev: any) => [...prev, updatedPdfData]);
-
-          const finalData = [];
-          finalData.push(updatedPdfData);
-
-          const updatedPlantegninger = [...existingData, ...finalData];
+          const docvData = docSnap.data();
+          const existingKundeInfo = docvData.KundeInfo || [];
 
           const formatDate = (date: Date) => {
             return date
               .toLocaleString("sv-SE", { timeZone: "UTC" })
               .replace(",", "");
           };
+
+          const updatedKundeInfo = existingKundeInfo.map((kunde: any) => {
+            if (kunde.uniqueId === kundeId) {
+              const existingFloors = kunde.Plantegninger || [];
+              const newIndex = existingFloors.length + 1;
+
+              const updatedFloor = {
+                ...data,
+                image: finalImageUrl,
+                title: `Floor ${newIndex}`,
+              };
+              setRoomsData((prev: any) => [...prev, updatedFloor]);
+              return {
+                ...kunde,
+                Plantegninger: [...existingFloors, updatedFloor],
+              };
+            }
+            return kunde;
+          });
+
           await updateDoc(husmodellDocRef, {
-            Plantegninger: updatedPlantegninger,
-            id: id,
+            // Plantegninger: updatedPlantegninger,
+            KundeInfo: updatedKundeInfo,
+
             updatedAt: formatDate(new Date()),
           });
           toast.success(data.message, {
@@ -326,23 +342,36 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
 
     try {
       const docSnap = await getDoc(husmodellDocRef);
-      const existingData = docSnap.exists()
-        ? docSnap.data().Plantegninger || []
-        : [];
+      const docData: any = docSnap.data();
+      const existingKundeInfo = docData.KundeInfo || [];
 
-      const updatedData = existingData.filter(
-        (_: any, i: any) => i !== indexToDelete
-      );
+      const updatedKundeInfo = existingKundeInfo.map((kunde: any) => {
+        if (kunde.uniqueId === kundeId) {
+          const newFloors = (kunde.Plantegninger || []).filter(
+            (_: any, i: number) => i !== indexToDelete
+          );
+          return {
+            ...kunde,
+            Plantegninger: newFloors,
+          };
+        }
+        return kunde;
+      });
 
       await updateDoc(husmodellDocRef, {
-        Plantegninger: updatedData,
+        KundeInfo: updatedKundeInfo,
         updatedAt: new Date().toISOString(),
       });
 
-      setRoomsData(updatedData);
+      const updatedRooms = roomsData.filter(
+        (_: any, i: number) => i !== indexToDelete
+      );
+      setRoomsData(updatedRooms);
       setConfirmDeleteIndex(null);
 
-      toast.success("Floor deleted successfully!", { position: "top-right" });
+      toast.success("Floor deleted successfully!", {
+        position: "top-right",
+      });
     } catch (error) {
       console.error("Error deleting floor:", error);
       toast.error("Failed to delete floor", { position: "top-right" });
@@ -449,6 +478,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                             onClick={async (e) => {
                               e.preventDefault();
                               e.stopPropagation();
+
                               const updatedRooms = [...roomsData];
                               updatedRooms[index] = {
                                 ...updatedRooms[index],
@@ -463,15 +493,34 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                                 "housemodell_configure_broker",
                                 String(id)
                               );
+                              const docSnap = await getDoc(husmodellDocRef);
 
-                              await updateDoc(husmodellDocRef, {
-                                Plantegninger: updatedRooms,
-                                updatedAt: new Date().toISOString(),
-                              });
+                              if (docSnap.exists()) {
+                                const docData = docSnap.data();
+                                const existingKundeInfo =
+                                  docData.KundeInfo || [];
 
-                              toast.success("Navn oppdatert!", {
-                                position: "top-right",
-                              });
+                                const updatedKundeInfo = existingKundeInfo.map(
+                                  (kunde: any) => {
+                                    if (kunde.uniqueId === kundeId) {
+                                      return {
+                                        ...kunde,
+                                        Plantegninger: updatedRooms,
+                                      };
+                                    }
+                                    return kunde;
+                                  }
+                                );
+
+                                await updateDoc(husmodellDocRef, {
+                                  KundeInfo: updatedKundeInfo,
+                                  updatedAt: new Date().toISOString(),
+                                });
+
+                                toast.success("Navn oppdatert!", {
+                                  position: "top-right",
+                                });
+                              }
                             }}
                           >
                             Oppdater

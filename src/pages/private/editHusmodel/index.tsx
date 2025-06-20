@@ -12,6 +12,9 @@ export const EditHouseModel = () => {
   const tabData = [{ label: "Kundedetaljer" }, { label: "Plantegninger" }];
   const location = useLocation();
 
+  const pathSegments = location.pathname.split("/");
+  const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
   return (
     <>
       <>
@@ -25,18 +28,27 @@ export const EditHouseModel = () => {
                 Husmodeller
               </Link>
               <ChevronRight className="text-[#5D6B98] w-4 h-4" />
-              <span className="text-gray text-sm">Legg til nytt hus</span>
+              <Link
+                to={`/se-series/${id}`}
+                className="text-primary text-sm font-medium"
+              >
+                Kundeopplysninger
+              </Link>
+              <ChevronRight className="text-[#5D6B98] w-4 h-4" />
+              <span className="text-gray text-sm">
+                {kundeId ? "Rediger huset" : "Legg til nytt hus"}
+              </span>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between mb-4 md:mb-5">
               <h1 className="text-darkBlack font-semibold text-2xl md:text-[28px] desktop:text-[32px]">
-                Legg til nytt hus
+                {kundeId ? "Rediger huset" : "Legg til nytt hus"}
               </h1>
               <div>
                 <div className="border border-[#EFF1F5] bg-[#F9F9FB] p-1.5 rounded-lg w-max">
                   <Tabs
                     tabs={tabData}
                     activeTab={activeTab}
-                    {...(location.pathname.startsWith("/edit-husmodell")
+                    {...(location.pathname.includes("/edit-husmodell")
                       ? { setActiveTab }
                       : {})}
                     // setActiveTab={setActiveTab}

@@ -98,6 +98,8 @@ export const Eksterior: React.FC<{
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id: any = pathSegments.length > 2 ? pathSegments[2] : null;
+  const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
+
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -196,19 +198,25 @@ export const Eksterior: React.FC<{
 
     try {
       const houseData: any = await fetchHusmodellData(id);
-      let finalData;
-      if (houseData) {
-        finalData = houseData?.Plantegninger.find(
-          (item: any) => String(item?.pdf_id) === String(pdfId)
-        );
-      }
+      if (!houseData || !kundeId || !pdfId) return;
 
-      const updatedFields = deepCompareAndMerge(finalData, rooms);
+      const kundeList = houseData?.KundeInfo || [];
+      const targetKundeIndex = kundeList.findIndex(
+        (k: any) => String(k.uniqueId) === String(kundeId)
+      );
+      if (targetKundeIndex === -1) return;
+
+      const targetKunde = kundeList[targetKundeIndex];
+      const existingPlantegninger = targetKunde?.Plantegninger || [];
+
+      const itemToUpdate = existingPlantegninger.find(
+        (item: any) => String(item?.pdf_id) === String(pdfId)
+      );
+
+      const updatedFields = deepCompareAndMerge(itemToUpdate, rooms);
       const cleanedFields = removeUndefined(updatedFields);
 
-      // Replace the matching item in the array
-      let updatedPlantegninger = [...(houseData?.Plantegninger || [])];
-
+      const updatedPlantegninger = [...existingPlantegninger];
       const indexToUpdate = updatedPlantegninger.findIndex(
         (item: any) => String(item?.pdf_id) === String(pdfId)
       );
@@ -221,49 +229,35 @@ export const Eksterior: React.FC<{
         };
       }
 
+      const updatedKundeInfo = kundeList.map((kunde: any, index: number) => {
+        if (index === targetKundeIndex) {
+          return {
+            ...kunde,
+            Plantegninger: updatedPlantegninger,
+          };
+        }
+        return kunde;
+      });
+
       const husmodellDocRef = doc(db, "housemodell_configure_broker", id);
-      const formatDate = (date: Date) => {
-        return date
-          .toLocaleString("sv-SE", { timeZone: "UTC" })
-          .replace(",", "");
-      };
+      const formatDate = (date: Date) =>
+        date.toLocaleString("sv-SE", { timeZone: "UTC" }).replace(",", "");
 
       await updateDoc(husmodellDocRef, {
-        Plantegninger: updatedPlantegninger, // ✅ send full array with only one item changed
+        KundeInfo: updatedKundeInfo,
         updatedAt: formatDate(new Date()),
       });
 
       toast.success("Lagret", { position: "top-right" });
-      navigate(`/Husmodell`);
+      // navigate(`/Husmodell`);
+      navigate(`/se-series/${id}`);
     } catch (error) {
-      console.error("Firestore operation failed:", error);
-      toast.error("Something went wrong. Please try again.", {
-        position: "top-right",
-      });
+      console.error("Failed to update plantegning:", error);
+      toast.error("Noe gikk galt", { position: "top-right" });
     }
   };
 
   const [AddSubCategory, setAddSubCategory] = useState(false);
-
-  // useEffect(() => {
-  //   form.setValue("hovedkategorinavn", Category);
-  // }, [form, Category]);
-
-  // useEffect(() => {
-  //   if (Array.isArray(Category) && Category.length > 0) {
-  //     const formatted = Category.map((cat: any, index: number) => ({
-  //       name: cat.name,
-  //       Kategorinavn:
-  //         index === activeTabData
-  //           ? cat.Kategorinavn && cat.Kategorinavn.length > 0
-  //             ? cat.Kategorinavn
-  //             : null
-  //           : null,
-  //     }));
-
-  //     form.setValue("hovedkategorinavn", formatted);
-  //   }
-  // }, [form, Category, activeTabData]);
 
   useEffect(() => {
     if (Array.isArray(Category) && Category.length > 0) {

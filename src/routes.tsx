@@ -7,6 +7,7 @@ import {
   SeHouseModel,
   BoligConfiurator,
   BoligConfiuratorStepper,
+  KundeInfo,
 } from "./pages";
 import { AuthLayout } from "./layouts/AuthLayout";
 import { Login } from "./pages/public";
@@ -31,8 +32,15 @@ export const routes = createBrowserRouter([
       { path: "Inventory", element: <Inventory /> },
       { path: "Husmodell", element: <Husmodeller /> },
       { path: "se-husmodell/*", element: <SeHouseModel /> },
-      { path: "edit-husmodell/*", element: <EditHouseModel /> },
-      { path: "add-husmodell", element: <EditHouseModel /> },
+      { path: "se-series/*", element: <KundeInfo /> },
+      {
+        path: "se-series/:seriesId/edit-husmodell/*",
+        element: <EditHouseModel />,
+      },
+      {
+        path: "se-series/:seriesId/add-husmodell",
+        element: <EditHouseModel />,
+      },
     ],
   },
 ]);

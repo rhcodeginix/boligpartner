@@ -72,9 +72,9 @@ export const Husmodeller = () => {
             return (
               <div key={index}>
                 {/* <div className="w-full h-[243px] mb-4">
-                  {item?.Husdetaljer?.photo ? (
+                  {item?.photo ? (
                     <img
-                      src={item?.Husdetaljer?.photo}
+                      src={item?.photo}
                       alt="house"
                       className="w-full h-full object-cover rounded-lg"
                     />
@@ -86,9 +86,9 @@ export const Husmodeller = () => {
                   {!loaded && (
                     <div className="w-full h-full rounded-lg custom-shimmer"></div>
                   )}
-                  {item?.Husdetaljer?.photo && (
+                  {item?.photo && (
                     <img
-                      src={item?.Husdetaljer?.photo}
+                      src={item?.photo}
                       alt="house"
                       className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
                         loaded ? "opacity-100" : "opacity-0"
@@ -102,12 +102,12 @@ export const Husmodeller = () => {
 
                 <div className="flex items-center gap-2 justify-between">
                   <h4 className="text-darkBlack font-medium">
-                    {item?.Husdetaljer?.husmodell_name}
+                    {item?.husmodell_name}
                   </h4>
                   <div
                     className="border-purple border-2 rounded-[40px] py-2 px-5 text-purple font-medium h-[40px] flex items-center justify-center cursor-pointer whitespace-nowrap"
                     // onClick={() => navigate(`/se-husmodell/${item?.id}`)}
-                    onClick={() => navigate(`/edit-husmodell/${item?.id}`)}
+                    onClick={() => navigate(`/se-series/${item?.id}`)}
                   >
                     Velg serie
                   </div>

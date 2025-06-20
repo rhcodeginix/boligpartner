@@ -80,10 +80,7 @@ export const Navbar: React.FC = () => {
         }}
       >
         <div className="flex items-center gap-2">
-          <Menu
-            onClick={toggleDrawer}
-            className="md:hidden text-primary"
-          />
+          <Menu onClick={toggleDrawer} className="md:hidden text-primary" />
           <Link to={"/"}>
             <img src={Ic_logo} alt="logo" className="w-[200px] lg:w-auto" />
           </Link>
@@ -95,6 +92,7 @@ export const Navbar: React.FC = () => {
               currentPath === "/Husmodell" ||
               currentPath.startsWith("/se-husmodell/") ||
               currentPath === "/add-husmodell" ||
+              currentPath.startsWith("/se-series/") ||
               currentPath.startsWith("/edit-husmodell/")
                 ? "bg-lightPurple text-primary"
                 : "text-black"
@@ -190,6 +188,7 @@ export const Navbar: React.FC = () => {
               className={`text-base font-medium py-2 px-3 rounded-[6px] ${
                 currentPath === "/Husmodell" ||
                 currentPath.startsWith("/se-husmodell/") ||
+                currentPath.startsWith("/se-series/") ||
                 currentPath === "/add-husmodell" ||
                 currentPath.startsWith("/edit-husmodell/")
                   ? "bg-lightPurple text-primary"

@@ -23,6 +23,8 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
+
   const [loading, setLoading] = useState(true);
 
   const handleToggleSubCategoryPopup = () => {
@@ -65,24 +67,39 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
   const [FloorData, setFloorData] = useState<any>(null);
 
   useEffect(() => {
-    if (!id || !pdfId) {
-      return;
-    }
+    if (!id || !pdfId || !kundeId) return;
 
     const getData = async () => {
       const data: any = await fetchHusmodellData(id);
-      if (data) {
-        const finalData = data?.Plantegninger.find(
-          (item: any) => String(item?.pdf_id) === String(pdfId)
-        );
-        setFloorData(finalData);
-        setCategory(finalData?.rooms);
+      if (!data?.KundeInfo) {
+        setLoading(false);
+        return;
       }
+
+      const targetKunde = data.KundeInfo.find(
+        (kunde: any) => String(kunde.uniqueId) === String(kundeId)
+      );
+
+      if (!targetKunde) {
+        setLoading(false);
+        return;
+      }
+
+      const finalData = targetKunde?.Plantegninger?.find(
+        (item: any) => String(item?.pdf_id) === String(pdfId)
+      );
+
+      if (finalData) {
+        setFloorData(finalData);
+        setCategory(finalData.rooms || []);
+      }
+
       setLoading(false);
     };
 
     getData();
-  }, [id, pdfId]);
+  }, [id, pdfId, kundeId]);
+
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   return (
@@ -91,6 +108,13 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         <div className="flex items-center gap-1.5 mb-4 md:mb-6 flex-wrap">
           <Link to={"/Husmodell"} className="text-primary text-sm font-medium">
             Husmodeller
+          </Link>
+          <ChevronRight className="text-[#5D6B98] w-4 h-4" />
+          <Link
+            to={`/se-series/${id}`}
+            className="text-primary text-sm font-medium"
+          >
+            Kundeopplysninger
           </Link>
           <ChevronRight className="text-[#5D6B98] w-4 h-4" />
           <div

@@ -22,11 +22,13 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
+
   const [loading, setLoading] = useState(true);
   const [FloorData, setFloorData] = useState<any>(null);
 
   useEffect(() => {
-    if (!id || !pdfId) {
+    if (!id || !pdfId || !kundeId) {
       setLoading(false);
       return;
     }
@@ -34,96 +36,193 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
     const getData = async () => {
       const data: any = await fetchHusmodellData(id);
+      // if (data) {
+      //   const finalData = data?.Plantegninger.find(
+      //     (item: any) => String(item?.pdf_id) === String(pdfId)
+      //   );
+      //   setFloorData(finalData);
+      //   if (finalData?.rooms && finalData.rooms.length > 0) {
+      //     setLoading(false);
+      //     return;
+      //   }
+      // }
       if (data) {
-        const finalData = data?.Plantegninger.find(
+        const targetKunde = data.KundeInfo?.find(
+          (k: any) => String(k.uniqueId) === String(kundeId)
+        );
+        const finalData = targetKunde?.Plantegninger?.find(
           (item: any) => String(item?.pdf_id) === String(pdfId)
         );
+
         setFloorData(finalData);
         if (finalData?.rooms && finalData.rooms.length > 0) {
           setLoading(false);
           return;
         }
       }
+      // try {
+      //   if (pdfId) {
+      //     const husmodellDocRef = doc(
+      //       db,
+      //       "housemodell_configure_broker",
+      //       String(id)
+      //     );
+
+      //     const docSnap = await getDoc(husmodellDocRef);
+      //     const existingData = docSnap.exists()
+      //       ? docSnap.data().Plantegninger || []
+      //       : [];
+
+      //     // Call analyze API for this specific pdfId
+      //     const PDFresponse = await fetch(
+      //       `https://iplotnor-hf-api-version-2.hf.space/analyze/${pdfId}`,
+      //       {
+      //         method: "POST",
+      //         headers: {
+      //           accept: "application/json",
+      //           "Content-Type": "application/json",
+      //         },
+      //         body: JSON.stringify({
+      //           description: "string",
+      //         }),
+      //         mode: "cors",
+      //       }
+      //     );
+
+      //     if (!PDFresponse.ok) {
+      //       throw new Error(`HTTP error! status: ${PDFresponse.status}`);
+      //     }
+
+      //     const PDFdata = await PDFresponse.json();
+
+      //     // Replace only the matching pdf_id entry in existingData
+      //     const updatedPlantegninger = existingData.map((item: any) => {
+      //       if (String(item?.pdf_id) === String(pdfId)) {
+      //         return {
+      //           ...item, // keep original
+      //           ...PDFdata, // override with new fields
+      //         };
+      //       }
+      //       return item; // untouched others
+      //     });
+
+      //     const formatDate = (date: Date) => {
+      //       return date
+      //         .toLocaleString("sv-SE", { timeZone: "UTC" })
+      //         .replace(",", "");
+      //     };
+
+      //     await updateDoc(husmodellDocRef, {
+      //       Plantegninger: updatedPlantegninger,
+      //       id: id,
+      //       updatedAt: formatDate(new Date()),
+      //     });
+
+      //     // update UI
+      //     const finalData = updatedPlantegninger.find(
+      //       (item: any) => String(item?.pdf_id) === String(pdfId)
+      //     );
+      //     setFloorData(finalData);
+      //     toast.success(PDFdata.message, {
+      //       position: "top-right",
+      //     });
+      //     setActiveTab(3);
+      //   }
+      // } catch (error) {
+      //   console.error("Upload error:", error);
+      //   setLoading(false);
+      //   toast.error("File upload error!", {
+      //     position: "top-right",
+      //   });
+      // }
       try {
-        if (pdfId) {
-          const husmodellDocRef = doc(
-            db,
-            "housemodell_configure_broker",
-            String(id)
-          );
+        const husmodellDocRef = doc(
+          db,
+          "housemodell_configure_broker",
+          String(id)
+        );
+        const docSnap = await getDoc(husmodellDocRef);
 
-          const docSnap = await getDoc(husmodellDocRef);
-          const existingData = docSnap.exists()
-            ? docSnap.data().Plantegninger || []
-            : [];
+        const allKundeInfo = docSnap.exists()
+          ? docSnap.data().KundeInfo || []
+          : [];
 
-          // Call analyze API for this specific pdfId
-          const PDFresponse = await fetch(
-            `https://iplotnor-hf-api-version-2.hf.space/analyze/${pdfId}`,
-            {
-              method: "POST",
-              headers: {
-                accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                description: "string",
-              }),
-              mode: "cors",
-            }
-          );
+        const targetKunde = allKundeInfo.find(
+          (k: any) => String(k.uniqueId) === String(kundeId)
+        );
 
-          if (!PDFresponse.ok) {
-            throw new Error(`HTTP error! status: ${PDFresponse.status}`);
+        if (!targetKunde) throw new Error("Kunde not found");
+
+        const existingPlantegninger = targetKunde.Plantegninger || [];
+
+        const PDFresponse = await fetch(
+          `https://iplotnor-hf-api-version-2.hf.space/analyze/${pdfId}`,
+          {
+            method: "POST",
+            headers: {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              description: "string",
+            }),
+            mode: "cors",
           }
+        );
 
-          const PDFdata = await PDFresponse.json();
-
-          // Replace only the matching pdf_id entry in existingData
-          const updatedPlantegninger = existingData.map((item: any) => {
-            if (String(item?.pdf_id) === String(pdfId)) {
-              return {
-                ...item, // keep original
-                ...PDFdata, // override with new fields
-              };
-            }
-            return item; // untouched others
-          });
-
-          const formatDate = (date: Date) => {
-            return date
-              .toLocaleString("sv-SE", { timeZone: "UTC" })
-              .replace(",", "");
-          };
-
-          await updateDoc(husmodellDocRef, {
-            Plantegninger: updatedPlantegninger,
-            id: id,
-            updatedAt: formatDate(new Date()),
-          });
-
-          // update UI
-          const finalData = updatedPlantegninger.find(
-            (item: any) => String(item?.pdf_id) === String(pdfId)
-          );
-          setFloorData(finalData);
-          toast.success(PDFdata.message, {
-            position: "top-right",
-          });
-          setActiveTab(3);
+        if (!PDFresponse.ok) {
+          throw new Error(`HTTP error! status: ${PDFresponse.status}`);
         }
+
+        const PDFdata = await PDFresponse.json();
+
+        // Update only the matching pdf entry inside targetKunde
+        const updatedPlantegninger = existingPlantegninger.map((item: any) => {
+          if (String(item?.pdf_id) === String(pdfId)) {
+            return { ...item, ...PDFdata };
+          }
+          return item;
+        });
+
+        // Update the full KundeInfo array
+        const updatedKundeInfo = allKundeInfo.map((k: any) => {
+          if (k.uniqueId === kundeId) {
+            return { ...k, Plantegninger: updatedPlantegninger };
+          }
+          return k;
+        });
+
+        const formatDate = (date: Date) => {
+          return date
+            .toLocaleString("sv-SE", { timeZone: "UTC" })
+            .replace(",", "");
+        };
+
+        await updateDoc(husmodellDocRef, {
+          KundeInfo: updatedKundeInfo,
+          updatedAt: formatDate(new Date()),
+        });
+
+        const finalData = updatedPlantegninger.find(
+          (item: any) => String(item?.pdf_id) === String(pdfId)
+        );
+
+        setFloorData(finalData);
+        toast.success(PDFdata.message, { position: "top-right" });
+        setActiveTab(3);
       } catch (error) {
         console.error("Upload error:", error);
-        setLoading(false);
         toast.error("File upload error!", {
           position: "top-right",
         });
+      } finally {
+        setLoading(false);
       }
       setLoading(false);
     };
 
     getData();
-  }, [id, pdfId, setActiveTab]);
+  }, [id, pdfId, setActiveTab, kundeId]);
 
   return (
     <>
@@ -131,6 +230,13 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         <div className="flex items-center gap-1.5 mb-4 md:mb-6 flex-wrap">
           <Link to={"/Husmodell"} className="text-primary text-sm font-medium">
             Husmodeller
+          </Link>
+          <ChevronRight className="text-[#5D6B98] w-4 h-4" />
+          <Link
+            to={`/se-series/${id}`}
+            className="text-primary text-sm font-medium"
+          >
+            Kundeopplysninger
           </Link>
           <ChevronRight className="text-[#5D6B98] w-4 h-4" />
           <div
