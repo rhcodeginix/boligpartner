@@ -293,9 +293,9 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
       if (!id) {
         setShowConfiguratorModal(true);
       }
-    }, 200); // 1000ms = 1 second
+    }, 200);
 
-    return () => clearTimeout(timeout); // cleanup on unmount or re-run
+    return () => clearTimeout(timeout);
   }, [id]);
 
   const handleCreateNewConfigurator = async () => {

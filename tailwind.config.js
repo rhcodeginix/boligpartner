@@ -56,6 +56,15 @@ module.exports = {
       xBig: "1920px",
       // => @media (min-width: 1920px) { ... }
     },
+    keyframes: {
+      progress: {
+        '0%': { transform: 'translateX(-100%)' },
+        '100%': { transform: 'translateX(100%)' },
+      },
+    },
+    animation: {
+      progress: 'progress 1.5s linear infinite',
+    },
   },
   plugins: [],
 };

@@ -77,11 +77,7 @@ export const fetchSupplierData = async (id: string) => {
 
 export const fetchAdminData = async (id: string) => {
   try {
-    const q = query(
-      collection(db, "admin"),
-      where("id", "==", id)
-      // orderBy("updatedAt", "desc")
-    );
+    const q = query(collection(db, "admin"), where("id", "==", id));
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {

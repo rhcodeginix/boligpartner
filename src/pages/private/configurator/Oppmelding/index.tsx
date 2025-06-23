@@ -18,6 +18,9 @@ import { Brannvern } from "./Brannvern";
 import { TekniskeInstallasjoner } from "./TekniskeInstallasjoner";
 import { SluttføringDokumentasjon } from "./SluttføringDokumentasjon";
 import { TakrennerBeslag } from "./TakrennerBeslag";
+import { useLocation } from "react-router-dom";
+import { fetchRoomData } from "../../../../lib/utils";
+import { Spinner } from "../../../../components/Spinner";
 
 export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
   Next,
@@ -36,13 +39,6 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
       }
     }
   }, [currentStep]);
-  // const handleNext = () => {
-  //   if (currentStep < wizardSteps.length) {
-  //     const nextStep = currentStep + 1;
-
-  //     setCurrentStep(nextStep);
-  //   }
-  // };
 
   const handleNext = async () => {
     const currentStepComponent = wizardSteps[currentStep - 1]?.content;
@@ -74,6 +70,30 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
   };
   const formRefs = useRef<Record<number, any>>({});
 
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/");
+  const id = pathSegments.length > 2 ? pathSegments[2] : null;
+
+  const [loading, setLoading] = useState(true);
+  const [roomsData, setRoomsData] = useState<any>([]);
+
+  useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+    const getData = async () => {
+      const data = await fetchRoomData(id);
+
+      if (data) {
+        setRoomsData(data);
+      }
+      setLoading(false);
+    };
+
+    getData();
+  }, [id]);
+
   const wizardSteps = [
     {
       id: 1,
@@ -86,6 +106,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           handleNext={handleNext}
           Prev={Prev}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -99,6 +121,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           handleNext={handleNext}
           handlePrevious={handlePrevious}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -113,6 +137,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[3] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -127,6 +153,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[4] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -140,6 +168,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[5] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -153,6 +183,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[6] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -167,6 +199,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[7] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -180,6 +214,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[8] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -193,6 +229,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[9] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -206,6 +244,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[10] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -219,6 +259,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[11] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -232,6 +274,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[12] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -245,6 +289,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[13] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -258,6 +304,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[14] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -271,6 +319,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[15] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -284,6 +334,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[16] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -297,6 +349,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[17] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -310,6 +364,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[18] = ref;
           }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
         />
       ),
     },
@@ -336,6 +392,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           setInvalidSteps={setInvalidSteps}
         />
       </div>
+      {loading && <Spinner />}
     </>
   );
 };

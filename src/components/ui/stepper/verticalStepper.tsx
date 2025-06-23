@@ -1,7 +1,6 @@
 import React, { ReactNode } from "react";
 import Ic_Check_white from "../../../assets/images/Ic_Check_white.svg";
 
-// Types for the wizard
 interface WizardStep {
   id: number;
   title: string;
@@ -27,13 +26,6 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
   formRefs,
   setInvalidSteps,
 }) => {
-  // const handleStepClick = (stepId: number) => {
-  //   // if (stepId < currentStep) {
-  //   setCurrentStep(stepId);
-  //   // }
-  //   localStorage.setItem("currVerticalIndex", stepId.toString());
-  // };
-
   const handleStepClick = async (stepId: number) => {
     const currentStepForm = formRefs.current[currentStep];
     const isValid = await currentStepForm?.validateForm?.();
@@ -42,12 +34,10 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
       if (!invalidSteps.includes(currentStep)) {
         setInvalidSteps([...invalidSteps, currentStep]);
       }
-      // return;
     } else {
       setInvalidSteps(invalidSteps.filter((id: any) => id !== currentStep));
     }
 
-    // if (stepId < currentStep && stepId < currentStep + 1) {
     if (stepId < currentStep || stepId === currentStep + 1) {
       setCurrentStep(stepId);
       localStorage.setItem("currVerticalIndex", stepId.toString());
@@ -59,12 +49,10 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
   return (
     <div className={`${className}`}>
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Vertical Step Indicator */}
         <div className="w-full lg:w-80 bg-[#F9F9FB] border border-[#EFF1F5] rounded-lg p-5 h-full max-h-[500px] overflow-y-auto overFlowAutoY sticky top-[90px]">
           <div className="space-y-6">
             {steps.map((step, index) => (
               <div key={step.id} className={"relative"}>
-                {/* Connector Line */}
                 {index < steps.length - 1 && (
                   <div
                     className={`absolute left-3 z-30 w-0.5 h-16 border-l border-dashed border-[#B9C0D4]`}
@@ -73,9 +61,6 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
 
                 <div
                   onClick={() => handleStepClick(step.id)}
-                  // className={`flex items-start space-x-4 rounded-lg transition-all ${
-                  //   step.id < currentStep ? "cursor-pointer" : "cursor-default"
-                  // } relative z-40`}
                   className={`flex items-start space-x-4 rounded-lg transition-all  relative z-40
                   ${
                     step.id < currentStep ||
@@ -91,14 +76,12 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
                         ? "bg-primary text-white"
                         : currentStep > step.id
                         ? // ? "bg-[#099250]"
-                          // : "bg-[#ECE9FE] text-darkBlack"
                           invalidSteps.includes(step.id)
                           ? "bg-[#ECE9FE] text-darkBlack"
                           : "bg-[#099250]"
                         : "bg-[#ECE9FE] text-darkBlack"
                     } `}
                   >
-                    {/* {currentStep > step.id ? ( */}
                     {currentStep > step.id &&
                     !invalidSteps.includes(step.id) ? (
                       <img src={Ic_Check_white} alt="Completed" />

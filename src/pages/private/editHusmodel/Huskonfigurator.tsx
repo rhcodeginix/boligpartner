@@ -118,92 +118,6 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     });
   }
 
-  // const handleFileUpload = async (files: FileList) => {
-  //   if (!files.length) return;
-
-  //   const formData = new FormData();
-  //   formData.append("file", files[0]);
-  //   setLoading(true);
-  //   try {
-  //     const response = await fetch(
-  //       "https://iplotnor-hf-floor-plan-api.hf.space/upload",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           accept: "application/json",
-  //         },
-  //         body: formData,
-  //         mode: "cors",
-  //       }
-  //     );
-
-  //     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-
-  //     const data = await response.json();
-  //     if (data && data?.pdf_id) {
-  //       let base64PDF: string | undefined;
-
-  //       const reader = new FileReader();
-  //       reader.onloadend = async () => {
-  //         base64PDF = reader.result as string;
-
-  //         if (base64PDF) {
-  //           const imageBase64 = await convertPdfToImage(base64PDF);
-
-  //           if (imageBase64) {
-  //             const finalImageUrl = await uploadBase64Image(imageBase64);
-  //             const husmodellDocRef = doc(
-  //               db,
-  //               "housemodell_configure_broker",
-  //               String(id)
-  //             );
-
-  //             const docSnap = await getDoc(husmodellDocRef);
-  //             const existingData = docSnap.exists()
-  //               ? docSnap.data().Plantegninger || []
-  //               : [];
-  //             const newIndex = existingData.length + 1;
-
-  //             const updatedPdfData = {
-  //               ...data,
-  //               image: finalImageUrl,
-  //               title: `Floor ${newIndex}`,
-  //             };
-  //             setRoomsData((prev: any) => [...prev, updatedPdfData]);
-
-  //             const finalData = [];
-  //             finalData.push(updatedPdfData);
-
-  //             const updatedPlantegninger = [...existingData, ...finalData];
-
-  //             const formatDate = (date: Date) => {
-  //               return date
-  //                 .toLocaleString("sv-SE", { timeZone: "UTC" })
-  //                 .replace(",", "");
-  //             };
-  //             await updateDoc(husmodellDocRef, {
-  //               Plantegninger: updatedPlantegninger,
-  //               id: id,
-  //               updatedAt: formatDate(new Date()),
-  //             });
-  //             toast.success(data.message, {
-  //               position: "top-right",
-  //             });
-  //             setLoading(false);
-  //           }
-  //         }
-  //       };
-  //       reader.readAsDataURL(files[0]);
-  //     }
-  //   } catch (error) {
-  //     console.error("Upload error:", error);
-  //     setLoading(false);
-  //     toast.error("File upload error!", {
-  //       position: "top-right",
-  //     });
-  //   }
-  // };
-
   const handleFileUpload = async (files: FileList) => {
     if (!files.length) return;
 
@@ -275,7 +189,10 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                 image: finalImageUrl,
                 title: `Floor ${newIndex}`,
               };
-              setRoomsData((prev: any) => [...prev, updatedFloor]);
+              setRoomsData((prev: any) => [
+                ...(Array.isArray(prev) ? prev : []),
+                updatedFloor,
+              ]);
               return {
                 ...kunde,
                 Plantegninger: [...existingFloors, updatedFloor],
@@ -285,9 +202,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           });
 
           await updateDoc(husmodellDocRef, {
-            // Plantegninger: updatedPlantegninger,
             KundeInfo: updatedKundeInfo,
-
             updatedAt: formatDate(new Date()),
           });
           toast.success(data.message, {

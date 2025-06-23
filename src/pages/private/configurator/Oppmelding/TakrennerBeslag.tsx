@@ -9,8 +9,13 @@ import {
 } from "../../../../components/ui/form";
 import Button from "../../../../components/common/button";
 import { z } from "zod";
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle } from "react";
 import { Input } from "../../../../components/ui/input";
+import { useLocation } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../../../config/firebaseConfig";
+import { removeUndefinedOrNull } from "./Yttervegger";
 
 const formSchema = z.object({
   StandardLeveranseLufieKrokFarge: z.boolean().optional(),
@@ -23,9 +28,23 @@ const formSchema = z.object({
 
 export const TakrennerBeslag = forwardRef(
   (
-    { Next, handlePrevious }: { Next: () => void; handlePrevious: () => void },
+    {
+      Next,
+      handlePrevious,
+      roomsData,
+      setRoomsData,
+    }: {
+      Next: () => void;
+      handlePrevious: () => void;
+      roomsData: any;
+      setRoomsData: any;
+    },
     ref
   ) => {
+    const location = useLocation();
+    const pathSegments = location.pathname.split("/");
+    const id = pathSegments.length > 2 ? pathSegments[2] : null;
+
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
     });
@@ -37,10 +56,51 @@ export const TakrennerBeslag = forwardRef(
     }));
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-      console.log(data);
-      Next();
-    };
+      try {
+        const husmodellDocRef = doc(db, "room_configurator", String(id));
 
+        const formatDate = (date: Date) => {
+          return date
+            .toLocaleString("sv-SE", { timeZone: "UTC" })
+            .replace(",", "");
+        };
+        const husmodellSnap = await getDoc(husmodellDocRef);
+
+        if (!husmodellSnap.exists()) {
+          throw new Error("Document does not exist!");
+        }
+        const existingData = husmodellSnap.data();
+
+        const filteredData = removeUndefinedOrNull(data);
+        const mergedData = {
+          ...existingData,
+          TakrennerBeslag: filteredData,
+          id: id,
+          updatedAt: formatDate(new Date()),
+        };
+        setRoomsData(mergedData);
+
+        await updateDoc(husmodellDocRef, mergedData);
+        toast.success("Lagret", {
+          position: "top-right",
+        });
+        Next();
+      } catch (error) {
+        console.error("error:", error);
+        toast.error("Something went wrong!", {
+          position: "top-right",
+        });
+      }
+    };
+    useEffect(() => {
+      if (roomsData && roomsData?.TakrennerBeslag) {
+        Object.entries(roomsData?.TakrennerBeslag).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            form.setValue(key as any, value);
+          }
+        });
+      }
+    }, [roomsData]);
     return (
       <>
         <Form {...form}>

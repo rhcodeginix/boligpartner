@@ -161,8 +161,8 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           )}
         </div>
       </div>
-      <div className="flex flex-col md:flex-row gap-4 md:gap-6 px-4 md:px-6 pt-6 pb-[136px]">
-        <div className="w-full md:w-[25%] border border-[#EFF1F5] rounded-lg shadow-shadow2 md:h-[690px]">
+      <div className="flex flex-col lg:flex-row gap-4 desktop:gap-6 px-4 md:px-6 pt-6 pb-[136px]">
+        <div className="w-full lg:w-[30%] desktop:w-[25%] border border-[#EFF1F5] rounded-lg shadow-shadow2 lg:h-[690px]">
           <div className="p-3 md:p-4 border-b border-[#EFF1F5] text-darkBlack text-lg font-medium flex items-center justify-between gap-2">
             <span className="truncate">Romoversikt</span>
             <div
@@ -175,7 +175,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               </span>
             </div>
           </div>
-          <div className="flex md:flex-col p-3 md:p-4 pb-0 rounded-lg gap-3 h-full md:max-h-[calc(100%-90px)] overflow-y-auto overFlowAutoY sticky top-[80px]">
+          <div className="flex lg:flex-col p-3 md:p-4 pb-0 rounded-lg gap-3 h-full lg:max-h-[calc(100%-90px)] overflow-y-auto overFlowAutoY sticky top-[80px]">
             {Category.length > 0
               ? Category.map((tab: any, index: number) => (
                   <div
@@ -191,11 +191,11 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                     }`}
                     onClick={() => setActiveTabData(index)}
                   >
-                    <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold">
+                    <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold truncate">
                       <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
                         {index + 1}
                       </span>
-                      <span className="w-[135px] truncate">
+                      <span className="truncate">
                         {tab?.name_no === "" || !tab?.name_no
                           ? tab?.name
                           : tab?.name_no}
@@ -237,7 +237,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           </div>
         </div>
 
-        <div className="w-full md:w-[75%] border border-[#EFF1F5] rounded-lg overflow-hidden h-max p-3">
+        <div className="w-full lg:w-[70%] desktop:w-[75%] border border-[#EFF1F5] rounded-lg overflow-hidden h-max p-3">
           {activeTabData !== null ? (
             <Eksterior
               setActiveTab={setActiveTab}

@@ -14,9 +14,20 @@ import { parsePhoneNumber } from "react-phone-number-input";
 import { phoneNumberValidations } from "../../../../lib/utils";
 import { InputMobile } from "../../../../components/ui/inputMobile";
 import { House, Store, Warehouse } from "lucide-react";
-import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import ApiUtils from "../../../../api";
 import Ic_search_location from "../../../../assets/images/Ic_search_location.svg";
+import { toast } from "react-hot-toast";
+import { db } from "../../../../config/firebaseConfig";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { useLocation } from "react-router-dom";
+import { removeUndefinedOrNull } from "./Yttervegger";
 
 const formSchema = z.object({
   Kundenr: z.number({ required_error: "Kundenr er påkrevd." }),
@@ -90,9 +101,23 @@ const formSchema = z.object({
 // }) => {
 export const Prosjektdetaljer = forwardRef(
   (
-    { handleNext, Prev }: { handleNext: () => void; Prev: () => void },
+    {
+      handleNext,
+      Prev,
+      roomsData,
+      setRoomsData,
+    }: {
+      handleNext: () => void;
+      Prev: () => void;
+      roomsData: any;
+      setRoomsData: any;
+    },
     ref: any
   ) => {
+    const location = useLocation();
+    const pathSegments = location.pathname.split("/");
+    const id = pathSegments.length > 2 ? pathSegments[2] : null;
+
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
     });
@@ -105,9 +130,41 @@ export const Prosjektdetaljer = forwardRef(
     const selectedHouseType = form.watch("Hustype");
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-      console.log(data);
-      handleNext();
-      localStorage.setItem("currVerticalIndex", String(2));
+      try {
+        const husmodellDocRef = doc(db, "room_configurator", String(id));
+
+        const formatDate = (date: Date) => {
+          return date
+            .toLocaleString("sv-SE", { timeZone: "UTC" })
+            .replace(",", "");
+        };
+        const husmodellSnap = await getDoc(husmodellDocRef);
+
+        if (!husmodellSnap.exists()) {
+          throw new Error("Document does not exist!");
+        }
+        const existingData = husmodellSnap.data();
+
+        const filteredData = removeUndefinedOrNull(data);
+        const mergedData = {
+          ...existingData,
+          Prosjektdetaljer: filteredData,
+          id: id,
+          updatedAt: formatDate(new Date()),
+        };
+        setRoomsData(mergedData);
+        await updateDoc(husmodellDocRef, mergedData);
+        toast.success("Lagret", {
+          position: "top-right",
+        });
+        handleNext();
+        localStorage.setItem("currVerticalIndex", String(2));
+      } catch (error) {
+        console.error("error:", error);
+        toast.error("Something went wrong!", {
+          position: "top-right",
+        });
+      }
     };
     const Finansiering = ["Privat", "Husbank"];
 
@@ -136,6 +193,22 @@ export const Prosjektdetaljer = forwardRef(
         }
       }
     };
+
+    useEffect(() => {
+      if (roomsData) {
+        if (roomsData && roomsData?.Prosjektdetaljer) {
+          Object.entries(roomsData?.Prosjektdetaljer).forEach(
+            ([key, value]) => {
+              if (value !== undefined && value !== null) {
+                form.setValue(key as any, value);
+              }
+            }
+          );
+        } else {
+          form.setValue("Kundenr", Number(roomsData?.Kundenummer));
+        }
+      }
+    }, [roomsData, Finansiering]);
 
     return (
       <>

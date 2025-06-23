@@ -155,7 +155,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             </p>
           </div>
         </div> */}
-        <div className="border border-[#B9C0D4] rounded-lg overflow-hidden">
+        <div className="border w-full border-[#B9C0D4] rounded-lg overflow-hidden">
           <img src={FloorData?.image} alt="floor" className="w-full h-full" />
         </div>
       </div>

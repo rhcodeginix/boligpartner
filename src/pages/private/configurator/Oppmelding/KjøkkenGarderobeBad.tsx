@@ -18,7 +18,12 @@ import {
   SelectValue,
 } from "../../../../components/ui/select";
 import { Input } from "../../../../components/ui/input";
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle } from "react";
+import { useLocation } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../../../config/firebaseConfig";
+import { removeUndefinedOrNull } from "./Yttervegger";
 
 const formSchema = z.object({
   StandardHvitmaltUtvogInnv: z.boolean().optional(),
@@ -38,9 +43,19 @@ export const KjøkkenGarderobeBad = forwardRef(
     {
       handleNext,
       handlePrevious,
-    }: { handleNext: () => void; handlePrevious: () => void },
+      roomsData,
+      setRoomsData,
+    }: {
+      handleNext: () => void;
+      handlePrevious: () => void;
+      roomsData: any;
+      setRoomsData: any;
+    },
     ref
   ) => {
+    const location = useLocation();
+    const pathSegments = location.pathname.split("/");
+    const id = pathSegments.length > 2 ? pathSegments[2] : null;
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
     });
@@ -52,10 +67,56 @@ export const KjøkkenGarderobeBad = forwardRef(
     }));
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-      console.log(data);
-      handleNext();
-      localStorage.setItem("currVerticalIndex", String(11));
+      try {
+        const husmodellDocRef = doc(db, "room_configurator", String(id));
+
+        const formatDate = (date: Date) => {
+          return date
+            .toLocaleString("sv-SE", { timeZone: "UTC" })
+            .replace(",", "");
+        };
+        const husmodellSnap = await getDoc(husmodellDocRef);
+
+        if (!husmodellSnap.exists()) {
+          throw new Error("Document does not exist!");
+        }
+        const existingData = husmodellSnap.data();
+
+        const filteredData = removeUndefinedOrNull(data);
+        const mergedData = {
+          ...existingData,
+          KjøkkenGarderobeBad: filteredData,
+          id: id,
+          updatedAt: formatDate(new Date()),
+        };
+        setRoomsData(mergedData);
+
+        await updateDoc(husmodellDocRef, mergedData);
+        toast.success("Lagret", {
+          position: "top-right",
+        });
+        handleNext();
+        localStorage.setItem("currVerticalIndex", String(11));
+      } catch (error) {
+        console.error("error:", error);
+        toast.error("Something went wrong!", {
+          position: "top-right",
+        });
+      }
     };
+    const array = ["Abc", "Xyz"];
+
+    useEffect(() => {
+      if (roomsData && roomsData?.KjøkkenGarderobeBad) {
+        Object.entries(roomsData?.KjøkkenGarderobeBad).forEach(
+          ([key, value]) => {
+            if (value !== undefined && value !== null) {
+              form.setValue(key as any, value);
+            }
+          }
+        );
+      }
+    }, [roomsData, array]);
 
     return (
       <>
@@ -212,8 +273,13 @@ export const KjøkkenGarderobeBad = forwardRef(
                                 </SelectTrigger>
                                 <SelectContent className="bg-white">
                                   <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
+                                    {array?.map((item, index) => {
+                                      return (
+                                        <SelectItem key={index} value={item}>
+                                          {item}
+                                        </SelectItem>
+                                      );
+                                    })}
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
@@ -290,8 +356,13 @@ export const KjøkkenGarderobeBad = forwardRef(
                                 </SelectTrigger>
                                 <SelectContent className="bg-white">
                                   <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
+                                    {array?.map((item, index) => {
+                                      return (
+                                        <SelectItem key={index} value={item}>
+                                          {item}
+                                        </SelectItem>
+                                      );
+                                    })}
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
