@@ -19,7 +19,6 @@ import {
 } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 import Ic_search from "../../../assets/images/Ic_search.svg";
-import Ic_filter from "../../../assets/images/Ic_filter.svg";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { fetchHusmodellData, formatDateTime } from "../../../lib/utils";
@@ -123,7 +122,7 @@ export const HusmodellerTable = () => {
         accessorKey: "Kundenavn",
         header: "Kundenavn",
         cell: ({ row }) => (
-          <p className="text-sm font-medium text-black">
+          <p className="text-sm font-medium text-black w-max">
             {row.original.Kundenavn}
           </p>
         ),
@@ -132,7 +131,7 @@ export const HusmodellerTable = () => {
         accessorKey: "Anleggsadresse",
         header: "Anleggsadresse",
         cell: ({ row }) => (
-          <p className="text-sm font-medium text-black">
+          <p className="text-sm font-medium text-black w-max">
             {row.original.Anleggsadresse}
           </p>
         ),
@@ -141,7 +140,7 @@ export const HusmodellerTable = () => {
         accessorKey: "Mobilnummer",
         header: "Mobilnummer",
         cell: ({ row }) => (
-          <p className="text-sm font-medium text-black">
+          <p className="text-sm font-medium text-black w-max">
             {row.original.mobileNummer}
           </p>
         ),
@@ -150,14 +149,14 @@ export const HusmodellerTable = () => {
         accessorKey: "EPost",
         header: "EPost",
         cell: ({ row }) => (
-          <p className="text-sm font-medium text-black">{row.original.EPost}</p>
+          <p className="text-sm font-medium text-black w-max">{row.original.EPost}</p>
         ),
       },
       {
         accessorKey: "Kundenummer",
         header: "Kundenummer",
         cell: ({ row }) => (
-          <p className="text-sm font-medium text-black">
+          <p className="text-sm font-medium text-black w-max">
             {row.original.Kundenummer}
           </p>
         ),
@@ -167,7 +166,7 @@ export const HusmodellerTable = () => {
         header: "Siste oppdatert av",
         cell: ({ row }) => (
           <div className="flex items-start gap-3">
-            <p className="text-sm font-medium text-black">
+            <p className="text-sm font-medium text-black w-max">
               {formatDateTime(row.original.updatedAt)}
             </p>
           </div>
@@ -245,10 +244,7 @@ export const HusmodellerTable = () => {
           />
         </div>
 
-        <div className="border border-gray1 rounded-[8px] flex gap-2 items-center py-[10px] px-4 cursor-pointer shadow-shadow1 h-[40px] bg-[#fff]">
-          <img src={Ic_filter} alt="" />
-          <span className="text-black font-medium text-sm">Filter</span>
-        </div>
+        
       </div>
       <div className="rounded-lg border border-gray2 shadow-shadow2 overflow-hidden">
         <Table>

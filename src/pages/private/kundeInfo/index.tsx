@@ -17,18 +17,16 @@ export const KundeInfo = () => {
           <ChevronRight className="text-[#5D6B98] w-4 h-4" />
           <span className="text-gray text-sm">Kundeopplysninger</span>
         </div>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between mb-4 md:mb-5">
+        <div className="flex sm:items-center gap-3 justify-between mb-4 md:mb-5">
           <h1 className="text-darkBlack font-semibold text-2xl md:text-[28px] desktop:text-[32px]">
             Kundeopplysninger
           </h1>
           <div>
-            <div className="border border-[#EFF1F5] bg-[#F9F9FB] p-1.5 rounded-lg w-max">
-              <Button
-                text="Legg til"
-                className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
-                path={`/se-series/${id}/add-husmodell`}
-              />
-            </div>
+            <Button
+              text="Legg til"
+              className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+              path={`/se-series/${id}/add-husmodell`}
+            />
           </div>
         </div>
       </div>
