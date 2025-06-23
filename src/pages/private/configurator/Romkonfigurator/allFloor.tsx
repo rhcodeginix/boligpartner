@@ -239,7 +239,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               onClick={() => {
                 setActiveTab(2);
               }}
-              className="w-1/2 sm:w-auto"
             >
               <Button
                 text="Tilbake"

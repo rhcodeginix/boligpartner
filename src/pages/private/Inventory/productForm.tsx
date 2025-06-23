@@ -690,7 +690,7 @@ export const ProductFormDrawer: React.FC<{
                 "0px -3px 4px -2px #1018280F, 0px -4px 8px -2px #1018281A",
             }}
           >
-            <div onClick={() => form.reset()} className="w-1/2 sm:w-auto">
+            <div onClick={() => form.reset()} >
               <Button
                 text="Avbryt"
                 className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-12 py-2 flex items-center gap-2"

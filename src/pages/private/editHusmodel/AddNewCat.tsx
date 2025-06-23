@@ -163,7 +163,6 @@ export const AddNewCat: React.FC<{
                 form.reset();
                 onClose();
               }}
-              className="w-1/2 sm:w-auto"
             >
               <Button
                 text="Avbryt"

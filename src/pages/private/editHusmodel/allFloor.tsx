@@ -162,7 +162,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         </div>
       </div>
       <div className="flex flex-col md:flex-row gap-4 md:gap-6 px-4 md:px-6 pt-6 pb-[136px]">
-        <div className="w-full md:w-[25%] border border-[#EFF1F5] rounded-lg shadow-shadow2 h-[690px]">
+        <div className="w-full md:w-[25%] border border-[#EFF1F5] rounded-lg shadow-shadow2 md:h-[690px]">
           <div className="p-3 md:p-4 border-b border-[#EFF1F5] text-darkBlack text-lg font-medium flex items-center justify-between gap-2">
             <span className="truncate">Romoversikt</span>
             <div
@@ -175,7 +175,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               </span>
             </div>
           </div>
-          <div className="flex flex-col p-3 md:p-4 pb-0 rounded-lg gap-3 h-full max-h-[calc(100%-90px)] overflow-y-auto overFlowAutoY sticky top-[80px]">
+          <div className="flex md:flex-col p-3 md:p-4 pb-0 rounded-lg gap-3 h-full md:max-h-[calc(100%-90px)] overflow-y-auto overFlowAutoY sticky top-[80px]">
             {Category.length > 0
               ? Category.map((tab: any, index: number) => (
                   <div
@@ -255,12 +255,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
       {!activeTabData && (
         <div className="flex justify-end w-full gap-5 items-center fixed bottom-0 bg-white z-50 border-t border-gray2 p-4 left-0">
           <div className="flex items-center gap-5">
-            <div
-              onClick={() => {
-                setActiveTab(2);
-              }}
-              className="w-1/2 sm:w-auto"
-            >
+            <div onClick={() => setActiveTab(2)}>
               <Button
                 text="Avbryt"
                 className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
