@@ -145,7 +145,13 @@ export const SluttføringDokumentasjon = forwardRef(
                               {StiftpakkeLimLeveresFor.map((option) => (
                                 <div
                                   key={option}
-                                  className="relative flex items-center gap-2"
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "StiftpakkeLimLeveresFor",
+                                      option
+                                    );
+                                  }}
                                 >
                                   <input
                                     className={`bg-white rounded-[8px] border text-black

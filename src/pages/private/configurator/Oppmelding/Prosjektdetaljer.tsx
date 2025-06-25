@@ -648,7 +648,10 @@ export const Prosjektdetaljer = forwardRef(
                               {Finansiering.map((option) => (
                                 <div
                                   key={option}
-                                  className="relative flex items-center gap-2"
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue("Finansiering", option);
+                                  }}
                                 >
                                   <input
                                     className={`bg-white rounded-[8px] border text-black

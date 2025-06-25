@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
+import Button from "../../../../components/common/button";
+import Drawer from "../../../../components/ui/drawer";
+import { X } from "lucide-react";
+import { AddFinalSubmission } from "./AddFinalSubmission";
+import Modal from "../../../../components/common/modal";
+import { Preview } from "./preview";
 
-export const Rooms: React.FC<{ rooms: any }> = ({ rooms }) => {
+export const Rooms: React.FC<{ rooms: any; Prev: any }> = ({ rooms, Prev }) => {
   const [activeTab, setActiveTab] = useState("");
   useEffect(() => {
     if (rooms && rooms.length > 0) {
@@ -8,20 +14,6 @@ export const Rooms: React.FC<{ rooms: any }> = ({ rooms }) => {
     }
   }, [rooms]);
   const room = rooms && rooms.find((room: any) => room.title === activeTab);
-
-  //   const totalPris = room?.rooms?.reduce((roomAcc: number, innerRoom: any) => {
-  //     const sum = innerRoom?.Kategorinavn?.filter(
-  //       (kat: any) => kat.productOptions !== "Text"
-  //     )?.reduce((katAcc: number, kat: any) => {
-  //       const selectedSum = kat?.produkter
-  //         ?.filter((prod: any) => prod?.isSelected)
-  //         ?.reduce((prodAcc: number, prod: any) => {
-  //           return prodAcc + (parseFloat(prod?.pris) || 0);
-  //         }, 0);
-  //       return katAcc + selectedSum;
-  //     }, 0);
-  //     return roomAcc + sum;
-  //   }, 0);
 
   const parseNorwegianNumber = (value: string) => {
     if (!value) return 0;
@@ -50,6 +42,25 @@ export const Rooms: React.FC<{ rooms: any }> = ({ rooms }) => {
     return roomAcc + sum;
   }, 0);
   const formattedTotal = formatToNorwegianCurrency(totalPris);
+
+  const [FinalSubmission, setFinalSubmission] = useState(false);
+
+  const handleFinalSubmissionPopup = () => {
+    if (FinalSubmission) {
+      setFinalSubmission(false);
+    } else {
+      setFinalSubmission(true);
+    }
+  };
+  const [ModalOpen, setModalOpen] = useState(false);
+
+  const handleModalOpen = () => {
+    if (ModalOpen) {
+      setModalOpen(false);
+    } else {
+      setModalOpen(true);
+    }
+  };
 
   return (
     <>
@@ -282,21 +293,16 @@ export const Rooms: React.FC<{ rooms: any }> = ({ rooms }) => {
                     </div>
                     <div className="border-t border-[#DCDFEA]"></div>
                     <div className="flex items-center gap-2 justify-between">
-                      <p className="text-red text-sm">
-                        House Model Price
-                      </p>
+                      <p className="text-red text-sm">House Model Price</p>
                       <span className="text-base font-medium text-red">
                         {/* {`kr ${formattedTotal}`} */}
                         5.210.000 NOK
                       </span>
                     </div>
                     <div className="flex items-center gap-2 justify-between">
-                      <p className="text-red text-sm">
-                      Total
-                      </p>
+                      <p className="text-red text-sm">Total</p>
                       <span className="text-base font-medium text-red">
-                        {/* {`kr ${formattedTotal}`} */}
-                        5 211 111 kr
+                        {/* {`kr ${formattedTotal}`} */}5 211 111 kr
                       </span>
                     </div>
                   </div>
@@ -306,6 +312,50 @@ export const Rooms: React.FC<{ rooms: any }> = ({ rooms }) => {
           </div>
         </div>
       </div>
+      <div className="flex justify-end w-full gap-5 items-center fixed bottom-0 bg-white z-50 border-t border-gray2 p-4 left-0">
+        <Button
+          text="Tilbake"
+          className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+          onClick={() => Prev()}
+        />
+        <Button
+          text="Forhåndsvis"
+          className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+          onClick={() => setModalOpen(true)}
+        />
+        <Button
+          text="Neste"
+          className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+          onClick={() => setFinalSubmission(true)}
+        />
+      </div>
+
+      <Drawer isOpen={FinalSubmission} onClose={handleFinalSubmissionPopup}>
+        <h4 className="text-darkBlack font-medium text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-6">
+          Fullfør innsending av tilak
+          <X
+            onClick={handleFinalSubmissionPopup}
+            className="text-primary cursor-pointer"
+          />
+        </h4>
+        <AddFinalSubmission
+          onClose={() => setFinalSubmission(false)}
+          rooms={rooms}
+        />
+      </Drawer>
+
+      {ModalOpen && (
+        <Modal onClose={handleModalOpen} isOpen={true}>
+          <div className="p-4 md:p-6 bg-white rounded-lg shadow-lg relative h-auto max-h-[90vh] overflow-y-auto w-[100vw] lg:w-[70vw]">
+            <X
+              className="text-primary absolute top-2.5 right-2.5 w-5 h-5 cursor-pointer"
+              onClick={() => setModalOpen(false)}
+            />
+
+            <Preview rooms={rooms} />
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

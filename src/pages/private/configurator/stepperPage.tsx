@@ -43,7 +43,7 @@ export const BoligConfiuratorStepper = () => {
     },
     {
       name: "Oppsummering",
-      component: <Oppsummering />,
+      component: <Oppsummering Prev={handlePrevious} />,
     },
   ];
   return (

@@ -126,7 +126,12 @@ export const AddNewCat: React.FC<{
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormControl>
-                    <div className="relative flex items-center gap-2 mt-3">
+                    <div
+                      className="relative flex items-center gap-2 mt-3 cursor-pointer"
+                      onClick={() => {
+                        form.setValue("isSelected", !field.value);
+                      }}
+                    >
                       <input
                         className={`bg-white rounded-[8px] accent-primary border text-black
                                   ${

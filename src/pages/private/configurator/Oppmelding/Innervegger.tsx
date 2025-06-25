@@ -282,7 +282,6 @@ const formSchema = z.object({
   mm100Pristillegg: z.boolean().optional(),
   InnvendigeHjørnelister: z.boolean().optional(),
   IkkeRelevantTiltak: z.boolean().optional(),
-
   Tekstboks: z.string().optional(),
   StandardLeveranseLeveransebeskrivelse: z.boolean().optional(),
   PakkeHusmalt: z.boolean().optional(),

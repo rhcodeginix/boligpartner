@@ -304,7 +304,13 @@ export const ProductFormDrawer: React.FC<{
                                 {delieverBy.map((option) => (
                                   <div
                                     key={option}
-                                    className="relative flex items-center gap-2"
+                                    className="relative flex items-center gap-2 cursor-pointer"
+                                    onClick={() => {
+                                      form.setValue(
+                                        `produkter.${index}.delieverBy`,
+                                        option
+                                      );
+                                    }}
                                   >
                                     <input
                                       className={`bg-white rounded-[8px] border text-black
@@ -352,7 +358,13 @@ export const ProductFormDrawer: React.FC<{
                                 {Labour.map((option) => (
                                   <div
                                     key={option}
-                                    className="relative flex items-center gap-2"
+                                    className="relative flex items-center gap-2 cursor-pointer"
+                                    onClick={() => {
+                                      form.setValue(
+                                        `produkter.${index}.Labour`,
+                                        option
+                                      );
+                                    }}
                                   >
                                     <input
                                       className={`bg-white rounded-[8px] border text-black
@@ -690,7 +702,7 @@ export const ProductFormDrawer: React.FC<{
                 "0px -3px 4px -2px #1018280F, 0px -4px 8px -2px #1018281A",
             }}
           >
-            <div onClick={() => form.reset()} >
+            <div onClick={() => form.reset()}>
               <Button
                 text="Avbryt"
                 className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-12 py-2 flex items-center gap-2"

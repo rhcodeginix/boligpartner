@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { fetchRoomData } from "../../../../lib/utils";
 import { Spinner } from "../../../../components/Spinner";
 import { Rooms } from "./rooms";
 
-export const Oppsummering = () => {
+export const Oppsummering: React.FC<{ Prev: any }> = ({ Prev }) => {
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
@@ -39,7 +39,7 @@ export const Oppsummering = () => {
           rommene, du kan så konfigurere hvert enkelt rom.
         </p>
       </div>
-      <Rooms rooms={roomsData?.Plantegninger} />
+      <Rooms rooms={roomsData?.Plantegninger} Prev={Prev} />
       {loading && <Spinner />}
     </>
   );
