@@ -290,6 +290,15 @@ export const Rooms: React.FC<{ rooms: any }> = ({ rooms }) => {
                         5.210.000 NOK
                       </span>
                     </div>
+                    <div className="flex items-center gap-2 justify-between">
+                      <p className="text-red text-sm">
+                      Total
+                      </p>
+                      <span className="text-base font-medium text-red">
+                        {/* {`kr ${formattedTotal}`} */}
+                        5 357 850 kr
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
