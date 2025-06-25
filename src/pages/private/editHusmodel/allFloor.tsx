@@ -8,6 +8,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "../../../components/Spinner";
 import { fetchHusmodellData } from "../../../lib/utils";
 import { ChevronRight, Pencil, Plus, X } from "lucide-react";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../../../config/firebaseConfig";
 
 export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
   const navigate = useNavigate();
@@ -71,6 +73,8 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
     const getData = async () => {
       const data: any = await fetchHusmodellData(id);
+      console.log(data);
+
       if (!data?.KundeInfo) {
         setLoading(false);
         return;
@@ -85,7 +89,89 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         return;
       }
 
-      const finalData = targetKunde?.Plantegninger?.find(
+      const requiredCategoriesWithProducts = {
+        Himlling: [
+          {
+            Produktnavn: "I henhold til leveransebeskrivelse",
+            isSelected: true,
+          },
+          { Produktnavn: "Mdf panel", isSelected: false },
+          { Produktnavn: "Takplate 60x120", isSelected: false },
+          { Produktnavn: "Eget valg", isSelected: false },
+        ],
+        Vegger: [
+          {
+            Produktnavn: "I henhold til leveransebeskrivelse",
+            isSelected: true,
+          },
+          { Produktnavn: "5 bords kostmald mdf plate", isSelected: false },
+          { Produktnavn: "Ubehandlet sponplate", isSelected: false },
+          { Produktnavn: "Eget valg", isSelected: false },
+        ],
+        Gulv: [
+          { Produktnavn: "Lokalleveranse", isSelected: true },
+          { Produktnavn: "Eikeparkett 3 stavs", isSelected: false },
+          { Produktnavn: "Eikeparkett 1 stavs", isSelected: false },
+          { Produktnavn: "Laminat 1 stavs", isSelected: false },
+          { Produktnavn: "Eget valg", isSelected: false },
+        ],
+        Lister: [
+          {
+            Produktnavn: "I henhold til leveransebeskrivelse",
+            isSelected: true,
+          },
+          { Produktnavn: "Annen signatur", isSelected: false },
+          {
+            Produktnavn: "Uten lister for listefri løsning",
+            isSelected: false,
+          },
+          { Produktnavn: "Eget valg", isSelected: false },
+        ],
+        Kommentar: [],
+      };
+
+      const updatedPlantegninger = (targetKunde?.Plantegninger || []).map(
+        (floor: any) => {
+          if (!Array.isArray(floor.rooms)) return floor;
+
+          const updatedRooms = floor.rooms.map((room: any) => {
+            if (!Array.isArray(room.Kategorinavn)) {
+              return {
+                ...room,
+                Kategorinavn: Object.entries(
+                  requiredCategoriesWithProducts
+                ).map(([name, produkter]) => ({
+                  navn: name,
+                  productOptions:
+                    name === "Kommentar" ? "Text" : "Multi Select",
+                  produkter,
+                })),
+              };
+            }
+
+            const existingNames = room.Kategorinavn.map((k: any) => k.navn);
+            const missing = Object.entries(requiredCategoriesWithProducts)
+              .filter(([name]) => !existingNames.includes(name))
+              .map(([name, produkter]) => ({
+                navn: name,
+                productOptions: name === "Kommentar" ? "Text" : "Multi Select",
+                produkter,
+              }));
+
+            return {
+              ...room,
+              Kategorinavn: [...room.Kategorinavn, ...missing],
+            };
+          });
+
+          return {
+            ...floor,
+            rooms: updatedRooms,
+          };
+        }
+      );
+
+      const finalData = updatedPlantegninger?.find(
         (item: any) => String(item?.pdf_id) === String(pdfId)
       );
 
@@ -93,6 +179,18 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         setFloorData(finalData);
         setCategory(finalData.rooms || []);
       }
+      const husmodellDocRef = doc(db, "housemodell_configure_broker", id);
+      await updateDoc(husmodellDocRef, {
+        KundeInfo: data.KundeInfo.map((kunde: any) => {
+          if (String(kunde.uniqueId) === String(kundeId)) {
+            return {
+              ...kunde,
+              Plantegninger: updatedPlantegninger,
+            };
+          }
+          return kunde;
+        }),
+      });
 
       setLoading(false);
     };

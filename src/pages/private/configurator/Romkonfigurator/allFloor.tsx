@@ -8,6 +8,8 @@ import { fetchRoomData } from "../../../../lib/utils";
 import { ChevronRight, Pencil, Plus, X } from "lucide-react";
 import { AddNewCat } from "../../editHusmodel/AddNewCat";
 import { Eksterior } from "./Eksterior";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../../../../config/firebaseConfig";
 
 export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
   const navigate = useNavigate();
@@ -64,25 +66,136 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
   const [FloorData, setFloorData] = useState<any>(null);
 
+  // useEffect(() => {
+  //   if (!id || !pdfId) {
+  //     return;
+  //   }
+
+  //   const getData = async () => {
+  //     const data: any = await fetchRoomData(id);
+  //     if (data) {
+  //       const finalData = data?.Plantegninger.find(
+  //         (item: any) => String(item?.pdf_id) === String(pdfId)
+  //       );
+  //       setFloorData(finalData);
+  //       setCategory(finalData?.rooms);
+  //     }
+  //     setLoading(false);
+  //   };
+
+  //   getData();
+  // }, [id, pdfId]);
+
   useEffect(() => {
-    if (!id || !pdfId) {
-      return;
-    }
+    if (!id || !pdfId) return;
 
     const getData = async () => {
       const data: any = await fetchRoomData(id);
-      if (data) {
-        const finalData = data?.Plantegninger.find(
-          (item: any) => String(item?.pdf_id) === String(pdfId)
-        );
-        setFloorData(finalData);
-        setCategory(finalData?.rooms);
+
+      if (!data) {
+        console.error("No data found for ID:", id);
+        setLoading(false);
+        return;
       }
+
+      const requiredCategoriesWithProducts = {
+        Himlling: [
+          {
+            Produktnavn: "I henhold til leveransebeskrivelse",
+            isSelected: true,
+          },
+          { Produktnavn: "Mdf panel", isSelected: false },
+          { Produktnavn: "Takplate 60x120", isSelected: false },
+          { Produktnavn: "Eget valg", isSelected: false },
+        ],
+        Vegger: [
+          {
+            Produktnavn: "I henhold til leveransebeskrivelse",
+            isSelected: true,
+          },
+          { Produktnavn: "5 bords kostmald mdf plate", isSelected: false },
+          { Produktnavn: "Ubehandlet sponplate", isSelected: false },
+          { Produktnavn: "Eget valg", isSelected: false },
+        ],
+        Gulv: [
+          { Produktnavn: "Lokalleveranse", isSelected: true },
+          { Produktnavn: "Eikeparkett 3 stavs", isSelected: false },
+          { Produktnavn: "Eikeparkett 1 stavs", isSelected: false },
+          { Produktnavn: "Laminat 1 stavs", isSelected: false },
+          { Produktnavn: "Eget valg", isSelected: false },
+        ],
+        Lister: [
+          {
+            Produktnavn: "I henhold til leveransebeskrivelse",
+            isSelected: true,
+          },
+          { Produktnavn: "Annen signatur", isSelected: false },
+          {
+            Produktnavn: "Uten lister for listefri løsning",
+            isSelected: false,
+          },
+          { Produktnavn: "Eget valg", isSelected: false },
+        ],
+        Kommentar: [],
+      };
+
+      const updatedPlantegninger = (data?.Plantegninger || []).map(
+        (floor: any) => {
+          if (!Array.isArray(floor.rooms)) return floor;
+
+          const updatedRooms = floor.rooms.map((room: any) => {
+            if (!Array.isArray(room.Kategorinavn)) {
+              // Set all required categories if none exist
+              return {
+                ...room,
+                Kategorinavn: Object.entries(
+                  requiredCategoriesWithProducts
+                ).map(([name, produkter]) => ({
+                  navn: name,
+                  productOptions:
+                    name === "Kommentar" ? "Text" : "Multi Select",
+                  produkter,
+                })),
+              };
+            }
+
+            const existingNames = room.Kategorinavn.map((k: any) => k.navn);
+            const missing = Object.entries(requiredCategoriesWithProducts)
+              .filter(([name]) => !existingNames.includes(name))
+              .map(([name, produkter]) => ({
+                navn: name,
+                productOptions: name === "Kommentar" ? "Text" : "Multi Select",
+                produkter,
+              }));
+
+            return {
+              ...room,
+              Kategorinavn: [...room.Kategorinavn, ...missing],
+            };
+          });
+
+          return {
+            ...floor,
+            rooms: updatedRooms,
+          };
+        }
+      );
+
+      const finalData = updatedPlantegninger.find(
+        (item: any) => String(item?.pdf_id) === String(pdfId)
+      );
+
+      setFloorData(finalData);
+      setCategory(finalData?.rooms);
       setLoading(false);
+
+      const husmodellDocRef = doc(db, "room_configurator", id);
+      await updateDoc(husmodellDocRef, { Plantegninger: updatedPlantegninger });
     };
 
     getData();
   }, [id, pdfId]);
+
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   return (

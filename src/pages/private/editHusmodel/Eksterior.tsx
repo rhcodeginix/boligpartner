@@ -193,8 +193,33 @@ export const Eksterior: React.FC<{
   }
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const normalizedRooms = data.hovedkategorinavn.map((room: any) => {
+      if (!Array.isArray(room.Kategorinavn)) return room;
+
+      const updatedKategorinavn = room.Kategorinavn.map((kat: any) => {
+        if (!Array.isArray(kat.produkter)) return kat;
+
+        const hasSelected = kat.produkter.some((p: any) => p.isSelected);
+
+        const updatedProdukter = kat.produkter.map((p: any, i: number) => ({
+          ...p,
+          isSelected: hasSelected ? p.isSelected === true : i === 0,
+        }));
+
+        return {
+          ...kat,
+          produkter: updatedProdukter,
+        };
+      });
+
+      return {
+        ...room,
+        Kategorinavn: updatedKategorinavn,
+      };
+    });
+
     const rooms = {
-      rooms: data.hovedkategorinavn,
+      rooms: normalizedRooms,
     };
 
     try {
@@ -262,97 +287,113 @@ export const Eksterior: React.FC<{
 
   useEffect(() => {
     if (Array.isArray(Category) && Category.length > 0) {
-      const requiredCategoriesWithProducts = {
-        Himlling: [
-          {
-            Produktnavn: "I henhold til leveransebeskrivelse",
-          },
-          {
-            Produktnavn: "Mdf panel",
-          },
-          {
-            Produktnavn: "Takplate 60x120",
-          },
-          {
-            Produktnavn: "Eget valg",
-          },
-        ],
-        Vegger: [
-          {
-            Produktnavn: "I henhold til leveransebeskrivelse",
-          },
-          {
-            Produktnavn: "5 bords kostmald mdf plate",
-          },
-          {
-            Produktnavn: "Ubehandlet sponplate",
-          },
-          {
-            Produktnavn: "Eget valg",
-          },
-        ],
-        Gulv: [
-          {
-            Produktnavn: "Lokalleveranse",
-          },
-          {
-            Produktnavn: "Eikeparkett 3 stavs",
-          },
-          {
-            Produktnavn: "Eikeparkett 1 stavs",
-          },
-          {
-            Produktnavn: "Laminat 1 stavs",
-          },
-          {
-            Produktnavn: "Eget valg",
-          },
-        ],
-        Lister: [
-          {
-            Produktnavn: "I henhold til leveransebeskrivelse",
-          },
-          {
-            Produktnavn: "Annen signatur",
-          },
-          {
-            Produktnavn: "Uten lister for listefri løsning",
-          },
-          {
-            Produktnavn: "Eget valg",
-          },
-        ],
-        Kommentar: [],
-      };
-
-      const formatted = Category.map((cat: any, index: number) => {
-        const existingKategorinavn =
-          index === activeTabData && Array.isArray(cat.Kategorinavn)
-            ? cat.Kategorinavn
-            : [];
-
-        const existingNames = existingKategorinavn.map((k: any) => k.navn);
-
-        const missing = Object.entries(requiredCategoriesWithProducts)
-          .filter(([name]) => !existingNames.includes(name))
-          .map(([name, produkter]) => ({
-            navn: name,
-            productOptions: name === "Kommentar" ? "Text" : "Multi Select",
-            produkter,
-          }));
-
-        return {
-          name: cat.name,
-          Kategorinavn:
-            index === activeTabData
-              ? [...existingKategorinavn, ...missing]
-              : null,
-        };
-      });
+      const formatted = Category.map((cat: any, index: number) => ({
+        name: cat.name,
+        Kategorinavn:
+          index === activeTabData
+            ? cat.Kategorinavn && cat.Kategorinavn.length > 0
+              ? cat.Kategorinavn
+              : null
+            : null,
+      }));
 
       form.setValue("hovedkategorinavn", formatted);
     }
-  }, [activeTabData]);
+  }, [form, Category, activeTabData]);
+
+  // useEffect(() => {
+  //   if (Array.isArray(Category) && Category.length > 0) {
+  //     const requiredCategoriesWithProducts = {
+  //       Himlling: [
+  //         {
+  //           Produktnavn: "I henhold til leveransebeskrivelse",
+  //         },
+  //         {
+  //           Produktnavn: "Mdf panel",
+  //         },
+  //         {
+  //           Produktnavn: "Takplate 60x120",
+  //         },
+  //         {
+  //           Produktnavn: "Eget valg",
+  //         },
+  //       ],
+  //       Vegger: [
+  //         {
+  //           Produktnavn: "I henhold til leveransebeskrivelse",
+  //         },
+  //         {
+  //           Produktnavn: "5 bords kostmald mdf plate",
+  //         },
+  //         {
+  //           Produktnavn: "Ubehandlet sponplate",
+  //         },
+  //         {
+  //           Produktnavn: "Eget valg",
+  //         },
+  //       ],
+  //       Gulv: [
+  //         {
+  //           Produktnavn: "Lokalleveranse",
+  //         },
+  //         {
+  //           Produktnavn: "Eikeparkett 3 stavs",
+  //         },
+  //         {
+  //           Produktnavn: "Eikeparkett 1 stavs",
+  //         },
+  //         {
+  //           Produktnavn: "Laminat 1 stavs",
+  //         },
+  //         {
+  //           Produktnavn: "Eget valg",
+  //         },
+  //       ],
+  //       Lister: [
+  //         {
+  //           Produktnavn: "I henhold til leveransebeskrivelse",
+  //         },
+  //         {
+  //           Produktnavn: "Annen signatur",
+  //         },
+  //         {
+  //           Produktnavn: "Uten lister for listefri løsning",
+  //         },
+  //         {
+  //           Produktnavn: "Eget valg",
+  //         },
+  //       ],
+  //       Kommentar: [],
+  //     };
+
+  //     const formatted = Category.map((cat: any, index: number) => {
+  //       const existingKategorinavn =
+  //         index === activeTabData && Array.isArray(cat.Kategorinavn)
+  //           ? cat.Kategorinavn
+  //           : [];
+
+  //       const existingNames = existingKategorinavn.map((k: any) => k.navn);
+
+  //       const missing = Object.entries(requiredCategoriesWithProducts)
+  //         .filter(([name]) => !existingNames.includes(name))
+  //         .map(([name, produkter]) => ({
+  //           navn: name,
+  //           productOptions: name === "Kommentar" ? "Text" : "Multi Select",
+  //           produkter,
+  //         }));
+
+  //       return {
+  //         name: cat.name,
+  //         Kategorinavn:
+  //           index === activeTabData
+  //             ? [...existingKategorinavn, ...missing]
+  //             : null,
+  //       };
+  //     });
+
+  //     form.setValue("hovedkategorinavn", formatted);
+  //   }
+  // }, [activeTabData]);
 
   const prevProductsRef = useRef<any[]>([]);
 
@@ -792,22 +833,22 @@ export const Eksterior: React.FC<{
                                     </span>
                                   </div>
                                 )}
-                                {[
+                                {/* {[
                                   "Himlling",
                                   "Vegger",
                                   "Gulv",
                                   "Lister",
                                 ].includes(title) ? (
                                   ""
-                                ) : (
-                                  <div className="flex items-center justify-between gap-2">
-                                    <span className="text-sm font-medium text-darkBlack">
-                                      {product?.IncludingOffer === false
-                                        ? product?.pris
-                                        : "Standard"}
-                                    </span>
+                                ) : ( */}
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className="text-sm font-medium text-darkBlack">
+                                    {product?.IncludingOffer === false
+                                      ? `kr ${product?.pris}`
+                                      : "Standard"}
+                                  </span>
 
-                                    {/* <span
+                                  {/* <span
                                   className="text-purple font-medium text-sm cursor-pointer"
                                   onClick={() => {
                                     handleproductViewDrawer();
@@ -816,8 +857,8 @@ export const Eksterior: React.FC<{
                                 >
                                   View Details
                                 </span> */}
-                                  </div>
-                                )}
+                                </div>
+                                {/* )} */}
                               </div>
                             </div>
                           </div>

@@ -30,10 +30,10 @@ const Stepper: React.FC<StepperProps> = ({
   }, [currIndex]);
 
   const handleStepClick = (index: number) => {
-    if (index <= currIndex) {
+    if (index < currIndex) {
       setCurrIndex(index);
+      localStorage.setItem("currIndexBolig", index.toString());
     }
-    localStorage.setItem("currIndexBolig", index.toString());
   };
 
   return (
@@ -48,9 +48,9 @@ const Stepper: React.FC<StepperProps> = ({
                   <div
                     key={index}
                     ref={(el: any) => (stepRefs.current[index] = el)}
-                    className={`screen-indicator-span cursor-pointer ${
+                    className={`screen-indicator-span ${
                       index < currIndex
-                        ? "completed"
+                        ? "completed cursor-pointer"
                         : index === currIndex
                         ? "current"
                         : ""
