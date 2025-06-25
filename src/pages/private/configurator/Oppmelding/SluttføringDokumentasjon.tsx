@@ -379,9 +379,10 @@ export const SluttføringDokumentasjon = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -402,9 +403,10 @@ export const SluttføringDokumentasjon = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -458,9 +460,10 @@ export const SluttføringDokumentasjon = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -552,9 +555,10 @@ export const SluttføringDokumentasjon = forwardRef(
                           render={({ field }) => (
                             <FormItem>
                               <p
-                                className={`text-sm flex gap-2 items-baseline ${
+                                className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                                   field.value ? "text-black" : "text-black"
                                 }`}
+                                onClick={() => field.onChange(!field.value)}
                               >
                                 <input
                                   type="checkbox"
@@ -577,9 +581,10 @@ export const SluttføringDokumentasjon = forwardRef(
                           render={({ field }) => (
                             <FormItem>
                               <p
-                                className={`text-sm flex gap-2 items-baseline ${
+                                className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                                   field.value ? "text-black" : "text-black"
                                 }`}
+                                onClick={() => field.onChange(!field.value)}
                               >
                                 <input
                                   type="checkbox"
@@ -602,9 +607,10 @@ export const SluttføringDokumentasjon = forwardRef(
                           render={({ field }) => (
                             <FormItem>
                               <p
-                                className={`text-sm flex gap-2 items-baseline ${
+                                className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                                   field.value ? "text-black" : "text-black"
                                 }`}
+                                onClick={() => field.onChange(!field.value)}
                               >
                                 <input
                                   type="checkbox"
@@ -638,7 +644,7 @@ export const SluttføringDokumentasjon = forwardRef(
                   />
                 </div>
                 <Button
-                  text="Gå til romkonfigurator"
+                  text="Neste"
                   className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   type="submit"
                 />

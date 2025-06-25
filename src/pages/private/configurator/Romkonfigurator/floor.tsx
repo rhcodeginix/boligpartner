@@ -122,15 +122,6 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
   return (
     <>
-      <div className="bg-lightPurple px-8 py-3">
-        <h3 className="text-darkBlack font-medium text-xl md:text-[24px] lg:text-[28px] desktop:text-[2rem] desktop:leading-[44.8px] mb-2">
-          Romkonfigurator
-        </h3>
-        <p className="text-secondary text-sm md:text-base desktop:text-lg">
-          Her laster du opp plantegninger som bruker AI til å trekke ut alle
-          rommene, du kan så konfigurere hvert enkelt rom.
-        </p>
-      </div>
       <div className="py-4 px-6">
         <div className="flex flex-col gap-2">
           <h1 className="text-darkBlack font-semibold text-[32px]">

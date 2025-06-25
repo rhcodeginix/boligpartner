@@ -141,9 +141,10 @@ export const ListverkogBelistning = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -164,9 +165,10 @@ export const ListverkogBelistning = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -247,7 +249,23 @@ export const ListverkogBelistning = forwardRef(
                               {Taklist.map((option) => (
                                 <div
                                   key={option}
-                                  className="relative flex items-center gap-2"
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    const currentValues = field.value || [];
+                                    const isChecked =
+                                      currentValues.includes(option);
+
+                                    const newValues = isChecked
+                                      ? currentValues.filter(
+                                          (val) => val !== option
+                                        )
+                                      : [...currentValues, option];
+
+                                    form.setValue(
+                                      "Innvendig.Taklist",
+                                      newValues
+                                    );
+                                  }}
                                 >
                                   <input
                                     className={`bg-white rounded-[8px] border text-black
@@ -308,7 +326,23 @@ export const ListverkogBelistning = forwardRef(
                               {Taklist.map((option) => (
                                 <div
                                   key={option}
-                                  className="relative flex items-center gap-2"
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    const currentValues = field.value || [];
+                                    const isChecked =
+                                      currentValues.includes(option);
+
+                                    const newValues = isChecked
+                                      ? currentValues.filter(
+                                          (val) => val !== option
+                                        )
+                                      : [...currentValues, option];
+
+                                    form.setValue(
+                                      "Innvendig.Gulvlist",
+                                      newValues
+                                    );
+                                  }}
                                 >
                                   <input
                                     className={`bg-white rounded-[8px] border text-black
@@ -369,7 +403,23 @@ export const ListverkogBelistning = forwardRef(
                               {Taklist.map((option) => (
                                 <div
                                   key={option}
-                                  className="relative flex items-center gap-2"
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    const currentValues = field.value || [];
+                                    const isChecked =
+                                      currentValues.includes(option);
+
+                                    const newValues = isChecked
+                                      ? currentValues.filter(
+                                          (val) => val !== option
+                                        )
+                                      : [...currentValues, option];
+
+                                    form.setValue(
+                                      "Innvendig.Gerikt",
+                                      newValues
+                                    );
+                                  }}
                                 >
                                   <input
                                     className={`bg-white rounded-[8px] border text-black

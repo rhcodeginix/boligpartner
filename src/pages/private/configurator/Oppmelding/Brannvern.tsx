@@ -108,9 +108,10 @@ export const Brannvern = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -131,9 +132,10 @@ export const Brannvern = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -154,9 +156,10 @@ export const Brannvern = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"

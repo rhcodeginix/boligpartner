@@ -1136,9 +1136,10 @@ export const TakogTaktekking = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -1159,9 +1160,10 @@ export const TakogTaktekking = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -1267,7 +1269,20 @@ export const TakogTaktekking = forwardRef(
                               {Hytte.map((option) => (
                                 <div
                                   key={option}
-                                  className="relative flex items-center gap-2"
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    const currentValues = field.value || [];
+                                    const isChecked =
+                                      currentValues.includes(option);
+
+                                    const newValues = isChecked
+                                      ? currentValues.filter(
+                                          (val) => val !== option
+                                        )
+                                      : [...currentValues, option];
+
+                                    form.setValue("Hytte", newValues);
+                                  }}
                                 >
                                   <input
                                     className={`bg-white rounded-[8px] border text-black
@@ -1328,7 +1343,20 @@ export const TakogTaktekking = forwardRef(
                               {Hus.map((option) => (
                                 <div
                                   key={option}
-                                  className="relative flex items-center gap-2"
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    const currentValues = field.value || [];
+                                    const isChecked =
+                                      currentValues.includes(option);
+
+                                    const newValues = isChecked
+                                      ? currentValues.filter(
+                                          (val) => val !== option
+                                        )
+                                      : [...currentValues, option];
+
+                                    form.setValue("Hus", newValues);
+                                  }}
                                 >
                                   <input
                                     className={`bg-white rounded-[8px] border text-black
@@ -1382,9 +1410,10 @@ export const TakogTaktekking = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -1405,9 +1434,10 @@ export const TakogTaktekking = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -1429,9 +1459,10 @@ export const TakogTaktekking = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -1460,9 +1491,10 @@ export const TakogTaktekking = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -1484,9 +1516,10 @@ export const TakogTaktekking = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -1508,9 +1541,10 @@ export const TakogTaktekking = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -1625,9 +1659,10 @@ export const TakogTaktekking = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -1648,9 +1683,10 @@ export const TakogTaktekking = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -1778,9 +1814,10 @@ export const TakogTaktekking = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -1802,9 +1839,10 @@ export const TakogTaktekking = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -1829,9 +1867,10 @@ export const TakogTaktekking = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
@@ -1853,9 +1892,10 @@ export const TakogTaktekking = forwardRef(
                       render={({ field }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline ${
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
+                            onClick={() => field.onChange(!field.value)}
                           >
                             <input
                               type="checkbox"
