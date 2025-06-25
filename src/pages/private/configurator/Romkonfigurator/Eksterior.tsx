@@ -839,9 +839,20 @@ export const Eksterior: React.FC<{
                                 ) : ( */}
                                 <div className="flex items-center justify-between gap-2">
                                   <span className="text-sm font-medium text-darkBlack">
-                                    {product?.IncludingOffer === false
+                                    {/* {product?.IncludingOffer === false
                                       ? `kr ${product?.pris}`
-                                      : "Standard"}
+                                      : "Standard"} */}
+                                    {product?.IncludingOffer ? (
+                                      <div className="text-black font-semibold whitespace-nowrap">
+                                        Standard
+                                      </div>
+                                    ) : (
+                                      <div className="text-black font-semibold whitespace-nowrap">
+                                        {product?.pris
+                                          ? `kr ${product?.pris}`
+                                          : "-"}
+                                      </div>
+                                    )}
                                   </span>
 
                                   {/* <span
