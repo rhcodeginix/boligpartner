@@ -296,7 +296,7 @@ export const Rooms: React.FC<{ rooms: any }> = ({ rooms }) => {
                       </p>
                       <span className="text-base font-medium text-red">
                         {/* {`kr ${formattedTotal}`} */}
-                        5 357 850 kr
+                        5 211 111 kr
                       </span>
                     </div>
                   </div>
