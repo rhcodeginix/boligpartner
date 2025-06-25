@@ -848,9 +848,7 @@ export const Eksterior: React.FC<{
                                       </div>
                                     ) : (
                                       <div className="text-black font-semibold whitespace-nowrap">
-                                        {product?.pris
-                                          ? `kr ${product?.pris}`
-                                          : "-"}
+                                        {product?.pris && `kr ${product?.pris}`}
                                       </div>
                                     )}
                                   </span>
