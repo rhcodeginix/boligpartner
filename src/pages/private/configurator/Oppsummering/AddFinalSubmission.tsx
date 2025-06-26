@@ -28,7 +28,6 @@ import { removeUndefinedOrNull } from "../Oppmelding/Yttervegger";
 import { toast } from "react-hot-toast";
 import { useEffect, useRef } from "react";
 import { Preview } from "./preview";
-import { toPng } from "html-to-image";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -139,8 +138,7 @@ export const AddFinalSubmission: React.FC<{
           );
         };
 
-        await replaceFirebaseImagesWithBase64()
-
+        await replaceFirebaseImagesWithBase64();
 
         const canvas = await html2canvas(element, {
           useCORS: true,
@@ -148,7 +146,6 @@ export const AddFinalSubmission: React.FC<{
           backgroundColor: "#ffffff",
           scale: 2,
         });
-
 
         const imgData = canvas.toDataURL("image/png");
 
@@ -178,74 +175,6 @@ export const AddFinalSubmission: React.FC<{
         }
 
         pdf.save(`preview-${Date.now()}.pdf`);
-
-        // const printContent = previewRef.current;
-        // if (printContent) {
-        //   // Clone the preview content into a new window for printing
-
-        //   const printContent = previewRef.current;
-        //   if (printContent) {
-        //     // const printWindow = window.open(
-        //     //   "",
-        //     //   "_blank",
-        //     //   "width=1024,height=768"
-        //     // );
-
-        //     // if (printWindow) {
-        //     //   const html = `
-        //     //   <html>
-        //     //     <head>
-        //     //       <title>Preview PDF</title>
-        //     //       <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-        //     //       <script src="https://cdn.tailwindcss.com"></script>
-        //     //       <style>
-        //     //         body {
-        //     //           padding: 32px;
-        //     //         }
-        //     //       </style>
-        //     //     </head>
-        //     //     <body>
-        //     //       ${printContent.innerHTML}
-        //     //       <script>
-        //     //         window.onload = function () {
-        //     //           window.onafterprint = function () {
-        //     //             window.close();
-        //     //           };
-        //     //         };
-        //     //       </script>
-        //     //     </body>
-        //     //   </html>
-        //     // `;
-
-        //     //   printWindow.document.open();
-        //     //   printWindow.document.write(html);
-        //     //   printWindow.document.close();
-        //     // }
-
-        //           const html = `
-        //       <html>
-        //         <head>
-        //           <title>Preview PDF</title>
-        //           <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-        //           <style>body { padding: 32px; }</style>
-        //           <script src="https://cdn.tailwindcss.com"></script>
-        //         </head>
-        //         <body>
-        //           ${printContent.innerHTML}
-        //         </body>
-        //       </html>
-        //     `;
-
-        //           const blob = new Blob([html], { type: "text/html" });
-
-        //           const link = document.createElement("a");
-        //           link.href = URL.createObjectURL(blob);
-        //           link.download = "preview.html"; // Not PDF, but styled HTML
-        //           document.body.appendChild(link);
-        //           link.click();
-        //           document.body.removeChild(link);
-        //   }
-        // }
       }
 
       toast.success("Lagret", {
