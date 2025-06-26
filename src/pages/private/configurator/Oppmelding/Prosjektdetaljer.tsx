@@ -28,6 +28,14 @@ import { db } from "../../../../config/firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useLocation } from "react-router-dom";
 import { removeUndefinedOrNull } from "./Yttervegger";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../../components/ui/select";
 
 const formSchema = z.object({
   Kundenr: z.number({ required_error: "Kundenr er påkrevd." }),
@@ -54,33 +62,17 @@ const formSchema = z.object({
         "Vennligst skriv inn et gyldig telefonnummer for det valgte landet.",
     }
   ),
-  TelefonPrivate: z
-    .string()
-    .refine(
-      (value) => {
-        const parsedNumber = parsePhoneNumber(value);
-        const countryCode = parsedNumber?.countryCallingCode
-          ? `+${parsedNumber.countryCallingCode}`
-          : "";
-        const phoneNumber = parsedNumber?.nationalNumber || "";
-        if (countryCode !== "+47") {
-          return false;
-        }
-        const validator = phoneNumberValidations[countryCode];
-        return validator ? validator(phoneNumber) : false;
-      },
-      {
-        message:
-          "Vennligst skriv inn et gyldig telefonnummer for det valgte landet.",
-      }
-    )
-    .optional(),
-  Hustype: z.string({ required_error: "Hustype er påkrevd." }),
+  TypeProsjekt: z.string({ required_error: "Type prosjekt er påkrevd." }),
   Finansiering: z.string({ required_error: "Finansiering er påkrevd." }),
-  Leveransebeskrivelse: z.string({
-    required_error: "Leveransebeskrivelse er påkrevd.",
+  VelgSerie: z.string({ required_error: "Velg serie er påkrevd." }),
+  DatoBoligPartnerLeveransebeskrivelse: z.string({
+    required_error: "Dato BoligPartner leveransebeskrivelse er påkrevd.",
   }),
-  Energiberegning: z.string().optional(),
+  TypeKalkyle: z.string({ required_error: "Type kalkyle er påkrevd." }),
+  VedleggTilKontraktDatert: z.string({
+    required_error: "Vedlegg til kontrakt datert er påkrevd.",
+  }),
+  KommentarProsjektLeveransedetaljer: z.string().optional(),
   Situasjonsplan: z.string({
     required_error: "Situasjonsplan dat er påkrevd.",
   }),
@@ -91,8 +83,17 @@ const formSchema = z.object({
   SignertDato: z.string({
     required_error: "Signert 1:100 tegning datert er påkrevd.",
   }),
-  Referansekalkyledato: z.string({
+  Kalkyledato: z.string({
     required_error: "Referanse / kalkyledato er påkrevd.",
+  }),
+  ØnsketLeveranseukeForFørsteKtkjøring: z.string({
+    required_error: "Ønsket leveranseuke for første utkjøring er påkrevd.",
+  }),
+  TakstolerLeveresUke: z.string({
+    required_error: "Takstoler leveres uke er påkrevd.",
+  }),
+  VinduerLeveresUke: z.string({
+    required_error: "Vinduer leveres uke er påkrevd.",
   }),
 });
 
@@ -127,7 +128,8 @@ export const Prosjektdetaljer = forwardRef(
         return result;
       },
     }));
-    const selectedHouseType = form.watch("Hustype");
+    const selectedHouseType = form.watch("TypeProsjekt");
+    const VelgSerie = form.watch("VelgSerie");
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
       try {
@@ -166,7 +168,11 @@ export const Prosjektdetaljer = forwardRef(
         });
       }
     };
-    const Finansiering = ["Privat", "Husbank"];
+    const Finansiering = ["Ja", "Nei"];
+    const TypeKalkyle = ["Tilbud", "Prisoverslag"];
+    const ØnsketLeveranseukeForFørsteKtkjøring = ["Abc", "Xyz"];
+    const TakstolerLeveresUke = ["Abc", "Xyz"];
+    const VinduerLeveresUke = ["Abc", "Xyz"];
 
     const [address, setAddress] = useState("");
     const [addressData, setAddressData] = useState<any>(null);
@@ -208,7 +214,13 @@ export const Prosjektdetaljer = forwardRef(
           form.setValue("Kundenr", Number(roomsData?.Kundenummer));
         }
       }
-    }, [roomsData, Finansiering]);
+    }, [
+      roomsData,
+      Finansiering,
+      ØnsketLeveranseukeForFørsteKtkjøring,
+      TakstolerLeveresUke,
+      VinduerLeveresUke,
+    ]);
 
     return (
       <>
@@ -216,10 +228,87 @@ export const Prosjektdetaljer = forwardRef(
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
               <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4]">
-                Prosjektdetaljer
+                PROSJEKTDETALJER
               </div>
               <div className="p-4 md:p-5">
                 <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
+                  <div className="col-span-3">
+                    <p
+                      className={`${
+                        form.formState.errors.TypeProsjekt
+                          ? "text-red"
+                          : "text-black"
+                      } mb-[6px] text-sm`}
+                    >
+                      Type prosjekt*:
+                    </p>
+                    <div className="flex flex-wrap gap-2 lg:gap-4 items-center">
+                      {[
+                        {
+                          label: "Bolig",
+                          icon: (
+                            <House
+                              className={`${
+                                selectedHouseType === "bolig"
+                                  ? "text-[#444CE7]"
+                                  : "text-[#5D6B98]"
+                              }`}
+                            />
+                          ),
+                          value: "bolig",
+                        },
+                        {
+                          label: "Hytte",
+                          icon: (
+                            <Store
+                              className={`${
+                                selectedHouseType === "hytte"
+                                  ? "text-[#444CE7]"
+                                  : "text-[#5D6B98]"
+                              }`}
+                            />
+                          ),
+                          value: "hytte",
+                        },
+                        {
+                          label: "Prosjekt",
+                          icon: (
+                            <Warehouse
+                              className={`${
+                                selectedHouseType === "prosjekt"
+                                  ? "text-[#444CE7]"
+                                  : "text-[#5D6B98]"
+                              }`}
+                            />
+                          ),
+                          value: "prosjekt",
+                        },
+                      ].map((item: any, index: number) => (
+                        <div
+                          key={index}
+                          onClick={() => {
+                            form.setValue("TypeProsjekt", item.value);
+                            form.clearErrors("TypeProsjekt");
+                          }}
+                          className={`flex items-center gap-2 border-2 rounded-lg py-2 px-3 cursor-pointer ${
+                            selectedHouseType === item.value
+                              ? "border-[#444CE7]"
+                              : "border-[#EFF1F5]"
+                          }`}
+                        >
+                          {item.icon}
+                          <div className="text-darkBlack text-sm text-center">
+                            {item.label}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {form.formState.errors.TypeProsjekt && (
+                      <p className="text-red text-sm mt-1">
+                        {form.formState.errors.TypeProsjekt.message}
+                      </p>
+                    )}
+                  </div>
                   <div>
                     <FormField
                       control={form.control}
@@ -272,7 +361,7 @@ export const Prosjektdetaljer = forwardRef(
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Skriv inn Tiltakshaver"
+                                placeholder="Skriv inn navn på tiltakshaver"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
@@ -487,132 +576,168 @@ export const Prosjektdetaljer = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="TelefonMobile"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Tlf. Mobil*
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <InputMobile
-                                placeholder="Skriv inn Tlf. Mobil"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
+                  <div className="col-span-3 flex gap-4 md:gap-5">
+                    <div className="w-1/2">
+                      <FormField
+                        control={form.control}
+                        name="TelefonMobile"
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <p
+                              className={`${
+                                fieldState.error ? "text-red" : "text-black"
+                              } mb-[6px] text-sm`}
+                            >
+                              Tlf. Mobil*
+                            </p>
+                            <FormControl>
+                              <div className="relative">
+                                <InputMobile
+                                  placeholder="Skriv inn Tlf. Mobil"
+                                  {...field}
+                                  className={`bg-white rounded-[8px] border text-black
                               ${
                                 fieldState?.error
                                   ? "border-red"
                                   : "border-gray1"
                               } `}
-                                type="tel"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                                  type="tel"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="w-1/2">
+                      <FormField
+                        control={form.control}
+                        name={`Finansiering`}
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <p
+                              className={`mb-2 ${
+                                fieldState.error ? "text-red" : "text-black"
+                              } text-sm`}
+                            >
+                              Har kunden godkjent finansiering?*
+                            </p>
+                            <FormControl>
+                              <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                                {Finansiering.map((option) => (
+                                  <div
+                                    key={option}
+                                    className="relative flex items-center gap-2 cursor-pointer"
+                                    onClick={() => {
+                                      form.setValue("Finansiering", option);
+                                    }}
+                                  >
+                                    <input
+                                      className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                      type="radio"
+                                      value={option}
+                                      onChange={(e) => {
+                                        form.setValue(
+                                          `Finansiering`,
+                                          e.target.value
+                                        );
+                                      }}
+                                      checked={field.value === option}
+                                    />
+                                    <p className={`text-black text-sm`}>
+                                      {option}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="TelefonPrivate"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Tlf. privat
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <InputMobile
-                                placeholder="Skriv inn Tlf. privat"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                type="tel"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
+                  <h4 className="uppercase text-darkBlack font-semibold col-span-3">
+                    Velg serie og leveransebeskrivelse
+                  </h4>
+                  <div className="col-span-3">
                     <p
                       className={`${
-                        form.formState.errors.Hustype
+                        form.formState.errors.VelgSerie
                           ? "text-red"
                           : "text-black"
                       } mb-[6px] text-sm`}
                     >
-                      Hustype*
+                      Velg serie*
                     </p>
                     <div className="flex flex-wrap gap-2 lg:gap-4 items-center">
                       {[
                         {
-                          label: "Bolig",
+                          label: "Funkis",
                           icon: (
                             <House
                               className={`${
-                                selectedHouseType === "bolig"
+                                VelgSerie === "Funkis"
                                   ? "text-[#444CE7]"
                                   : "text-[#5D6B98]"
                               }`}
                             />
                           ),
-                          value: "bolig",
+                          value: "Funkis",
                         },
                         {
-                          label: "Hytte",
+                          label: "Nostalgi",
                           icon: (
                             <Store
                               className={`${
-                                selectedHouseType === "hytte"
+                                VelgSerie === "Nostalgi"
                                   ? "text-[#444CE7]"
                                   : "text-[#5D6B98]"
                               }`}
                             />
                           ),
-                          value: "hytte",
+                          value: "Nostalgi",
                         },
                         {
-                          label: "Prosjekt",
+                          label: "Tradisjonelt",
                           icon: (
                             <Warehouse
                               className={`${
-                                selectedHouseType === "prosjekt"
+                                VelgSerie === "Tradisjonelt"
                                   ? "text-[#444CE7]"
                                   : "text-[#5D6B98]"
                               }`}
                             />
                           ),
-                          value: "prosjekt",
+                          value: "Tradisjonelt",
+                        },
+                        {
+                          label: "Moderne",
+                          icon: (
+                            <Warehouse
+                              className={`${
+                                VelgSerie === "Moderne"
+                                  ? "text-[#444CE7]"
+                                  : "text-[#5D6B98]"
+                              }`}
+                            />
+                          ),
+                          value: "Moderne",
                         },
                       ].map((item: any, index: number) => (
                         <div
                           key={index}
                           onClick={() => {
-                            form.setValue("Hustype", item.value);
-                            form.clearErrors("Hustype");
+                            form.setValue("VelgSerie", item.value);
+                            form.clearErrors("VelgSerie");
                           }}
                           className={`flex items-center gap-2 border-2 rounded-lg py-2 px-3 cursor-pointer ${
-                            selectedHouseType === item.value
+                            VelgSerie === item.value
                               ? "border-[#444CE7]"
                               : "border-[#EFF1F5]"
                           }`}
@@ -624,66 +749,16 @@ export const Prosjektdetaljer = forwardRef(
                         </div>
                       ))}
                     </div>
-                    {form.formState.errors.Hustype && (
+                    {form.formState.errors.VelgSerie && (
                       <p className="text-red text-sm mt-1">
-                        {form.formState.errors.Hustype.message}
+                        {form.formState.errors.VelgSerie.message}
                       </p>
                     )}
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name={`Finansiering`}
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`mb-2 ${
-                              fieldState.error ? "text-red" : "text-black"
-                            } text-sm`}
-                          >
-                            Finansiering*
-                          </p>
-                          <FormControl>
-                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
-                              {Finansiering.map((option) => (
-                                <div
-                                  key={option}
-                                  className="relative flex items-center gap-2 cursor-pointer"
-                                  onClick={() => {
-                                    form.setValue("Finansiering", option);
-                                  }}
-                                >
-                                  <input
-                                    className={`bg-white rounded-[8px] border text-black
-        ${
-          fieldState?.error ? "border-red" : "border-gray1"
-        } h-4 w-4 accent-[#444CE7]`}
-                                    type="radio"
-                                    value={option}
-                                    onChange={(e) => {
-                                      form.setValue(
-                                        `Finansiering`,
-                                        e.target.value
-                                      );
-                                    }}
-                                    checked={field.value === option}
-                                  />
-                                  <p className={`text-black text-sm`}>
-                                    {option}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name={`Leveransebeskrivelse`}
+                      name={`DatoBoligPartnerLeveransebeskrivelse`}
                       render={({ field, fieldState }: any) => (
                         <FormItem>
                           <p
@@ -691,12 +766,12 @@ export const Prosjektdetaljer = forwardRef(
                               fieldState.error ? "text-red" : ""
                             } mb-[6px] text-sm`}
                           >
-                            Leveransebeskrivelse (Dato)*
+                            Dato BoligPartner leveransebeskrivelse*
                           </p>
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Skriv inn Leveransebeskrivelse (Dato)"
+                                placeholder="Skriv inn Dato BoligPartner leveransebeskrivelse"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
@@ -713,72 +788,10 @@ export const Prosjektdetaljer = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name={`Energiberegning`}
-                      render={({ field, fieldState }: any) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : ""
-                            } mb-[6px] text-sm`}
-                          >
-                            Energiberegning dat
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Energiberegning dat"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name={`Situasjonsplan`}
-                      render={({ field, fieldState }: any) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : ""
-                            } mb-[6px] text-sm`}
-                          >
-                            Situasjonsplan dat*
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Situasjonsplan dat"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
+                  <h4 className="uppercase text-darkBlack font-semibold col-span-3">
+                    Prosjekteringsunderlag
+                  </h4>
                   <div>
                     <FormField
                       control={form.control}
@@ -795,7 +808,7 @@ export const Prosjektdetaljer = forwardRef(
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Skriv inn  Tegn.nummer"
+                                placeholder="Skriv inn tegningsnummer"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
@@ -807,39 +820,6 @@ export const Prosjektdetaljer = forwardRef(
                                 onChange={(e: any) =>
                                   field.onChange(Number(e.target.value) || "")
                                 }
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name={`GjeldendeDato`}
-                      render={({ field, fieldState }: any) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : ""
-                            } mb-[6px] text-sm`}
-                          >
-                            Gjeldende 1:50 tegning datert*
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Gjeldende 1:50 tegning datert"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
                               />
                             </div>
                           </FormControl>
@@ -884,7 +864,7 @@ export const Prosjektdetaljer = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name={`Referansekalkyledato`}
+                      name={`GjeldendeDato`}
                       render={({ field, fieldState }: any) => (
                         <FormItem>
                           <p
@@ -892,7 +872,73 @@ export const Prosjektdetaljer = forwardRef(
                               fieldState.error ? "text-red" : ""
                             } mb-[6px] text-sm`}
                           >
-                            Referanse / kalkyledato*
+                            Gjeldende 1:50 tegning datert*
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv inn Gjeldende 1:50 tegning datert"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="date"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name={`Situasjonsplan`}
+                      render={({ field, fieldState }: any) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : ""
+                            } mb-[6px] text-sm`}
+                          >
+                            Situasjonsplan (dato)*
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv inn Situasjonsplan dat"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="date"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name={`Kalkyledato`}
+                      render={({ field, fieldState }: any) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : ""
+                            } mb-[6px] text-sm`}
+                          >
+                            Kalkyledato*
                           </p>
                           <FormControl>
                             <div className="relative">
@@ -906,6 +952,290 @@ export const Prosjektdetaljer = forwardRef(
                                               : "border-gray1"
                                           } `}
                                 type="date"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name={`TypeKalkyle`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`mb-2 ${
+                              fieldState.error ? "text-red" : "text-black"
+                            } text-sm`}
+                          >
+                            Type kalkyle*
+                          </p>
+                          <FormControl>
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {TypeKalkyle.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue("TypeKalkyle", option);
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `TypeKalkyle`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
+                  <h4 className="uppercase text-darkBlack font-semibold col-span-3">
+                    Leveransedetaljer
+                  </h4>
+                  <div className="col-span-3 flex gap-4 md:gap-5">
+                    <div className="w-1/2">
+                      <FormField
+                        control={form.control}
+                        name="ØnsketLeveranseukeForFørsteKtkjøring"
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <p
+                              className={`${
+                                fieldState.error ? "text-red" : "text-black"
+                              } mb-[6px] text-sm`}
+                            >
+                              Ønsket leveranseuke for første utkjøring*
+                            </p>
+                            <FormControl>
+                              <div className="relative">
+                                <Select
+                                  onValueChange={(value) => {
+                                    field.onChange(value);
+                                  }}
+                                  value={field.value}
+                                >
+                                  <SelectTrigger
+                                    className={`bg-white rounded-[8px] border text-black
+                              ${
+                                fieldState?.error
+                                  ? "border-red"
+                                  : "border-gray1"
+                              } `}
+                                  >
+                                    <SelectValue placeholder="Velg uke" />
+                                  </SelectTrigger>
+                                  <SelectContent className="bg-white">
+                                    <SelectGroup>
+                                      {ØnsketLeveranseukeForFørsteKtkjøring?.map(
+                                        (item, index) => {
+                                          return (
+                                            <SelectItem
+                                              key={index}
+                                              value={item}
+                                            >
+                                              {item}
+                                            </SelectItem>
+                                          );
+                                        }
+                                      )}
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="w-1/2">
+                      <FormField
+                        control={form.control}
+                        name="TakstolerLeveresUke"
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <p
+                              className={`${
+                                fieldState.error ? "text-red" : "text-black"
+                              } mb-[6px] text-sm`}
+                            >
+                              Takstoler leveres uke*
+                            </p>
+                            <FormControl>
+                              <div className="relative">
+                                <Select
+                                  onValueChange={(value) => {
+                                    field.onChange(value);
+                                  }}
+                                  value={field.value}
+                                >
+                                  <SelectTrigger
+                                    className={`bg-white rounded-[8px] border text-black
+                              ${
+                                fieldState?.error
+                                  ? "border-red"
+                                  : "border-gray1"
+                              } `}
+                                  >
+                                    <SelectValue placeholder="Velg uke" />
+                                  </SelectTrigger>
+                                  <SelectContent className="bg-white">
+                                    <SelectGroup>
+                                      {TakstolerLeveresUke?.map(
+                                        (item, index) => {
+                                          return (
+                                            <SelectItem
+                                              key={index}
+                                              value={item}
+                                            >
+                                              {item}
+                                            </SelectItem>
+                                          );
+                                        }
+                                      )}
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-span-3 flex gap-4 md:gap-5">
+                    <div className="w-1/3">
+                      <FormField
+                        control={form.control}
+                        name="VinduerLeveresUke"
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <p
+                              className={`${
+                                fieldState.error ? "text-red" : "text-black"
+                              } mb-[6px] text-sm`}
+                            >
+                              Vinduer leveres uke*
+                            </p>
+                            <FormControl>
+                              <div className="relative">
+                                <Select
+                                  onValueChange={(value) => {
+                                    field.onChange(value);
+                                  }}
+                                  value={field.value}
+                                >
+                                  <SelectTrigger
+                                    className={`bg-white rounded-[8px] border text-black
+                              ${
+                                fieldState?.error
+                                  ? "border-red"
+                                  : "border-gray1"
+                              } `}
+                                  >
+                                    <SelectValue placeholder="Velg uke" />
+                                  </SelectTrigger>
+                                  <SelectContent className="bg-white">
+                                    <SelectGroup>
+                                      {VinduerLeveresUke?.map((item, index) => {
+                                        return (
+                                          <SelectItem key={index} value={item}>
+                                            {item}
+                                          </SelectItem>
+                                        );
+                                      })}
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="w-2/3">
+                      <FormField
+                        control={form.control}
+                        name={`VedleggTilKontraktDatert`}
+                        render={({ field, fieldState }: any) => (
+                          <FormItem>
+                            <p
+                              className={`${
+                                fieldState.error ? "text-red" : ""
+                              } mb-[6px] text-sm`}
+                            >
+                              Vedlegg til kontrakt datert*
+                            </p>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  placeholder="Skriv inn Vedlegg til kontrakt datert"
+                                  {...field}
+                                  className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                  type="date"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-span-3">
+                    <FormField
+                      control={form.control}
+                      name={`KommentarProsjektLeveransedetaljer`}
+                      render={({ field, fieldState }: any) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : ""
+                            } mb-[6px] text-sm`}
+                          >
+                            Kommentar til prosjekt- og leveransedetaljer
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv her"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
                               />
                             </div>
                           </FormControl>
