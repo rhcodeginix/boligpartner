@@ -30,6 +30,9 @@ import { useEffect, useRef } from "react";
 import { Preview } from "./preview";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import PptxGenJS from "pptxgenjs";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const formSchema = z.object({
   Kundenavn: z.string({
@@ -176,23 +179,256 @@ export const AddFinalSubmission: React.FC<{
 
         pdf.save(`preview-${Date.now()}.pdf`);
       }
-
-      // if (data.exportType === "PPT") {
       //   const element = previewRef.current;
       //   if (!element) return;
 
-      //   const htmlContent = element.innerHTML;
-      //   const blob = new Blob([htmlContent], {
-      //     type: "application/vnd.ms-powerpoint",
+      //   // Convert DOM to image
+      //   const canvas = await html2canvas(element);
+      //   const imgData = canvas.toDataURL("image/png");
+
+      //   // Create PowerPoint
+      //   const pptx = new PptxGenJS();
+      //   const slide = pptx.addSlide();
+
+      //   // Add image to slide (optional: scale size to fit slide)
+      //   slide.addImage({
+      //     data: imgData,
+      //     x: 0.5,
+      //     y: 0.5,
+      //     w: 8,
+      //     h: 5, // adjust size as needed
       //   });
-      //   const url = URL.createObjectURL(blob);
 
-      //   const link = document.createElement("a");
-      //   link.href = url;
-      //   link.download = `export-${Date.now()}.ppt`;
-      //   link.click();
-      // }
+      //   // Download PPT
+      //   pptx.writeFile({ fileName: `export-${Date.now()}.pptx` });
+      // };
 
+      // const exportToPpt = async () => {
+      //   const element = previewRef.current;
+      //   if (!element) return;
+
+      //   const slideWidth = 10; // inches
+      //   const slideHeight = 5.625; // inches (standard 16:9)
+      //   const dpi = 96; // standard screen resolution
+      //   const slidePixelHeight = slideHeight * dpi;
+
+      //   // Get total scroll height
+      //   const totalHeight = element.scrollHeight;
+      //   const visibleHeight = slidePixelHeight;
+
+      //   const pptx = new PptxGenJS();
+      //   const numSlides = Math.ceil(totalHeight / visibleHeight);
+
+      //   for (let i = 0; i < numSlides; i++) {
+      //     // Scroll window to capture the correct part
+      //     const canvas = await html2canvas(element, {
+      //       scrollY: -window.scrollY, // prevent current scroll from interfering
+      //       height: visibleHeight,
+      //       y: i * visibleHeight, // start capture from this Y
+      //       windowHeight: visibleHeight,
+      //     });
+
+      //     const imgData = canvas.toDataURL("image/png");
+
+      //     const slide = pptx.addSlide();
+      //     slide.addImage({
+      //       data: imgData,
+      //       x: 0,
+      //       y: 0,
+      //       w: slideWidth,
+      //       h: slideHeight,
+      //     });
+      //   }
+
+      //   pptx.writeFile({ fileName: `export-${Date.now()}.pptx` });
+      // };
+
+      // const exportToPpt = async () => {
+      //   const element = previewRef.current;
+      //   if (!element) return;
+
+      //   // Full canvas of the element
+      //   const fullCanvas = await html2canvas(element, {
+      //     // scale: 2, // better quality
+      //     useCORS: true, // if using images
+      //   });
+
+      //   const slideWidthInches = 10;
+      //   const slideHeightInches = 5.625;
+      //   const DPI = 96;
+      //   const slideHeightPx = slideHeightInches * DPI;
+
+      //   const totalHeight = fullCanvas.height;
+      //   const totalWidth = fullCanvas.width;
+
+      //   const pptx = new PptxGenJS();
+
+      //   let offsetY = 0;
+
+      //   while (offsetY < totalHeight) {
+      //     const canvasSlice = document.createElement("canvas");
+      //     canvasSlice.width = totalWidth;
+      //     canvasSlice.height = Math.min(slideHeightPx, totalHeight - offsetY);
+
+      //     const ctx = canvasSlice.getContext("2d");
+      //     if (ctx) {
+      //       ctx.drawImage(
+      //         fullCanvas,
+      //         0,
+      //         offsetY, // source x,y in full canvas
+      //         totalWidth,
+      //         canvasSlice.height, // source width, height
+      //         0,
+      //         0, // target x,y
+      //         totalWidth,
+      //         canvasSlice.height // target width, height
+      //       );
+      //     }
+
+      //     const imgData = canvasSlice.toDataURL("image/png");
+
+      //     const slide = pptx.addSlide();
+      //     slide.addImage({
+      //       data: imgData,
+      //       x: 0,
+      //       y: 0,
+      //       w: slideWidthInches,
+      //       h: canvasSlice.height / DPI, // scale height proportionally
+      //     });
+
+      //     offsetY += slideHeightPx;
+      //   }
+
+      //   pptx.writeFile({ fileName: `export-${Date.now()}.pptx` });
+      // };
+
+      if (data.exportType === "PPT") {
+        const exportToPpt = async () => {
+          const element = previewRef.current;
+          if (!element) return;
+
+          const fullCanvas = await html2canvas(element, {
+            scale: 1,
+            useCORS: true,
+          });
+
+          const slideWidthInches = 10;
+          const slideHeightInches = 5.625;
+          const paddingInches = 0.2;
+          const usableWidthInches = slideWidthInches - 2 * paddingInches;
+          const usableHeightInches = slideHeightInches - 2 * paddingInches;
+          const DPI = 96;
+
+          const totalHeightPx = fullCanvas.height;
+          const totalWidthPx = fullCanvas.width;
+          const sliceHeightPx = usableHeightInches * DPI;
+
+          const pptx = new PptxGenJS();
+          let offsetY = 0;
+
+          while (offsetY < totalHeightPx) {
+            const sliceCanvas = document.createElement("canvas");
+            sliceCanvas.width = totalWidthPx;
+            const currentSliceHeight = Math.min(
+              sliceHeightPx,
+              totalHeightPx - offsetY
+            );
+            sliceCanvas.height = currentSliceHeight;
+
+            const ctx = sliceCanvas.getContext("2d");
+            if (ctx) {
+              ctx.drawImage(
+                fullCanvas,
+                0,
+                offsetY,
+                totalWidthPx,
+                currentSliceHeight,
+                0,
+                0,
+                totalWidthPx,
+                currentSliceHeight
+              );
+            }
+
+            const imgData = sliceCanvas.toDataURL("image/png");
+
+            const imageWidthInches = totalWidthPx / DPI;
+            const imageHeightInches = currentSliceHeight / DPI;
+
+            let scaledWidth = usableWidthInches;
+            let scaledHeight =
+              imageHeightInches * (scaledWidth / imageWidthInches);
+
+            if (scaledHeight > usableHeightInches) {
+              scaledHeight = usableHeightInches;
+              scaledWidth =
+                imageWidthInches * (scaledHeight / imageHeightInches);
+            }
+
+            const slide = pptx.addSlide();
+            slide.addImage({
+              data: imgData,
+              x: paddingInches + (usableWidthInches - scaledWidth) / 2,
+              y: paddingInches + (usableHeightInches - scaledHeight) / 2,
+              w: scaledWidth,
+              h: scaledHeight,
+            });
+
+            offsetY += currentSliceHeight;
+          }
+
+          pptx.writeFile({ fileName: `export-${Date.now()}.pptx` });
+        };
+        exportToPpt();
+      }
+
+      if (data.exportType === "Excel") {
+        const exportToExcel = () => {
+          const rows: any[] = [];
+
+          rooms.forEach((room: any) => {
+            room.rooms?.forEach((innerRoom: any) => {
+              innerRoom.Kategorinavn?.forEach((kat: any) => {
+                if (kat.productOptions === "Text") return;
+
+                kat.produkter?.forEach((prod: any) => {
+                  if (!prod?.isSelected) return;
+
+                  rows.push({
+                    RoomTitle: room?.title,
+                    RoomName: innerRoom?.name_no || innerRoom?.name,
+                    Category: kat?.navn,
+                    Product: prod?.Produktnavn,
+                    Price: prod?.IncludingOffer
+                      ? "Standard"
+                      : prod?.pris || "-",
+                    DeliveredBy: prod?.delieverBy || "Boligpartner",
+                  });
+                });
+              });
+            });
+          });
+
+          const worksheet = XLSX.utils.json_to_sheet(rows);
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(
+            workbook,
+            worksheet,
+            "Customisation Summary"
+          );
+
+          const excelBuffer = XLSX.write(workbook, {
+            bookType: "xlsx",
+            type: "array",
+          });
+          const blob = new Blob([excelBuffer], {
+            type: "application/octet-stream",
+          });
+
+          saveAs(blob, `customisation-summary-${Date.now()}.xlsx`);
+        };
+        exportToExcel();
+      }
       toast.success("Lagret", {
         position: "top-right",
       });
