@@ -78,6 +78,7 @@ export const Navbar: React.FC = () => {
         style={{
           zIndex: 999,
         }}
+        id="navbar"
       >
         <div className="flex items-center gap-2">
           <Menu onClick={toggleDrawer} className="md:hidden text-primary" />

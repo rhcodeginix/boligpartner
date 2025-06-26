@@ -26,13 +26,14 @@ import { db } from "../../../../config/firebaseConfig";
 import { useLocation } from "react-router-dom";
 import { removeUndefinedOrNull } from "../Oppmelding/Yttervegger";
 import { toast } from "react-hot-toast";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Preview } from "./preview";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import PptxGenJS from "pptxgenjs";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import Modal from "../../../../components/common/modal";
 
 const formSchema = z.object({
   Kundenavn: z.string({
@@ -78,6 +79,7 @@ export const AddFinalSubmission: React.FC<{
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  const [isExporting, setIsExporting] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
@@ -104,8 +106,13 @@ export const AddFinalSubmission: React.FC<{
       };
 
       await updateDoc(husmodellDocRef, mergedData);
+      onClose();
+      toast.success("Lagret", {
+        position: "top-right",
+      });
 
       if (data.exportType === "PDF") {
+        setIsExporting(true);
         const element = previewRef.current;
         if (!element) throw new Error("Preview element not found");
 
@@ -303,6 +310,7 @@ export const AddFinalSubmission: React.FC<{
       // };
 
       if (data.exportType === "PPT") {
+        setIsExporting(true);
         const exportToPpt = async () => {
           const element = previewRef.current;
           if (!element) return;
@@ -383,6 +391,7 @@ export const AddFinalSubmission: React.FC<{
       }
 
       if (data.exportType === "Excel") {
+        setIsExporting(true);
         const exportToExcel = () => {
           const rows: any[] = [];
 
@@ -429,15 +438,14 @@ export const AddFinalSubmission: React.FC<{
         };
         exportToExcel();
       }
-      toast.success("Lagret", {
-        position: "top-right",
-      });
-      onClose();
+      setIsExporting(false);
     } catch (error) {
       console.error("error:", error);
       toast.error("Something went wrong!", {
         position: "top-right",
       });
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -462,6 +470,19 @@ export const AddFinalSubmission: React.FC<{
 
     getData();
   }, [id]);
+
+  useEffect(() => {
+    const navbar = document.getElementById("navbar");
+    const exportDiv = document.getElementById("export_div");
+
+    if (navbar) {
+      navbar.style.zIndex = isExporting ? "-1" : "999";
+    }
+
+    if (exportDiv) {
+      exportDiv.style.zIndex = isExporting ? "-1" : "999";
+    }
+  }, [isExporting]);
 
   return (
     <>
@@ -708,6 +729,7 @@ export const AddFinalSubmission: React.FC<{
               boxShadow:
                 "0px -3px 4px -2px #1018280F, 0px -4px 8px -2px #1018281A",
             }}
+            id="export_div"
           >
             <div onClick={() => form.reset()}>
               <Button
@@ -737,6 +759,25 @@ export const AddFinalSubmission: React.FC<{
           <Preview rooms={rooms} />
         </div>
       </div>
+
+      {isExporting && (
+        <Modal
+          onClose={() => setIsExporting(false)}
+          isOpen={true}
+          outSideClick={false}
+        >
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="flex flex-col items-center gap-4 bg-white p-3 rounded-lg">
+              <span className="text-purple text-base font-medium">
+                Eksporterer...
+              </span>
+              <div className="w-48 h-1 overflow-hidden rounded-lg">
+                <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };
