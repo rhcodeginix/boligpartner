@@ -177,21 +177,21 @@ export const AddFinalSubmission: React.FC<{
         pdf.save(`preview-${Date.now()}.pdf`);
       }
 
-      if (data.exportType === "PPT") {
-        const element = previewRef.current;
-        if (!element) return;
+      // if (data.exportType === "PPT") {
+      //   const element = previewRef.current;
+      //   if (!element) return;
 
-        const htmlContent = element.innerHTML;
-        const blob = new Blob([htmlContent], {
-          type: "application/vnd.ms-powerpoint",
-        });
-        const url = URL.createObjectURL(blob);
+      //   const htmlContent = element.innerHTML;
+      //   const blob = new Blob([htmlContent], {
+      //     type: "application/vnd.ms-powerpoint",
+      //   });
+      //   const url = URL.createObjectURL(blob);
 
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `export-${Date.now()}.ppt`;
-        link.click();
-      }
+      //   const link = document.createElement("a");
+      //   link.href = url;
+      //   link.download = `export-${Date.now()}.ppt`;
+      //   link.click();
+      // }
 
       toast.success("Lagret", {
         position: "top-right",
