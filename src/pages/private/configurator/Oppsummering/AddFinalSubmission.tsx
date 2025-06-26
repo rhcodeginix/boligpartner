@@ -28,8 +28,9 @@ import { removeUndefinedOrNull } from "../Oppmelding/Yttervegger";
 import { toast } from "react-hot-toast";
 import { useEffect, useRef } from "react";
 import { Preview } from "./preview";
-// import { toPng } from "html-to-image";
-// import jsPDF from "jspdf";
+import { toPng } from "html-to-image";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const formSchema = z.object({
   Kundenavn: z.string({
@@ -102,25 +103,150 @@ export const AddFinalSubmission: React.FC<{
 
       await updateDoc(husmodellDocRef, mergedData);
 
-      // if (data.exportType === "PDF") {
-      //   const element = previewRef.current;
+      if (data.exportType === "PDF") {
+        const element = previewRef.current;
+        if (!element) throw new Error("Preview element not found");
 
-      //   if (!element) throw new Error("Preview element not found");
+        const toDataURL = (url: string): Promise<string> =>
+          fetch(url)
+            .then((response) => response.blob())
+            .then((blob) => {
+              return new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result as string);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+              });
+            });
 
-      //   const dataUrl = await toPng(element, {
-      //     quality: 1,
-      //     pixelRatio: 2,
-      //   });
+        const replaceFirebaseImagesWithBase64 = async () => {
+          const images = element.querySelectorAll("img");
+          await Promise.all(
+            Array.from(images).map(async (img) => {
+              const src = img.getAttribute("src");
+              if (src && src.includes("firebasestorage.googleapis.com")) {
+                try {
+                  const dataUrl = await toDataURL(src);
+                  img.setAttribute("src", dataUrl);
+                } catch (err) {
+                  console.warn(
+                    "Could not convert Firebase image to base64",
+                    err
+                  );
+                }
+              }
+            })
+          );
+        };
 
-      //   const pdf = new jsPDF("p", "mm", "a4");
-      //   const imgProps = pdf.getImageProperties(dataUrl);
-      //   const pdfWidth = pdf.internal.pageSize.getWidth();
-      //   const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        await replaceFirebaseImagesWithBase64()
 
-      //   pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
-      //   pdf.save(`preview-${Date.now()}.pdf`);
-      // }
-      
+
+        const canvas = await html2canvas(element, {
+          useCORS: true,
+          allowTaint: false,
+          backgroundColor: "#ffffff",
+          scale: 2,
+        });
+
+
+        const imgData = canvas.toDataURL("image/png");
+
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+
+        const padding = 5;
+        const usableWidth = pdfWidth - padding * 2;
+        const usableHeight = pdfHeight - padding * 2;
+
+        const imgProps = pdf.getImageProperties(imgData);
+        const imgWidth = usableWidth;
+        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+        let heightLeft = imgHeight;
+        let position = padding;
+
+        pdf.addImage(imgData, "PNG", padding, padding, imgWidth, imgHeight);
+        heightLeft -= usableHeight;
+
+        while (heightLeft > 0) {
+          pdf.addPage();
+          position = padding - (imgHeight - heightLeft);
+          pdf.addImage(imgData, "PNG", padding, position, imgWidth, imgHeight);
+          heightLeft -= usableHeight;
+        }
+
+        pdf.save(`preview-${Date.now()}.pdf`);
+
+        // const printContent = previewRef.current;
+        // if (printContent) {
+        //   // Clone the preview content into a new window for printing
+
+        //   const printContent = previewRef.current;
+        //   if (printContent) {
+        //     // const printWindow = window.open(
+        //     //   "",
+        //     //   "_blank",
+        //     //   "width=1024,height=768"
+        //     // );
+
+        //     // if (printWindow) {
+        //     //   const html = `
+        //     //   <html>
+        //     //     <head>
+        //     //       <title>Preview PDF</title>
+        //     //       <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        //     //       <script src="https://cdn.tailwindcss.com"></script>
+        //     //       <style>
+        //     //         body {
+        //     //           padding: 32px;
+        //     //         }
+        //     //       </style>
+        //     //     </head>
+        //     //     <body>
+        //     //       ${printContent.innerHTML}
+        //     //       <script>
+        //     //         window.onload = function () {
+        //     //           window.onafterprint = function () {
+        //     //             window.close();
+        //     //           };
+        //     //         };
+        //     //       </script>
+        //     //     </body>
+        //     //   </html>
+        //     // `;
+
+        //     //   printWindow.document.open();
+        //     //   printWindow.document.write(html);
+        //     //   printWindow.document.close();
+        //     // }
+
+        //           const html = `
+        //       <html>
+        //         <head>
+        //           <title>Preview PDF</title>
+        //           <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        //           <style>body { padding: 32px; }</style>
+        //           <script src="https://cdn.tailwindcss.com"></script>
+        //         </head>
+        //         <body>
+        //           ${printContent.innerHTML}
+        //         </body>
+        //       </html>
+        //     `;
+
+        //           const blob = new Blob([html], { type: "text/html" });
+
+        //           const link = document.createElement("a");
+        //           link.href = URL.createObjectURL(blob);
+        //           link.download = "preview.html"; // Not PDF, but styled HTML
+        //           document.body.appendChild(link);
+        //           link.click();
+        //           document.body.removeChild(link);
+        //   }
+        // }
+      }
 
       toast.success("Lagret", {
         position: "top-right",
@@ -417,7 +543,15 @@ export const AddFinalSubmission: React.FC<{
         </form>
       </Form>
 
-      <div style={{ display: "none" }}>
+      <div
+        style={{
+          position: "absolute",
+          top: "-9999px",
+          left: "-9999px",
+          opacity: 0,
+          pointerEvents: "none",
+        }}
+      >
         <div ref={previewRef}>
           <Preview rooms={rooms} />
         </div>

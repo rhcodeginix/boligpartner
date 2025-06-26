@@ -106,17 +106,31 @@ export const Preview: React.FC<{ rooms: any }> = ({ rooms }) => {
                                                         {prod?.Hovedbilde &&
                                                         prod?.Hovedbilde
                                                           ?.length > 0 ? (
-                                                          <div className="w-[50px] h-[50px]">
-                                                            <img
-                                                              src={
-                                                                prod
-                                                                  ?.Hovedbilde[0]
-                                                              }
-                                                              alt="w-full h-full rounded-lg"
-                                                            />
-                                                          </div>
+                                                          <img
+                                                            src={
+                                                              prod
+                                                                ?.Hovedbilde[0]
+                                                            }
+                                                            alt="product"
+                                                            style={{
+                                                              width: "50px",
+                                                              height: "50px",
+                                                              borderRadius:
+                                                                "8px",
+                                                            }}
+                                                            crossOrigin="anonymous"
+                                                          />
                                                         ) : (
-                                                          <div className="w-[50px] h-[50px] bg-gray2 rounded-lg"></div>
+                                                          <div
+                                                            style={{
+                                                              width: "50px",
+                                                              height: "50px",
+                                                              backgroundColor:
+                                                                "#d0d5dd",
+                                                              borderRadius:
+                                                                "8px",
+                                                            }}
+                                                          ></div>
                                                         )}
                                                         <div>
                                                           <h4 className="text-sm font-medium">
