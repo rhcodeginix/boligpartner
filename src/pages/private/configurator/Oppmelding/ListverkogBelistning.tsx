@@ -295,7 +295,7 @@ export const ListverkogBelistning = forwardRef(
                                     }}
                                   />
                                   <p
-                                    className={`text-gray text-sm font-medium`}
+                                    className={`text-black text-sm`}
                                   >
                                     {option}
                                   </p>
@@ -372,7 +372,7 @@ export const ListverkogBelistning = forwardRef(
                                     }}
                                   />
                                   <p
-                                    className={`text-gray text-sm font-medium`}
+                                    className={`text-black text-sm`}
                                   >
                                     {option}
                                   </p>
@@ -449,7 +449,7 @@ export const ListverkogBelistning = forwardRef(
                                     }}
                                   />
                                   <p
-                                    className={`text-gray text-sm font-medium`}
+                                    className={`text-black text-sm`}
                                   >
                                     {option}
                                   </p>

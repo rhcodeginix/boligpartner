@@ -370,7 +370,7 @@ export const ProductFormDrawer: React.FC<{
                                       checked={field.value === option}
                                     />
                                     <p
-                                      className={`text-gray text-sm font-medium`}
+                                      className={`text-black text-sm`}
                                     >
                                       {option}
                                     </p>

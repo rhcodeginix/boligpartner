@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "../../../../components/ui/select";
 import { Input } from "../../../../components/ui/input";
-import { forwardRef, useEffect, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -26,64 +26,90 @@ import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
 
 const formSchema = z.object({
-  Hoveddør: z.object({
-    StandardHvitmalt: z.boolean().optional(),
-    Slagretning: z.string().optional(),
-    DørFargeNCSKode: z.string().optional(),
-    DørType: z.string().optional(),
-    KarmUtforingHvitmalt: z.boolean().optional(),
-    TilleggslåsType: z.string().optional(),
-    SikkerhetslåsType: z.string().optional(),
-    SigaWigluvRundtDør: z.string().optional(),
-  }),
+  Inngangsdør: z
+    .object({
+      type: z.string(),
+      colorCode: z.string().optional(),
+      dør: z.string().optional(),
+      Dørfarge: z.string().optional(),
+    })
+    .optional(),
+  UtforingFarge: z.string().optional(),
+  SlagretningTofløyetDør: z.string().optional(),
+  SikkerhetslåsType: z.string().optional(),
+  TilleggslåsType: z.string().optional(),
+  KommentarInngangsdør: z.string().optional(),
+  Boddør: z
+    .object({
+      type: z.string(),
+      colorCode: z.string().optional(),
+    })
+    .optional(),
+  LikelåsMedHoveddør: z.string().optional(),
+  KommentarBoddør: z.string().optional(),
   BalkongTerrassedør: z.object({
-    StandardHvitmalt: z.boolean().optional(),
-    HvitUtforingMDF: z.boolean().optional(),
+    BalkongTerrassedør: z
+      .object({
+        type: z.string(),
+        colorCode: z.string().optional(),
+      })
+      .optional(),
+    UtforingFarge: z.string().optional(),
+    SlagretningTofløyetDør: z.string().optional(),
     MedTerskelforing: z.string().optional(),
+    LikelåsMedHoveddør: z.string().optional(),
     UtvendigInnvendigSylinder: z.string().optional(),
-    LikelåsmedHoveddør: z.string().optional(),
-    HvitmaltUtvLakkertInnv: z.string().optional(),
-    AndreFargekombinasjoner: z.string().optional(),
-    Slagretning: z.string().optional(),
-    SigaWigluvRundtDør: z.string().optional(),
+    KommentarBalkongdør: z.string().optional(),
   }),
-  DørerIboligrom: z.object({
-    StandardTypeVision: z.boolean().optional(),
-    AnnenType: z.string().optional(),
-    GlassdørAntall: z.string().optional(),
+  InnvendigeDører: z.object({
+    InnvendigeDører: z
+      .object({
+        type: z.string(),
+        colorCode: z.string().optional(),
+        dør: z.string().optional(),
+        Dørfarge: z.string().optional(),
+      })
+      .optional(),
+    KommentarTilInnvendigeDører: z.string().optional(),
+    Glassdør: z.string().optional(),
     SkyvedørMedGlass: z.string().optional(),
     SkyvedørskarmSeparatOrdre: z.string().optional(),
-    KarmType: z.array(z.string()).optional(),
-    Terskeltype: z.array(z.string()).optional(),
+    UtforingFarge: z.string().optional(),
+    SlagretningTofløyetDør: z.string().optional(),
     Dempelister: z.string().optional(),
-    SpalteIoverkarm: z.string().optional(),
+    Terskeltype: z.array(z.string()).optional(),
     Hengsler: z.string().optional(),
-    SporForBelegg: z.string().optional(),
-    Slagretning: z.string().optional(),
-    LøseForinger: z.boolean().optional(),
-    VridereType: z.array(z.string()).optional(),
-    AlternativVrider: z.string().optional(),
+    SporBelegg: z.string().optional(),
   }),
-  DørerIKjellerrom: z.object({
-    SammeSom: z.boolean().optional(),
-    AnnenType: z.string().optional(),
-    IkkeRelevant: z.boolean().optional(),
-  }),
+  Dørvridere: z
+    .object({
+      type: z.string(),
+      colorCode: z.string().optional(),
+      dør: z.string().optional(),
+      Dørfarge: z.string().optional(),
+    })
+    .optional(),
+  DørerKjellerrom: z
+    .object({
+      type: z.string(),
+      colorCode: z.string().optional(),
+      dør: z.string().optional(),
+      Dørfarge: z.string().optional(),
+    })
+    .optional(),
   Garasjeport: z.object({
-    IkkeRelevant: z.boolean().optional(),
-    StandardHorisontal: z.boolean().optional(),
-    AlternativType: z.string().optional(),
+    Garasjeport: z
+      .object({
+        type: z.string(),
+        colorCode: z.string().optional(),
+        dør: z.string().optional(),
+        Dørfarge: z.string().optional(),
+      })
+      .optional(),
     BreddeXhøyde: z.string().optional(),
     Portåpner: z.boolean().optional(),
     MicroSenderAntall: z.string().optional(),
     AlternativRAL: z.string().optional(),
-  }),
-  Boddør: z.object({
-    IkkeRelevant: z.boolean().optional(),
-    PThvitmaltMedKarm: z.boolean().optional(),
-    MaltKarmAnnenFarge: z.string().optional(),
-    LikelåsMedHoveddør: z.string().optional(),
-    Alt: z.string().optional(),
   }),
 });
 
@@ -146,7 +172,7 @@ export const Dører = forwardRef(
           position: "top-right",
         });
         handleNext();
-        localStorage.setItem("currVerticalIndex", String(9));
+        localStorage.setItem("currVerticalIndex", String(8));
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {
@@ -154,9 +180,49 @@ export const Dører = forwardRef(
         });
       }
     };
-    const KarmType = ["Standard", "Ubehandlet", "Lakkert"];
-    const Terskeltype = ["Standard", "Ubehandlet", "Lakkert"];
-    const VridereType = ["Habo A2012 (Stål)", "183 (Stål)"];
+
+    const InngangsdørOptions = [
+      "Standard hvitmalt ihht. signaturbeskrivelse",
+      "Standard dør annen farge",
+      "Annen dørmodell",
+    ];
+    const UtforingFarge = ["Hvit", "Som dørfarge"];
+    const SlagretningTofløyetDør = ["Høyre", "Venstre"];
+    const BoddørOptions = [
+      "Ikke relevant",
+      "Hvitmalt type ihht. signatur",
+      "Malt dør og karm annen farge",
+    ];
+    const BalkongTerrassedørOptions = [
+      "Standard hvitmalt utvendig/innvendig",
+      "Annen farge",
+      "Alubeslått utvendig",
+    ];
+    const InnvendigeDørerOptions = [
+      "Standard hvitmalt ihht. signaturbeskrivelse",
+      "Standard dør annen farge",
+      "Annen dørmodell",
+    ];
+    const DørvridereOptions = [
+      "Standard hht. signaturbeskrivelse",
+      "Annen vrider",
+    ];
+    const DørerKjellerromOptions = [
+      "Ikke relevant",
+      "Samme som 1. etg.",
+      "Annen type",
+    ];
+    const GarasjeportOptions = [
+      "Ikke relevant",
+      "Standard ihenhold til leveransebeskrivelse",
+      "Annen type",
+    ];
+    const LikelåsMedHoveddør = ["Ja", "Nei"];
+    const Terskeltype = useMemo(
+      () => ["Standard", "Påforingsterskel", "våtrom"],
+      []
+    );
+    const array = useMemo(() => ["Abc", "Xyz"], []);
 
     useEffect(() => {
       if (roomsData && roomsData?.Dører) {
@@ -166,7 +232,7 @@ export const Dører = forwardRef(
           }
         });
       }
-    }, [roomsData, KarmType, Terskeltype, VridereType]);
+    }, [roomsData]);
     return (
       <>
         <Form {...form}>
@@ -177,37 +243,147 @@ export const Dører = forwardRef(
               </div>
               <div className="p-4 md:p-5">
                 <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
+                  <h4 className="uppercase text-darkBlack font-semibold col-span-3">
+                    INNGANGSDØR
+                  </h4>
+                  <div className="col-span-3">
+                    <FormField
+                      control={form.control}
+                      name="Inngangsdør"
+                      render={() => {
+                        const selected = form.watch("Inngangsdør");
+
+                        return (
+                          <FormItem>
+                            <p className="mb-2 font-medium text-darkBlack text-sm">
+                              Velg ett alternativ:
+                            </p>
+                            <div className="flex flex-col gap-4">
+                              {InngangsdørOptions.map((option) => {
+                                const isSelected = selected?.type === option;
+
+                                return (
+                                  <div
+                                    key={option}
+                                    className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5"
+                                  >
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                      <input
+                                        type="radio"
+                                        name="Inngangsdør"
+                                        value={option}
+                                        checked={isSelected}
+                                        onChange={() =>
+                                          form.setValue("Inngangsdør", {
+                                            type: option,
+                                            colorCode: "",
+                                            dør: "",
+                                            Dørfarge: "",
+                                          })
+                                        }
+                                        className="h-4 w-4 accent-[#444CE7]"
+                                      />
+                                      <span className="text-black text-sm">
+                                        {option}
+                                      </span>
+                                    </label>
+                                    {option !==
+                                      "Standard hvitmalt ihht. signaturbeskrivelse" &&
+                                      option !== "Annen dørmodell" && (
+                                        <div className="col-span-2">
+                                          <Input
+                                            placeholder="Skriv kode"
+                                            value={
+                                              isSelected
+                                                ? selected?.colorCode || ""
+                                                : ""
+                                            }
+                                            onChange={(e: any) => {
+                                              if (isSelected) {
+                                                form.setValue("Inngangsdør", {
+                                                  type: option,
+                                                  colorCode: e.target.value,
+                                                  Dørfarge: "",
+                                                  dør: "",
+                                                });
+                                              }
+                                            }}
+                                            className={`bg-white rounded-[8px] border text-black border-gray1`}
+                                            disable={!isSelected}
+                                          />
+                                        </div>
+                                      )}
+                                    {option !==
+                                      "Standard hvitmalt ihht. signaturbeskrivelse" &&
+                                      option !== "Standard dør annen farge" && (
+                                        <>
+                                          <div>
+                                            <Input
+                                              placeholder="Type dør"
+                                              value={
+                                                isSelected
+                                                  ? selected?.dør || ""
+                                                  : ""
+                                              }
+                                              onChange={(e: any) => {
+                                                if (isSelected) {
+                                                  form.setValue("Inngangsdør", {
+                                                    type: option,
+                                                    dør: e.target.value,
+                                                    Dørfarge: form.watch(
+                                                      "Inngangsdør.Dørfarge"
+                                                    ),
+                                                    colorCode: "",
+                                                  });
+                                                }
+                                              }}
+                                              className={`bg-white rounded-[8px] border text-black border-gray1`}
+                                              disable={!isSelected}
+                                            />
+                                          </div>
+                                          <div>
+                                            <Input
+                                              placeholder="Dørfarge"
+                                              value={
+                                                isSelected
+                                                  ? selected?.Dørfarge || ""
+                                                  : ""
+                                              }
+                                              onChange={(e: any) => {
+                                                if (isSelected) {
+                                                  form.setValue("Inngangsdør", {
+                                                    type: option,
+                                                    Dørfarge: e.target.value,
+                                                    dør: form.watch(
+                                                      "Inngangsdør.dør"
+                                                    ),
+                                                    colorCode: "",
+                                                  });
+                                                }
+                                              }}
+                                              className={`bg-white rounded-[8px] border text-black border-gray1`}
+                                              disable={!isSelected}
+                                            />
+                                          </div>
+                                        </>
+                                      )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </FormItem>
+                        );
+                      }}
+                    />
+                  </div>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
                   <div className="col-span-3 text-darkBlack font-medium text-base">
-                    Hoveddør
+                    Andre valg
                   </div>
                   <div>
                     <FormField
                       control={form.control}
-                      name="Hoveddør.StandardHvitmalt"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Hoveddør.StandardHvitmalt"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Standard hvitmalt
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Hoveddør.Slagretning"
+                      name={`UtforingFarge`}
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -215,156 +391,38 @@ export const Dører = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Slagretning 150 cm
+                            Utforing farge
                           </p>
                           <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Velg"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Hoveddør.DørFargeNCSKode"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Dør farge NCS Kode
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv kode"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Hoveddør.DørType"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Dør type
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Velg type"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Hoveddør.KarmUtforingHvitmalt"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="mmMineralull"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Karm/utforing hvitmalt
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Hoveddør.TilleggslåsType"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Tilleggslås type
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {UtforingFarge.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue("UtforingFarge", option);
+                                  }}
                                 >
-                                  <SelectValue placeholder="Velg type" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `UtforingFarge`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -375,7 +433,61 @@ export const Dører = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name="Hoveddør.SikkerhetslåsType"
+                      name={`SlagretningTofløyetDør`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Slagretning tofløyet dør
+                          </p>
+                          <FormControl>
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {SlagretningTofløyetDør.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "SlagretningTofløyetDør",
+                                      option
+                                    );
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `SlagretningTofløyetDør`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div></div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="SikkerhetslåsType"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -387,29 +499,17 @@ export const Dører = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                              <Input
+                                placeholder="Skriv type"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -420,7 +520,7 @@ export const Dører = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name="Hoveddør.SigaWigluvRundtDør"
+                      name="TilleggslåsType"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -428,33 +528,21 @@ export const Dører = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Siga Wigluv rundt dør
+                            Tilleggslås type
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                              <Input
+                                placeholder="Skriv type"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -462,62 +550,11 @@ export const Dører = forwardRef(
                       )}
                     />
                   </div>
-                  <div className="my-1 border-t border-[#DCDFEA] col-span-3"></div>
-                  <div className="col-span-3 text-darkBlack font-medium text-base">
-                    Balkong/Terrassedør
-                  </div>
-                  <div>
+                  <div></div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="BalkongTerrassedør.StandardHvitmalt"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Hoveddør.StandardHvitmalt"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Standard hvitmalt utvendig/innvendig
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="BalkongTerrassedør.HvitUtforingMDF"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Hoveddør.HvitUtforingMDF"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Hvit utforing i MDF
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="BalkongTerrassedør.MedTerskelforing"
+                      name="KommentarInngangsdør"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -525,33 +562,21 @@ export const Dører = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Med terskelforing
+                            Kommentar til inngangsdør:
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                              <Input
+                                placeholder="Skriv inn kommentar"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -559,55 +584,83 @@ export const Dører = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
+                  <div className="col-span-3 text-darkBlack font-medium text-base uppercase">
+                    BODDØR
+                  </div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="BalkongTerrassedør.UtvendigInnvendigSylinder"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Utvendig/innvendig sylinder
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                      name="Boddør"
+                      render={() => {
+                        const selected = form.watch("Boddør");
+
+                        return (
+                          <FormItem>
+                            <div className="flex flex-col gap-4">
+                              {BoddørOptions.map((option) => {
+                                const isSelected = selected?.type === option;
+
+                                return (
+                                  <div
+                                    key={option}
+                                    className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5"
+                                  >
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                      <input
+                                        type="radio"
+                                        name="Boddør"
+                                        value={option}
+                                        checked={isSelected}
+                                        onChange={() =>
+                                          form.setValue("Boddør", {
+                                            type: option,
+                                            colorCode: "",
+                                          })
+                                        }
+                                        className="h-4 w-4 accent-[#444CE7]"
+                                      />
+                                      <span className="text-black text-sm">
+                                        {option}
+                                      </span>
+                                    </label>
+                                    {option !== "Ikke relevant" &&
+                                      option !==
+                                        "Hvitmalt type ihht. signatur" && (
+                                        <div className="col-span-2">
+                                          <Input
+                                            placeholder="Skriv fargekode"
+                                            value={
+                                              isSelected
+                                                ? selected?.colorCode || ""
+                                                : ""
+                                            }
+                                            onChange={(e: any) => {
+                                              if (isSelected) {
+                                                form.setValue("Boddør", {
+                                                  type: option,
+                                                  colorCode: e.target.value,
+                                                });
+                                              }
+                                            }}
+                                            className={`bg-white rounded-[8px] border text-black border-gray1`}
+                                            disable={!isSelected}
+                                          />
+                                        </div>
+                                      )}
+                                  </div>
+                                );
+                              })}
                             </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                          </FormItem>
+                        );
+                      }}
                     />
                   </div>
                   <div>
                     <FormField
                       control={form.control}
-                      name="BalkongTerrassedør.LikelåsmedHoveddør"
+                      name={`LikelåsMedHoveddør`}
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -618,30 +671,35 @@ export const Dører = forwardRef(
                             Likelås med hoveddør
                           </p>
                           <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {LikelåsMedHoveddør.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue("LikelåsMedHoveddør", option);
+                                  }}
                                 >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `LikelåsMedHoveddør`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -649,10 +707,10 @@ export const Dører = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="BalkongTerrassedør.HvitmaltUtvLakkertInnv"
+                      name="KommentarBoddør"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -660,102 +718,12 @@ export const Dører = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Hvitmalt utv. og lakkert innv.
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="BalkongTerrassedør.AndreFargekombinasjoner"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Andre fargekombinasjoner
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="BalkongTerrassedør.Slagretning"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Slagretning
+                            Kommentar til boddør:
                           </p>
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Velg"
+                                placeholder="Skriv her"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
@@ -772,83 +740,90 @@ export const Dører = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="BalkongTerrassedør.SigaWigluvRundtDør"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Siga Wigluv rundt dør
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="my-1 border-t border-[#DCDFEA] col-span-3"></div>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
                   <div className="col-span-3 text-darkBlack font-medium text-base">
-                    Dører i boligrom
+                    Balkong/Terrassedør
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="DørerIboligrom.StandardTypeVision"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="DørerIboligrom.StandardTypeVision"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Standard type Visjon1, hvit
-                          </p>
-                        </FormItem>
-                      )}
+                      name="BalkongTerrassedør.BalkongTerrassedør"
+                      render={() => {
+                        const selected = form.watch(
+                          "BalkongTerrassedør.BalkongTerrassedør"
+                        );
+
+                        return (
+                          <FormItem>
+                            <div className="flex flex-col gap-4">
+                              {BalkongTerrassedørOptions.map((option) => {
+                                const isSelected = selected?.type === option;
+
+                                return (
+                                  <div
+                                    key={option}
+                                    className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5"
+                                  >
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                      <input
+                                        type="radio"
+                                        name="BalkongTerrassedør.BalkongTerrassedør"
+                                        value={option}
+                                        checked={isSelected}
+                                        onChange={() =>
+                                          form.setValue(
+                                            "BalkongTerrassedør.BalkongTerrassedør",
+                                            {
+                                              type: option,
+                                              colorCode: "",
+                                            }
+                                          )
+                                        }
+                                        className="h-4 w-4 accent-[#444CE7]"
+                                      />
+                                      <span className="text-black text-sm">
+                                        {option}
+                                      </span>
+                                    </label>
+                                    {option !==
+                                      "Standard hvitmalt utvendig/innvendig" && (
+                                      <div className="col-span-2">
+                                        <Input
+                                          placeholder="Dørfarge"
+                                          value={
+                                            isSelected
+                                              ? selected?.colorCode || ""
+                                              : ""
+                                          }
+                                          onChange={(e: any) => {
+                                            if (isSelected) {
+                                              form.setValue(
+                                                "BalkongTerrassedør.BalkongTerrassedør",
+                                                {
+                                                  type: option,
+                                                  colorCode: e.target.value,
+                                                }
+                                              );
+                                            }
+                                          }}
+                                          className={`bg-white rounded-[8px] border text-black border-gray1`}
+                                          disable={!isSelected}
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </FormItem>
+                        );
+                      }}
                     />
                   </div>
                   <div>
                     <FormField
                       control={form.control}
-                      name="DørerIboligrom.AnnenType"
+                      name={`BalkongTerrassedør.UtforingFarge`}
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -856,12 +831,277 @@ export const Dører = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Annen type
+                            Utforing farge
+                          </p>
+                          <FormControl>
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {UtforingFarge.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "BalkongTerrassedør.UtforingFarge",
+                                      option
+                                    );
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `BalkongTerrassedør.UtforingFarge`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name={`BalkongTerrassedør.SlagretningTofløyetDør`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Slagretning tofløyet dør/skyveretning
+                          </p>
+                          <FormControl>
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {SlagretningTofløyetDør.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "BalkongTerrassedør.SlagretningTofløyetDør",
+                                      option
+                                    );
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `BalkongTerrassedør.SlagretningTofløyetDør`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name={`BalkongTerrassedør.MedTerskelforing`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Med terskelforing
+                          </p>
+                          <FormControl>
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {LikelåsMedHoveddør.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "BalkongTerrassedør.MedTerskelforing",
+                                      option
+                                    );
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `BalkongTerrassedør.MedTerskelforing`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name={`BalkongTerrassedør.LikelåsMedHoveddør`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Likelås med hoveddør
+                          </p>
+                          <FormControl>
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {LikelåsMedHoveddør.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "BalkongTerrassedør.LikelåsMedHoveddør",
+                                      option
+                                    );
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `BalkongTerrassedør.LikelåsMedHoveddør`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name={`BalkongTerrassedør.UtvendigInnvendigSylinder`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Utvendig/innvendig sylinder
+                          </p>
+                          <FormControl>
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {LikelåsMedHoveddør.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "BalkongTerrassedør.UtvendigInnvendigSylinder",
+                                      option
+                                    );
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `BalkongTerrassedør.UtvendigInnvendigSylinder`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="BalkongTerrassedør.KommentarBalkongdør"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Kommentar til balkongdør:
                           </p>
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Velg"
+                                placeholder="Skriv inn kommentar"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
@@ -878,10 +1118,158 @@ export const Dører = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
+                  <div className="col-span-3 text-darkBlack font-medium text-base">
+                    INNVENDIGE DØRER
+                  </div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="DørerIboligrom.GlassdørAntall"
+                      name="InnvendigeDører.InnvendigeDører"
+                      render={() => {
+                        const selected = form.watch(
+                          "InnvendigeDører.InnvendigeDører"
+                        );
+
+                        return (
+                          <FormItem>
+                            <p className="mb-2 font-medium text-darkBlack text-sm">
+                              Velg ett alternativ:
+                            </p>
+                            <div className="flex flex-col gap-4">
+                              {InnvendigeDørerOptions.map((option) => {
+                                const isSelected = selected?.type === option;
+
+                                return (
+                                  <div
+                                    key={option}
+                                    className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5"
+                                  >
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                      <input
+                                        type="radio"
+                                        name="InnvendigeDører.InnvendigeDører"
+                                        value={option}
+                                        checked={isSelected}
+                                        onChange={() =>
+                                          form.setValue(
+                                            "InnvendigeDører.InnvendigeDører",
+                                            {
+                                              type: option,
+                                              colorCode: "",
+                                              dør: "",
+                                              Dørfarge: "",
+                                            }
+                                          )
+                                        }
+                                        className="h-4 w-4 accent-[#444CE7]"
+                                      />
+                                      <span className="text-black text-sm">
+                                        {option}
+                                      </span>
+                                    </label>
+                                    {option !==
+                                      "Standard hvitmalt ihht. signaturbeskrivelse" &&
+                                      option !== "Annen dørmodell" && (
+                                        <div className="col-span-2">
+                                          <Input
+                                            placeholder="Skriv kode"
+                                            value={
+                                              isSelected
+                                                ? selected?.colorCode || ""
+                                                : ""
+                                            }
+                                            onChange={(e: any) => {
+                                              if (isSelected) {
+                                                form.setValue(
+                                                  "InnvendigeDører.InnvendigeDører",
+                                                  {
+                                                    type: option,
+                                                    colorCode: e.target.value,
+                                                    Dørfarge: "",
+                                                    dør: "",
+                                                  }
+                                                );
+                                              }
+                                            }}
+                                            className={`bg-white rounded-[8px] border text-black border-gray1`}
+                                            disable={!isSelected}
+                                          />
+                                        </div>
+                                      )}
+                                    {option !==
+                                      "Standard hvitmalt ihht. signaturbeskrivelse" &&
+                                      option !== "Standard dør annen farge" && (
+                                        <>
+                                          <div>
+                                            <Input
+                                              placeholder="Type dør"
+                                              value={
+                                                isSelected
+                                                  ? selected?.dør || ""
+                                                  : ""
+                                              }
+                                              onChange={(e: any) => {
+                                                if (isSelected) {
+                                                  form.setValue(
+                                                    "InnvendigeDører.InnvendigeDører",
+                                                    {
+                                                      type: option,
+                                                      dør: e.target.value,
+                                                      Dørfarge: form.watch(
+                                                        "InnvendigeDører.InnvendigeDører.Dørfarge"
+                                                      ),
+                                                      colorCode: "",
+                                                    }
+                                                  );
+                                                }
+                                              }}
+                                              className={`bg-white rounded-[8px] border text-black border-gray1`}
+                                              disable={!isSelected}
+                                            />
+                                          </div>
+                                          <div>
+                                            <Input
+                                              placeholder="Dørfarge"
+                                              value={
+                                                isSelected
+                                                  ? selected?.Dørfarge || ""
+                                                  : ""
+                                              }
+                                              onChange={(e: any) => {
+                                                if (isSelected) {
+                                                  form.setValue(
+                                                    "InnvendigeDører.InnvendigeDører",
+                                                    {
+                                                      type: option,
+                                                      Dørfarge: e.target.value,
+                                                      dør: form.watch(
+                                                        "InnvendigeDører.InnvendigeDører.dør"
+                                                      ),
+                                                      colorCode: "",
+                                                    }
+                                                  );
+                                                }
+                                              }}
+                                              className={`bg-white rounded-[8px] border text-black border-gray1`}
+                                              disable={!isSelected}
+                                            />
+                                          </div>
+                                        </>
+                                      )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </FormItem>
+                        );
+                      }}
+                    />
+                  </div>
+                  <div className="col-span-3">
+                    <FormField
+                      control={form.control}
+                      name="InnvendigeDører.KommentarTilInnvendigeDører"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -889,33 +1277,21 @@ export const Dører = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Glassdør antall
+                            Kommentar til innvendige dører:
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                              <Input
+                                placeholder="Skriv her"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -923,10 +1299,43 @@ export const Dører = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="DørerIboligrom.SkyvedørMedGlass"
+                      name="InnvendigeDører.Glassdør"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Glassdør
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Beskriv hvor og type dør"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <FormField
+                      control={form.control}
+                      name="InnvendigeDører.SkyvedørMedGlass"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -938,29 +1347,17 @@ export const Dører = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                              <Input
+                                placeholder="Beskriv hvor og type"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -971,7 +1368,7 @@ export const Dører = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name="DørerIboligrom.SkyvedørskarmSeparatOrdre"
+                      name="InnvendigeDører.SkyvedørskarmSeparatOrdre"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -984,7 +1381,7 @@ export const Dører = forwardRef(
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Skriv kode"
+                                placeholder="Velg dato"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
@@ -1004,36 +1401,26 @@ export const Dører = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name={`DørerIboligrom.KarmType`}
+                      name={`InnvendigeDører.UtforingFarge`}
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
-                            className={`mb-2 ${
+                            className={`${
                               fieldState.error ? "text-red" : "text-black"
-                            } text-sm`}
+                            } mb-[6px] text-sm`}
                           >
-                            Karm type
+                            Utforing farge
                           </p>
                           <FormControl>
-                            <div className="flex items-center flex-wrap gap-3 lg:gap-5">
-                              {KarmType.map((option) => (
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {UtforingFarge.map((option) => (
                                 <div
                                   key={option}
                                   className="relative flex items-center gap-2 cursor-pointer"
                                   onClick={() => {
-                                    const currentValues = field.value || [];
-                                    const isChecked =
-                                      currentValues.includes(option);
-
-                                    const newValues = isChecked
-                                      ? currentValues.filter(
-                                          (val) => val !== option
-                                        )
-                                      : [...currentValues, option];
-
                                     form.setValue(
-                                      "DørerIboligrom.KarmType",
-                                      newValues
+                                      "InnvendigeDører.UtforingFarge",
+                                      option
                                     );
                                   }}
                                 >
@@ -1042,31 +1429,17 @@ export const Dører = forwardRef(
         ${
           fieldState?.error ? "border-red" : "border-gray1"
         } h-4 w-4 accent-[#444CE7]`}
-                                    type="checkbox"
+                                    type="radio"
                                     value={option}
-                                    checked={field.value?.includes(option)}
                                     onChange={(e) => {
-                                      const checked = e.target.checked;
-                                      const currentValues = field.value || [];
-
-                                      if (checked) {
-                                        form.setValue(
-                                          "DørerIboligrom.KarmType",
-                                          [...currentValues, option]
-                                        );
-                                      } else {
-                                        form.setValue(
-                                          "DørerIboligrom.KarmType",
-                                          currentValues.filter(
-                                            (val) => val !== option
-                                          )
-                                        );
-                                      }
+                                      form.setValue(
+                                        `InnvendigeDører.UtforingFarge`,
+                                        e.target.value
+                                      );
                                     }}
+                                    checked={field.value === option}
                                   />
-                                  <p
-                                    className={`text-gray text-sm font-medium`}
-                                  >
+                                  <p className={`text-black text-sm`}>
                                     {option}
                                   </p>
                                 </div>
@@ -1081,7 +1454,113 @@ export const Dører = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name={`DørerIboligrom.Terskeltype`}
+                      name={`InnvendigeDører.SlagretningTofløyetDør`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Slagretning tofløyet dør
+                          </p>
+                          <FormControl>
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {SlagretningTofløyetDør.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "InnvendigeDører.SlagretningTofløyetDør",
+                                      option
+                                    );
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `InnvendigeDører.SlagretningTofløyetDør`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name={`InnvendigeDører.Dempelister`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Dempelister
+                          </p>
+                          <FormControl>
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {LikelåsMedHoveddør.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "InnvendigeDører.Dempelister",
+                                      option
+                                    );
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `InnvendigeDører.Dempelister`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name={`InnvendigeDører.Terskeltype`}
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -1109,7 +1588,7 @@ export const Dører = forwardRef(
                                       : [...currentValues, option];
 
                                     form.setValue(
-                                      "DørerIboligrom.Terskeltype",
+                                      "InnvendigeDører.Terskeltype",
                                       newValues
                                     );
                                   }}
@@ -1128,12 +1607,12 @@ export const Dører = forwardRef(
 
                                       if (checked) {
                                         form.setValue(
-                                          "DørerIboligrom.Terskeltype",
+                                          "InnvendigeDører.Terskeltype",
                                           [...currentValues, option]
                                         );
                                       } else {
                                         form.setValue(
-                                          "DørerIboligrom.Terskeltype",
+                                          "InnvendigeDører.Terskeltype",
                                           currentValues.filter(
                                             (val) => val !== option
                                           )
@@ -1141,9 +1620,7 @@ export const Dører = forwardRef(
                                       }
                                     }}
                                   />
-                                  <p
-                                    className={`text-gray text-sm font-medium`}
-                                  >
+                                  <p className={`text-black text-sm`}>
                                     {option}
                                   </p>
                                 </div>
@@ -1158,97 +1635,7 @@ export const Dører = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name="DørerIboligrom.Dempelister"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Dempelister
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="DørerIboligrom.SpalteIoverkarm"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Spalte i overkarm
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="DørerIboligrom.Hengsler"
+                      name="InnvendigeDører.Hengsler"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -1260,29 +1647,17 @@ export const Dører = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                              <Input
+                                placeholder="Beskriv utover standard"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -1293,7 +1668,7 @@ export const Dører = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name="DørerIboligrom.SporForBelegg"
+                      name={`InnvendigeDører.SporBelegg`}
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -1304,115 +1679,15 @@ export const Dører = forwardRef(
                             Spor for belegg
                           </p>
                           <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Velg"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="DørerIboligrom.Slagretning"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Slagretning 150 cm
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Velg"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="DørerIboligrom.LøseForinger"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="mmMineralull"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Løse foringer
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name={`DørerIboligrom.VridereType`}
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`mb-2 ${
-                              fieldState.error ? "text-red" : "text-black"
-                            } text-sm`}
-                          >
-                            Vridere type
-                          </p>
-                          <FormControl>
-                            <div className="flex items-center flex-wrap gap-3 lg:gap-5">
-                              {VridereType.map((option) => (
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {LikelåsMedHoveddør.map((option) => (
                                 <div
                                   key={option}
                                   className="relative flex items-center gap-2 cursor-pointer"
                                   onClick={() => {
-                                    const currentValues = field.value || [];
-                                    const isChecked =
-                                      currentValues.includes(option);
-
-                                    const newValues = isChecked
-                                      ? currentValues.filter(
-                                          (val) => val !== option
-                                        )
-                                      : [...currentValues, option];
-
                                     form.setValue(
-                                      "DørerIboligrom.VridereType",
-                                      newValues
+                                      "InnvendigeDører.SporBelegg",
+                                      option
                                     );
                                   }}
                                 >
@@ -1421,31 +1696,17 @@ export const Dører = forwardRef(
         ${
           fieldState?.error ? "border-red" : "border-gray1"
         } h-4 w-4 accent-[#444CE7]`}
-                                    type="checkbox"
+                                    type="radio"
                                     value={option}
-                                    checked={field.value?.includes(option)}
                                     onChange={(e) => {
-                                      const checked = e.target.checked;
-                                      const currentValues = field.value || [];
-
-                                      if (checked) {
-                                        form.setValue(
-                                          "DørerIboligrom.VridereType",
-                                          [...currentValues, option]
-                                        );
-                                      } else {
-                                        form.setValue(
-                                          "DørerIboligrom.VridereType",
-                                          currentValues.filter(
-                                            (val) => val !== option
-                                          )
-                                        );
-                                      }
+                                      form.setValue(
+                                        `InnvendigeDører.SporBelegg`,
+                                        e.target.value
+                                      );
                                     }}
+                                    checked={field.value === option}
                                   />
-                                  <p
-                                    className={`text-gray text-sm font-medium`}
-                                  >
+                                  <p className={`text-black text-sm`}>
                                     {option}
                                   </p>
                                 </div>
@@ -1457,207 +1718,233 @@ export const Dører = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
+                  <div className="col-span-3 text-darkBlack font-medium text-base">
+                    DØRVRIDERE
+                  </div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="DørerIboligrom.AlternativVrider"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Alternativ vrider
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
+                      name="Dørvridere"
+                      render={() => {
+                        const selected = form.watch("Dørvridere");
+
+                        return (
+                          <FormItem>
+                            <p className="mb-2 font-medium text-darkBlack text-sm">
+                              Velg ett alternativ:
+                            </p>
+                            <div className="flex flex-col gap-4">
+                              {DørvridereOptions.map((option) => {
+                                const isSelected = selected?.type === option;
+
+                                return (
+                                  <div
+                                    key={option}
+                                    className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5"
+                                  >
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                      <input
+                                        type="radio"
+                                        name="Dørvridere"
+                                        value={option}
+                                        checked={isSelected}
+                                        onChange={() =>
+                                          form.setValue("Dørvridere", {
+                                            type: option,
+                                            colorCode: "",
+                                          })
+                                        }
+                                        className="h-4 w-4 accent-[#444CE7]"
+                                      />
+                                      <span className="text-black text-sm">
+                                        {option}
+                                      </span>
+                                    </label>
+                                    {option !==
+                                      "Standard hht. signaturbeskrivelse" && (
+                                      <div className="col-span-2">
+                                        <Input
+                                          placeholder="Type vrider"
+                                          value={
+                                            isSelected
+                                              ? selected?.colorCode || ""
+                                              : ""
+                                          }
+                                          onChange={(e: any) => {
+                                            if (isSelected) {
+                                              form.setValue("Dørvridere", {
+                                                type: option,
+                                                colorCode: e.target.value,
+                                              });
+                                            }
+                                          }}
+                                          className={`bg-white rounded-[8px] border text-black border-gray1`}
+                                          disable={!isSelected}
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
                             </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                          </FormItem>
+                        );
+                      }}
                     />
                   </div>
-                  <div className="my-1 border-t border-[#DCDFEA] col-span-3"></div>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
                   <div className="col-span-3 text-darkBlack font-medium text-base">
                     Dører i kjellerrom
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="DørerIKjellerrom.SammeSom"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="DørerIKjellerrom.SammeSom"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Samme som 1. etg.
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="DørerIKjellerrom.AnnenType"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Annen type
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
+                      name="DørerKjellerrom"
+                      render={() => {
+                        const selected = form.watch("DørerKjellerrom");
+
+                        return (
+                          <FormItem>
+                            <div className="flex flex-col gap-4">
+                              {DørerKjellerromOptions.map((option) => {
+                                const isSelected = selected?.type === option;
+
+                                return (
+                                  <div
+                                    key={option}
+                                    className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5"
+                                  >
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                      <input
+                                        type="radio"
+                                        name="DørerKjellerrom"
+                                        value={option}
+                                        checked={isSelected}
+                                        onChange={() =>
+                                          form.setValue("DørerKjellerrom", {
+                                            type: option,
+                                            colorCode: "",
+                                          })
+                                        }
+                                        className="h-4 w-4 accent-[#444CE7]"
+                                      />
+                                      <span className="text-black text-sm">
+                                        {option}
+                                      </span>
+                                    </label>
+                                    {option !== "Ikke relevant" &&
+                                      option !== "Samme som 1. etg." && (
+                                        <div className="col-span-2">
+                                          <Input
+                                            placeholder="Beskriv her"
+                                            value={
+                                              isSelected
+                                                ? selected?.colorCode || ""
+                                                : ""
+                                            }
+                                            onChange={(e: any) => {
+                                              if (isSelected) {
+                                                form.setValue(
+                                                  "DørerKjellerrom",
+                                                  {
+                                                    type: option,
+                                                    colorCode: e.target.value,
+                                                  }
+                                                );
+                                              }
+                                            }}
+                                            className={`bg-white rounded-[8px] border text-black border-gray1`}
+                                            disable={!isSelected}
+                                          />
+                                        </div>
+                                      )}
+                                  </div>
+                                );
+                              })}
                             </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                          </FormItem>
+                        );
+                      }}
                     />
                   </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="DørerIKjellerrom.IkkeRelevant"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="DørerIKjellerrom.IkkeRelevant"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Ikke relevant
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="my-1 border-t border-[#DCDFEA] col-span-3"></div>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
                   <div className="col-span-3 text-darkBlack font-medium text-base">
                     Garasjeport
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="Garasjeport.IkkeRelevant"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Garasjeport.IkkeRelevant"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Ikke relevant
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Garasjeport.StandardHorisontal"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Garasjeport.StandardHorisontal"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Standard 26x21 Horisontal
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Garasjeport.AlternativType"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Alternativ type
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
+                      name="Garasjeport.Garasjeport"
+                      render={() => {
+                        const selected = form.watch("Garasjeport.Garasjeport");
+
+                        return (
+                          <FormItem>
+                            <div className="flex flex-col gap-4">
+                              {GarasjeportOptions.map((option) => {
+                                const isSelected = selected?.type === option;
+
+                                return (
+                                  <div
+                                    key={option}
+                                    className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5"
+                                  >
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                      <input
+                                        type="radio"
+                                        name="Garasjeport.Garasjeport"
+                                        value={option}
+                                        checked={isSelected}
+                                        onChange={() =>
+                                          form.setValue(
+                                            "Garasjeport.Garasjeport",
+                                            {
+                                              type: option,
+                                              colorCode: "",
+                                            }
+                                          )
+                                        }
+                                        className="h-4 w-4 accent-[#444CE7]"
+                                      />
+                                      <span className="text-black text-sm">
+                                        {option}
+                                      </span>
+                                    </label>
+                                    {option !== "Ikke relevant" &&
+                                      option !==
+                                        "Standard ihenhold til leveransebeskrivelse" && (
+                                        <div className="col-span-2">
+                                          <Input
+                                            placeholder="Beskriv her"
+                                            value={
+                                              isSelected
+                                                ? selected?.colorCode || ""
+                                                : ""
+                                            }
+                                            onChange={(e: any) => {
+                                              if (isSelected) {
+                                                form.setValue(
+                                                  "Garasjeport.Garasjeport",
+                                                  {
+                                                    type: option,
+                                                    colorCode: e.target.value,
+                                                  }
+                                                );
+                                              }
+                                            }}
+                                            className={`bg-white rounded-[8px] border text-black border-gray1`}
+                                            disable={!isSelected}
+                                          />
+                                        </div>
+                                      )}
+                                  </div>
+                                );
+                              })}
                             </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                          </FormItem>
+                        );
+                      }}
                     />
                   </div>
                   <div>
@@ -1693,8 +1980,13 @@ export const Dører = forwardRef(
                                 </SelectTrigger>
                                 <SelectContent className="bg-white">
                                   <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
+                                    {array?.map((item, index) => {
+                                      return (
+                                        <SelectItem key={index} value={item}>
+                                          {item}
+                                        </SelectItem>
+                                      );
+                                    })}
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
@@ -1744,29 +2036,17 @@ export const Dører = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                              <Input
+                                placeholder="Skriv antall"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -1790,182 +2070,7 @@ export const Dører = forwardRef(
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="my-1 border-t border-[#DCDFEA] col-span-3"></div>
-                  <div className="col-span-3 text-darkBlack font-medium text-base">
-                    Boddør
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Boddør.IkkeRelevant"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Boddør.IkkeRelevant"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Ikke relevant
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Boddør.PThvitmaltMedKarm"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Boddør.PThvitmaltMedKarm"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            PT-303 hvitmalt med karm
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Boddør.MaltKarmAnnenFarge"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Malt karm annen farge
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Boddør.LikelåsMedHoveddør"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Likelås med hoveddør
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Boddør.Alt"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Alt.
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
+                                placeholder="Beskriv her"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
@@ -1989,7 +2094,7 @@ export const Dører = forwardRef(
                   onClick={() => {
                     form.reset();
                     handlePrevious();
-                    localStorage.setItem("currVerticalIndex", String(7));
+                    localStorage.setItem("currVerticalIndex", String(6));
                   }}
                 >
                   <Button

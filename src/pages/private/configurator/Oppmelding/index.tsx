@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import VerticalWizard from "../../../../components/ui/stepper/verticalStepper";
 import { Prosjektdetaljer } from "./Prosjektdetaljer";
-import { Leveransedetaljer } from "./Leveransedetaljer";
+// import { Leveransedetaljer } from "./Leveransedetaljer";
 import { GrunnerOgSkorstein } from "./GrunnerOgSkorstein";
 import { GulvBjelkelagHimling } from "./GulvBjelkelagHimling";
 import { Yttervegger } from "./Yttervegger";
@@ -9,7 +9,7 @@ import { Innervegger } from "./Innervegger";
 import { TakogTaktekking } from "./TakogTaktekking";
 import { Dører } from "./Dører";
 import { Vinduer } from "./Vinduer";
-import { KjøkkenGarderobeBad } from "./KjøkkenGarderobeBad";
+// import { KjøkkenGarderobeBad } from "./KjøkkenGarderobeBad";
 import { TrappogLuker } from "./TrappogLuker";
 import { BalkongTerrasse } from "./BalkongTerrasse";
 import { ListverkogBelistning } from "./ListverkogBelistning";
@@ -173,9 +173,9 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
     {
       id: 5,
-      title: "Innervegger",
+      title: "Tak og taktekking",
       content: (
-        <Innervegger
+        <TakogTaktekking
           handleNext={handleNext}
           handlePrevious={handlePrevious}
           ref={(ref: any): void => {
@@ -188,10 +188,9 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
     {
       id: 6,
-      title: "Tak/Taktekking",
-      // title: "Tak og taktekking",
+      title: "Innervegger",
       content: (
-        <TakogTaktekking
+        <Innervegger
           handleNext={handleNext}
           handlePrevious={handlePrevious}
           ref={(ref: any): void => {
@@ -232,30 +231,30 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
         />
       ),
     },
+    // {
+    //   id: 9,
+    //   title: "Kjøkken, Garderobe, Bad",
+    //   content: (
+    //     <KjøkkenGarderobeBad
+    //       handleNext={handleNext}
+    //       handlePrevious={handlePrevious}
+    //       ref={(ref: any): void => {
+    //         formRefs.current[9] = ref;
+    //       }}
+    //       roomsData={roomsData}
+    //       setRoomsData={setRoomsData}
+    //     />
+    //   ),
+    // },
     {
       id: 9,
-      title: "Kjøkken, Garderobe, Bad",
-      content: (
-        <KjøkkenGarderobeBad
-          handleNext={handleNext}
-          handlePrevious={handlePrevious}
-          ref={(ref: any): void => {
-            formRefs.current[9] = ref;
-          }}
-          roomsData={roomsData}
-          setRoomsData={setRoomsData}
-        />
-      ),
-    },
-    {
-      id: 10,
       title: "Trapp og Luker",
       content: (
         <TrappogLuker
           handleNext={handleNext}
           handlePrevious={handlePrevious}
           ref={(ref: any): void => {
-            formRefs.current[10] = ref;
+            formRefs.current[9] = ref;
           }}
           roomsData={roomsData}
           setRoomsData={setRoomsData}

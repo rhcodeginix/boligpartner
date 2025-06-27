@@ -102,7 +102,7 @@ export const TrappogLuker = forwardRef(
           position: "top-right",
         });
         handleNext();
-        localStorage.setItem("currVerticalIndex", String(12));
+        localStorage.setItem("currVerticalIndex", String(10));
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {
@@ -452,7 +452,7 @@ export const TrappogLuker = forwardRef(
                                     }}
                                   />
                                   <p
-                                    className={`text-gray text-sm font-medium`}
+                                    className={`text-black text-sm`}
                                   >
                                     {option}
                                   </p>
@@ -526,7 +526,7 @@ export const TrappogLuker = forwardRef(
                                     }}
                                   />
                                   <p
-                                    className={`text-gray text-sm font-medium`}
+                                    className={`text-black text-sm`}
                                   >
                                     {option}
                                   </p>
@@ -690,7 +690,7 @@ export const TrappogLuker = forwardRef(
                   onClick={() => {
                     form.reset();
                     handlePrevious();
-                    localStorage.setItem("currVerticalIndex", String(10));
+                    localStorage.setItem("currVerticalIndex", String(8));
                   }}
                 >
                   <Button

@@ -73,7 +73,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
     const getData = async () => {
       const data: any = await fetchHusmodellData(id);
-      console.log(data);
 
       if (!data?.KundeInfo) {
         setLoading(false);

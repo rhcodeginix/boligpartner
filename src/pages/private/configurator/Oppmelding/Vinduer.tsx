@@ -26,43 +26,25 @@ import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
 
 const formSchema = z.object({
-  Hoveddør: z.object({
-    StandardHvitmalt: z.boolean().optional(),
-    VinduerNedTilGulv: z.string().optional(),
-    Alt: z.string().optional(),
-    MDFUtforing: z.boolean().optional(),
-    HvitmaltUtvLakkertInnv: z.string().optional(),
-    TilpassesVeggkledning: z.boolean().optional(),
-    TilpassesVeggkledningDate: z.string().optional(),
-    AndreFargekombinasjoner: z.string().optional(),
-    SigaWigluvRundtVindu: z.string().optional(),
-    LøseForinger: z.boolean().optional(),
-    ForingerSeparatOrdre: z.string().optional(),
-  }),
-  Sprosser: z.object({
-    mmVertikale: z.boolean().optional(),
-    mmHorisontale: z.boolean().optional(),
-    mmHorisontaleKlips: z.boolean().optional(),
-    mmHorisontaleKlips50: z.boolean().optional(),
-  }),
-  VinduerIKjellerrom: z.object({
-    IkkeRelevant: z.boolean().optional(),
-    LikSometg: z.boolean().optional(),
-    Alt: z.string().optional(),
-  }),
-  VinduerUninnredetLoft: z.object({
-    IkkeRelevant: z.boolean().optional(),
-    StandardUtenUtforing: z.boolean().optional(),
-    UtføresTil: z.string().optional(),
-    SigaWigluvRundtVindu: z.string().optional(),
-    MDFUtforingHvitmalt: z.string().optional(),
-  }),
-  TakvinduVelux: z.object({
-    IkkeRelevant: z.boolean().optional(),
-    Type: z.string().optional(),
-    Størrelse: z.string().optional(),
-    Utforing: z.string().optional(),
-  }),
+  Vinduer: z
+    .object({
+      type: z.string(),
+      colorCode: z.string().optional(),
+    })
+    .optional(),
+  UtforingFarge: z.string().optional(),
+  VinduerNedTilGulv: z.boolean().optional(),
+  HeltreUutforingPpristillegg: z.boolean().optional(),
+  ForingerSeparatOrdre: z.string().optional(),
+  KommentarVindu: z.string().optional(),
+  TakvinduVelux: z
+    .object({
+      type: z.string(),
+      colorCode: z.string().optional(),
+    })
+    .optional(),
+  TakvinduVeluxUtforingFarge: z.string().optional(),
+  TakvinduVeluxKommentar: z.string().optional(),
 });
 
 export const Vinduer = forwardRef(
@@ -124,7 +106,7 @@ export const Vinduer = forwardRef(
           position: "top-right",
         });
         handleNext();
-        localStorage.setItem("currVerticalIndex", String(10));
+        localStorage.setItem("currVerticalIndex", String(9));
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {
@@ -132,9 +114,18 @@ export const Vinduer = forwardRef(
         });
       }
     };
+    const VinduerOptions = [
+      "Standard hvitmalt utv. og innv. ihht. leveransebeskrivelse",
+      "Annen farge:",
+      "Alubeslått utvendig",
+    ];
+    const TakvinduVeluxOptions = [
+      "Ikke relevant",
+      "Standard farge ihht. leveransebeskrivelse",
+      "Annen farge:",
+    ];
+    const UtforingFarge = ["Hvit", "Som dørfarge"];
 
-    const TilpassesVeggkledning = form.watch("Hoveddør.TilpassesVeggkledning");
-    const array = ["Abc", "Xyz"];
     useEffect(() => {
       if (roomsData && roomsData?.Vinduer) {
         Object.entries(roomsData?.Vinduer).forEach(([key, value]) => {
@@ -143,24 +134,143 @@ export const Vinduer = forwardRef(
           }
         });
       }
-    }, [roomsData, array]);
+    }, [roomsData]);
     return (
       <>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
-              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4]">
+              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4] uppercase">
                 Vinduer
               </div>
               <div className="p-4 md:p-5">
                 <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
-                  <div className="col-span-3 text-darkBlack font-medium text-base">
-                    Hoveddør
+                  <div className="col-span-3">
+                    <FormField
+                      control={form.control}
+                      name="Vinduer"
+                      render={() => {
+                        const selected = form.watch("Vinduer");
+
+                        return (
+                          <FormItem>
+                            <p className="mb-2 font-medium text-darkBlack text-sm">
+                              Velg ett alternativ:
+                            </p>
+                            <div className="flex flex-col gap-4">
+                              {VinduerOptions.map((option) => {
+                                const isSelected = selected?.type === option;
+
+                                return (
+                                  <div
+                                    key={option}
+                                    className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5"
+                                  >
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                      <input
+                                        type="radio"
+                                        name="Vinduer"
+                                        value={option}
+                                        checked={isSelected}
+                                        onChange={() =>
+                                          form.setValue("Vinduer", {
+                                            type: option,
+                                            colorCode: "",
+                                          })
+                                        }
+                                        className="h-4 w-4 accent-[#444CE7]"
+                                      />
+                                      <span className="text-black text-sm">
+                                        {option}
+                                      </span>
+                                    </label>
+                                    {option !==
+                                      "Standard hvitmalt utv. og innv. ihht. leveransebeskrivelse" &&
+                                      option !== "Annen dørmodell" && (
+                                        <div className="col-span-2">
+                                          <Input
+                                            placeholder="Skriv fargekode"
+                                            value={
+                                              isSelected
+                                                ? selected?.colorCode || ""
+                                                : ""
+                                            }
+                                            onChange={(e: any) => {
+                                              if (isSelected) {
+                                                form.setValue("Vinduer", {
+                                                  type: option,
+                                                  colorCode: e.target.value,
+                                                });
+                                              }
+                                            }}
+                                            className={`bg-white rounded-[8px] border text-black border-gray1`}
+                                            disable={!isSelected}
+                                          />
+                                        </div>
+                                      )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </FormItem>
+                        );
+                      }}
+                    />
                   </div>
                   <div>
                     <FormField
                       control={form.control}
-                      name="Hoveddør.StandardHvitmalt"
+                      name={`UtforingFarge`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Utforing farge
+                          </p>
+                          <FormControl>
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {UtforingFarge.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue("UtforingFarge", option);
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `UtforingFarge`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="VinduerNedTilGulv"
                       render={({ field }) => (
                         <FormItem>
                           <p
@@ -171,45 +281,12 @@ export const Vinduer = forwardRef(
                           >
                             <input
                               type="checkbox"
-                              id="Hoveddør.StandardHvitmalt"
+                              id="VinduerNedTilGulv"
                               checked={field.value || false}
                               onChange={(e) => field.onChange(e.target.checked)}
                             />
-                            Standard hvitmalt utv. og innv.
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Hoveddør.VinduerNedTilGulv"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
                             Vinduer ned til gulv
                           </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Velg"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -217,40 +294,7 @@ export const Vinduer = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name="Hoveddør.Alt"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Alt
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Hoveddør.MDFUtforing"
+                      name="HeltreUutforingPpristillegg"
                       render={({ field }) => (
                         <FormItem>
                           <p
@@ -261,11 +305,11 @@ export const Vinduer = forwardRef(
                           >
                             <input
                               type="checkbox"
-                              id="MDFUtforing"
+                              id="HeltreUutforingPpristillegg"
                               checked={field.value || false}
                               onChange={(e) => field.onChange(e.target.checked)}
                             />
-                            MDF utforing
+                            Heltre utforing (pristillegg)
                           </p>
                         </FormItem>
                       )}
@@ -274,185 +318,12 @@ export const Vinduer = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name="Hoveddør.HvitmaltUtvLakkertInnv"
+                      name="ForingerSeparatOrdre"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
                             className={`${
                               fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Hvitmalt utv./lakkert innv.
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    {array?.map((item, index) => {
-                                      return (
-                                        <SelectItem key={index} value={item}>
-                                          {item}
-                                        </SelectItem>
-                                      );
-                                    })}
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Hoveddør.AndreFargekombinasjoner"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Andre fargekombinasjoner
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    {array?.map((item, index) => {
-                                      return (
-                                        <SelectItem key={index} value={item}>
-                                          {item}
-                                        </SelectItem>
-                                      );
-                                    })}
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Hoveddør.TilpassesVeggkledning"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Hoveddør.TilpassesVeggkledning"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Tilpasses veggkledning (romskjema)
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="Hoveddør.TilpassesVeggkledningDate"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Skriv detaljnummer"
-                                {...field}
-                                disable={TilpassesVeggkledning}
-                                className={`bg-white rounded-[8px] border text-black ${
-                                  fieldState?.error
-                                    ? "border-red"
-                                    : "border-gray1"
-                                } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Hoveddør.LøseForinger"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Hoveddør.LøseForinger"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Løse foringer
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name={`Hoveddør.ForingerSeparatOrdre`}
-                      render={({ field, fieldState }: any) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : ""
                             } mb-[6px] text-sm`}
                           >
                             Foringer separat ordre
@@ -477,10 +348,10 @@ export const Vinduer = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="Hoveddør.SigaWigluvRundtVindu"
+                      name="KommentarVindu"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -488,214 +359,12 @@ export const Vinduer = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Siga Wigluv rundt vindu
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    {array?.map((item, index) => {
-                                      return (
-                                        <SelectItem key={index} value={item}>
-                                          {item}
-                                        </SelectItem>
-                                      );
-                                    })}
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="my-1 border-t border-[#DCDFEA] col-span-3"></div>
-                  <div className="col-span-3 text-darkBlack font-medium text-base">
-                    Sprosser
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Sprosser.mmVertikale"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Sprosser.mmVertikale"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            65 mm vertikale
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Sprosser.mmHorisontale"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Sprosser.mmHorisontale"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            65 mm horisontale
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Sprosser.mmHorisontaleKlips"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Sprosser.mmHorisontaleKlips"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            25 mm horisontale klips
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Sprosser.mmHorisontaleKlips50"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Sprosser.mmHorisontaleKlips50"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            50 mm horisontale klips
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="my-1 border-t border-[#DCDFEA] col-span-3"></div>
-                  <div className="col-span-3 text-darkBlack font-medium text-base">
-                    Vinduer i kjellerrom
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="VinduerIKjellerrom.IkkeRelevant"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="VinduerIKjellerrom.IkkeRelevant"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Ikke relevant
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="VinduerIKjellerrom.LikSometg"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="VinduerIKjellerrom.LikSometg"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Lik som 1. etg.
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="VinduerIKjellerrom.Alt"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Alt
+                            Kommentar til Vindu
                           </p>
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Skriv her"
+                                placeholder="Beskriv her"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
@@ -712,223 +381,86 @@ export const Vinduer = forwardRef(
                       )}
                     />
                   </div>
-                  <div className="my-1 border-t border-[#DCDFEA] col-span-3"></div>
-                  <div className="col-span-3 text-darkBlack font-medium text-base">
-                    Vinduer uinnredet loft
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="VinduerUninnredetLoft.IkkeRelevant"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="VinduerUninnredetLoft.IkkeRelevant"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Ikke relevant
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="VinduerUninnredetLoft.StandardUtenUtforing"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="VinduerUninnredetLoft.StandardUtenUtforing"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Standard uten utforing
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="VinduerUninnredetLoft.UtføresTil"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Utføres til
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="VinduerUninnredetLoft.SigaWigluvRundtVindu"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Siga Wigluv rundt vindu
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    {array?.map((item, index) => {
-                                      return (
-                                        <SelectItem key={index} value={item}>
-                                          {item}
-                                        </SelectItem>
-                                      );
-                                    })}
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="VinduerUninnredetLoft.MDFUtforingHvitmalt"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            MDF utforing hvitmalt
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    {array?.map((item, index) => {
-                                      return (
-                                        <SelectItem key={index} value={item}>
-                                          {item}
-                                        </SelectItem>
-                                      );
-                                    })}
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="my-1 border-t border-[#DCDFEA] col-span-3"></div>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
                   <div className="col-span-3 text-darkBlack font-medium text-base">
                     Takvindu Velux
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="TakvinduVelux.IkkeRelevant"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="TakvinduVelux.IkkeRelevant"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Ikke relevant
-                          </p>
-                        </FormItem>
-                      )}
+                      name="TakvinduVelux"
+                      render={() => {
+                        const selected = form.watch("TakvinduVelux");
+
+                        return (
+                          <FormItem>
+                            <p className="mb-2 font-medium text-darkBlack text-sm">
+                              Velg ett alternativ:
+                            </p>
+                            <div className="flex flex-col gap-4">
+                              {TakvinduVeluxOptions.map((option) => {
+                                const isSelected = selected?.type === option;
+
+                                return (
+                                  <div
+                                    key={option}
+                                    className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5"
+                                  >
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                      <input
+                                        type="radio"
+                                        name="TakvinduVelux"
+                                        value={option}
+                                        checked={isSelected}
+                                        onChange={() =>
+                                          form.setValue("TakvinduVelux", {
+                                            type: option,
+                                            colorCode: "",
+                                          })
+                                        }
+                                        className="h-4 w-4 accent-[#444CE7]"
+                                      />
+                                      <span className="text-black text-sm">
+                                        {option}
+                                      </span>
+                                    </label>
+                                    {option !==
+                                      "Standard farge ihht. leveransebeskrivelse" &&
+                                      option !== "Ikke relevant" && (
+                                        <div className="col-span-2">
+                                          <Input
+                                            placeholder="Skriv fargekode"
+                                            value={
+                                              isSelected
+                                                ? selected?.colorCode || ""
+                                                : ""
+                                            }
+                                            onChange={(e: any) => {
+                                              if (isSelected) {
+                                                form.setValue("TakvinduVelux", {
+                                                  type: option,
+                                                  colorCode: e.target.value,
+                                                });
+                                              }
+                                            }}
+                                            className={`bg-white rounded-[8px] border text-black border-gray1`}
+                                            disable={!isSelected}
+                                          />
+                                        </div>
+                                      )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </FormItem>
+                        );
+                      }}
                     />
                   </div>
                   <div>
                     <FormField
                       control={form.control}
-                      name="TakvinduVelux.Type"
+                      name={`TakvinduVeluxUtforingFarge`}
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -936,21 +468,41 @@ export const Vinduer = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Type
+                            Utforing farge
                           </p>
                           <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {UtforingFarge.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "TakvinduVeluxUtforingFarge",
+                                      option
+                                    );
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `TakvinduVeluxUtforingFarge`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -958,10 +510,10 @@ export const Vinduer = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="TakvinduVelux.Størrelse"
+                      name="TakvinduVeluxKommentar"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -969,45 +521,12 @@ export const Vinduer = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Størrelse
+                            Kommentar til takvindu og eventuelt tilvalg
                           </p>
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="TakvinduVelux.Utforing"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Utforing
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
+                                placeholder="Beskriv her"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
@@ -1031,7 +550,7 @@ export const Vinduer = forwardRef(
                   onClick={() => {
                     form.reset();
                     handlePrevious();
-                    localStorage.setItem("currVerticalIndex", String(8));
+                    localStorage.setItem("currVerticalIndex", String(7));
                   }}
                 >
                   <Button
