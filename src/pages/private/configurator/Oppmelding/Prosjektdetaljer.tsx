@@ -18,6 +18,7 @@ import {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -168,11 +169,14 @@ export const Prosjektdetaljer = forwardRef(
         });
       }
     };
-    const Finansiering = ["Ja", "Nei"];
-    const TypeKalkyle = ["Tilbud", "Prisoverslag"];
-    const ØnsketLeveranseukeForFørsteKtkjøring = ["Abc", "Xyz"];
-    const TakstolerLeveresUke = ["Abc", "Xyz"];
-    const VinduerLeveresUke = ["Abc", "Xyz"];
+    const Finansiering = useMemo(() => ["Ja", "Nei"], []);
+    const TypeKalkyle = useMemo(() => ["Tilbud", "Prisoverslag"], []);
+    const ØnsketLeveranseukeForFørsteKtkjøring = useMemo(
+      () => ["Abc", "Xyz"],
+      []
+    );
+    const TakstolerLeveresUke = useMemo(() => ["Abc", "Xyz"], []);
+    const VinduerLeveresUke = useMemo(() => ["Abc", "Xyz"], []);
 
     const [address, setAddress] = useState("");
     const [addressData, setAddressData] = useState<any>(null);
@@ -208,19 +212,16 @@ export const Prosjektdetaljer = forwardRef(
               if (value !== undefined && value !== null) {
                 form.setValue(key as any, value);
               }
+              if (key === "Byggeadresse") {
+                setAddress(String(value));
+              }
             }
           );
         } else {
           form.setValue("Kundenr", Number(roomsData?.Kundenummer));
         }
       }
-    }, [
-      roomsData,
-      Finansiering,
-      ØnsketLeveranseukeForFørsteKtkjøring,
-      TakstolerLeveresUke,
-      VinduerLeveresUke,
-    ]);
+    }, [roomsData, form]);
 
     return (
       <>

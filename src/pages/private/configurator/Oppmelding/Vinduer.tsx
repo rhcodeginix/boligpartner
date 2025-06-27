@@ -9,14 +9,6 @@ import {
 } from "../../../../components/ui/form";
 import Button from "../../../../components/common/button";
 import { z } from "zod";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../../components/ui/select";
 import { Input } from "../../../../components/ui/input";
 import { forwardRef, useEffect, useImperativeHandle } from "react";
 import { useLocation } from "react-router-dom";

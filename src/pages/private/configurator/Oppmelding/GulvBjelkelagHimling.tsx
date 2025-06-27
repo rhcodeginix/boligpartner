@@ -84,7 +84,7 @@ export const GulvBjelkelagHimling = forwardRef(
           position: "top-right",
         });
         handleNext();
-        localStorage.setItem("currVerticalIndex", String(5));
+        localStorage.setItem("currVerticalIndex", String(4));
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {
@@ -336,7 +336,7 @@ export const GulvBjelkelagHimling = forwardRef(
                   onClick={() => {
                     form.reset();
                     handlePrevious();
-                    localStorage.setItem("currVerticalIndex", String(3));
+                    localStorage.setItem("currVerticalIndex", String(2));
                   }}
                 >
                   <Button

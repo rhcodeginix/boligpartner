@@ -262,10 +262,25 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
       ),
     },
     {
-      id: 11,
+      id: 10,
       title: "Balkong & Terrasse",
       content: (
         <BalkongTerrasse
+          handleNext={handleNext}
+          handlePrevious={handlePrevious}
+          ref={(ref: any): void => {
+            formRefs.current[10] = ref;
+          }}
+          roomsData={roomsData}
+          setRoomsData={setRoomsData}
+        />
+      ),
+    },
+    {
+      id: 11,
+      title: "Listverk og Belistning",
+      content: (
+        <ListverkogBelistning
           handleNext={handleNext}
           handlePrevious={handlePrevious}
           ref={(ref: any): void => {
@@ -278,9 +293,9 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
     {
       id: 12,
-      title: "Listverk og Belistning",
+      title: "Ventilasjon og Sentralstøvsuger",
       content: (
-        <ListverkogBelistning
+        <VentilasjonSentralstøvsuger
           handleNext={handleNext}
           handlePrevious={handlePrevious}
           ref={(ref: any): void => {
@@ -293,9 +308,9 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
     {
       id: 13,
-      title: "Ventilasjon og Sentralstøvsuger",
+      title: "Brannvern",
       content: (
-        <VentilasjonSentralstøvsuger
+        <Brannvern
           handleNext={handleNext}
           handlePrevious={handlePrevious}
           ref={(ref: any): void => {
@@ -308,9 +323,9 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
     {
       id: 14,
-      title: "Brannvern",
+      title: "Tekniske Installasjoner",
       content: (
-        <Brannvern
+        <TekniskeInstallasjoner
           handleNext={handleNext}
           handlePrevious={handlePrevious}
           ref={(ref: any): void => {
@@ -323,11 +338,11 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
     {
       id: 15,
-      title: "Tekniske Installasjoner",
+      title: "Sluttføring og Dokumentasjon",
       content: (
-        <TekniskeInstallasjoner
-          handleNext={handleNext}
+        <SluttføringDokumentasjon
           handlePrevious={handlePrevious}
+          Next={Next}
           ref={(ref: any): void => {
             formRefs.current[15] = ref;
           }}
@@ -336,36 +351,21 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
         />
       ),
     },
-    {
-      id: 16,
-      title: "Sluttføring og Dokumentasjon",
-      content: (
-        <SluttføringDokumentasjon
-          handlePrevious={handlePrevious}
-          handleNext={handleNext}
-          ref={(ref: any): void => {
-            formRefs.current[16] = ref;
-          }}
-          roomsData={roomsData}
-          setRoomsData={setRoomsData}
-        />
-      ),
-    },
-    {
-      id: 17,
-      title: "Takrenner/beslag",
-      content: (
-        <TakrennerBeslag
-          handlePrevious={handlePrevious}
-          Next={Next}
-          ref={(ref: any): void => {
-            formRefs.current[17] = ref;
-          }}
-          roomsData={roomsData}
-          setRoomsData={setRoomsData}
-        />
-      ),
-    },
+    // {
+    //   id: 17,
+    //   title: "Takrenner/beslag",
+    //   content: (
+    //     <TakrennerBeslag
+    //       handlePrevious={handlePrevious}
+    //       Next={Next}
+    //       ref={(ref: any): void => {
+    //         formRefs.current[17] = ref;
+    //       }}
+    //       roomsData={roomsData}
+    //       setRoomsData={setRoomsData}
+    //     />
+    //   ),
+    // },
   ];
 
   return (

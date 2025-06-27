@@ -18,9 +18,7 @@ import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
 
 const formSchema = z.object({
-  IkkeRelevant: z.boolean().optional(),
-  Leveres: z.boolean().optional(),
-  Utgår: z.boolean().optional(),
+  TekniskeInstallasjoner: z.string().optional(),
   Punkt: z.string().optional(),
 });
 
@@ -83,7 +81,7 @@ export const TekniskeInstallasjoner = forwardRef(
           position: "top-right",
         });
         handleNext();
-        localStorage.setItem("currVerticalIndex", String(17));
+        localStorage.setItem("currVerticalIndex", String(15));
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {
@@ -91,6 +89,8 @@ export const TekniskeInstallasjoner = forwardRef(
         });
       }
     };
+
+    const TekniskeInstallasjoner = ["Ikke relevant", "Leveres", "Utgår"];
     useEffect(() => {
       if (roomsData && roomsData?.TekniskeInstallasjoner) {
         Object.entries(roomsData?.TekniskeInstallasjoner).forEach(
@@ -107,84 +107,61 @@ export const TekniskeInstallasjoner = forwardRef(
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
-              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4]">
+              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4] uppercase">
                 Tekniske Installasjoner
               </div>
               <div className="p-4 md:p-5">
                 <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="IkkeRelevant"
-                      render={({ field }) => (
+                      name={`TekniskeInstallasjoner`}
+                      render={({ field, fieldState }) => (
                         <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="IkkeRelevant"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Ikke relevant
+                          <p className={`mb-4 text-black font-medium`}>
+                            Fargeønske utvendig kombirist
                           </p>
+                          <FormControl>
+                            <div className="flex flex-col gap-x-5 gap-y-2 flex-wrap">
+                              {TekniskeInstallasjoner.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "TekniskeInstallasjoner",
+                                      option
+                                    );
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `TekniskeInstallasjoner`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Leveres"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Leveres"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Leveres
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Utgår"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Utgår"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Utgår
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
                       name="Punkt"
@@ -224,7 +201,7 @@ export const TekniskeInstallasjoner = forwardRef(
                   onClick={() => {
                     form.reset();
                     handlePrevious();
-                    localStorage.setItem("currVerticalIndex", String(15));
+                    localStorage.setItem("currVerticalIndex", String(13));
                   }}
                 >
                   <Button

@@ -9,14 +9,6 @@ import {
 } from "../../../../components/ui/form";
 import Button from "../../../../components/common/button";
 import { z } from "zod";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../../components/ui/select";
 import { Input } from "../../../../components/ui/input";
 import { forwardRef, useEffect, useImperativeHandle } from "react";
 import { useLocation } from "react-router-dom";
@@ -26,11 +18,8 @@ import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
 
 const formSchema = z.object({
-  IsolerteInspeksjonsluker: z.object({
-    StandardOmrammingMedSilverBeslag: z.boolean().optional(),
-    KunSidebordBeiset: z.boolean().optional(),
-    mellomstrøk: z.string().optional(),
-  }),
+  IsolerteInspeksjonsluker: z.array(z.string()).optional(),
+  mellomstrøk: z.string().optional(),
   Innvendig: z.object({
     Taklist: z.array(z.string()).optional(),
     Gulvlist: z.array(z.string()).optional(),
@@ -99,7 +88,7 @@ export const ListverkogBelistning = forwardRef(
           position: "top-right",
         });
         handleNext();
-        localStorage.setItem("currVerticalIndex", String(14));
+        localStorage.setItem("currVerticalIndex", String(12));
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {
@@ -109,6 +98,12 @@ export const ListverkogBelistning = forwardRef(
     };
 
     const Taklist = ["Hvitmalt", "Lakkert", "Ubehandlet"];
+    const IsolerteInspeksjonsluker = [
+      "Standard omramming med Silver beslag ihht. leveransebeksrivelse",
+      "Kun sidebord beiset (1 strøk, hvit)",
+    ];
+    const mellomstrøk = ["Ja", "Nei"];
+
     useEffect(() => {
       if (roomsData && roomsData?.ListverkogBelistning) {
         Object.entries(roomsData?.ListverkogBelistning).forEach(
@@ -126,7 +121,7 @@ export const ListverkogBelistning = forwardRef(
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
-              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4]">
+              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4] uppercase">
                 Listverk og Belistning
               </div>
               <div className="p-4 md:p-5">
@@ -134,26 +129,70 @@ export const ListverkogBelistning = forwardRef(
                   <div className="col-span-3 text-darkBlack font-medium text-base">
                     Isolerte inspeksjonsluker
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="IsolerteInspeksjonsluker.StandardOmrammingMedSilverBeslag"
-                      render={({ field }) => (
+                      name={`IsolerteInspeksjonsluker`}
+                      render={({ field, fieldState }) => (
                         <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="IsolerteInspeksjonsluker.StandardOmrammingMedSilverBeslag"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Standard omramming med Silver beslag
-                          </p>
+                          <FormControl>
+                            <div className="flex flex-col gap-3 lg:gap-4">
+                              {IsolerteInspeksjonsluker.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    const currentValues = field.value || [];
+                                    const isChecked =
+                                      currentValues.includes(option);
+
+                                    const newValues = isChecked
+                                      ? currentValues.filter(
+                                          (val) => val !== option
+                                        )
+                                      : [...currentValues, option];
+
+                                    form.setValue(
+                                      "IsolerteInspeksjonsluker",
+                                      newValues
+                                    );
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="checkbox"
+                                    value={option}
+                                    checked={field.value?.includes(option)}
+                                    onChange={(e) => {
+                                      const checked = e.target.checked;
+                                      const currentValues = field.value || [];
+
+                                      if (checked) {
+                                        form.setValue(
+                                          "IsolerteInspeksjonsluker",
+                                          [...currentValues, option]
+                                        );
+                                      } else {
+                                        form.setValue(
+                                          "IsolerteInspeksjonsluker",
+                                          currentValues.filter(
+                                            (val) => val !== option
+                                          )
+                                        );
+                                      }
+                                    }}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -161,31 +200,7 @@ export const ListverkogBelistning = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name="IsolerteInspeksjonsluker.KunSidebordBeiset"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="KunSidebordBeiset"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Kun sidebord beiset (1 strøk, hvit)
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="IsolerteInspeksjonsluker.mellomstrøk"
+                      name={`mellomstrøk`}
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -196,30 +211,35 @@ export const ListverkogBelistning = forwardRef(
                             1 mellomstrøk
                           </p>
                           <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {mellomstrøk.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue("mellomstrøk", option);
+                                  }}
                                 >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `mellomstrøk`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -245,7 +265,7 @@ export const ListverkogBelistning = forwardRef(
                             Taklist 21x45
                           </p>
                           <FormControl>
-                            <div className="flex items-center flex-wrap gap-3 lg:gap-5">
+                            <div className="flex items-center flex-wrap gap-3 lg:gap-4">
                               {Taklist.map((option) => (
                                 <div
                                   key={option}
@@ -294,9 +314,7 @@ export const ListverkogBelistning = forwardRef(
                                       }
                                     }}
                                   />
-                                  <p
-                                    className={`text-black text-sm`}
-                                  >
+                                  <p className={`text-black text-sm`}>
                                     {option}
                                   </p>
                                 </div>
@@ -322,7 +340,7 @@ export const ListverkogBelistning = forwardRef(
                             Gulvlist 12x58
                           </p>
                           <FormControl>
-                            <div className="flex items-center flex-wrap gap-3 lg:gap-5">
+                            <div className="flex items-center flex-wrap gap-3 lg:gap-4">
                               {Taklist.map((option) => (
                                 <div
                                   key={option}
@@ -371,9 +389,7 @@ export const ListverkogBelistning = forwardRef(
                                       }
                                     }}
                                   />
-                                  <p
-                                    className={`text-black text-sm`}
-                                  >
+                                  <p className={`text-black text-sm`}>
                                     {option}
                                   </p>
                                 </div>
@@ -399,7 +415,7 @@ export const ListverkogBelistning = forwardRef(
                             Gerikt 12x58
                           </p>
                           <FormControl>
-                            <div className="flex items-center flex-wrap gap-3 lg:gap-5">
+                            <div className="flex items-center flex-wrap gap-3 lg:gap-4">
                               {Taklist.map((option) => (
                                 <div
                                   key={option}
@@ -448,9 +464,7 @@ export const ListverkogBelistning = forwardRef(
                                       }
                                     }}
                                   />
-                                  <p
-                                    className={`text-black text-sm`}
-                                  >
+                                  <p className={`text-black text-sm`}>
                                     {option}
                                   </p>
                                 </div>
@@ -476,30 +490,35 @@ export const ListverkogBelistning = forwardRef(
                             Eik ideal 15x45
                           </p>
                           <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {mellomstrøk.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue("Innvendig.EikIdeal", option);
+                                  }}
                                 >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `Innvendig.EikIdeal`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -507,8 +526,7 @@ export const ListverkogBelistning = forwardRef(
                       )}
                     />
                   </div>
-                  <div className="my-1 border-t border-[#DCDFEA] col-span-3"></div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
                       name="Kommentar"
@@ -548,7 +566,7 @@ export const ListverkogBelistning = forwardRef(
                   onClick={() => {
                     form.reset();
                     handlePrevious();
-                    localStorage.setItem("currVerticalIndex", String(12));
+                    localStorage.setItem("currVerticalIndex", String(10));
                   }}
                 >
                   <Button

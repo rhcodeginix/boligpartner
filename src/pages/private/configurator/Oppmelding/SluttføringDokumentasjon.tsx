@@ -31,20 +31,18 @@ const formSchema = z.object({
   StiftpakkeLimLeveresFor: z.string().optional(),
   BestillingsoversiktDatert: z.string().optional(),
   FargekodeFabrikkmalteProdukter: z.string().optional(),
-  MarkSignatureSelgerSelger: z.boolean().optional(),
-  MarkSignatureByggeleder: z.boolean().optional(),
-  MarkSignatureTiltakshaver: z.boolean().optional(),
+  Signering: z.string().optional(),
 });
 
 export const SluttføringDokumentasjon = forwardRef(
   (
     {
-      handleNext,
+      Next,
       handlePrevious,
       roomsData,
       setRoomsData,
     }: {
-      handleNext: () => void;
+      Next: () => void;
       handlePrevious: () => void;
       roomsData: any;
       setRoomsData: any;
@@ -94,8 +92,7 @@ export const SluttføringDokumentasjon = forwardRef(
         toast.success("Lagret", {
           position: "top-right",
         });
-        handleNext();
-        localStorage.setItem("currVerticalIndex", String(18));
+        Next();
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {
@@ -104,6 +101,11 @@ export const SluttføringDokumentasjon = forwardRef(
       }
     };
     const StiftpakkeLimLeveresFor = ["17°", "21°", "34°"];
+    const Signering = [
+      "Selger er klar til å signere",
+      "Byggeleder er klar til å signere",
+      "Tiltakshaver er klar til å signere",
+    ];
 
     useEffect(() => {
       if (roomsData && roomsData?.SluttføringDokumentasjon) {
@@ -122,11 +124,14 @@ export const SluttføringDokumentasjon = forwardRef(
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
-              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4]">
+              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4] uppercase">
                 Sluttføring og Dokumentasjon
               </div>
               <div className="p-4 md:p-5">
                 <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
+                  <div className="col-span-3 text-darkBlack font-medium">
+                    Sluttføring
+                  </div>
                   <div>
                     <FormField
                       control={form.control}
@@ -213,6 +218,7 @@ export const SluttføringDokumentasjon = forwardRef(
                       )}
                     />
                   </div>
+                  <div></div>
                   <div>
                     <FormField
                       control={form.control}
@@ -381,54 +387,6 @@ export const SluttføringDokumentasjon = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name="Byggeplassinformasjon"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="Byggeplassinformasjon"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Byggeplassinformasjon
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="KontraktSignert"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="KontraktSignert"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Kontrakt signert
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
                       name="UtstyrslisteTilRørleggerDatert"
                       render={({ field, fieldState }) => (
                         <FormItem>
@@ -478,6 +436,54 @@ export const SluttføringDokumentasjon = forwardRef(
                               onChange={(e) => field.onChange(e.target.checked)}
                             />
                             Produktinfo innv. panel
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="Byggeplassinformasjon"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                            onClick={() => field.onChange(!field.value)}
+                          >
+                            <input
+                              type="checkbox"
+                              id="Byggeplassinformasjon"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Byggeplassinformasjon
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="KontraktSignert"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                            onClick={() => field.onChange(!field.value)}
+                          >
+                            <input
+                              type="checkbox"
+                              id="KontraktSignert"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Kontrakt signert
                           </p>
                         </FormItem>
                       )}
@@ -554,80 +560,45 @@ export const SluttføringDokumentasjon = forwardRef(
                       Signering
                     </h3>
                     <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
-                      <div>
+                      <div className="col-span-3">
                         <FormField
                           control={form.control}
-                          name="MarkSignatureSelgerSelger"
-                          render={({ field }) => (
+                          name={`Signering`}
+                          render={({ field, fieldState }) => (
                             <FormItem>
-                              <p
-                                className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                                  field.value ? "text-black" : "text-black"
-                                }`}
-                                onClick={() => field.onChange(!field.value)}
-                              >
-                                <input
-                                  type="checkbox"
-                                  id="MarkSignatureSelgerSelger"
-                                  checked={field.value || false}
-                                  onChange={(e) =>
-                                    field.onChange(e.target.checked)
-                                  }
-                                />
-                                Mark as Signature (Selger)
-                              </p>
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      <div>
-                        <FormField
-                          control={form.control}
-                          name="MarkSignatureByggeleder"
-                          render={({ field }) => (
-                            <FormItem>
-                              <p
-                                className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                                  field.value ? "text-black" : "text-black"
-                                }`}
-                                onClick={() => field.onChange(!field.value)}
-                              >
-                                <input
-                                  type="checkbox"
-                                  id="MarkSignatureByggeleder"
-                                  checked={field.value || false}
-                                  onChange={(e) =>
-                                    field.onChange(e.target.checked)
-                                  }
-                                />
-                                Mark as Signature (Byggeleder)
-                              </p>
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      <div>
-                        <FormField
-                          control={form.control}
-                          name="MarkSignatureTiltakshaver"
-                          render={({ field }) => (
-                            <FormItem>
-                              <p
-                                className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                                  field.value ? "text-black" : "text-black"
-                                }`}
-                                onClick={() => field.onChange(!field.value)}
-                              >
-                                <input
-                                  type="checkbox"
-                                  id="MarkSignatureTiltakshaver"
-                                  checked={field.value || false}
-                                  onChange={(e) =>
-                                    field.onChange(e.target.checked)
-                                  }
-                                />
-                                Mark as Signature (Tiltakshaver)
-                              </p>
+                              <FormControl>
+                                <div className="flex flex-col gap-x-5 gap-y-2 flex-wrap">
+                                  {Signering.map((option) => (
+                                    <div
+                                      key={option}
+                                      className="relative flex items-center gap-2 cursor-pointer"
+                                      onClick={() => {
+                                        form.setValue("Signering", option);
+                                      }}
+                                    >
+                                      <input
+                                        className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                        type="radio"
+                                        value={option}
+                                        onChange={(e) => {
+                                          form.setValue(
+                                            `Signering`,
+                                            e.target.value
+                                          );
+                                        }}
+                                        checked={field.value === option}
+                                      />
+                                      <p className={`text-black text-sm`}>
+                                        {option}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </FormControl>
+                              <FormMessage />
                             </FormItem>
                           )}
                         />
@@ -641,7 +612,7 @@ export const SluttføringDokumentasjon = forwardRef(
                   onClick={() => {
                     form.reset();
                     handlePrevious();
-                    localStorage.setItem("currVerticalIndex", String(16));
+                    localStorage.setItem("currVerticalIndex", String(14));
                   }}
                 >
                   <Button
@@ -650,7 +621,7 @@ export const SluttføringDokumentasjon = forwardRef(
                   />
                 </div>
                 <Button
-                  text="Neste"
+                  text="Gå til oppsummering"
                   className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   type="submit"
                 />

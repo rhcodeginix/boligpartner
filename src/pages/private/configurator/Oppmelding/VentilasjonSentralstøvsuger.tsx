@@ -9,14 +9,6 @@ import {
 } from "../../../../components/ui/form";
 import Button from "../../../../components/common/button";
 import { z } from "zod";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../../components/ui/select";
 import { Input } from "../../../../components/ui/input";
 import { forwardRef, useEffect, useImperativeHandle } from "react";
 import { useLocation } from "react-router-dom";
@@ -26,12 +18,12 @@ import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
 
 const formSchema = z.object({
-  BalansertVentilasjon: z.boolean().optional(),
-  KundetilpassetPlasseringAggregat: z.boolean().optional(),
-  Date: z.string().optional(),
-  MarkSignature: z.boolean().optional(),
-  VentilatorNoremaTiltakshaver: z.string().optional(),
-  Sentralstøvsuger: z.boolean().optional(),
+  Ventilasjon: z.boolean().optional(),
+  FargeønskeUtvendigKombirist: z.string().optional(),
+  FargeønskeInnvendigVentiler: z.string().optional(),
+  KommentarVentilasjon: z.string().optional(),
+  Sentralstøvsuger: z.array(z.string()).optional(),
+
   AntallKontakter: z.string().optional(),
   Sugebrett: z.string().optional(),
   Kommentar: z.string().optional(),
@@ -96,7 +88,7 @@ export const VentilasjonSentralstøvsuger = forwardRef(
           position: "top-right",
         });
         handleNext();
-        localStorage.setItem("currVerticalIndex", String(15));
+        localStorage.setItem("currVerticalIndex", String(13));
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {
@@ -104,8 +96,11 @@ export const VentilasjonSentralstøvsuger = forwardRef(
         });
       }
     };
-    const VentilatorNoremaTiltakshaver = ["Norema", "Tiltakshaver"];
+    const FargeønskeUtvendigKombirist = ["Hvit", "Svart"];
+    const Sugebrett = ["Ja", "Nei"];
     const AntallKontakter = ["2", "3", "4", "Alt"];
+    const Sentralstøvsuger = ["Ikke relevant", "Sentralstøvsuger"];
+
     useEffect(() => {
       if (roomsData && roomsData?.VentilasjonSentralstøvsuger) {
         Object.entries(roomsData?.VentilasjonSentralstøvsuger).forEach(
@@ -116,21 +111,24 @@ export const VentilasjonSentralstøvsuger = forwardRef(
           }
         );
       }
-    }, [roomsData, VentilatorNoremaTiltakshaver, AntallKontakter]);
+    }, [roomsData, AntallKontakter]);
     return (
       <>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
-              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4]">
+              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4] uppercase">
                 Ventilasjon og Sentralstøvsuger
               </div>
               <div className="p-4 md:p-5">
                 <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
-                  <div>
+                  <div className="col-span-3">
+                    <p className={`$text-black font-medium mb-4`}>
+                      Ventilasjon
+                    </p>
                     <FormField
                       control={form.control}
-                      name="BalansertVentilasjon"
+                      name="Ventilasjon"
                       render={({ field }) => (
                         <FormItem>
                           <p
@@ -141,119 +139,34 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                           >
                             <input
                               type="checkbox"
-                              id="BalansertVentilasjon"
+                              id="Ventilasjon"
                               checked={field.value || false}
                               onChange={(e) => field.onChange(e.target.checked)}
                             />
-                            Balansert ventilasjon
+                            Ikke relevant
                           </p>
                         </FormItem>
                       )}
                     />
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="KundetilpassetPlasseringAggregat"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="KundetilpassetPlasseringAggregat"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Kundetilpasset plassering av aggregat
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Date"
+                      name={`FargeønskeUtvendigKombirist`}
                       render={({ field, fieldState }) => (
                         <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Date
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Velg dato"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="MarkSignature"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
-                          >
-                            <input
-                              type="checkbox"
-                              id="MarkSignature"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Mark as Signature
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name={`VentilatorNoremaTiltakshaver`}
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`mb-2 ${
-                              fieldState.error ? "text-red" : "text-black"
-                            } text-sm`}
-                          >
-                            Ventilator fra Norema / tiltakshaver
+                          <p className={`mb-4 text-black font-medium`}>
+                            Fargeønske utvendig kombirist
                           </p>
                           <FormControl>
                             <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
-                              {VentilatorNoremaTiltakshaver.map((option) => (
+                              {FargeønskeUtvendigKombirist.map((option) => (
                                 <div
                                   key={option}
                                   className="relative flex items-center gap-2 cursor-pointer"
                                   onClick={() => {
                                     form.setValue(
-                                      "VentilatorNoremaTiltakshaver",
+                                      "FargeønskeUtvendigKombirist",
                                       option
                                     );
                                   }}
@@ -267,7 +180,7 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                                     value={option}
                                     onChange={(e) => {
                                       form.setValue(
-                                        `VentilatorNoremaTiltakshaver`,
+                                        `FargeønskeUtvendigKombirist`,
                                         e.target.value
                                       );
                                     }}
@@ -285,26 +198,156 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="Sentralstøvsuger"
-                      render={({ field }) => (
+                      name={`FargeønskeInnvendigVentiler`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p className={`mb-4 text-black font-medium`}>
+                            Fargeønske innvendig ventiler
+                          </p>
+                          <FormControl>
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {FargeønskeUtvendigKombirist.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "FargeønskeInnvendigVentiler",
+                                      option
+                                    );
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `FargeønskeInnvendigVentiler`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="col-span-3">
+                    <FormField
+                      control={form.control}
+                      name="KommentarVentilasjon"
+                      render={({ field, fieldState }) => (
                         <FormItem>
                           <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => field.onChange(!field.value)}
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
                           >
-                            <input
-                              type="checkbox"
-                              id="Sentralstøvsuger"
-                              checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                            Sentralstøvsuger V-30
+                            Kommentar til ventilasjon
                           </p>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv her"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
+                  <div className="col-span-3">
+                    <FormField
+                      control={form.control}
+                      name={`Sentralstøvsuger`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p className={`$text-black font-medium mb-4`}>
+                            Sentralstøvsuger
+                          </p>
+                          <FormControl>
+                            <div className="flex flex-col gap-3 lg:gap-4">
+                              {Sentralstøvsuger.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    const currentValues = field.value || [];
+                                    const isChecked =
+                                      currentValues.includes(option);
+
+                                    const newValues = isChecked
+                                      ? currentValues.filter(
+                                          (val) => val !== option
+                                        )
+                                      : [...currentValues, option];
+
+                                    form.setValue(
+                                      "Sentralstøvsuger",
+                                      newValues
+                                    );
+                                  }}
+                                >
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="checkbox"
+                                    value={option}
+                                    checked={field.value?.includes(option)}
+                                    onChange={(e) => {
+                                      const checked = e.target.checked;
+                                      const currentValues = field.value || [];
+
+                                      if (checked) {
+                                        form.setValue("Sentralstøvsuger", [
+                                          ...currentValues,
+                                          option,
+                                        ]);
+                                      } else {
+                                        form.setValue(
+                                          "Sentralstøvsuger",
+                                          currentValues.filter(
+                                            (val) => val !== option
+                                          )
+                                        );
+                                      }
+                                    }}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -320,7 +363,7 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } text-sm`}
                           >
-                            Antall kontakter
+                            Antall sugekontakter
                           </p>
                           <FormControl>
                             <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
@@ -328,9 +371,9 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                                 <div
                                   key={option}
                                   className="relative flex items-center gap-2 cursor-pointer"
-                            onClick={() => {
-                              form.setValue("AntallKontakter", option);
-                            }}
+                                  onClick={() => {
+                                    form.setValue("AntallKontakter", option);
+                                  }}
                                 >
                                   <input
                                     className={`bg-white rounded-[8px] border text-black
@@ -373,30 +416,35 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                             Sugebrett
                           </p>
                           <FormControl>
-                            <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
+                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                              {Sugebrett.map((option) => (
+                                <div
+                                  key={option}
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue("Sugebrett", option);
+                                  }}
                                 >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    <SelectItem value="Abc">Abc</SelectItem>
-                                    <SelectItem value="Xyz">Xyz</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                                  <input
+                                    className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                    type="radio"
+                                    value={option}
+                                    onChange={(e) => {
+                                      form.setValue(
+                                        `Sugebrett`,
+                                        e.target.value
+                                      );
+                                    }}
+                                    checked={field.value === option}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -404,7 +452,7 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
                       name="Kommentar"
@@ -415,7 +463,7 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Kommentar
+                            Kommentar til sentralstøvsuger
                           </p>
                           <FormControl>
                             <div className="relative">
@@ -444,7 +492,7 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                   onClick={() => {
                     form.reset();
                     handlePrevious();
-                    localStorage.setItem("currVerticalIndex", String(13));
+                    localStorage.setItem("currVerticalIndex", String(11));
                   }}
                 >
                   <Button

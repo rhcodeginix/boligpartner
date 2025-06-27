@@ -181,43 +181,57 @@ export const Dører = forwardRef(
       }
     };
 
-    const InngangsdørOptions = [
-      "Standard hvitmalt ihht. signaturbeskrivelse",
-      "Standard dør annen farge",
-      "Annen dørmodell",
-    ];
-    const UtforingFarge = ["Hvit", "Som dørfarge"];
-    const SlagretningTofløyetDør = ["Høyre", "Venstre"];
-    const BoddørOptions = [
-      "Ikke relevant",
-      "Hvitmalt type ihht. signatur",
-      "Malt dør og karm annen farge",
-    ];
-    const BalkongTerrassedørOptions = [
-      "Standard hvitmalt utvendig/innvendig",
-      "Annen farge",
-      "Alubeslått utvendig",
-    ];
-    const InnvendigeDørerOptions = [
-      "Standard hvitmalt ihht. signaturbeskrivelse",
-      "Standard dør annen farge",
-      "Annen dørmodell",
-    ];
-    const DørvridereOptions = [
-      "Standard hht. signaturbeskrivelse",
-      "Annen vrider",
-    ];
-    const DørerKjellerromOptions = [
-      "Ikke relevant",
-      "Samme som 1. etg.",
-      "Annen type",
-    ];
-    const GarasjeportOptions = [
-      "Ikke relevant",
-      "Standard ihenhold til leveransebeskrivelse",
-      "Annen type",
-    ];
-    const LikelåsMedHoveddør = ["Ja", "Nei"];
+    const InngangsdørOptions = useMemo(
+      () => [
+        "Standard hvitmalt ihht. signaturbeskrivelse",
+        "Standard dør annen farge",
+        "Annen dørmodell",
+      ],
+      []
+    );
+    const UtforingFarge = useMemo(() => ["Hvit", "Som dørfarge"], []);
+    const SlagretningTofløyetDør = useMemo(() => ["Høyre", "Venstre"], []);
+    const BoddørOptions = useMemo(
+      () => [
+        "Ikke relevant",
+        "Hvitmalt type ihht. signatur",
+        "Malt dør og karm annen farge",
+      ],
+      []
+    );
+    const BalkongTerrassedørOptions = useMemo(
+      () => [
+        "Standard hvitmalt utvendig/innvendig",
+        "Annen farge",
+        "Alubeslått utvendig",
+      ],
+      []
+    );
+    const InnvendigeDørerOptions = useMemo(
+      () => [
+        "Standard hvitmalt ihht. signaturbeskrivelse",
+        "Standard dør annen farge",
+        "Annen dørmodell",
+      ],
+      []
+    );
+    const DørvridereOptions = useMemo(
+      () => ["Standard hht. signaturbeskrivelse", "Annen vrider"],
+      []
+    );
+    const DørerKjellerromOptions = useMemo(
+      () => ["Ikke relevant", "Samme som 1. etg.", "Annen type"],
+      []
+    );
+    const GarasjeportOptions = useMemo(
+      () => [
+        "Ikke relevant",
+        "Standard ihenhold til leveransebeskrivelse",
+        "Annen type",
+      ],
+      []
+    );
+    const LikelåsMedHoveddør = useMemo(() => ["Ja", "Nei"], []);
     const Terskeltype = useMemo(
       () => ["Standard", "Påforingsterskel", "våtrom"],
       []
@@ -232,7 +246,7 @@ export const Dører = forwardRef(
           }
         });
       }
-    }, [roomsData]);
+    }, [roomsData, form]);
     return (
       <>
         <Form {...form}>
