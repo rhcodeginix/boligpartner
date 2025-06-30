@@ -54,7 +54,6 @@ export const ExportView: React.FC<{ rooms: any; kundeInfo: any }> = ({
     return roomAcc + sum;
   }, 0);
   const formattedTotal = formatToNorwegianCurrency(totalPris);
-  console.log(kundeInfo);
 
   return (
     <div className="p-8">
