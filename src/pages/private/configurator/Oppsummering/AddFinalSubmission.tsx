@@ -186,6 +186,9 @@ export const AddFinalSubmission: React.FC<{
 
       //   pdf.save(`preview-${Date.now()}.pdf`);
       // }
+      
+      // ---
+
       //   const element = previewRef.current;
       //   if (!element) return;
 
@@ -210,105 +213,45 @@ export const AddFinalSubmission: React.FC<{
       //   pptx.writeFile({ fileName: `export-${Date.now()}.pptx` });
       // };
 
-      // const exportToPpt = async () => {
+      // if (data.exportType === "PDF") {
+      //   setIsExporting(true);
       //   const element = previewRef.current;
-      //   if (!element) return;
+      //   if (!element) throw new Error("Preview element not found");
 
-      //   const slideWidth = 10; // inches
-      //   const slideHeight = 5.625; // inches (standard 16:9)
-      //   const dpi = 96; // standard screen resolution
-      //   const slidePixelHeight = slideHeight * dpi;
+      //   // Force fixed width for consistent capture
+      //   const originalWidth = element.style.width;
+      //   element.style.width = "794px"; // ≈210mm at 96dpi
 
-      //   // Get total scroll height
       //   const totalHeight = element.scrollHeight;
-      //   const visibleHeight = slidePixelHeight;
+      //   const pageHeightPx = 1123; // ≈297mm at 96dpi
 
-      //   const pptx = new PptxGenJS();
-      //   const numSlides = Math.ceil(totalHeight / visibleHeight);
+      //   const totalPages = Math.ceil(totalHeight / pageHeightPx);
 
-      //   for (let i = 0; i < numSlides; i++) {
-      //     // Scroll window to capture the correct part
+      //   const pdf = new jsPDF("p", "mm", "a4");
+      //   for (let page = 0; page < totalPages; page++) {
+      //     element.scrollTop = page * pageHeightPx;
+
+      //     // Give browser time to render scrolled content
+      //     // eslint-disable-next-line no-await-in-loop
+      //     await new Promise((res) => setTimeout(res, 300));
+
       //     const canvas = await html2canvas(element, {
-      //       scrollY: -window.scrollY, // prevent current scroll from interfering
-      //       height: visibleHeight,
-      //       y: i * visibleHeight, // start capture from this Y
-      //       windowHeight: visibleHeight,
+      //       useCORS: true,
+      //       backgroundColor: "#ffffff",
+      //       scale: 2,
+      //       height: pageHeightPx,
+      //       y: page * pageHeightPx,
       //     });
 
       //     const imgData = canvas.toDataURL("image/png");
 
-      //     const slide = pptx.addSlide();
-      //     slide.addImage({
-      //       data: imgData,
-      //       x: 0,
-      //       y: 0,
-      //       w: slideWidth,
-      //       h: slideHeight,
-      //     });
+      //     if (page > 0) pdf.addPage();
+      //     pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
       //   }
 
-      //   pptx.writeFile({ fileName: `export-${Date.now()}.pptx` });
-      // };
-
-      // const exportToPpt = async () => {
-      //   const element = previewRef.current;
-      //   if (!element) return;
-
-      //   // Full canvas of the element
-      //   const fullCanvas = await html2canvas(element, {
-      //     // scale: 2, // better quality
-      //     useCORS: true, // if using images
-      //   });
-
-      //   const slideWidthInches = 10;
-      //   const slideHeightInches = 5.625;
-      //   const DPI = 96;
-      //   const slideHeightPx = slideHeightInches * DPI;
-
-      //   const totalHeight = fullCanvas.height;
-      //   const totalWidth = fullCanvas.width;
-
-      //   const pptx = new PptxGenJS();
-
-      //   let offsetY = 0;
-
-      //   while (offsetY < totalHeight) {
-      //     const canvasSlice = document.createElement("canvas");
-      //     canvasSlice.width = totalWidth;
-      //     canvasSlice.height = Math.min(slideHeightPx, totalHeight - offsetY);
-
-      //     const ctx = canvasSlice.getContext("2d");
-      //     if (ctx) {
-      //       ctx.drawImage(
-      //         fullCanvas,
-      //         0,
-      //         offsetY, // source x,y in full canvas
-      //         totalWidth,
-      //         canvasSlice.height, // source width, height
-      //         0,
-      //         0, // target x,y
-      //         totalWidth,
-      //         canvasSlice.height // target width, height
-      //       );
-      //     }
-
-      //     const imgData = canvasSlice.toDataURL("image/png");
-
-      //     const slide = pptx.addSlide();
-      //     slide.addImage({
-      //       data: imgData,
-      //       x: 0,
-      //       y: 0,
-      //       w: slideWidthInches,
-      //       h: canvasSlice.height / DPI, // scale height proportionally
-      //     });
-
-      //     offsetY += slideHeightPx;
-      //   }
-
-      //   pptx.writeFile({ fileName: `export-${Date.now()}.pptx` });
-      // };
-
+      //   pdf.save(`preview-${Date.now()}.pdf`);
+      //   element.style.width = originalWidth; // restore original width
+      // }
       if (data.exportType === "PDF") {
         setIsExporting(true);
         const element = previewRef.current;
@@ -324,10 +267,19 @@ export const AddFinalSubmission: React.FC<{
         const totalPages = Math.ceil(totalHeight / pageHeightPx);
 
         const pdf = new jsPDF("p", "mm", "a4");
+
+        // Margins
+        const marginTop = 10;
+        const marginLeft = 0;
+        const marginRight = 0;
+        const marginBottom = 15;
+
+        const usableWidth = 210 - marginLeft - marginRight;
+        const usableHeight = 297 - marginTop - marginBottom;
+
         for (let page = 0; page < totalPages; page++) {
           element.scrollTop = page * pageHeightPx;
 
-          // Give browser time to render scrolled content
           // eslint-disable-next-line no-await-in-loop
           await new Promise((res) => setTimeout(res, 300));
 
@@ -342,11 +294,30 @@ export const AddFinalSubmission: React.FC<{
           const imgData = canvas.toDataURL("image/png");
 
           if (page > 0) pdf.addPage();
-          pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
+
+          // Draw image inside margins
+          pdf.addImage(
+            imgData,
+            "PNG",
+            marginLeft,
+            marginTop,
+            usableWidth,
+            usableHeight
+          );
+
+          // Add header
+          pdf.setFontSize(12);
+          pdf.text("", 105, 10, { align: "center" });
+
+          // Add footer with page number
+          pdf.setFontSize(10);
+          pdf.text(`Page ${page + 1} of ${totalPages}`, 105, 290, {
+            align: "center",
+          });
         }
 
         pdf.save(`preview-${Date.now()}.pdf`);
-        element.style.width = originalWidth; // restore original width
+        element.style.width = originalWidth;
       }
 
       if (data.exportType === "PPT") {
