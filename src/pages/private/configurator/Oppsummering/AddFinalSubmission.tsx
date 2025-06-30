@@ -27,13 +27,13 @@ import { useLocation } from "react-router-dom";
 import { removeUndefinedOrNull } from "../Oppmelding/Yttervegger";
 import { toast } from "react-hot-toast";
 import { useEffect, useRef, useState } from "react";
-import { Preview } from "./preview";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import PptxGenJS from "pptxgenjs";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import Modal from "../../../../components/common/modal";
+import { ExportView } from "./exportView";
 
 const formSchema = z.object({
   Kundenavn: z.string({
@@ -111,81 +111,81 @@ export const AddFinalSubmission: React.FC<{
         position: "top-right",
       });
 
-      if (data.exportType === "PDF") {
-        setIsExporting(true);
-        const element = previewRef.current;
-        if (!element) throw new Error("Preview element not found");
+      // if (data.exportType === "PDF") {
+      //   setIsExporting(true);
+      //   const element = previewRef.current;
+      //   if (!element) throw new Error("Preview element not found");
 
-        const toDataURL = (url: string): Promise<string> =>
-          fetch(url)
-            .then((response) => response.blob())
-            .then((blob) => {
-              return new Promise<string>((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result as string);
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-              });
-            });
+      //   const toDataURL = (url: string): Promise<string> =>
+      //     fetch(url)
+      //       .then((response) => response.blob())
+      //       .then((blob) => {
+      //         return new Promise<string>((resolve, reject) => {
+      //           const reader = new FileReader();
+      //           reader.onloadend = () => resolve(reader.result as string);
+      //           reader.onerror = reject;
+      //           reader.readAsDataURL(blob);
+      //         });
+      //       });
 
-        const replaceFirebaseImagesWithBase64 = async () => {
-          const images = element.querySelectorAll("img");
-          await Promise.all(
-            Array.from(images).map(async (img) => {
-              const src = img.getAttribute("src");
-              if (src && src.includes("firebasestorage.googleapis.com")) {
-                try {
-                  const dataUrl = await toDataURL(src);
-                  img.setAttribute("src", dataUrl);
-                } catch (err) {
-                  console.warn(
-                    "Could not convert Firebase image to base64",
-                    err
-                  );
-                }
-              }
-            })
-          );
-        };
+      //   const replaceFirebaseImagesWithBase64 = async () => {
+      //     const images = element.querySelectorAll("img");
+      //     await Promise.all(
+      //       Array.from(images).map(async (img) => {
+      //         const src = img.getAttribute("src");
+      //         if (src && src.includes("firebasestorage.googleapis.com")) {
+      //           try {
+      //             const dataUrl = await toDataURL(src);
+      //             img.setAttribute("src", dataUrl);
+      //           } catch (err) {
+      //             console.warn(
+      //               "Could not convert Firebase image to base64",
+      //               err
+      //             );
+      //           }
+      //         }
+      //       })
+      //     );
+      //   };
 
-        await replaceFirebaseImagesWithBase64();
+      //   await replaceFirebaseImagesWithBase64();
 
-        const canvas = await html2canvas(element, {
-          useCORS: true,
-          allowTaint: false,
-          backgroundColor: "#ffffff",
-          scale: 2,
-        });
+      //   const canvas = await html2canvas(element, {
+      //     useCORS: true,
+      //     allowTaint: false,
+      //     backgroundColor: "#ffffff",
+      //     scale: 2,
+      //   });
 
-        const imgData = canvas.toDataURL("image/png");
+      //   const imgData = canvas.toDataURL("image/png");
 
-        const pdf = new jsPDF("p", "mm", "a4");
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
+      //   const pdf = new jsPDF("p", "mm", "a4");
+      //   const pdfWidth = pdf.internal.pageSize.getWidth();
+      //   const pdfHeight = pdf.internal.pageSize.getHeight();
 
-        const padding = 5;
-        const usableWidth = pdfWidth - padding * 2;
-        const usableHeight = pdfHeight - padding * 2;
+      //   const padding = 5;
+      //   const usableWidth = pdfWidth - padding * 2;
+      //   const usableHeight = pdfHeight - padding * 2;
 
-        const imgProps = pdf.getImageProperties(imgData);
-        const imgWidth = usableWidth;
-        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+      //   const imgProps = pdf.getImageProperties(imgData);
+      //   const imgWidth = usableWidth;
+      //   const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
-        let heightLeft = imgHeight;
-        let position = padding;
+      //   let heightLeft = imgHeight;
+      //   let position = padding;
 
-        pdf.addImage(imgData, "PNG", padding, padding, imgWidth, imgHeight);
-        heightLeft -= usableHeight;
+      //   pdf.addImage(imgData, "PNG", padding, padding, imgWidth, imgHeight);
+      //   heightLeft -= usableHeight;
 
-        while (heightLeft > 0) {
-          pdf.addPage();
-          position = padding - (imgHeight - heightLeft);
-          pdf.addImage(imgData, "PNG", padding, position, imgWidth, imgHeight);
-          heightLeft -= usableHeight;
-        }
+      //   while (heightLeft > 0) {
+      //     pdf.addPage();
+      //     position = padding - (imgHeight - heightLeft);
+      //     pdf.addImage(imgData, "PNG", padding, position, imgWidth, imgHeight);
+      //     heightLeft -= usableHeight;
+      //   }
 
-        pdf.save(`preview-${Date.now()}.pdf`);
-      }
+      //   pdf.save(`preview-${Date.now()}.pdf`);
+      // }
       //   const element = previewRef.current;
       //   if (!element) return;
 
@@ -308,6 +308,46 @@ export const AddFinalSubmission: React.FC<{
 
       //   pptx.writeFile({ fileName: `export-${Date.now()}.pptx` });
       // };
+
+      if (data.exportType === "PDF") {
+        setIsExporting(true);
+        const element = previewRef.current;
+        if (!element) throw new Error("Preview element not found");
+
+        // Force fixed width for consistent capture
+        const originalWidth = element.style.width;
+        element.style.width = "794px"; // ≈210mm at 96dpi
+
+        const totalHeight = element.scrollHeight;
+        const pageHeightPx = 1123; // ≈297mm at 96dpi
+
+        const totalPages = Math.ceil(totalHeight / pageHeightPx);
+
+        const pdf = new jsPDF("p", "mm", "a4");
+        for (let page = 0; page < totalPages; page++) {
+          element.scrollTop = page * pageHeightPx;
+
+          // Give browser time to render scrolled content
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise((res) => setTimeout(res, 300));
+
+          const canvas = await html2canvas(element, {
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            scale: 2,
+            height: pageHeightPx,
+            y: page * pageHeightPx,
+          });
+
+          const imgData = canvas.toDataURL("image/png");
+
+          if (page > 0) pdf.addPage();
+          pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
+        }
+
+        pdf.save(`preview-${Date.now()}.pdf`);
+        element.style.width = originalWidth; // restore original width
+      }
 
       if (data.exportType === "PPT") {
         setIsExporting(true);
@@ -756,7 +796,7 @@ export const AddFinalSubmission: React.FC<{
         }}
       >
         <div ref={previewRef}>
-          <Preview rooms={rooms} />
+          <ExportView rooms={rooms} kundeInfo={form.getValues()} />
         </div>
       </div>
 
