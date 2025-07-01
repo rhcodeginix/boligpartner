@@ -349,7 +349,7 @@ export const BalkongTerrasse = forwardRef(
                   <div className="col-span-3 text-darkBlack font-medium text-base">
                     Platting
                   </div>
-                  <div className="col-span-3">
+                  <div>
                     <FormField
                       control={form.control}
                       name={`ØnskerPlatting`}
@@ -399,7 +399,42 @@ export const BalkongTerrasse = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
+                  {form.watch("ØnskerPlatting") !== "Nei" && (
+                    <div className="col-span-2">
+                      <FormField
+                        control={form.control}
+                        name="BeskrivelsePlatting"
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <p
+                              className={`${
+                                fieldState.error ? "text-red" : "text-black"
+                              } mb-[6px] text-sm`}
+                            >
+                              Beskrivelse platting
+                            </p>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  placeholder="Beskriv lengde x bredde og overflatemateriale"
+                                  {...field}
+                                  className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                  type="text"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
                       name={`Fotskraperist`}
@@ -449,41 +484,6 @@ export const BalkongTerrasse = forwardRef(
                       )}
                     />
                   </div>
-                  {form.watch("Fotskraperist") !== "Nei" && (
-                    <div className="col-span-2">
-                      <FormField
-                        control={form.control}
-                        name="BeskrivelsePlatting"
-                        render={({ field, fieldState }) => (
-                          <FormItem>
-                            <p
-                              className={`${
-                                fieldState.error ? "text-red" : "text-black"
-                              } mb-[6px] text-sm`}
-                            >
-                              Beskrivelse platting
-                            </p>
-                            <FormControl>
-                              <div className="relative">
-                                <Input
-                                  placeholder="Beskriv lengde x bredde og overflatemateriale"
-                                  {...field}
-                                  className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                  type="text"
-                                />
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  )}
                   <div className="col-span-3">
                     <FormField
                       control={form.control}

@@ -14,7 +14,8 @@ interface DatePickerComponentProps {
 const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
   selectedDate,
   onDateChange,
-  dateFormat = "yyyy/MM/dd",
+  // dateFormat = "yyyy/MM/dd",
+  dateFormat = "dd.MM.yyyy",
   placeholderText = "Select a date",
   className,
 }) => {

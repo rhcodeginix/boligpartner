@@ -119,7 +119,7 @@ export const TekniskeInstallasjoner = forwardRef(
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p className={`mb-4 text-black font-medium`}>
-                            Fargeønske utvendig kombirist
+                            Velg ett alternativ
                           </p>
                           <FormControl>
                             <div className="flex flex-col gap-x-5 gap-y-2 flex-wrap">

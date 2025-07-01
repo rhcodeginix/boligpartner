@@ -17,10 +17,10 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 
 const formSchema = z.object({
-  DeliveryDetail: z.string({
-    required_error:
-      "Beskriv eventuelle leveransedetaljer på kledningstype og farge er påkrevd.",
-  }),
+  // DeliveryDetail: z.string({
+  //   required_error:
+  //     "Beskriv eventuelle leveransedetaljer på kledningstype og farge er påkrevd.",
+  // }),
   kledningstype: z.string().optional(),
   kledningstypeText: z.string().optional(),
   Overflater: z
@@ -159,7 +159,7 @@ export const Yttervegger = forwardRef(
               </div>
               <div className="p-4 md:p-5">
                 <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
-                  <div className="col-span-3">
+                  {/* <div className="col-span-3">
                     <FormField
                       control={form.control}
                       name="DeliveryDetail"
@@ -196,8 +196,8 @@ export const Yttervegger = forwardRef(
                         </FormItem>
                       )}
                     />
-                  </div>
-                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
+                  </div> */}
+                  {/* <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div> */}
                   <h4 className="uppercase text-darkBlack font-semibold col-span-3">
                     KLEDNINGSTYPE
                   </h4>

@@ -111,7 +111,7 @@ export const VentilasjonSentralstøvsuger = forwardRef(
           }
         );
       }
-    }, [roomsData, AntallKontakter]);
+    }, [roomsData]);
     return (
       <>
         <Form {...form}>
@@ -327,7 +327,7 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                       )}
                     />
                   </div>
-                  {form.watch("Sentralstøvsuger") === "Ikke relevant" && (
+                  {form.watch("Sentralstøvsuger") !== "Ikke relevant" && (
                     <>
                       <div>
                         <FormField
