@@ -27,17 +27,17 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
   }) => (
     <div
       style={{ position: "relative" }}
-      className={`${className}`}
+      className={`${className} flex h-11 items-center justify-between py-2.5 px-3.5 gap-2`}
       onClick={onClick}
     >
-      <img src={Ic_calendar} alt="Calendar icon" />
       <input
         type="text"
         value={value}
         placeholder={placeholderText}
         readOnly
-        className="text-sm font-medium focus-within:outline-none w-full"
+        className="text-base font-medium focus-within:outline-none w-full text-black"
       />
+      <img src={Ic_calendar} alt="Calendar icon" />
     </div>
   );
 

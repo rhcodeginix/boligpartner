@@ -24,6 +24,8 @@ const formSchema = z.object({
       colorCode: z.string().optional(),
     })
     .optional(),
+  ØnskerMegler: z.boolean().optional(),
+  ØnskerMeglerText: z.string().optional(),
   VelgGulvBalkong: z
     .object({
       type: z.string(),
@@ -106,7 +108,7 @@ export const BalkongTerrasse = forwardRef(
       "Ikke relevant",
       "Standard rekkverk balkong",
       "Annet rekkverk:",
-      "Ønsker megler:",
+      // "Ønsker megler:",
     ];
 
     const VelgGulvBalkongOptions = [
@@ -137,7 +139,7 @@ export const BalkongTerrasse = forwardRef(
               <div className="p-4 md:p-5">
                 <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
                   <div className="col-span-3 text-darkBlack font-medium text-base">
-                    Isolerte inspeksjonsluker:
+                    Rekkverk:
                   </div>
                   <div className="col-span-3">
                     <FormField
@@ -214,6 +216,58 @@ export const BalkongTerrasse = forwardRef(
                         );
                       }}
                     />
+                  </div>
+                  <div className="col-span-3 flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
+                    <FormField
+                      control={form.control}
+                      name="ØnskerMegler"
+                      render={({ field }) => (
+                        <FormItem>
+                          <p
+                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
+                              field.value ? "text-black" : "text-black"
+                            }`}
+                            onClick={() => field.onChange(!field.value)}
+                          >
+                            <input
+                              type="checkbox"
+                              id="ØnskerMegler"
+                              checked={field.value || false}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            />
+                            Ønsker megler:
+                          </p>
+                        </FormItem>
+                      )}
+                    />
+                    {form.watch("ØnskerMegler") && (
+                      <div className="col-span-2">
+                        <FormField
+                          control={form.control}
+                          name="ØnskerMeglerText"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Beskriv type og antall"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="text"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    )}
                   </div>
                   <div className="col-span-3 text-darkBlack font-medium text-base">
                     Velg gulv balkong
@@ -345,39 +399,6 @@ export const BalkongTerrasse = forwardRef(
                       )}
                     />
                   </div>
-                  <div className="col-span-2">
-                    <FormField
-                      control={form.control}
-                      name="BeskrivelsePlatting"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Beskrivelse platting
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Beskriv lengde x bredde og overflatemateriale"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
                   <div>
                     <FormField
                       control={form.control}
@@ -428,6 +449,41 @@ export const BalkongTerrasse = forwardRef(
                       )}
                     />
                   </div>
+                  {form.watch("Fotskraperist") !== "Nei" && (
+                    <div className="col-span-2">
+                      <FormField
+                        control={form.control}
+                        name="BeskrivelsePlatting"
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <p
+                              className={`${
+                                fieldState.error ? "text-red" : "text-black"
+                              } mb-[6px] text-sm`}
+                            >
+                              Beskrivelse platting
+                            </p>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  placeholder="Beskriv lengde x bredde og overflatemateriale"
+                                  {...field}
+                                  className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                  type="text"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
                   <div className="col-span-3">
                     <FormField
                       control={form.control}

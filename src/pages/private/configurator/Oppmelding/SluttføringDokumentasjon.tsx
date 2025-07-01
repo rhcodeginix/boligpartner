@@ -16,6 +16,7 @@ import { toast } from "react-hot-toast";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
+import DatePickerComponent from "../../../../components/ui/datepicker";
 
 const formSchema = z.object({
   Byggeplassinformasjon: z.boolean().optional(),
@@ -234,16 +235,23 @@ export const SluttføringDokumentasjon = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Skriv her"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>
@@ -267,16 +275,23 @@ export const SluttføringDokumentasjon = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Skriv her"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>
@@ -300,16 +315,23 @@ export const SluttføringDokumentasjon = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Skriv her"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>
@@ -333,16 +355,23 @@ export const SluttføringDokumentasjon = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Skriv her"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>
@@ -366,16 +395,23 @@ export const SluttføringDokumentasjon = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Skriv her"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>
@@ -399,16 +435,23 @@ export const SluttføringDokumentasjon = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Velg dato"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Velg dato"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>
@@ -504,16 +547,23 @@ export const SluttføringDokumentasjon = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Velg dato"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Velg dato"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>
@@ -612,7 +662,7 @@ export const SluttføringDokumentasjon = forwardRef(
                   onClick={() => {
                     form.reset();
                     handlePrevious();
-                    localStorage.setItem("currVerticalIndex", String(14));
+                    localStorage.setItem("currVerticalIndex", String(13));
                   }}
                 >
                   <Button

@@ -26,10 +26,11 @@ const formSchema = z.object({
       colorCode: z.string().optional(),
     })
     .optional(),
+  Takstein: z.boolean().optional(),
   TaksteinType: z.string().optional(),
   TaksteinKode: z.string().optional(),
   TaksteinFarge: z.string().optional(),
-  TaksteinStruktur: z.array(z.string()).optional(),
+  TaksteinStruktur: z.string().optional(),
   HeisesPåTak: z.boolean().optional(),
   SnøfangereMeter: z.string().optional(),
   SnøfangereFarge: z.string().optional(),
@@ -118,11 +119,11 @@ export const TakogTaktekking = forwardRef(
       "Shingel",
       "Stålplatetak",
       "Protan",
-      "Takstein",
     ];
 
     const TaksteinStruktur = ["Struktur", "Glatt 5.2"];
     const SnøfangerkrokerIGrad = ["Ja", "Nei"];
+    const Takstein = form.watch("Takstein");
 
     useEffect(() => {
       if (roomsData && roomsData?.TakogTaktekkingTakogTaktekking) {
@@ -308,204 +309,233 @@ export const TakogTaktekking = forwardRef(
                       }}
                     />
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="TaksteinType"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Takstein type
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv type takstein"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="TaksteinKode"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Takstein kode
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="TaksteinFarge"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Takstein farge
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name={`TaksteinStruktur`}
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`mb-2 ${
-                              fieldState.error ? "text-red" : "text-black"
-                            } text-sm`}
-                          >
-                            Vridere type
-                          </p>
-                          <FormControl>
-                            <div className="flex items-center flex-wrap gap-3 lg:gap-5">
-                              {TaksteinStruktur.map((option) => (
-                                <div
-                                  key={option}
-                                  className="relative flex items-center gap-2 cursor-pointer"
-                                  onClick={() => {
-                                    const currentValues = field.value || [];
-                                    const isChecked =
-                                      currentValues.includes(option);
-
-                                    const newValues = isChecked
-                                      ? currentValues.filter(
-                                          (val) => val !== option
-                                        )
-                                      : [...currentValues, option];
-
-                                    form.setValue(
-                                      "TaksteinStruktur",
-                                      newValues
-                                    );
-                                  }}
-                                >
-                                  <input
-                                    className={`bg-white rounded-[8px] border text-black
-        ${
-          fieldState?.error ? "border-red" : "border-gray1"
-        } h-4 w-4 accent-[#444CE7]`}
-                                    type="checkbox"
-                                    value={option}
-                                    checked={field.value?.includes(option)}
-                                    onChange={(e) => {
-                                      const checked = e.target.checked;
-                                      const currentValues = field.value || [];
-
-                                      if (checked) {
-                                        form.setValue("TaksteinStruktur", [
-                                          ...currentValues,
-                                          option,
-                                        ]);
-                                      } else {
-                                        form.setValue(
-                                          "TaksteinStruktur",
-                                          currentValues.filter(
-                                            (val) => val !== option
-                                          )
-                                        );
-                                      }
-                                    }}
-                                  />
-                                  <p className={`text-black text-sm`}>
-                                    {option}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="HeisesPåTak"
+                      name="Takstein"
                       render={({ field }) => (
                         <FormItem>
                           <p
                             className={`text-sm flex gap-2 items-baseline cursor-pointer ${
                               field.value ? "text-black" : "text-black"
                             }`}
-                            onClick={() => field.onChange(!field.value)}
+                            onClick={() => {
+                              const checked = field.value;
+
+                              field.onChange(!field.value);
+                              if (!checked) {
+                                form.resetField("TaksteinFarge");
+                                form.resetField("TaksteinKode");
+                                form.resetField("TaksteinType");
+                                form.resetField("TaksteinStruktur");
+                                form.resetField("HeisesPåTak");
+                              }
+                            }}
                           >
                             <input
                               type="checkbox"
-                              id="HeisesPåTak"
+                              id="Takstein"
                               checked={field.value || false}
-                              onChange={(e) => field.onChange(e.target.checked)}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+                                field.onChange(e.target.checked);
+                                if (!checked) {
+                                  form.resetField("TaksteinFarge");
+                                  form.resetField("TaksteinKode");
+                                  form.resetField("TaksteinType");
+                                  form.resetField("TaksteinStruktur");
+                                  form.resetField("HeisesPåTak");
+                                }
+                              }}
                             />
-                            Heises på tak
+                            Takstein
                           </p>
                         </FormItem>
                       )}
                     />
                   </div>
+                  {Takstein === true && (
+                    <>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="TaksteinType"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm`}
+                              >
+                                Takstein type
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Skriv type takstein"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="text"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="TaksteinKode"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm`}
+                              >
+                                Takstein kode
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Skriv her"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="text"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="TaksteinFarge"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm`}
+                              >
+                                Takstein farge
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Skriv her"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                    type="text"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name={`TaksteinStruktur`}
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`mb-2 ${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } text-sm`}
+                              >
+                                Takstein struktur
+                              </p>
+                              <FormControl>
+                                <div className="flex items-center flex-wrap gap-3 lg:gap-5">
+                                  {TaksteinStruktur.map((option) => (
+                                    <div
+                                      key={option}
+                                      className="relative flex items-center gap-2 cursor-pointer"
+                                      onClick={() => {
+                                        form.setValue(
+                                          "TaksteinStruktur",
+                                          option
+                                        );
+                                      }}
+                                    >
+                                      <input
+                                        className={`bg-white rounded-[8px] border text-black
+        ${
+          fieldState?.error ? "border-red" : "border-gray1"
+        } h-4 w-4 accent-[#444CE7]`}
+                                        type="radio"
+                                        value={option}
+                                        checked={field.value === option}
+                                        onChange={(e) => {
+                                          form.setValue(
+                                            `TaksteinStruktur`,
+                                            e.target.value
+                                          );
+                                        }}
+                                      />
+                                      <p className={`text-black text-sm`}>
+                                        {option}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="HeisesPåTak"
+                          render={({ field }) => (
+                            <FormItem>
+                              <p
+                                className={`text-sm flex gap-2 items-baseline cursor-pointer ${
+                                  field.value ? "text-black" : "text-black"
+                                }`}
+                                onClick={() => field.onChange(!field.value)}
+                              >
+                                <input
+                                  type="checkbox"
+                                  id="HeisesPåTak"
+                                  checked={field.value || false}
+                                  onChange={(e) =>
+                                    field.onChange(e.target.checked)
+                                  }
+                                />
+                                Heises på tak
+                              </p>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </>
+                  )}
                   <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
                   <h4 className="uppercase text-darkBlack font-semibold col-span-3">
                     TAK ANNET

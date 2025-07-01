@@ -352,3 +352,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .maplibregl-ctrl-bottom-left .maplibregl-ctrl {
   display: none !important;
 }
+
+.react-datepicker-wrapper {
+  width: 100%;
+}

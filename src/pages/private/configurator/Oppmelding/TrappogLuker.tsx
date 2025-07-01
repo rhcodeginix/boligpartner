@@ -31,8 +31,8 @@ const formSchema = z.object({
   Håndlist: z.string().optional(),
   Spiler: z.string().optional(),
   BodløsningTrapperom: z.string().optional(),
-  Montering: z.array(z.string()).optional(),
-  Måltaking: z.array(z.string()).optional(),
+  Montering: z.string().optional(),
+  Måltaking: z.string().optional(),
   KommentarTrapp: z.string().optional(),
   IsolerteInspeksjonsluker: z.string().optional(),
   Himling: z.boolean().optional(),
@@ -468,17 +468,7 @@ export const TrappogLuker = forwardRef(
                                   key={option}
                                   className="relative flex items-center gap-2 cursor-pointer"
                                   onClick={() => {
-                                    const currentValues = field.value || [];
-                                    const isChecked =
-                                      currentValues.includes(option);
-
-                                    const newValues = isChecked
-                                      ? currentValues.filter(
-                                          (val) => val !== option
-                                        )
-                                      : [...currentValues, option];
-
-                                    form.setValue("Montering", newValues);
+                                    form.setValue("Montering", option);
                                   }}
                                 >
                                   <input
@@ -486,26 +476,14 @@ export const TrappogLuker = forwardRef(
         ${
           fieldState?.error ? "border-red" : "border-gray1"
         } h-4 w-4 accent-[#444CE7]`}
-                                    type="checkbox"
+                                    type="radio"
                                     value={option}
-                                    checked={field.value?.includes(option)}
+                                    checked={field.value === option}
                                     onChange={(e) => {
-                                      const checked = e.target.checked;
-                                      const currentValues = field.value || [];
-
-                                      if (checked) {
-                                        form.setValue("Montering", [
-                                          ...currentValues,
-                                          option,
-                                        ]);
-                                      } else {
-                                        form.setValue(
-                                          "Montering",
-                                          currentValues.filter(
-                                            (val) => val !== option
-                                          )
-                                        );
-                                      }
+                                      form.setValue(
+                                        `Montering`,
+                                        e.target.value
+                                      );
                                     }}
                                   />
                                   <p className={`text-black text-sm`}>
@@ -540,17 +518,7 @@ export const TrappogLuker = forwardRef(
                                   key={option}
                                   className="relative flex items-center gap-2 cursor-pointer"
                                   onClick={() => {
-                                    const currentValues = field.value || [];
-                                    const isChecked =
-                                      currentValues.includes(option);
-
-                                    const newValues = isChecked
-                                      ? currentValues.filter(
-                                          (val) => val !== option
-                                        )
-                                      : [...currentValues, option];
-
-                                    form.setValue("Måltaking", newValues);
+                                    form.setValue("Måltaking", option);
                                   }}
                                 >
                                   <input
@@ -558,26 +526,14 @@ export const TrappogLuker = forwardRef(
         ${
           fieldState?.error ? "border-red" : "border-gray1"
         } h-4 w-4 accent-[#444CE7]`}
-                                    type="checkbox"
+                                    type="radio"
                                     value={option}
-                                    checked={field.value?.includes(option)}
+                                    checked={field.value === option}
                                     onChange={(e) => {
-                                      const checked = e.target.checked;
-                                      const currentValues = field.value || [];
-
-                                      if (checked) {
-                                        form.setValue("Måltaking", [
-                                          ...currentValues,
-                                          option,
-                                        ]);
-                                      } else {
-                                        form.setValue(
-                                          "Måltaking",
-                                          currentValues.filter(
-                                            (val) => val !== option
-                                          )
-                                        );
-                                      }
+                                      form.setValue(
+                                        `Måltaking`,
+                                        e.target.value
+                                      );
                                     }}
                                   />
                                   <p className={`text-black text-sm`}>

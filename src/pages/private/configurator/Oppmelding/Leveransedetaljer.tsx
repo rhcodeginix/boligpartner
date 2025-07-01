@@ -24,6 +24,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useLocation } from "react-router-dom";
 import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
+import DatePickerComponent from "../../../../components/ui/datepicker";
 
 const formSchema = z.object({
   LassLeveresByggeplass: z.string({
@@ -381,16 +382,23 @@ export const Leveransedetaljer = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Vedlegg til kontrakt datert"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Skriv inn Vedlegg til kontrakt datert"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>

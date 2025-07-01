@@ -15,9 +15,11 @@ import { toast } from "react-hot-toast";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
+import { Input } from "../../../../components/ui/input";
 
 const formSchema = z.object({
   Brannvern: z.string().optional(),
+  BrannvernKommentar: z.string().optional(),
 });
 
 export const Brannvern = forwardRef(
@@ -78,7 +80,7 @@ export const Brannvern = forwardRef(
           position: "top-right",
         });
         handleNext();
-        localStorage.setItem("currVerticalIndex", String(14));
+        localStorage.setItem("currVerticalIndex", String(13));
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {
@@ -116,9 +118,6 @@ export const Brannvern = forwardRef(
                       name={`Brannvern`}
                       render={({ field, fieldState }) => (
                         <FormItem>
-                          <p className={`mb-4 text-black font-medium`}>
-                            Fargeønske utvendig kombirist
-                          </p>
                           <FormControl>
                             <div className="flex flex-col gap-x-5 gap-y-2 flex-wrap">
                               {Brannvern.map((option) => (
@@ -156,6 +155,39 @@ export const Brannvern = forwardRef(
                       )}
                     />
                   </div>
+                  <div className="col-span-3">
+                    <FormField
+                      control={form.control}
+                      name="BrannvernKommentar"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Kommentar til brannvern
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv her"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="flex justify-end w-full gap-5 items-center sticky bottom-0 bg-white z-50 border-t border-[#B9C0D4] rounded-b-lg p-4">
@@ -163,7 +195,7 @@ export const Brannvern = forwardRef(
                   onClick={() => {
                     form.reset();
                     handlePrevious();
-                    localStorage.setItem("currVerticalIndex", String(12));
+                    localStorage.setItem("currVerticalIndex", String(11));
                   }}
                 >
                   <Button

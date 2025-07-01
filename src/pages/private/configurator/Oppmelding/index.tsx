@@ -12,12 +12,12 @@ import { Vinduer } from "./Vinduer";
 // import { KjøkkenGarderobeBad } from "./KjøkkenGarderobeBad";
 import { TrappogLuker } from "./TrappogLuker";
 import { BalkongTerrasse } from "./BalkongTerrasse";
-import { ListverkogBelistning } from "./ListverkogBelistning";
+// import { ListverkogBelistning } from "./ListverkogBelistning";
 import { VentilasjonSentralstøvsuger } from "./VentilasjonSentralstøvsuger";
 import { Brannvern } from "./Brannvern";
 import { TekniskeInstallasjoner } from "./TekniskeInstallasjoner";
-import { SluttføringDokumentasjon } from "./SluttføringDokumentasjon";
-import { TakrennerBeslag } from "./TakrennerBeslag";
+// import { SluttføringDokumentasjon } from "./SluttføringDokumentasjon";
+// import { TakrennerBeslag } from "./TakrennerBeslag";
 import { useLocation } from "react-router-dom";
 import { fetchRoomData } from "../../../../lib/utils";
 import { Spinner } from "../../../../components/Spinner";
@@ -97,7 +97,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
   const wizardSteps = [
     {
       id: 1,
-      title: "Prosjektdetaljer",
+      title: "Prosjekt- og leveransedetaljer",
       content: (
         <Prosjektdetaljer
           // ref={(ref) => (formRefs.current[1] = ref)}
@@ -106,7 +106,6 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           handleNext={handleNext}
           Prev={Prev}
-          roomsData={roomsData}
           setRoomsData={setRoomsData}
         />
       ),
@@ -188,7 +187,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
     {
       id: 6,
-      title: "Innervegger",
+      // title: "Innervegger",
+      title: "Romskjema",
       content: (
         <Innervegger
           handleNext={handleNext}
@@ -211,8 +211,8 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           ref={(ref: any): void => {
             formRefs.current[7] = ref;
           }}
-          roomsData={roomsData}
           setRoomsData={setRoomsData}
+          roomsData={roomsData}
         />
       ),
     },
@@ -276,11 +276,26 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
         />
       ),
     },
+    // {
+    //   id: 11,
+    //   title: "Listverk og Belistning",
+    //   content: (
+    //     <ListverkogBelistning
+    //       handleNext={handleNext}
+    //       handlePrevious={handlePrevious}
+    //       ref={(ref: any): void => {
+    //         formRefs.current[11] = ref;
+    //       }}
+    //       roomsData={roomsData}
+    //       setRoomsData={setRoomsData}
+    //     />
+    //   ),
+    // },
     {
       id: 11,
-      title: "Listverk og Belistning",
+      title: "Ventilasjon og Sentralstøvsuger",
       content: (
-        <ListverkogBelistning
+        <VentilasjonSentralstøvsuger
           handleNext={handleNext}
           handlePrevious={handlePrevious}
           ref={(ref: any): void => {
@@ -293,9 +308,9 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
     {
       id: 12,
-      title: "Ventilasjon og Sentralstøvsuger",
+      title: "Brannvern",
       content: (
-        <VentilasjonSentralstøvsuger
+        <Brannvern
           handleNext={handleNext}
           handlePrevious={handlePrevious}
           ref={(ref: any): void => {
@@ -308,10 +323,10 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
     {
       id: 13,
-      title: "Brannvern",
+      title: "Tekniske Installasjoner",
       content: (
-        <Brannvern
-          handleNext={handleNext}
+        <TekniskeInstallasjoner
+          handleNext={Next}
           handlePrevious={handlePrevious}
           ref={(ref: any): void => {
             formRefs.current[13] = ref;
@@ -321,36 +336,21 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
         />
       ),
     },
-    {
-      id: 14,
-      title: "Tekniske Installasjoner",
-      content: (
-        <TekniskeInstallasjoner
-          handleNext={handleNext}
-          handlePrevious={handlePrevious}
-          ref={(ref: any): void => {
-            formRefs.current[14] = ref;
-          }}
-          roomsData={roomsData}
-          setRoomsData={setRoomsData}
-        />
-      ),
-    },
-    {
-      id: 15,
-      title: "Sluttføring og Dokumentasjon",
-      content: (
-        <SluttføringDokumentasjon
-          handlePrevious={handlePrevious}
-          Next={Next}
-          ref={(ref: any): void => {
-            formRefs.current[15] = ref;
-          }}
-          roomsData={roomsData}
-          setRoomsData={setRoomsData}
-        />
-      ),
-    },
+    // {
+    //   id: 14,
+    //   title: "Sluttføring og Dokumentasjon",
+    //   content: (
+    //     <SluttføringDokumentasjon
+    //       handlePrevious={handlePrevious}
+    //       Next={Next}
+    //       ref={(ref: any): void => {
+    //         formRefs.current[14] = ref;
+    //       }}
+    //       roomsData={roomsData}
+    //       setRoomsData={setRoomsData}
+    //     />
+    //   ),
+    // },
     // {
     //   id: 17,
     //   title: "Takrenner/beslag",

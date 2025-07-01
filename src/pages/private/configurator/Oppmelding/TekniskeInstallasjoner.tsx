@@ -81,7 +81,7 @@ export const TekniskeInstallasjoner = forwardRef(
           position: "top-right",
         });
         handleNext();
-        localStorage.setItem("currVerticalIndex", String(15));
+        // localStorage.setItem("currVerticalIndex", String(14));
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {
@@ -90,7 +90,7 @@ export const TekniskeInstallasjoner = forwardRef(
       }
     };
 
-    const TekniskeInstallasjoner = ["Ikke relevant", "Leveres", "Utgår"];
+    const TekniskeInstallasjoner = ["Ikke relevant", "Leveres"];
     useEffect(() => {
       if (roomsData && roomsData?.TekniskeInstallasjoner) {
         Object.entries(roomsData?.TekniskeInstallasjoner).forEach(
@@ -177,7 +177,7 @@ export const TekniskeInstallasjoner = forwardRef(
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Skriv her"
+                                placeholder="Beskriv hva som skal leveres"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
@@ -201,7 +201,7 @@ export const TekniskeInstallasjoner = forwardRef(
                   onClick={() => {
                     form.reset();
                     handlePrevious();
-                    localStorage.setItem("currVerticalIndex", String(13));
+                    localStorage.setItem("currVerticalIndex", String(12));
                   }}
                 >
                   <Button

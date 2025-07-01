@@ -22,7 +22,7 @@ const formSchema = z.object({
   FargeønskeUtvendigKombirist: z.string().optional(),
   FargeønskeInnvendigVentiler: z.string().optional(),
   KommentarVentilasjon: z.string().optional(),
-  Sentralstøvsuger: z.array(z.string()).optional(),
+  Sentralstøvsuger: z.string().optional(),
 
   AntallKontakter: z.string().optional(),
   Sugebrett: z.string().optional(),
@@ -88,7 +88,7 @@ export const VentilasjonSentralstøvsuger = forwardRef(
           position: "top-right",
         });
         handleNext();
-        localStorage.setItem("currVerticalIndex", String(13));
+        localStorage.setItem("currVerticalIndex", String(12));
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {
@@ -297,20 +297,7 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                                   key={option}
                                   className="relative flex items-center gap-2 cursor-pointer"
                                   onClick={() => {
-                                    const currentValues = field.value || [];
-                                    const isChecked =
-                                      currentValues.includes(option);
-
-                                    const newValues = isChecked
-                                      ? currentValues.filter(
-                                          (val) => val !== option
-                                        )
-                                      : [...currentValues, option];
-
-                                    form.setValue(
-                                      "Sentralstøvsuger",
-                                      newValues
-                                    );
+                                    form.setValue("Sentralstøvsuger", option);
                                   }}
                                 >
                                   <input
@@ -318,140 +305,135 @@ export const VentilasjonSentralstøvsuger = forwardRef(
         ${
           fieldState?.error ? "border-red" : "border-gray1"
         } h-4 w-4 accent-[#444CE7]`}
-                                    type="checkbox"
+                                    type="radio"
                                     value={option}
-                                    checked={field.value?.includes(option)}
+                                    checked={field.value === option}
                                     onChange={(e) => {
-                                      const checked = e.target.checked;
-                                      const currentValues = field.value || [];
-
-                                      if (checked) {
-                                        form.setValue("Sentralstøvsuger", [
-                                          ...currentValues,
-                                          option,
-                                        ]);
-                                      } else {
+                                      form.setValue(
+                                        "Sentralstøvsuger",
+                                        e.target.value
+                                      );
+                                    }}
+                                  />
+                                  <p className={`text-black text-sm`}>
+                                    {option}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  {form.watch("Sentralstøvsuger") === "Ikke relevant" && (
+                    <>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name={`AntallKontakter`}
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`mb-2 ${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } text-sm`}
+                              >
+                                Antall sugekontakter
+                              </p>
+                              <FormControl>
+                                <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                                  {AntallKontakter.map((option) => (
+                                    <div
+                                      key={option}
+                                      className="relative flex items-center gap-2 cursor-pointer"
+                                      onClick={() => {
                                         form.setValue(
-                                          "Sentralstøvsuger",
-                                          currentValues.filter(
-                                            (val) => val !== option
-                                          )
+                                          "AntallKontakter",
+                                          option
                                         );
-                                      }
-                                    }}
-                                  />
-                                  <p className={`text-black text-sm`}>
-                                    {option}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name={`AntallKontakter`}
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`mb-2 ${
-                              fieldState.error ? "text-red" : "text-black"
-                            } text-sm`}
-                          >
-                            Antall sugekontakter
-                          </p>
-                          <FormControl>
-                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
-                              {AntallKontakter.map((option) => (
-                                <div
-                                  key={option}
-                                  className="relative flex items-center gap-2 cursor-pointer"
-                                  onClick={() => {
-                                    form.setValue("AntallKontakter", option);
-                                  }}
-                                >
-                                  <input
-                                    className={`bg-white rounded-[8px] border text-black
+                                      }}
+                                    >
+                                      <input
+                                        className={`bg-white rounded-[8px] border text-black
         ${
           fieldState?.error ? "border-red" : "border-gray1"
         } h-4 w-4 accent-[#444CE7]`}
-                                    type="radio"
-                                    value={option}
-                                    onChange={(e) => {
-                                      form.setValue(
-                                        `AntallKontakter`,
-                                        e.target.value
-                                      );
-                                    }}
-                                    checked={field.value === option}
-                                  />
-                                  <p className={`text-black text-sm`}>
-                                    {option}
-                                  </p>
+                                        type="radio"
+                                        value={option}
+                                        onChange={(e) => {
+                                          form.setValue(
+                                            `AntallKontakter`,
+                                            e.target.value
+                                          );
+                                        }}
+                                        checked={field.value === option}
+                                      />
+                                      <p className={`text-black text-sm`}>
+                                        {option}
+                                      </p>
+                                    </div>
+                                  ))}
                                 </div>
-                              ))}
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="Sugebrett"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Sugebrett
-                          </p>
-                          <FormControl>
-                            <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
-                              {Sugebrett.map((option) => (
-                                <div
-                                  key={option}
-                                  className="relative flex items-center gap-2 cursor-pointer"
-                                  onClick={() => {
-                                    form.setValue("Sugebrett", option);
-                                  }}
-                                >
-                                  <input
-                                    className={`bg-white rounded-[8px] border text-black
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="Sugebrett"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm`}
+                              >
+                                Sugebrett
+                              </p>
+                              <FormControl>
+                                <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
+                                  {Sugebrett.map((option) => (
+                                    <div
+                                      key={option}
+                                      className="relative flex items-center gap-2 cursor-pointer"
+                                      onClick={() => {
+                                        form.setValue("Sugebrett", option);
+                                      }}
+                                    >
+                                      <input
+                                        className={`bg-white rounded-[8px] border text-black
         ${
           fieldState?.error ? "border-red" : "border-gray1"
         } h-4 w-4 accent-[#444CE7]`}
-                                    type="radio"
-                                    value={option}
-                                    onChange={(e) => {
-                                      form.setValue(
-                                        `Sugebrett`,
-                                        e.target.value
-                                      );
-                                    }}
-                                    checked={field.value === option}
-                                  />
-                                  <p className={`text-black text-sm`}>
-                                    {option}
-                                  </p>
+                                        type="radio"
+                                        value={option}
+                                        onChange={(e) => {
+                                          form.setValue(
+                                            `Sugebrett`,
+                                            e.target.value
+                                          );
+                                        }}
+                                        checked={field.value === option}
+                                      />
+                                      <p className={`text-black text-sm`}>
+                                        {option}
+                                      </p>
+                                    </div>
+                                  ))}
                                 </div>
-                              ))}
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </>
+                  )}
                   <div className="col-span-3">
                     <FormField
                       control={form.control}
@@ -492,7 +474,7 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                   onClick={() => {
                     form.reset();
                     handlePrevious();
-                    localStorage.setItem("currVerticalIndex", String(11));
+                    localStorage.setItem("currVerticalIndex", String(10));
                   }}
                 >
                   <Button

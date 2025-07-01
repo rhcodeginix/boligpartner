@@ -30,10 +30,10 @@ const formSchema = z.object({
     })
     .optional(),
   OverflaterDeliveryDetail: z.string().optional(),
-  OverflaterKontrastfeltDeliveryDetail: z.string({
-    required_error:
-      "Beskriv eventuelle leveransedetaljer på kledningstype og farge er påkrevd.",
-  }),
+  // OverflaterKontrastfeltDeliveryDetail: z.string({
+  //   required_error:
+  //     "Beskriv eventuelle leveransedetaljer på kledningstype og farge er påkrevd.",
+  // }),
   Garasje: z.string().optional(),
 });
 
@@ -379,7 +379,7 @@ export const Yttervegger = forwardRef(
                       )}
                     />
                   </div>
-                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
+                  {/* <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
                   <h4 className="uppercase text-darkBlack font-semibold col-span-3">
                     OVERFLATER KONTRASTFELT DEKOR OG STAFASJE
                   </h4>
@@ -417,7 +417,7 @@ export const Yttervegger = forwardRef(
                         </FormItem>
                       )}
                     />
-                  </div>
+                  </div> */}
                   <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
                   <h4 className="uppercase text-darkBlack font-semibold col-span-3">
                     GARASJE

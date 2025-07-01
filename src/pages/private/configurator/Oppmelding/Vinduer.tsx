@@ -16,6 +16,7 @@ import { toast } from "react-hot-toast";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
+import DatePickerComponent from "../../../../components/ui/datepicker";
 
 const formSchema = z.object({
   Vinduer: z
@@ -116,7 +117,7 @@ export const Vinduer = forwardRef(
       "Standard farge ihht. leveransebeskrivelse",
       "Annen farge:",
     ];
-    const UtforingFarge = ["Hvit", "Som dørfarge"];
+    const UtforingFarge = ["Hvit", "Som vindusfarge"];
 
     useEffect(() => {
       if (roomsData && roomsData?.Vinduer) {
@@ -322,16 +323,23 @@ export const Vinduer = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Velg dato"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Velg dato"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>
@@ -351,7 +359,7 @@ export const Vinduer = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Kommentar til Vindu
+                            Kommentar til vindu
                           </p>
                           <FormControl>
                             <div className="relative">

@@ -11,7 +11,7 @@ import Button from "../../../../components/common/button";
 import { Input } from "../../../../components/ui/input";
 import { z } from "zod";
 import { parsePhoneNumber } from "react-phone-number-input";
-import { phoneNumberValidations } from "../../../../lib/utils";
+import { fetchRoomData, phoneNumberValidations } from "../../../../lib/utils";
 import { InputMobile } from "../../../../components/ui/inputMobile";
 import { House, Store, Warehouse } from "lucide-react";
 import {
@@ -37,6 +37,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../components/ui/select";
+import { Spinner } from "../../../../components/Spinner";
+import DatePickerComponent from "../../../../components/ui/datepicker";
 
 const formSchema = z.object({
   Kundenr: z.number({ required_error: "Kundenr er påkrevd." }),
@@ -63,6 +65,11 @@ const formSchema = z.object({
         "Vennligst skriv inn et gyldig telefonnummer for det valgte landet.",
     }
   ),
+  // BestillingsoversiktDatert: z.string().optional(),
+  BestillingsoversiktDatert: z.string({
+    required_error: "Bestillingsoversikt datert er påkrevd.",
+  }),
+
   TypeProsjekt: z.string({ required_error: "Type prosjekt er påkrevd." }),
   Finansiering: z.string({ required_error: "Finansiering er påkrevd." }),
   VelgSerie: z.string({ required_error: "Velg serie er påkrevd." }),
@@ -106,12 +113,10 @@ export const Prosjektdetaljer = forwardRef(
     {
       handleNext,
       Prev,
-      roomsData,
       setRoomsData,
     }: {
       handleNext: () => void;
       Prev: () => void;
-      roomsData: any;
       setRoomsData: any;
     },
     ref: any
@@ -171,12 +176,6 @@ export const Prosjektdetaljer = forwardRef(
     };
     const Finansiering = useMemo(() => ["Ja", "Nei"], []);
     const TypeKalkyle = useMemo(() => ["Tilbud", "Prisoverslag"], []);
-    const ØnsketLeveranseukeForFørsteKtkjøring = useMemo(
-      () => ["Abc", "Xyz"],
-      []
-    );
-    const TakstolerLeveresUke = useMemo(() => ["Abc", "Xyz"], []);
-    const VinduerLeveresUke = useMemo(() => ["Abc", "Xyz"], []);
 
     const [address, setAddress] = useState("");
     const [addressData, setAddressData] = useState<any>(null);
@@ -203,25 +202,39 @@ export const Prosjektdetaljer = forwardRef(
         }
       }
     };
+    const weekArray = useMemo(
+      () => Array.from({ length: 53 }, (_, i) => (i + 1).toString()),
+      []
+    );
+
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-      if (roomsData) {
-        if (roomsData && roomsData?.Prosjektdetaljer) {
-          Object.entries(roomsData?.Prosjektdetaljer).forEach(
-            ([key, value]) => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+      const getData = async () => {
+        const data = await fetchRoomData(id);
+        if (data) {
+          if (data && data?.Prosjektdetaljer) {
+            Object.entries(data?.Prosjektdetaljer).forEach(([key, value]) => {
               if (value !== undefined && value !== null) {
                 form.setValue(key as any, value);
               }
               if (key === "Byggeadresse") {
                 setAddress(String(value));
               }
-            }
-          );
-        } else {
-          form.setValue("Kundenr", Number(roomsData?.Kundenummer));
+            });
+          } else {
+            form.setValue("Kundenr", Number(data?.Kundenummer));
+          }
         }
-      }
-    }, [roomsData, form]);
+        setLoading(false);
+      };
+
+      getData();
+    }, [form, id]);
 
     return (
       <>
@@ -577,6 +590,46 @@ export const Prosjektdetaljer = forwardRef(
                       )}
                     />
                   </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="BestillingsoversiktDatert"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Bestillingsoversikt datert*
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Velg dato"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   <div className="col-span-3 flex gap-4 md:gap-5">
                     <div className="w-1/2">
                       <FormField
@@ -771,16 +824,23 @@ export const Prosjektdetaljer = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Dato BoligPartner leveransebeskrivelse"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Skriv inn Dato BoligPartner leveransebeskrivelse"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>
@@ -844,16 +904,23 @@ export const Prosjektdetaljer = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Signert 1:100 tegning datert"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Skriv inn Signert 1:100 tegning datert"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>
@@ -877,16 +944,23 @@ export const Prosjektdetaljer = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Gjeldende 1:50 tegning datert"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Skriv inn Gjeldende 1:50 tegning datert"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>
@@ -910,16 +984,23 @@ export const Prosjektdetaljer = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Situasjonsplan dat"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Skriv inn Situasjonsplan dat"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>
@@ -943,16 +1024,23 @@ export const Prosjektdetaljer = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Referanse / kalkyledato"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Skriv inn Referanse / kalkyledato"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>
@@ -1049,18 +1137,13 @@ export const Prosjektdetaljer = forwardRef(
                                   </SelectTrigger>
                                   <SelectContent className="bg-white">
                                     <SelectGroup>
-                                      {ØnsketLeveranseukeForFørsteKtkjøring?.map(
-                                        (item, index) => {
-                                          return (
-                                            <SelectItem
-                                              key={index}
-                                              value={item}
-                                            >
-                                              {item}
-                                            </SelectItem>
-                                          );
-                                        }
-                                      )}
+                                      {weekArray?.map((item, index) => {
+                                        return (
+                                          <SelectItem key={index} value={item}>
+                                            {item}
+                                          </SelectItem>
+                                        );
+                                      })}
                                     </SelectGroup>
                                   </SelectContent>
                                 </Select>
@@ -1104,18 +1187,13 @@ export const Prosjektdetaljer = forwardRef(
                                   </SelectTrigger>
                                   <SelectContent className="bg-white">
                                     <SelectGroup>
-                                      {TakstolerLeveresUke?.map(
-                                        (item, index) => {
-                                          return (
-                                            <SelectItem
-                                              key={index}
-                                              value={item}
-                                            >
-                                              {item}
-                                            </SelectItem>
-                                          );
-                                        }
-                                      )}
+                                      {weekArray?.map((item, index) => {
+                                        return (
+                                          <SelectItem key={index} value={item}>
+                                            {item}
+                                          </SelectItem>
+                                        );
+                                      })}
                                     </SelectGroup>
                                   </SelectContent>
                                 </Select>
@@ -1161,7 +1239,7 @@ export const Prosjektdetaljer = forwardRef(
                                   </SelectTrigger>
                                   <SelectContent className="bg-white">
                                     <SelectGroup>
-                                      {VinduerLeveresUke?.map((item, index) => {
+                                      {weekArray?.map((item, index) => {
                                         return (
                                           <SelectItem key={index} value={item}>
                                             {item}
@@ -1193,16 +1271,23 @@ export const Prosjektdetaljer = forwardRef(
                             </p>
                             <FormControl>
                               <div className="relative">
-                                <Input
-                                  placeholder="Skriv inn Vedlegg til kontrakt datert"
-                                  {...field}
-                                  className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                  type="date"
+                                <DatePickerComponent
+                                  selectedDate={
+                                    field.value ? new Date(field.value) : null
+                                  }
+                                  onDateChange={(date) => {
+                                    const formattedDate = date
+                                      ? date.toISOString().split("T")[0]
+                                      : "";
+
+                                    field.onChange(formattedDate);
+                                  }}
+                                  placeholderText="Skriv inn Vedlegg til kontrakt datert"
+                                  className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                    fieldState?.error
+                                      ? "border-red"
+                                      : "border-gray1"
+                                  }`}
                                 />
                               </div>
                             </FormControl>
@@ -1273,6 +1358,8 @@ export const Prosjektdetaljer = forwardRef(
             </div>
           </form>
         </Form>
+
+        {loading && <Spinner />}
       </>
     );
   }

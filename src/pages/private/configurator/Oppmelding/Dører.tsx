@@ -9,14 +9,6 @@ import {
 } from "../../../../components/ui/form";
 import Button from "../../../../components/common/button";
 import { z } from "zod";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../../components/ui/select";
 import { Input } from "../../../../components/ui/input";
 import { forwardRef, useEffect, useImperativeHandle, useMemo } from "react";
 import { useLocation } from "react-router-dom";
@@ -24,6 +16,7 @@ import { toast } from "react-hot-toast";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
+import DatePickerComponent from "../../../../components/ui/datepicker";
 
 const formSchema = z.object({
   Inngangsdør: z
@@ -78,8 +71,10 @@ const formSchema = z.object({
     SlagretningTofløyetDør: z.string().optional(),
     Dempelister: z.string().optional(),
     Terskeltype: z.array(z.string()).optional(),
+    TerskeltypeText: z.string().optional(),
     Hengsler: z.string().optional(),
     SporBelegg: z.string().optional(),
+    SporBeleggText: z.string().optional(),
   }),
   Dørvridere: z
     .object({
@@ -109,7 +104,7 @@ const formSchema = z.object({
     BreddeXhøyde: z.string().optional(),
     Portåpner: z.boolean().optional(),
     MicroSenderAntall: z.string().optional(),
-    AlternativRAL: z.string().optional(),
+    FargekodePåGarasjeport: z.string().optional(),
   }),
 });
 
@@ -118,13 +113,13 @@ export const Dører = forwardRef(
     {
       handleNext,
       handlePrevious,
-      roomsData,
       setRoomsData,
+      roomsData,
     }: {
       handleNext: () => void;
       handlePrevious: () => void;
-      roomsData: any;
       setRoomsData: any;
+      roomsData: any;
     },
     ref
   ) => {
@@ -189,7 +184,7 @@ export const Dører = forwardRef(
       ],
       []
     );
-    const UtforingFarge = useMemo(() => ["Hvit", "Som dørfarge"], []);
+    const UtforingFarge = useMemo(() => ["Hvit", "Som vindusfarge"], []);
     const SlagretningTofløyetDør = useMemo(() => ["Høyre", "Venstre"], []);
     const BoddørOptions = useMemo(
       () => [
@@ -232,11 +227,14 @@ export const Dører = forwardRef(
       []
     );
     const LikelåsMedHoveddør = useMemo(() => ["Ja", "Nei"], []);
+    const UtvendigInnvendigSylinder = useMemo(
+      () => ["Innvendig", "Utvendig"],
+      []
+    );
     const Terskeltype = useMemo(
       () => ["Standard", "Påforingsterskel", "våtrom"],
       []
     );
-    const array = useMemo(() => ["Abc", "Xyz"], []);
 
     useEffect(() => {
       if (roomsData && roomsData?.Dører) {
@@ -247,6 +245,10 @@ export const Dører = forwardRef(
         });
       }
     }, [roomsData, form]);
+
+    const TerskeltypeData = form.watch("InnvendigeDører.Terskeltype");
+    const SporBelegg = form.watch("InnvendigeDører.SporBelegg");
+
     return (
       <>
         <Form {...form}>
@@ -1061,7 +1063,7 @@ export const Dører = forwardRef(
                           </p>
                           <FormControl>
                             <div className="flex items-center gap-x-5 gap-y-2 flex-wrap">
-                              {LikelåsMedHoveddør.map((option) => (
+                              {UtvendigInnvendigSylinder.map((option) => (
                                 <div
                                   key={option}
                                   className="relative flex items-center gap-2 cursor-pointer"
@@ -1394,16 +1396,23 @@ export const Dører = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Input
-                                placeholder="Velg dato"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="date"
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Velg dato"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
                               />
                             </div>
                           </FormControl>
@@ -1571,7 +1580,7 @@ export const Dører = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
+                  <div className="col-span-3 flex flex-col md:grid md:grid-cols-2 gap-4 md:gap-5">
                     <FormField
                       control={form.control}
                       name={`InnvendigeDører.Terskeltype`}
@@ -1645,6 +1654,41 @@ export const Dører = forwardRef(
                         </FormItem>
                       )}
                     />
+                    {TerskeltypeData && TerskeltypeData?.length > 0 && (
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="InnvendigeDører.TerskeltypeText"
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <p
+                                className={`${
+                                  fieldState.error ? "text-red" : "text-black"
+                                } mb-[6px] text-sm`}
+                              >
+                                Kommentar til terskeltype
+                              </p>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Beskriv hvor"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                        ${
+                                          fieldState?.error
+                                            ? "border-red"
+                                            : "border-gray1"
+                                        } `}
+                                    type="text"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    )}
                   </div>
                   <div>
                     <FormField
@@ -1732,6 +1776,41 @@ export const Dører = forwardRef(
                       )}
                     />
                   </div>
+                  {SporBelegg === "Ja" && (
+                    <div>
+                      <FormField
+                        control={form.control}
+                        name="InnvendigeDører.SporBeleggText"
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <p
+                              className={`${
+                                fieldState.error ? "text-red" : "text-black"
+                              } mb-[6px] text-sm`}
+                            >
+                              Kommentar til spor for belegg
+                            </p>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  placeholder="Beskriv hvor"
+                                  {...field}
+                                  className={`bg-white rounded-[8px] border text-black
+                                        ${
+                                          fieldState?.error
+                                            ? "border-red"
+                                            : "border-gray1"
+                                        } `}
+                                  type="text"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
                   <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
                   <div className="col-span-3 text-darkBlack font-medium text-base">
                     DØRVRIDERE
@@ -1976,34 +2055,17 @@ export const Dører = forwardRef(
                           </p>
                           <FormControl>
                             <div className="relative">
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <SelectTrigger
-                                  className={`bg-white rounded-[8px] border text-black
-                              ${
-                                fieldState?.error
-                                  ? "border-red"
-                                  : "border-gray1"
-                              } `}
-                                >
-                                  <SelectValue placeholder="Velg" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  <SelectGroup>
-                                    {array?.map((item, index) => {
-                                      return (
-                                        <SelectItem key={index} value={item}>
-                                          {item}
-                                        </SelectItem>
-                                      );
-                                    })}
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
+                              <Input
+                                placeholder="Beskriv bredde og høyde"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -2071,7 +2133,7 @@ export const Dører = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name="Garasjeport.AlternativRAL"
+                      name="Garasjeport.FargekodePåGarasjeport"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -2079,12 +2141,12 @@ export const Dører = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Alternativ RAL
+                            Fargekode på garasjeport
                           </p>
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Beskriv her"
+                                placeholder="Skriv fargekode"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${
