@@ -6,7 +6,11 @@ import { AddFinalSubmission } from "./AddFinalSubmission";
 import Modal from "../../../../components/common/modal";
 import { Preview } from "./preview";
 
-export const Rooms: React.FC<{ rooms: any; Prev: any }> = ({ rooms, Prev }) => {
+export const Rooms: React.FC<{ rooms: any; Prev: any; roomsData: any }> = ({
+  rooms,
+  Prev,
+  roomsData,
+}) => {
   const [activeTab, setActiveTab] = useState("");
   useEffect(() => {
     if (rooms && rooms.length > 0) {
@@ -183,6 +187,7 @@ export const Rooms: React.FC<{ rooms: any; Prev: any }> = ({ rooms, Prev }) => {
         <AddFinalSubmission
           onClose={() => setFinalSubmission(false)}
           rooms={rooms}
+          roomsData={roomsData}
         />
       </Drawer>
 

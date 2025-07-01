@@ -11,10 +11,11 @@ function formatPhoneNumber(number: any) {
   return `${countryCode} ${grouped}`;
 }
 
-export const ExportView: React.FC<{ rooms: any; kundeInfo: any }> = ({
-  rooms,
-  kundeInfo,
-}) => {
+export const ExportView: React.FC<{
+  rooms: any;
+  kundeInfo: any;
+  roomsData: any;
+}> = ({ rooms, kundeInfo, roomsData }) => {
   return (
     <div className="p-8">
       <div className="mb-5 flex items-center justify-between">
@@ -23,22 +24,29 @@ export const ExportView: React.FC<{ rooms: any; kundeInfo: any }> = ({
         </h4>
         <img src={Ic_logo} alt="logo" className="w-[200px] lg:w-auto" />
       </div>
-      <div className="mb-5 flex flex-col gap-2">
-        <p className="text-darkBlack">
-          <span className="font-semibold">Kundenavn:</span>{" "}
-          {kundeInfo?.Kundenavn}
-        </p>
-        <p className="text-darkBlack">
-          <span className="font-semibold">Kundenummer:</span>{" "}
-          {kundeInfo?.Kundenummer}
-        </p>
-        <p className="text-darkBlack">
-          <span className="font-semibold">Serie:</span> {kundeInfo?.Serie}
-        </p>
-        <p className="text-darkBlack">
-          <span className="font-semibold">Mobile:</span>{" "}
-          {kundeInfo?.mobile && formatPhoneNumber(kundeInfo?.mobile)}
-        </p>
+      <div className="mb-5 flex items-center gap-2 justify-between">
+        <div className="flex flex-col gap-2">
+          <p className="text-darkBlack">
+            <span className="font-semibold">Kundenavn:</span>{" "}
+            {kundeInfo?.Kundenavn}
+          </p>
+          <p className="text-darkBlack">
+            <span className="font-semibold">Kundenummer:</span>{" "}
+            {kundeInfo?.Kundenummer}
+          </p>
+          <p className="text-darkBlack">
+            <span className="font-semibold">Serie:</span> {kundeInfo?.Serie}
+          </p>
+          <p className="text-darkBlack">
+            <span className="font-semibold">Mobile:</span>{" "}
+            {kundeInfo?.mobile && formatPhoneNumber(kundeInfo?.mobile)}
+          </p>
+        </div>
+        <img
+          src={roomsData?.image}
+          alt="room"
+          className="w-[120px] h-[120px]"
+        />
       </div>
       <div className="flex flex-col gap-6">
         {rooms &&

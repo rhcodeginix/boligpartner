@@ -39,7 +39,11 @@ export const Oppsummering: React.FC<{ Prev: any }> = ({ Prev }) => {
           rommene, du kan så konfigurere hvert enkelt rom.
         </p>
       </div>
-      <Rooms rooms={roomsData?.Plantegninger} Prev={Prev} />
+      <Rooms
+        rooms={roomsData?.Plantegninger}
+        Prev={Prev}
+        roomsData={roomsData}
+      />
       {loading && <Spinner />}
     </>
   );

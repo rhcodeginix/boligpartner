@@ -70,7 +70,8 @@ const formSchema = z.object({
 export const AddFinalSubmission: React.FC<{
   onClose: any;
   rooms: any;
-}> = ({ onClose, rooms }) => {
+  roomsData: any;
+}> = ({ onClose, rooms, roomsData }) => {
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
@@ -186,7 +187,7 @@ export const AddFinalSubmission: React.FC<{
 
       //   pdf.save(`preview-${Date.now()}.pdf`);
       // }
-      
+
       // ---
 
       //   const element = previewRef.current;
@@ -767,7 +768,11 @@ export const AddFinalSubmission: React.FC<{
         }}
       >
         <div ref={previewRef}>
-          <ExportView rooms={rooms} kundeInfo={form.getValues()} />
+          <ExportView
+            rooms={rooms}
+            kundeInfo={form.getValues()}
+            roomsData={roomsData}
+          />
         </div>
       </div>
 
