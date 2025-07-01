@@ -320,7 +320,12 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           {activeTabData !== null ? (
             <Eksterior
               setActiveTab={setActiveTab}
-              labelName={Category[activeTabData]?.name || ""}
+              labelName={
+                Category[activeTabData]?.name_no === "" ||
+                !Category[activeTabData]?.name_no
+                  ? Category[activeTabData]?.name
+                  : Category[activeTabData]?.name_no
+              }
               Category={Category}
               activeTabData={activeTabData}
               setCategory={setCategory}

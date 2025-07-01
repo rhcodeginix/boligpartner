@@ -26,6 +26,7 @@ export const AddNewSubCat: React.FC<{
   setCategory: any;
   editIndex?: any;
   defaultValue?: any;
+  multiSelect?: any;
 }> = ({
   onClose,
   formData,
@@ -33,6 +34,7 @@ export const AddNewSubCat: React.FC<{
   setCategory,
   editIndex,
   defaultValue,
+  multiSelect,
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -110,7 +112,11 @@ export const AddNewSubCat: React.FC<{
     }
   };
 
-  const productOptions = ["Multi Select", "Single Select", "Text"];
+  const productOptions = [
+    ...(!multiSelect ? ["Multi Select"] : []),
+    "Single Select",
+    "Text",
+  ];
 
   return (
     <>

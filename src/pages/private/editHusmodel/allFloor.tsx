@@ -114,7 +114,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           { Produktnavn: "Laminat 1 stavs", isSelected: false },
           { Produktnavn: "Eget valg", isSelected: false },
         ],
-        Lister: [
+        Talklist: [
           {
             Produktnavn: "I henhold til leveransebeskrivelse",
             isSelected: true,
@@ -125,6 +125,21 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             isSelected: false,
           },
           { Produktnavn: "Eget valg", isSelected: false },
+          {
+            Produktnavn: "Talklist 21x45 (hvimalt)",
+            isSelected: false,
+            delieverBy: "BoligPartner",
+          },
+          {
+            Produktnavn: "Talklist 21x45 (Iakkert)",
+            isSelected: false,
+            delieverBy: "BoligPartner",
+          },
+          {
+            Produktnavn: "Talklist 21x45 (ubehandlet)",
+            isSelected: false,
+            delieverBy: "BoligPartner",
+          },
         ],
         Kommentar: [],
       };
@@ -153,7 +168,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               .filter(([name]) => !existingNames.includes(name))
               .map(([name, produkter]) => ({
                 navn: name,
-                productOptions: name === "Kommentar" ? "Text" : "Multi Select",
+                productOptions: name === "Kommentar" ? "Text" : "Single Select",
                 produkter,
               }));
 
@@ -338,7 +353,12 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           {activeTabData !== null ? (
             <Eksterior
               setActiveTab={setActiveTab}
-              labelName={Category[activeTabData]?.name || ""}
+              labelName={
+                Category[activeTabData]?.name_no === "" ||
+                !Category[activeTabData]?.name_no
+                  ? Category[activeTabData]?.name
+                  : Category[activeTabData]?.name_no
+              }
               Category={Category}
               activeTabData={activeTabData}
               setCategory={setCategory}

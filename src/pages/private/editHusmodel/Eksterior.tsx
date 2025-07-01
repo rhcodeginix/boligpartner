@@ -1065,6 +1065,7 @@ export const Eksterior: React.FC<{
               ? hovedkategorinavn[editSubCatIndex] || {}
               : {}
           }
+          multiSelect={true}
         />
       </Drawer>
       <Drawer isOpen={isProductDrawerOpen} onClose={handleproductDrawer}>
