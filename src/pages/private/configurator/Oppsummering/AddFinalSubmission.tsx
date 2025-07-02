@@ -117,122 +117,27 @@ export const AddFinalSubmission: React.FC<{
       //   const element = previewRef.current;
       //   if (!element) throw new Error("Preview element not found");
 
-      //   const toDataURL = (url: string): Promise<string> =>
-      //     fetch(url)
-      //       .then((response) => response.blob())
-      //       .then((blob) => {
-      //         return new Promise<string>((resolve, reject) => {
-      //           const reader = new FileReader();
-      //           reader.onloadend = () => resolve(reader.result as string);
-      //           reader.onerror = reject;
-      //           reader.readAsDataURL(blob);
-      //         });
-      //       });
-
-      //   const replaceFirebaseImagesWithBase64 = async () => {
-      //     const images = element.querySelectorAll("img");
-      //     await Promise.all(
-      //       Array.from(images).map(async (img) => {
-      //         const src = img.getAttribute("src");
-      //         if (src && src.includes("firebasestorage.googleapis.com")) {
-      //           try {
-      //             const dataUrl = await toDataURL(src);
-      //             img.setAttribute("src", dataUrl);
-      //           } catch (err) {
-      //             console.warn(
-      //               "Could not convert Firebase image to base64",
-      //               err
-      //             );
-      //           }
-      //         }
-      //       })
-      //     );
-      //   };
-
-      //   await replaceFirebaseImagesWithBase64();
-
-      //   const canvas = await html2canvas(element, {
-      //     useCORS: true,
-      //     allowTaint: false,
-      //     backgroundColor: "#ffffff",
-      //     scale: 2,
-      //   });
-
-      //   const imgData = canvas.toDataURL("image/png");
-
-      //   const pdf = new jsPDF("p", "mm", "a4");
-      //   const pdfWidth = pdf.internal.pageSize.getWidth();
-      //   const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      //   const padding = 5;
-      //   const usableWidth = pdfWidth - padding * 2;
-      //   const usableHeight = pdfHeight - padding * 2;
-
-      //   const imgProps = pdf.getImageProperties(imgData);
-      //   const imgWidth = usableWidth;
-      //   const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-
-      //   let heightLeft = imgHeight;
-      //   let position = padding;
-
-      //   pdf.addImage(imgData, "PNG", padding, padding, imgWidth, imgHeight);
-      //   heightLeft -= usableHeight;
-
-      //   while (heightLeft > 0) {
-      //     pdf.addPage();
-      //     position = padding - (imgHeight - heightLeft);
-      //     pdf.addImage(imgData, "PNG", padding, position, imgWidth, imgHeight);
-      //     heightLeft -= usableHeight;
-      //   }
-
-      //   pdf.save(`preview-${Date.now()}.pdf`);
-      // }
-
-      // ---
-
-      //   const element = previewRef.current;
-      //   if (!element) return;
-
-      //   // Convert DOM to image
-      //   const canvas = await html2canvas(element);
-      //   const imgData = canvas.toDataURL("image/png");
-
-      //   // Create PowerPoint
-      //   const pptx = new PptxGenJS();
-      //   const slide = pptx.addSlide();
-
-      //   // Add image to slide (optional: scale size to fit slide)
-      //   slide.addImage({
-      //     data: imgData,
-      //     x: 0.5,
-      //     y: 0.5,
-      //     w: 8,
-      //     h: 5, // adjust size as needed
-      //   });
-
-      //   // Download PPT
-      //   pptx.writeFile({ fileName: `export-${Date.now()}.pptx` });
-      // };
-
-      // if (data.exportType === "PDF") {
-      //   setIsExporting(true);
-      //   const element = previewRef.current;
-      //   if (!element) throw new Error("Preview element not found");
-
-      //   // Force fixed width for consistent capture
       //   const originalWidth = element.style.width;
-      //   element.style.width = "794px"; // ≈210mm at 96dpi
+      //   element.style.width = "794px";
 
       //   const totalHeight = element.scrollHeight;
-      //   const pageHeightPx = 1123; // ≈297mm at 96dpi
+      //   const pageHeightPx = 1123;
 
       //   const totalPages = Math.ceil(totalHeight / pageHeightPx);
 
       //   const pdf = new jsPDF("p", "mm", "a4");
+
+      //   const marginTop = 10;
+      //   const marginLeft = 0;
+      //   const marginRight = 0;
+      //   const marginBottom = 15;
+
+      //   const usableWidth = 210 - marginLeft - marginRight;
+      //   const usableHeight = 297 - marginTop - marginBottom;
+
       //   for (let page = 0; page < totalPages; page++) {
       //     element.scrollTop = page * pageHeightPx;
 
-      //     // Give browser time to render scrolled content
       //     // eslint-disable-next-line no-await-in-loop
       //     await new Promise((res) => setTimeout(res, 300));
 
@@ -247,74 +152,148 @@ export const AddFinalSubmission: React.FC<{
       //     const imgData = canvas.toDataURL("image/png");
 
       //     if (page > 0) pdf.addPage();
-      //     pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
+
+      //     pdf.addImage(
+      //       imgData,
+      //       "PNG",
+      //       marginLeft,
+      //       marginTop,
+      //       usableWidth,
+      //       usableHeight
+      //     );
+
+      //     pdf.setFontSize(12);
+      //     pdf.text("", 105, 10, { align: "center" });
+
+      //     pdf.setFontSize(10);
+      //     pdf.text(`Page ${page + 1} of ${totalPages}`, 105, 290, {
+      //       align: "center",
+      //     });
       //   }
 
       //   pdf.save(`preview-${Date.now()}.pdf`);
-      //   element.style.width = originalWidth; // restore original width
+      //   element.style.width = originalWidth;
       // }
+
       if (data.exportType === "PDF") {
         setIsExporting(true);
         const element = previewRef.current;
         if (!element) throw new Error("Preview element not found");
 
-        const originalWidth = element.style.width;
-        element.style.width = "794px";
-
-        const totalHeight = element.scrollHeight;
-        const pageHeightPx = 1123;
-
-        const totalPages = Math.ceil(totalHeight / pageHeightPx);
-
-        const pdf = new jsPDF("p", "mm", "a4");
-
+        const pdf: any = new jsPDF("p", "mm", "a4");
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
         const marginTop = 10;
         const marginLeft = 0;
-        const marginRight = 0;
         const marginBottom = 15;
+        const usableWidth = pdfWidth;
 
-        const usableWidth = 210 - marginLeft - marginRight;
-        const usableHeight = 297 - marginTop - marginBottom;
+        let currentY = marginTop;
 
-        for (let page = 0; page < totalPages; page++) {
-          element.scrollTop = page * pageHeightPx;
+        const innerRoomElements = element.querySelectorAll(".inner-room-block");
 
-          // eslint-disable-next-line no-await-in-loop
-          await new Promise((res) => setTimeout(res, 300));
+        for (let i = 0; i < innerRoomElements.length; i++) {
+          const innerRoomEl: any = innerRoomElements[i];
 
-          const canvas = await html2canvas(element, {
+          const roomCanvas = await html2canvas(innerRoomEl, {
+            scale: 1,
             useCORS: true,
-            backgroundColor: "#ffffff",
-            scale: 2,
-            height: pageHeightPx,
-            y: page * pageHeightPx,
           });
 
-          const imgData = canvas.toDataURL("image/png");
+          const roomImgData = roomCanvas.toDataURL("image/jpeg", 0.6);
+          const imgProps = pdf.getImageProperties(roomImgData);
+          const imgHeight = (imgProps.height * usableWidth) / imgProps.width;
 
-          if (page > 0) pdf.addPage();
+          if (currentY + imgHeight > pdfHeight - marginBottom) {
+            pdf.addPage();
+            currentY = marginTop;
+          }
 
           pdf.addImage(
-            imgData,
-            "PNG",
+            roomImgData,
+            "JPEG",
             marginLeft,
-            marginTop,
+            currentY,
             usableWidth,
-            usableHeight
+            imgHeight
           );
 
-          pdf.setFontSize(12);
-          pdf.text("", 105, 10, { align: "center" });
+          currentY += imgHeight + 5;
+        }
 
+        const totalPages = pdf.internal.getNumberOfPages();
+        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+          pdf.setPage(pageNum);
           pdf.setFontSize(10);
-          pdf.text(`Page ${page + 1} of ${totalPages}`, 105, 290, {
-            align: "center",
-          });
+          pdf.text(
+            `Page ${pageNum} of ${totalPages}`,
+            pdfWidth / 2,
+            pdfHeight - 5,
+            { align: "center" }
+          );
         }
 
         pdf.save(`preview-${Date.now()}.pdf`);
-        element.style.width = originalWidth;
+        setIsExporting(false);
       }
+
+      // if (data.exportType === "PDF") {
+      //   setIsExporting(true);
+      //   const element = previewRef.current;
+      //   if (!element) throw new Error("Preview element not found");
+
+      //   const pdf: any = new jsPDF("p", "mm", "a4");
+      //   const pdfWidth = pdf.internal.pageSize.getWidth();
+      //   const pdfHeight = pdf.internal.pageSize.getHeight();
+      //   const marginTop = 10;
+      //   const marginLeft = 0;
+      //   const marginBottom = 15;
+      //   const usableWidth = pdfWidth - marginLeft * 2;
+      //   let currentY = marginTop;
+
+      //   // Get all elements
+      //   const innerRoomElements = Array.from(
+      //     element.querySelectorAll(".inner-room-block")
+      //   ).filter(el => el.offsetParent !== null);
+
+      //   // Generate all canvases in parallel
+      //   const roomCanvases = await Promise.all(
+      //     innerRoomElements.map(el =>
+      //       html2canvas(el, {
+      //         scale: 1.5,
+      //         useCORS: true,
+      //       })
+      //     )
+      //   );
+
+      //   for (let i = 0; i < roomCanvases.length; i++) {
+      //     const roomCanvas = roomCanvases[i];
+      //     const roomImgData = roomCanvas.toDataURL("image/png");
+      //     const imgProps = pdf.getImageProperties(roomImgData);
+      //     const imgHeight = (imgProps.height * usableWidth) / imgProps.width;
+
+      //     if (currentY + imgHeight > pdfHeight - marginBottom) {
+      //       pdf.addPage();
+      //       currentY = marginTop;
+      //     }
+
+      //     pdf.addImage(roomImgData, "PNG", marginLeft, currentY, usableWidth, imgHeight);
+      //     currentY += imgHeight + 5;
+      //   }
+
+      //   // Footer
+      //   const totalPages = pdf.internal.getNumberOfPages();
+      //   for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+      //     pdf.setPage(pageNum);
+      //     pdf.setFontSize(10);
+      //     pdf.text(`Page ${pageNum} of ${totalPages}`, pdfWidth / 2, pdfHeight - 5, {
+      //       align: "center",
+      //     });
+      //   }
+
+      //   pdf.save(`preview-${Date.now()}.pdf`);
+      //   setIsExporting(false);
+      // }
 
       if (data.exportType === "PPT") {
         setIsExporting(true);
