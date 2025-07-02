@@ -87,7 +87,7 @@ export const ExportView: React.FC<{
                               });
 
                               return (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 desktop:grid-cols-3 gap-4">
+                                <div className="grid grid-cols-3 gap-4">
                                   {allSelectedProducts.map(
                                     (prod: any, prodIndex: number) => {
                                       return (
