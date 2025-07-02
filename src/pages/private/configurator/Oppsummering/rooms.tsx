@@ -6,11 +6,12 @@ import { AddFinalSubmission } from "./AddFinalSubmission";
 import Modal from "../../../../components/common/modal";
 import { Preview } from "./preview";
 
-export const Rooms: React.FC<{ rooms: any; Prev: any; roomsData: any }> = ({
-  rooms,
-  Prev,
-  roomsData,
-}) => {
+export const Rooms: React.FC<{
+  rooms: any;
+  Prev: any;
+  roomsData: any;
+  loading: any;
+}> = ({ rooms, Prev, roomsData, loading }) => {
   const [activeTab, setActiveTab] = useState("");
   useEffect(() => {
     if (rooms && rooms.length > 0) {
@@ -42,115 +43,169 @@ export const Rooms: React.FC<{ rooms: any; Prev: any; roomsData: any }> = ({
     <>
       <div className="px-6 py-8 mb-[120px]">
         <div className="bg-gray3 border border-[#EFF1F5] rounded-lg p-2 flex items-center gap-2 mb-3.5">
-          {rooms &&
-            rooms.map((room: any, index: number) => {
-              return (
-                <div
-                  key={index}
-                  className={`cursor-pointer w-max py-2 px-3 rounded-lg ${
-                    activeTab === room?.title
-                      ? "bg-white text-purple font-semibold"
-                      : "text-black"
-                  }`}
-                  onClick={() => setActiveTab(room?.title)}
-                  style={{
-                    boxShadow:
-                      activeTab === room?.title
-                        ? "0px 1px 2px 0px #1018280D"
-                        : "",
-                  }}
-                >
-                  {room?.title}
-                </div>
-              );
-            })}
+          {loading ? (
+            <>
+              {Array.from({ length: 3 }, (_, i) => i + 1).map((item, index) => {
+                return (
+                  <div key={index} className={`w-max py-2 px-3 rounded-lg`}>
+                    <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                  </div>
+                );
+              })}
+            </>
+          ) : (
+            <>
+              {rooms &&
+                rooms.map((room: any, index: number) => {
+                  return (
+                    <div
+                      key={index}
+                      className={`cursor-pointer w-max py-2 px-3 rounded-lg ${
+                        activeTab === room?.title
+                          ? "bg-white text-purple font-semibold"
+                          : "text-black"
+                      }`}
+                      onClick={() => setActiveTab(room?.title)}
+                      style={{
+                        boxShadow:
+                          activeTab === room?.title
+                            ? "0px 1px 2px 0px #1018280D"
+                            : "",
+                      }}
+                    >
+                      {room?.title}
+                    </div>
+                  );
+                })}
+            </>
+          )}
         </div>
         <div className="border border-[#DCDFEA] rounded-lg">
           <h4 className="text-darkBlack font-semibold text-xl p-5 border-b border-[#DCDFEA]">
             Her følger oppsummering av {activeTab}
           </h4>
           <div className="p-5">
-            {room && (
-              <div className="flex flex-col gap-4">
-                {room.rooms && room.rooms.length > 0
-                  ? room.rooms.map((innerRoom: any, index: number) => {
-                      return (
-                        <div
-                          key={index}
-                          className="flex flex-col gap-4 bg-gray3 p-4 rounded-lg"
-                        >
-                          <div className="text-black font-semibold text-lg">
-                            {innerRoom?.name_no || innerRoom?.name}
-                          </div>
-                          {innerRoom?.Kategorinavn &&
-                          innerRoom.Kategorinavn.length > 0 ? (
-                            (() => {
-                              const allSelectedProducts: any[] = [];
-                              innerRoom.Kategorinavn.filter(
-                                (kat: any) => kat.productOptions !== "Text"
-                              ).forEach((kat: any) => {
-                                kat?.produkter
-                                  ?.filter(
-                                    (prod: any) => prod?.isSelected === true
-                                  )
-                                  .forEach((prod: any) => {
-                                    allSelectedProducts.push({
-                                      ...prod,
-                                      categoryName: kat?.navn,
-                                    });
-                                  });
-                              });
+            {loading ? (
+              <>
+                {Array.from({ length: 2 }, (_, i) => i + 1).map(
+                  (_item, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="flex flex-col gap-4 bg-gray3 p-4 rounded-lg"
+                      >
+                        <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
 
+                        <div className="grid grid-cols-1 sm:grid-cols-2 desktop:grid-cols-3 gap-4">
+                          {Array.from({ length: 4 }, (_, i) => i + 1).map(
+                            (prod: any, prodIndex: number) => {
                               return (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 desktop:grid-cols-3 gap-4">
-                                  {allSelectedProducts.map(
-                                    (prod: any, prodIndex: number) => {
-                                      return (
-                                        <div
-                                          key={prodIndex}
-                                          className="flex flex-col"
-                                        >
-                                          <div>
-                                            <h4 className="text-sm font-medium text-black mb-1">
-                                              {prod.categoryName}
-                                            </h4>
-                                            <h3 className="text-secondary mb-3">
-                                              {prod?.Produktnavn}
-                                            </h3>
-                                          </div>
-                                          <div className="flex flex-col gap-2">
-                                            <div className="text-secondary text-sm">
-                                              Leveres av:{" "}
-                                              <span className="text-black font-medium">
-                                                Boligpartner
-                                              </span>
-                                            </div>
-                                            {prod?.delieverBy && (
-                                              <div className="text-secondary text-sm">
-                                                Assembled by:{" "}
-                                                <span className="text-black font-medium">
-                                                  {prod?.delieverBy}
-                                                </span>
-                                              </div>
-                                            )}
-                                          </div>
-                                        </div>
-                                      );
-                                    }
-                                  )}
+                                <div key={prodIndex} className="flex flex-col">
+                                  <div>
+                                    <div className="w-[100px] h-[20px] rounded-lg custom-shimmer mb-1"></div>
+
+                                    <div className="w-[200px] h-[20px] rounded-lg custom-shimmer mb-3"></div>
+                                  </div>
+                                  <div className="flex flex-col gap-2">
+                                    <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+
+                                    <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                                  </div>
                                 </div>
                               );
-                            })()
-                          ) : (
-                            <div className="text-sm text-gray">
-                              Ingen romoversikt funnet.
-                            </div>
+                            }
                           )}
                         </div>
-                      );
-                    })
-                  : "Ingen rom funnet."}
-              </div>
+                      </div>
+                    );
+                  }
+                )}
+              </>
+            ) : (
+              <>
+                {room && (
+                  <div className="flex flex-col gap-4">
+                    {room.rooms && room.rooms.length > 0
+                      ? room.rooms.map((innerRoom: any, index: number) => {
+                          return (
+                            <div
+                              key={index}
+                              className="flex flex-col gap-4 bg-gray3 p-4 rounded-lg"
+                            >
+                              <div className="text-black font-semibold text-lg">
+                                {innerRoom?.name_no || innerRoom?.name}
+                              </div>
+                              {innerRoom?.Kategorinavn &&
+                              innerRoom.Kategorinavn.length > 0 ? (
+                                (() => {
+                                  const allSelectedProducts: any[] = [];
+                                  innerRoom.Kategorinavn.filter(
+                                    (kat: any) => kat.productOptions !== "Text"
+                                  ).forEach((kat: any) => {
+                                    kat?.produkter
+                                      ?.filter(
+                                        (prod: any) => prod?.isSelected === true
+                                      )
+                                      .forEach((prod: any) => {
+                                        allSelectedProducts.push({
+                                          ...prod,
+                                          categoryName: kat?.navn,
+                                        });
+                                      });
+                                  });
+
+                                  return (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 desktop:grid-cols-3 gap-4">
+                                      {allSelectedProducts.map(
+                                        (prod: any, prodIndex: number) => {
+                                          return (
+                                            <div
+                                              key={prodIndex}
+                                              className="flex flex-col"
+                                            >
+                                              <div>
+                                                <h4 className="text-sm font-medium text-black mb-1">
+                                                  {prod.categoryName}
+                                                </h4>
+                                                <h3 className="text-secondary mb-3">
+                                                  {prod?.Produktnavn}
+                                                </h3>
+                                              </div>
+                                              <div className="flex flex-col gap-2">
+                                                <div className="text-secondary text-sm">
+                                                  Leveres av:{" "}
+                                                  <span className="text-black font-medium">
+                                                    Boligpartner
+                                                  </span>
+                                                </div>
+                                                {prod?.delieverBy && (
+                                                  <div className="text-secondary text-sm">
+                                                    Assembled by:{" "}
+                                                    <span className="text-black font-medium">
+                                                      {prod?.delieverBy}
+                                                    </span>
+                                                  </div>
+                                                )}
+                                              </div>
+                                            </div>
+                                          );
+                                        }
+                                      )}
+                                    </div>
+                                  );
+                                })()
+                              ) : (
+                                <div className="text-sm text-gray">
+                                  Ingen romoversikt funnet.
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })
+                      : "Ingen rom funnet."}
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

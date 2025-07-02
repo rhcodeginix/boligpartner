@@ -301,100 +301,6 @@ export const Eksterior: React.FC<{
     }
   }, [form, Category, activeTabData]);
 
-  // useEffect(() => {
-  //   if (Array.isArray(Category) && Category.length > 0) {
-  //     const requiredCategoriesWithProducts = {
-  //       Himlling: [
-  //         {
-  //           Produktnavn: "I henhold til leveransebeskrivelse",
-  //         },
-  //         {
-  //           Produktnavn: "Mdf panel",
-  //         },
-  //         {
-  //           Produktnavn: "Takplate 60x120",
-  //         },
-  //         {
-  //           Produktnavn: "Eget valg",
-  //         },
-  //       ],
-  //       Vegger: [
-  //         {
-  //           Produktnavn: "I henhold til leveransebeskrivelse",
-  //         },
-  //         {
-  //           Produktnavn: "5 bords kostmald mdf plate",
-  //         },
-  //         {
-  //           Produktnavn: "Ubehandlet sponplate",
-  //         },
-  //         {
-  //           Produktnavn: "Eget valg",
-  //         },
-  //       ],
-  //       Gulv: [
-  //         {
-  //           Produktnavn: "Lokalleveranse",
-  //         },
-  //         {
-  //           Produktnavn: "Eikeparkett 3 stavs",
-  //         },
-  //         {
-  //           Produktnavn: "Eikeparkett 1 stavs",
-  //         },
-  //         {
-  //           Produktnavn: "Laminat 1 stavs",
-  //         },
-  //         {
-  //           Produktnavn: "Eget valg",
-  //         },
-  //       ],
-  //       Lister: [
-  //         {
-  //           Produktnavn: "I henhold til leveransebeskrivelse",
-  //         },
-  //         {
-  //           Produktnavn: "Annen signatur",
-  //         },
-  //         {
-  //           Produktnavn: "Uten lister for listefri løsning",
-  //         },
-  //         {
-  //           Produktnavn: "Eget valg",
-  //         },
-  //       ],
-  //       Kommentar: [],
-  //     };
-
-  //     const formatted = Category.map((cat: any, index: number) => {
-  //       const existingKategorinavn =
-  //         index === activeTabData && Array.isArray(cat.Kategorinavn)
-  //           ? cat.Kategorinavn
-  //           : [];
-
-  //       const existingNames = existingKategorinavn.map((k: any) => k.navn);
-
-  //       const missing = Object.entries(requiredCategoriesWithProducts)
-  //         .filter(([name]) => !existingNames.includes(name))
-  //         .map(([name, produkter]) => ({
-  //           navn: name,
-  //           productOptions: name === "Kommentar" ? "Text" : "Multi Select",
-  //           produkter,
-  //         }));
-
-  //       return {
-  //         name: cat.name,
-  //         Kategorinavn:
-  //           index === activeTabData
-  //             ? [...existingKategorinavn, ...missing]
-  //             : null,
-  //       };
-  //     });
-
-  //     form.setValue("hovedkategorinavn", formatted);
-  //   }
-  // }, [activeTabData]);
-
   const prevProductsRef = useRef<any[]>([]);
 
   useEffect(() => {
@@ -431,6 +337,7 @@ export const Eksterior: React.FC<{
               IncludingOffer: product.IncludingOffer || false,
               Produktbeskrivelse: product.Produktbeskrivelse || "",
               delieverBy: product.delieverBy || "",
+              isSelected: product.isSelected || false,
             };
           });
         }
@@ -543,25 +450,6 @@ export const Eksterior: React.FC<{
     errorObj?.productOptions === "Text" &&
     "text" in errorObj &&
     !!errorObj.text;
-
-  useEffect(() => {
-    if (
-      produkter &&
-      produkter.length > 0 &&
-      !produkter.some((p: any) => p.isSelected)
-    ) {
-      const updatedProducts = produkter.map((p: any, index: number) => ({
-        ...p,
-        isSelected: index === 0,
-      }));
-
-      form.setValue(
-        `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
-        updatedProducts,
-        { shouldValidate: true }
-      );
-    }
-  }, [produkter]);
 
   const [showConfiguratorModal, setShowConfiguratorModal] = useState(false);
   const [newConfiguratorName, setNewConfiguratorName] = useState("");

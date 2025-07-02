@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { fetchRoomData } from "../../../../lib/utils";
-import { Spinner } from "../../../../components/Spinner";
 import { Rooms } from "./rooms";
 
 export const Oppsummering: React.FC<{ Prev: any }> = ({ Prev }) => {
@@ -43,8 +42,8 @@ export const Oppsummering: React.FC<{ Prev: any }> = ({ Prev }) => {
         rooms={roomsData?.Plantegninger}
         Prev={Prev}
         roomsData={roomsData}
+        loading={loading}
       />
-      {loading && <Spinner />}
     </>
   );
 };

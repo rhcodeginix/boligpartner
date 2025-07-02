@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Ic_upload_blue_img from "../../../assets/images/Ic_upload_blue_img.svg";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Spinner } from "../../../components/Spinner";
 import { fetchHusmodellData } from "../../../lib/utils";
 import Button from "../../../components/common/button";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../config/firebaseConfig";
 import { toast } from "react-hot-toast";
-import * as pdfjsLib from "pdfjs-dist";
+import * as pdfjsLib from "pdfjs-dist-es5";
 import { Pencil, Trash2 } from "lucide-react";
 import Modal from "../../../components/common/modal";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
@@ -356,133 +355,174 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6 w-full mt-6 md:mt-8">
-          {roomsData && roomsData.length > 0
-            ? roomsData.map((item: any, index: number) => {
-                const isEditing = editIndex === index;
-                const loaded = imageLoaded[index];
-
+          {loading ? (
+            <>
+              {Array.from({ length: 3 }, (_, i) => i + 1).map((item, index) => {
                 return (
                   <div
                     key={index}
-                    className="relative shadow-shadow2 cursor-pointer p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4"
-                    onClick={() => {
-                      setActiveTab(2);
-                      navigate(`?pdf_id=${item?.pdf_id}`);
-                    }}
+                    className="relative shadow-shadow2 p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4"
                   >
                     <div className="flex gap-1.5 md:gap-2 items-center justify-between">
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={editedFloorName}
-                          onChange={(e) => setEditedFloorName(e.target.value)}
-                          className="border border-gray1 rounded px-2 py-1 w-full"
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      ) : (
-                        <span className="text-darkBlack font-medium truncate">
-                          {item?.title || `Floor ${index + 1}`}
-                        </span>
-                      )}
+                      <div
+                        className="w-[80px] h-[20px] rounded-lg custom-shimmer"
+                        style={{ borderRadius: "8px" }}
+                      ></div>
                       <div className="flex items-center gap-2 md:gap-3">
-                        {isEditing ? (
-                          <button
-                            className="bg-purple text-white px-2 md:px-4 py-2 rounded text-sm self-end"
-                            onClick={async (e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
+                        <div
+                          className="w-[80px] h-[20px] rounded-lg custom-shimmer"
+                          style={{ borderRadius: "8px" }}
+                        ></div>
 
-                              const updatedRooms = [...roomsData];
-                              updatedRooms[index] = {
-                                ...updatedRooms[index],
-                                title: editedFloorName,
-                              };
-
-                              setRoomsData(updatedRooms);
-                              setEditIndex(null);
-
-                              const husmodellDocRef = doc(
-                                db,
-                                "housemodell_configure_broker",
-                                String(id)
-                              );
-                              const docSnap = await getDoc(husmodellDocRef);
-
-                              if (docSnap.exists()) {
-                                const docData = docSnap.data();
-                                const existingKundeInfo =
-                                  docData.KundeInfo || [];
-
-                                const updatedKundeInfo = existingKundeInfo.map(
-                                  (kunde: any) => {
-                                    if (kunde.uniqueId === kundeId) {
-                                      return {
-                                        ...kunde,
-                                        Plantegninger: updatedRooms,
-                                      };
-                                    }
-                                    return kunde;
-                                  }
-                                );
-
-                                await updateDoc(husmodellDocRef, {
-                                  KundeInfo: updatedKundeInfo,
-                                  updatedAt: new Date().toISOString(),
-                                });
-
-                                toast.success("Navn oppdatert!", {
-                                  position: "top-right",
-                                });
-                              }
-                            }}
-                          >
-                            Oppdater
-                          </button>
-                        ) : (
-                          <Pencil
-                            className="w-5 h-5 text-purple cursor-pointer"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setEditIndex(index);
-                              setEditedFloorName(
-                                item?.title || `Floor ${index + 1}`
-                              );
-                            }}
-                          />
-                        )}
-
-                        <Trash2
-                          className="w-5 h-5 text-red cursor-pointer"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setConfirmDeleteIndex(index);
-                          }}
-                        />
+                        <div
+                          className="w-[80px] h-[20px] rounded-lg custom-shimmer"
+                          style={{ borderRadius: "8px" }}
+                        ></div>
                       </div>
                     </div>
+
                     <div className="w-full h-[200px] relative">
-                      {!loaded && (
-                        <div className="w-full h-full rounded-lg custom-shimmer"></div>
-                      )}
-                      {item?.image && (
-                        <img
-                          src={item?.image}
-                          alt="floor"
-                          className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
-                            loaded ? "opacity-100" : "opacity-0"
-                          }`}
-                          onLoad={() => handleImageLoad(index)}
-                          onError={() => handleImageLoad(index)}
-                          loading="lazy"
-                        />
-                      )}
+                      <div
+                        className="w-ull h-full rounded-lg custom-shimmer"
+                        style={{ borderRadius: "8px" }}
+                      ></div>
                     </div>
                   </div>
                 );
-              })
-            : "No Data Found!"}
+              })}
+            </>
+          ) : (
+            <>
+              {roomsData && roomsData.length > 0
+                ? roomsData.map((item: any, index: number) => {
+                    const isEditing = editIndex === index;
+                    const loaded = imageLoaded[index];
+
+                    return (
+                      <div
+                        key={index}
+                        className="relative shadow-shadow2 cursor-pointer p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4"
+                        onClick={() => {
+                          setActiveTab(2);
+                          navigate(`?pdf_id=${item?.pdf_id}`);
+                        }}
+                      >
+                        <div className="flex gap-1.5 md:gap-2 items-center justify-between">
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              value={editedFloorName}
+                              onChange={(e) =>
+                                setEditedFloorName(e.target.value)
+                              }
+                              className="border border-gray1 rounded px-2 py-1 w-full"
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                          ) : (
+                            <span className="text-darkBlack font-medium truncate">
+                              {item?.title || `Floor ${index + 1}`}
+                            </span>
+                          )}
+                          <div className="flex items-center gap-2 md:gap-3">
+                            {isEditing ? (
+                              <button
+                                className="bg-purple text-white px-2 md:px-4 py-2 rounded text-sm self-end"
+                                onClick={async (e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+
+                                  const updatedRooms = [...roomsData];
+                                  updatedRooms[index] = {
+                                    ...updatedRooms[index],
+                                    title: editedFloorName,
+                                  };
+
+                                  setRoomsData(updatedRooms);
+                                  setEditIndex(null);
+
+                                  const husmodellDocRef = doc(
+                                    db,
+                                    "housemodell_configure_broker",
+                                    String(id)
+                                  );
+                                  const docSnap = await getDoc(husmodellDocRef);
+
+                                  if (docSnap.exists()) {
+                                    const docData = docSnap.data();
+                                    const existingKundeInfo =
+                                      docData.KundeInfo || [];
+
+                                    const updatedKundeInfo =
+                                      existingKundeInfo.map((kunde: any) => {
+                                        if (kunde.uniqueId === kundeId) {
+                                          return {
+                                            ...kunde,
+                                            Plantegninger: updatedRooms,
+                                          };
+                                        }
+                                        return kunde;
+                                      });
+
+                                    await updateDoc(husmodellDocRef, {
+                                      KundeInfo: updatedKundeInfo,
+                                      updatedAt: new Date().toISOString(),
+                                    });
+
+                                    toast.success("Navn oppdatert!", {
+                                      position: "top-right",
+                                    });
+                                  }
+                                }}
+                              >
+                                Oppdater
+                              </button>
+                            ) : (
+                              <Pencil
+                                className="w-5 h-5 text-purple cursor-pointer"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setEditIndex(index);
+                                  setEditedFloorName(
+                                    item?.title || `Floor ${index + 1}`
+                                  );
+                                }}
+                              />
+                            )}
+
+                            <Trash2
+                              className="w-5 h-5 text-red cursor-pointer"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setConfirmDeleteIndex(index);
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="w-full h-[200px] relative">
+                          {!loaded && (
+                            <div className="w-full h-full rounded-lg custom-shimmer"></div>
+                          )}
+                          {item?.image && (
+                            <img
+                              src={item?.image}
+                              alt="floor"
+                              className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
+                                loaded ? "opacity-100" : "opacity-0"
+                              }`}
+                              onLoad={() => handleImageLoad(index)}
+                              onError={() => handleImageLoad(index)}
+                              loading="lazy"
+                            />
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })
+                : "No Data Found!"}
+            </>
+          )}
         </div>
       </div>
 
@@ -511,8 +551,6 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           </div>
         </Modal>
       )}
-
-      {loading && <Spinner />}
     </>
   );
 };

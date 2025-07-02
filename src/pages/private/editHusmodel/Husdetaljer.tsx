@@ -18,7 +18,6 @@ import { db } from "../../../config/firebaseConfig";
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 import { fetchHusmodellData, phoneNumberValidations } from "../../../lib/utils";
-import { Spinner } from "../../../components/Spinner";
 import { InputMobile } from "../../../components/ui/inputMobile";
 import { parsePhoneNumber } from "react-phone-number-input";
 import ApiUtils from "../../../api";
@@ -69,13 +68,11 @@ export const Husdetaljer: React.FC<{
 
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
-  const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!id || !kundeId) {
-      setLoading(false);
       return;
     }
     const getData = async () => {
@@ -93,7 +90,6 @@ export const Husdetaljer: React.FC<{
           }
         });
       }
-      setLoading(false);
     };
 
     getData();
@@ -428,7 +424,6 @@ export const Husdetaljer: React.FC<{
               type="submit"
             />
           </div>
-          {loading && <Spinner />}
         </form>
       </Form>
     </>

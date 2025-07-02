@@ -37,7 +37,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../components/ui/select";
-import { Spinner } from "../../../../components/Spinner";
 import DatePickerComponent from "../../../../components/ui/datepicker";
 
 const formSchema = z.object({
@@ -204,11 +203,8 @@ export const Prosjektdetaljer = forwardRef(
       []
     );
 
-    const [loading, setLoading] = useState(false);
-
     useEffect(() => {
       if (!id) {
-        setLoading(false);
         return;
       }
       const getData = async () => {
@@ -227,7 +223,6 @@ export const Prosjektdetaljer = forwardRef(
             form.setValue("Kundenr", Number(data?.Kundenummer));
           }
         }
-        setLoading(false);
       };
 
       getData();
@@ -1355,8 +1350,6 @@ export const Prosjektdetaljer = forwardRef(
             </div>
           </form>
         </Form>
-
-        {loading && <Spinner />}
       </>
     );
   }

@@ -356,3 +356,27 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .react-datepicker-wrapper {
   width: 100%;
 }
+
+.custom-shimmer {
+  position: relative;
+  overflow: hidden;
+  background-color: #e0e0e0;
+}
+
+.custom-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-image: linear-gradient(
+    90deg,
+    rgba(224, 224, 224, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(224, 224, 224, 0) 100%
+  );
+  background-repeat: no-repeat;
+  transform: translateX(-100%);
+  animation: shimmer 2.5s infinite;
+}

@@ -3,7 +3,6 @@ import Modal from "../../../../components/common/modal";
 import Ic_trash from "../../../../assets/images/Ic_trash.svg";
 import Button from "../../../../components/common/button";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Spinner } from "../../../../components/Spinner";
 import { fetchRoomData } from "../../../../lib/utils";
 import { ChevronRight, Pencil, Plus, X } from "lucide-react";
 import { AddNewCat } from "../../editHusmodel/AddNewCat";
@@ -255,64 +254,91 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             </div>
           </div>
           <div className="flex flex-col p-4 pb-0 rounded-lg gap-3 h-full max-h-[calc(100%-90px)] overflow-y-auto overFlowAutoY sticky top-[80px]">
-            {Category && Category?.length > 0
-              ? Category.map((tab: any, index: number) => (
-                  <div
-                    key={index}
-                    draggable
-                    onDragStart={() => handleDragStart(index)}
-                    onDragOver={handleDragOver}
-                    onDrop={() => handleDrop(index)}
-                    className={`bg-white cursor-pointer rounded-lg flex items-center justify-between gap-1 px-3 ${
-                      activeTabData === index
-                        ? "border-2 border-primary bg-lightPurple rounded-t-[12px]"
-                        : "border border-gray2"
-                    }`}
-                    onClick={() => setActiveTabData(index)}
-                  >
-                    <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold">
-                      <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
-                        {index + 1}
-                      </span>
-                      <span className="w-[135px] truncate">
-                        {tab?.name_no === "" || !tab?.name_no
-                          ? tab?.name
-                          : tab?.name_no}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
+            {loading ? (
+              <>
+                {Array.from({ length: 10 }, (_, i) => i + 1).map(
+                  (item, index) => {
+                    return (
                       <div
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setEditCategory({ index, data: tab });
-                          setAddCategory(true);
-                        }}
+                        key={index}
+                        className={`bg-white cursor-pointer rounded-lg flex items-center justify-between gap-1 px-3 border border-gray2`}
                       >
-                        <Pencil className="w-5 h-5 text-primary" />
-                      </div>
+                        <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold">
+                          <div className="w-5 h-5 rounded-full custom-shimmer"></div>
+                          <div className="w-[135px] h-[20px] rounded-lg custom-shimmer"></div>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-5 h-5 rounded-lg custom-shimmer"></div>
 
-                      <div
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setCategory((prev: any[]) =>
-                            prev.filter((_, i) => i !== index)
-                          );
-                          setActiveTabData(0);
-                        }}
-                        className="w-5 h-5"
-                      >
-                        <img
-                          src={Ic_trash}
-                          alt="delete"
-                          className="w-full h-full"
-                        />
+                          <div className="w-5 h-5 rounded-lg custom-shimmer"></div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                ))
-              : "No data found!"}
+                    );
+                  }
+                )}
+              </>
+            ) : (
+              <>
+                {Category && Category?.length > 0
+                  ? Category.map((tab: any, index: number) => (
+                      <div
+                        key={index}
+                        draggable
+                        onDragStart={() => handleDragStart(index)}
+                        onDragOver={handleDragOver}
+                        onDrop={() => handleDrop(index)}
+                        className={`bg-white cursor-pointer rounded-lg flex items-center justify-between gap-1 px-3 ${
+                          activeTabData === index
+                            ? "border-2 border-primary bg-lightPurple rounded-t-[12px]"
+                            : "border border-gray2"
+                        }`}
+                        onClick={() => setActiveTabData(index)}
+                      >
+                        <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold">
+                          <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
+                            {index + 1}
+                          </span>
+                          <span className="w-[135px] truncate">
+                            {tab?.name_no === "" || !tab?.name_no
+                              ? tab?.name
+                              : tab?.name_no}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <div
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setEditCategory({ index, data: tab });
+                              setAddCategory(true);
+                            }}
+                          >
+                            <Pencil className="w-5 h-5 text-primary" />
+                          </div>
+
+                          <div
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setCategory((prev: any[]) =>
+                                prev.filter((_, i) => i !== index)
+                              );
+                              setActiveTabData(0);
+                            }}
+                            className="w-5 h-5"
+                          >
+                            <img
+                              src={Ic_trash}
+                              alt="delete"
+                              className="w-full h-full"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  : "No data found!"}
+              </>
+            )}
           </div>
         </div>
 
@@ -374,7 +400,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           </div>
         </Modal>
       )}
-      {loading && <Spinner />}
 
       {isImageModalOpen && (
         <Modal onClose={() => setIsImageModalOpen(false)} isOpen={true}>

@@ -20,7 +20,6 @@ import { TekniskeInstallasjoner } from "./TekniskeInstallasjoner";
 // import { TakrennerBeslag } from "./TakrennerBeslag";
 import { useLocation } from "react-router-dom";
 import { fetchRoomData } from "../../../../lib/utils";
-import { Spinner } from "../../../../components/Spinner";
 
 export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
   Next,
@@ -74,12 +73,10 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
 
-  const [loading, setLoading] = useState(true);
   const [roomsData, setRoomsData] = useState<any>([]);
 
   useEffect(() => {
     if (!id) {
-      setLoading(false);
       return;
     }
     const getData = async () => {
@@ -88,7 +85,6 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
       if (data) {
         setRoomsData(data);
       }
-      setLoading(false);
     };
 
     getData();
@@ -388,7 +384,6 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           setInvalidSteps={setInvalidSteps}
         />
       </div>
-      {loading && <Spinner />}
     </>
   );
 };

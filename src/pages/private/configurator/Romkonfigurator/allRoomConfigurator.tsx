@@ -10,7 +10,6 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
-import { Spinner } from "../../../../components/Spinner";
 import Button from "../../../../components/common/button";
 import { toast } from "react-hot-toast";
 import { Pencil, Trash2 } from "lucide-react";
@@ -89,7 +88,6 @@ export const AllRoomkonfigurator: React.FC = () => {
 
   return (
     <>
-      {isLoading && <Spinner />}
       <div className="py-4 px-8 flex justify-end">
         <Button
           text="Legg til ny romkonfigurator"
@@ -102,120 +100,160 @@ export const AllRoomkonfigurator: React.FC = () => {
         />
       </div>
       <div className="p-8 grid grid-cols-4 gap-x-6 gap-y-[40px]">
-        {RoomConfigurator &&
-          RoomConfigurator.length > 0 &&
-          RoomConfigurator?.map((item: any, index: number) => {
-            const loaded = imageLoaded[index];
-            const isEditing = editIndex === index;
+        {isLoading ? (
+          <>
+            {Array.from({ length: 3 }, (_, i) => i + 1).map((item, index) => {
+              return (
+                <div
+                  key={index}
+                  className="relative shadow-shadow2 p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4"
+                >
+                  <div className="flex gap-1.5 md:gap-2 items-center justify-between">
+                    <div
+                      className="w-[80px] h-[20px] rounded-lg custom-shimmer"
+                      style={{ borderRadius: "8px" }}
+                    ></div>
+                    <div className="flex items-center gap-2 md:gap-3">
+                      <div
+                        className="w-[80px] h-[20px] rounded-lg custom-shimmer"
+                        style={{ borderRadius: "8px" }}
+                      ></div>
 
-            return (
-              <div
-                key={index}
-                className="relative shadow-shadow2 cursor-pointer p-4 rounded-lg flex flex-col gap-4"
-                onClick={() => {
-                  // setActiveTab(1);
-                  navigate(`/Room-Configurator/${item?.id}`);
-                }}
-              >
-                <div className="flex gap-2 items-center justify-between mb-4">
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={editedFloorName}
-                      onChange={(e) => setEditedFloorName(e.target.value)}
-                      className="border border-gray1 rounded px-2 py-1 w-full"
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  ) : (
-                    <span className="text-darkBlack font-medium">
-                      {item?.name}
-                    </span>
-                  )}
-                  <div className="flex items-center gap-3">
-                    {isEditing ? (
-                      <button
-                        className="bg-purple text-white px-4 py-2 rounded text-sm self-end"
-                        onClick={async (e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          const updatedRooms = [...RoomConfigurator];
+                      <div
+                        className="w-[80px] h-[20px] rounded-lg custom-shimmer"
+                        style={{ borderRadius: "8px" }}
+                      ></div>
+                    </div>
+                  </div>
 
-                          updatedRooms[index] = {
-                            ...updatedRooms[index],
-                            name: editedFloorName,
-                          };
-
-                          setRoomConfigurator(updatedRooms);
-                          setEditIndex(null);
-
-                          const husmodellDocRef = doc(
-                            db,
-                            "room_configurator",
-                            String(id)
-                          );
-
-                          await updateDoc(husmodellDocRef, {
-                            name: editedFloorName,
-                            updatedAt: new Date().toISOString(),
-                          });
-
-                          toast.success("Navn oppdatert!", {
-                            position: "top-right",
-                          });
-                        }}
-                      >
-                        Oppdater
-                      </button>
-                    ) : (
-                      <Pencil
-                        className="w-5 h-5 text-purple cursor-pointer"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setEditIndex(index);
-                          setEditedFloorName(item?.name);
-                          setId(item?.id);
-                        }}
-                      />
-                    )}
-
-                    <Trash2
-                      className="w-5 h-5 text-red cursor-pointer"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setConfirmDeleteIndex(index);
-                        setId(item?.id);
-                      }}
-                    />
+                  <div className="w-full h-[200px] relative">
+                    <div
+                      className="w-ull h-full rounded-lg custom-shimmer"
+                      style={{ borderRadius: "8px" }}
+                    ></div>
                   </div>
                 </div>
-                <div className="w-full h-[200px] relative">
-                  {item?.Plantegninger?.[0]?.image ? (
-                    <>
-                      {!loaded && (
-                        <div className="w-full h-full rounded-lg custom-shimmer absolute top-0 left-0"></div>
+              );
+            })}
+          </>
+        ) : (
+          <>
+            {RoomConfigurator &&
+              RoomConfigurator.length > 0 &&
+              RoomConfigurator?.map((item: any, index: number) => {
+                const loaded = imageLoaded[index];
+                const isEditing = editIndex === index;
+
+                return (
+                  <div
+                    key={index}
+                    className="relative shadow-shadow2 cursor-pointer p-4 rounded-lg flex flex-col gap-4"
+                    onClick={() => {
+                      // setActiveTab(1);
+                      navigate(`/Room-Configurator/${item?.id}`);
+                    }}
+                  >
+                    <div className="flex gap-2 items-center justify-between mb-4">
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          value={editedFloorName}
+                          onChange={(e) => setEditedFloorName(e.target.value)}
+                          className="border border-gray1 rounded px-2 py-1 w-full"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      ) : (
+                        <span className="text-darkBlack font-medium">
+                          {item?.name}
+                        </span>
                       )}
-                      <img
-                        src={item.Plantegninger[0].image}
-                        alt="floor"
-                        className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
-                          loaded ? "opacity-100" : "opacity-0"
-                        }`}
-                        onLoad={() => handleImageLoad(index)}
-                        onError={() => handleImageLoad(index)}
-                        loading="lazy"
-                      />
-                    </>
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center rounded-lg border border-gray2">
-                      <img src={Ic_mintomt} alt="logo" />
+                      <div className="flex items-center gap-3">
+                        {isEditing ? (
+                          <button
+                            className="bg-purple text-white px-4 py-2 rounded text-sm self-end"
+                            onClick={async (e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const updatedRooms = [...RoomConfigurator];
+
+                              updatedRooms[index] = {
+                                ...updatedRooms[index],
+                                name: editedFloorName,
+                              };
+
+                              setRoomConfigurator(updatedRooms);
+                              setEditIndex(null);
+
+                              const husmodellDocRef = doc(
+                                db,
+                                "room_configurator",
+                                String(id)
+                              );
+
+                              await updateDoc(husmodellDocRef, {
+                                name: editedFloorName,
+                                updatedAt: new Date().toISOString(),
+                              });
+
+                              toast.success("Navn oppdatert!", {
+                                position: "top-right",
+                              });
+                            }}
+                          >
+                            Oppdater
+                          </button>
+                        ) : (
+                          <Pencil
+                            className="w-5 h-5 text-purple cursor-pointer"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setEditIndex(index);
+                              setEditedFloorName(item?.name);
+                              setId(item?.id);
+                            }}
+                          />
+                        )}
+
+                        <Trash2
+                          className="w-5 h-5 text-red cursor-pointer"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setConfirmDeleteIndex(index);
+                            setId(item?.id);
+                          }}
+                        />
+                      </div>
                     </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+                    <div className="w-full h-[200px] relative">
+                      {item?.Plantegninger?.[0]?.image ? (
+                        <>
+                          {!loaded && (
+                            <div className="w-full h-full rounded-lg custom-shimmer absolute top-0 left-0"></div>
+                          )}
+                          <img
+                            src={item.Plantegninger[0].image}
+                            alt="floor"
+                            className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
+                              loaded ? "opacity-100" : "opacity-0"
+                            }`}
+                            onLoad={() => handleImageLoad(index)}
+                            onError={() => handleImageLoad(index)}
+                            loading="lazy"
+                          />
+                        </>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center rounded-lg border border-gray2">
+                          <img src={Ic_mintomt} alt="logo" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+          </>
+        )}
       </div>
 
       {confirmDeleteIndex !== null && (
