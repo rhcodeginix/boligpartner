@@ -57,11 +57,6 @@ export const Husmodeller = () => {
             ønsket seier
           </p>
         </div>
-        {/* <Button
-          text="Lag ny serie"
-          className="border border-purple bg-purple text-white text-base rounded-[40px] h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
-          path="/add-husmodell"
-        /> */}
       </div>
       <div className="px-4 md:px-6 py-5 md:py-8 desktop:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 desktop:gap-6">
         {houseModels &&
@@ -71,17 +66,6 @@ export const Husmodeller = () => {
 
             return (
               <div key={index}>
-                {/* <div className="w-full h-[243px] mb-4">
-                  {item?.photo ? (
-                    <img
-                      src={item?.photo}
-                      alt="house"
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-[#6670853b] rounded-lg"></div>
-                  )}
-                </div> */}
                 <div className="w-full h-[243px] mb-2.5 md:mb-4 relative">
                   {!loaded && (
                     <div className="w-full h-full rounded-lg custom-shimmer"></div>

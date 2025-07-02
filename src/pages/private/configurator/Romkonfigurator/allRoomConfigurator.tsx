@@ -117,11 +117,6 @@ export const AllRoomkonfigurator: React.FC = () => {
                   navigate(`/Room-Configurator/${item?.id}`);
                 }}
               >
-                {/* <div className="flex gap-2 items-center justify-between mb-4">
-                  <span className="text-darkBlack font-medium">
-                    {item?.name}
-                  </span>
-                </div> */}
                 <div className="flex gap-2 items-center justify-between mb-4">
                   {isEditing ? (
                     <input
@@ -195,23 +190,6 @@ export const AllRoomkonfigurator: React.FC = () => {
                     />
                   </div>
                 </div>
-                {/* <div className="w-full h-[200px] relative">
-                  {!loaded && (
-                    <div className="w-full h-full rounded-lg custom-shimmer"></div>
-                  )}
-                  {item?.Plantegninger?.[0]?.image && (
-                    <img
-                      src={item?.Plantegninger?.[0]?.image}
-                      alt="floor"
-                      className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
-                        loaded ? "opacity-100" : "opacity-0"
-                      }`}
-                      onLoad={() => handleImageLoad(index)}
-                      onError={() => handleImageLoad(index)}
-                      loading="lazy"
-                    />
-                  )}
-                </div> */}
                 <div className="w-full h-[200px] relative">
                   {item?.Plantegninger?.[0]?.image ? (
                     <>

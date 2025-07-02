@@ -144,16 +144,7 @@ export const Husdetaljer: React.FC<{
 
         toast.success("Updated successfully", { position: "top-right" });
       }
-      // else {
-      //   await setDoc(husmodellDocRef, {
-      //     id: id,
-      //     KundeInfo: [finalData],
-      //     updatedAt: formatDate(new Date()),
-      //     createdAt: formatDate(new Date()),
-      //   });
-
-      //   toast.success("Added successfully", { position: "top-right" });
-      // }
+      //
 
       navigate(`/se-series/${id}/edit-husmodell/${uniqueId}`);
       setActiveTab(1);

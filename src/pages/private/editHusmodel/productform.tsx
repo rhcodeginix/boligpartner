@@ -190,44 +190,6 @@ export const ProductFormDrawer: React.FC<{
                                 >
                                   Pris fra
                                 </p>
-                                {/* <div className="flex items-center gap-3 text-black text-sm font-medium">
-                                  inkl. i tilbud
-                                  <div className="toggle-container">
-                                    <input
-                                      type="checkbox"
-                                      id={`toggleSwitch.${index}.IncludingOffer`}
-                                      className="toggle-input"
-                                      checked={
-                                        form.watch(
-                                          `produkter.${index}.IncludingOffer`
-                                        ) || false
-                                      }
-                                      name={`IncludingOffer`}
-                                      onChange={(e: any) => {
-                                        const checkedValue = e.target.checked;
-                                        form.setValue(
-                                          `produkter.${index}.IncludingOffer`,
-                                          checkedValue
-                                        );
-                                        if (checkedValue) {
-                                          form.setValue(
-                                            `produkter.${index}.pris`,
-                                            null
-                                          );
-                                        } else {
-                                          form.setValue(
-                                            `produkter.${index}.pris`,
-                                            ""
-                                          );
-                                        }
-                                      }}
-                                    />
-                                    <label
-                                      htmlFor={`toggleSwitch.${index}.IncludingOffer`}
-                                      className="toggle-label"
-                                    ></label>
-                                  </div>
-                                </div> */}
                                 <FormField
                                   control={form.control}
                                   name={`produkter.${index}.IncludingOffer`}
@@ -369,9 +331,7 @@ export const ProductFormDrawer: React.FC<{
                                       }}
                                       checked={field.value === option}
                                     />
-                                    <p
-                                      className={`text-black text-sm`}
-                                    >
+                                    <p className={`text-black text-sm`}>
                                       {option}
                                     </p>
                                   </div>

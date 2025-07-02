@@ -38,9 +38,6 @@ export const AddNewSubCat: React.FC<{
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    // defaultValues: {
-    //   Kategorinavn: defaultValue.navn || "",
-    // },
   });
   useEffect(() => {
     if (defaultValue) {
@@ -57,21 +54,8 @@ export const AddNewSubCat: React.FC<{
     const existingCategories =
       formData.getValues(`hovedkategorinavn.${activeTabData}.Kategorinavn`) ||
       [];
-    // setCategory((prev: any) => {
-    //   const updatedCategory = [...prev];
-    //   updatedCategory[activeTabData] = {
-    //     ...updatedCategory[activeTabData],
-    //     Kategorinavn: [...existingCategories, newSubCategory],
-    //   };
-    //   return updatedCategory;
-    // });
-    // formData.setValue(
-    //   `hovedkategorinavn.${activeTabData}.Kategorinavn`,
-    //   [...existingCategories, newSubCategory],
-    //   { shouldValidate: true }
-    // );
+
     if (editIndex !== null && existingCategories[editIndex]) {
-      // Edit existing
       const updatedCategories = [...existingCategories];
       updatedCategories[editIndex].navn = updatedName;
       updatedCategories[editIndex].productOptions = updatedOption;

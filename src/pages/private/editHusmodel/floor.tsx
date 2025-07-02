@@ -36,16 +36,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
     const getData = async () => {
       const data: any = await fetchHusmodellData(id);
-      // if (data) {
-      //   const finalData = data?.Plantegninger.find(
-      //     (item: any) => String(item?.pdf_id) === String(pdfId)
-      //   );
-      //   setFloorData(finalData);
-      //   if (finalData?.rooms && finalData.rooms.length > 0) {
-      //     setLoading(false);
-      //     return;
-      //   }
-      // }
+
       if (data) {
         const targetKunde = data.KundeInfo?.find(
           (k: any) => String(k.uniqueId) === String(kundeId)
@@ -60,81 +51,6 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           return;
         }
       }
-      // try {
-      //   if (pdfId) {
-      //     const husmodellDocRef = doc(
-      //       db,
-      //       "housemodell_configure_broker",
-      //       String(id)
-      //     );
-
-      //     const docSnap = await getDoc(husmodellDocRef);
-      //     const existingData = docSnap.exists()
-      //       ? docSnap.data().Plantegninger || []
-      //       : [];
-
-      //     // Call analyze API for this specific pdfId
-      //     const PDFresponse = await fetch(
-      //       `https://iplotnor-hf-api-version-2.hf.space/analyze/${pdfId}`,
-      //       {
-      //         method: "POST",
-      //         headers: {
-      //           accept: "application/json",
-      //           "Content-Type": "application/json",
-      //         },
-      //         body: JSON.stringify({
-      //           description: "string",
-      //         }),
-      //         mode: "cors",
-      //       }
-      //     );
-
-      //     if (!PDFresponse.ok) {
-      //       throw new Error(`HTTP error! status: ${PDFresponse.status}`);
-      //     }
-
-      //     const PDFdata = await PDFresponse.json();
-
-      //     // Replace only the matching pdf_id entry in existingData
-      //     const updatedPlantegninger = existingData.map((item: any) => {
-      //       if (String(item?.pdf_id) === String(pdfId)) {
-      //         return {
-      //           ...item, // keep original
-      //           ...PDFdata, // override with new fields
-      //         };
-      //       }
-      //       return item; // untouched others
-      //     });
-
-      //     const formatDate = (date: Date) => {
-      //       return date
-      //         .toLocaleString("sv-SE", { timeZone: "UTC" })
-      //         .replace(",", "");
-      //     };
-
-      //     await updateDoc(husmodellDocRef, {
-      //       Plantegninger: updatedPlantegninger,
-      //       id: id,
-      //       updatedAt: formatDate(new Date()),
-      //     });
-
-      //     // update UI
-      //     const finalData = updatedPlantegninger.find(
-      //       (item: any) => String(item?.pdf_id) === String(pdfId)
-      //     );
-      //     setFloorData(finalData);
-      //     toast.success(PDFdata.message, {
-      //       position: "top-right",
-      //     });
-      //     setActiveTab(3);
-      //   }
-      // } catch (error) {
-      //   console.error("Upload error:", error);
-      //   setLoading(false);
-      //   toast.error("File upload error!", {
-      //     position: "top-right",
-      //   });
-      // }
       try {
         const husmodellDocRef = doc(
           db,
@@ -176,7 +92,6 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
         const PDFdata = await PDFresponse.json();
 
-        // Update only the matching pdf entry inside targetKunde
         const updatedPlantegninger = existingPlantegninger.map((item: any) => {
           if (String(item?.pdf_id) === String(pdfId)) {
             return { ...item, ...PDFdata };
@@ -184,7 +99,6 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           return item;
         });
 
-        // Update the full KundeInfo array
         const updatedKundeInfo = allKundeInfo.map((k: any) => {
           if (k.uniqueId === kundeId) {
             return { ...k, Plantegninger: updatedPlantegninger };
@@ -269,17 +183,6 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         </div>
       </div>
       <div className="flex gap-4 md:gap-6 px-4 md:px-6 pt-6 pb-[136px]">
-        {/* <div className="w-[25%] border border-[#EFF1F5] rounded-lg shadow-shadow2">
-          <div className="p-4 border-b border-[#EFF1F5] text-darkBlack text-lg font-medium">
-            Romoversikt
-          </div>
-          <div className="p-4 flex items-center justify-center h-[490px] flex-col gap-6">
-            <AnimatedStars />
-            <p className="text-lg text-secondary text-center">
-              AI fetching the details <br /> about all rooms in this floor
-            </p>
-          </div>
-        </div> */}
         <div className="w-full border border-[#B9C0D4] rounded-lg overflow-hidden">
           <img src={FloorData?.image} alt="floor" className="w-full h-full" />
         </div>

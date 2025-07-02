@@ -108,7 +108,6 @@ export const BalkongTerrasse = forwardRef(
       "Ikke relevant",
       "Standard rekkverk balkong",
       "Annet rekkverk:",
-      // "Ønsker megler:",
     ];
 
     const VelgGulvBalkongOptions = [

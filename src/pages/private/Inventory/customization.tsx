@@ -57,7 +57,6 @@ const formSchema = z.object({
 });
 
 export const Customization: React.FC<{
-  // labelName: any;
   Category: any;
   activeTabData: any;
   setCategory: any;

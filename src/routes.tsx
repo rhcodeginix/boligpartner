@@ -4,7 +4,6 @@ import {
   Inventory,
   EditHouseModel,
   Husmodeller,
-  SeHouseModel,
   BoligConfiurator,
   BoligConfiuratorStepper,
   KundeInfo,
@@ -31,7 +30,6 @@ export const routes = createBrowserRouter([
       { path: "Room-Configurator/*", element: <BoligConfiuratorStepper /> },
       { path: "Inventory", element: <Inventory /> },
       { path: "Husmodell", element: <Husmodeller /> },
-      { path: "se-husmodell/*", element: <SeHouseModel /> },
       { path: "se-series/*", element: <KundeInfo /> },
       {
         path: "se-series/:seriesId/edit-husmodell/*",

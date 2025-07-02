@@ -66,8 +66,6 @@ export const ProductFormDrawer: React.FC<{
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    // onSubmit(newProduct)
-
     if (typeof onSubmitProp === "function") {
       onSubmitProp(data);
     }

@@ -105,9 +105,6 @@ const formSchema = z.object({
   }),
 });
 
-// export const Prosjektdetaljer: React.FC<{ handleNext: any }> = ({
-//   handleNext,
-// }) => {
 export const Prosjektdetaljer = forwardRef(
   (
     {

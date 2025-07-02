@@ -379,7 +379,6 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
         </p>
       </div>
       <div className="px-4 md:px-6 desktop:px-8 my-12">
-        {/* <VerticalWizard /> */}
         <VerticalWizard
           steps={wizardSteps}
           currentStep={currentStep}

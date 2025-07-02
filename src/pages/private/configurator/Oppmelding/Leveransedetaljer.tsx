@@ -42,10 +42,6 @@ const formSchema = z.object({
   Diverse: z.string().optional(),
 });
 
-// export const Leveransedetaljer: React.FC<{
-//   handleNext: any;
-//   handlePrevious: any;
-// }> = ({ handleNext, handlePrevious }) => {
 export const Leveransedetaljer = forwardRef(
   (
     {

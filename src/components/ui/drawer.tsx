@@ -1,7 +1,6 @@
 const Drawer = ({ isOpen, onClose, children }: any) => {
   return (
     <>
-      {/* Overlay */}
       <div
         className={`overlay ${isOpen ? "show" : ""}`}
         style={{
@@ -10,7 +9,6 @@ const Drawer = ({ isOpen, onClose, children }: any) => {
         onClick={onClose}
       ></div>
 
-      {/* Drawer content */}
       <div
         className={`drawer relative ${isOpen ? "open" : ""}`}
         style={{

@@ -259,11 +259,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             </p>
           </div>
           {activeTabData !== null && (
-            // <img
-            //   src={FloorData?.image}
-            //   alt="floor"
-            //   className="w-[120px] h-[120px] rounded-lg"
-            // />
             <img
               src={FloorData?.image}
               alt="floor"

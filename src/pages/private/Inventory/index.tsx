@@ -220,7 +220,6 @@ export const Inventory = () => {
 
         <div className="w-[75%] border border-[#EFF1F5] rounded-lg overflow-hidden h-max">
           <Customization
-            // labelName={Category[activeTabData]?.name || ""}
             Category={Category}
             activeTabData={activeTabData}
             setCategory={setCategory}

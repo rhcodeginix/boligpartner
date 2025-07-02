@@ -15,7 +15,6 @@ import { ref, uploadString, getDownloadURL } from "firebase/storage";
 const uploadBase64Image = async (base64: string) => {
   if (!base64) return;
 
-  // Optional: validate base64 size estimate
   const base64Size =
     base64.length * (3 / 4) -
     (base64.endsWith("==") ? 2 : base64.endsWith("=") ? 1 : 0);
@@ -28,11 +27,10 @@ const uploadBase64Image = async (base64: string) => {
 
   const fileType = "images";
   const timestamp = Date.now();
-  const fileName = `${timestamp}_image.png`; // or .jpg depending on content
+  const fileName = `${timestamp}_image.png`;
   const storageRef = ref(storage, `${fileType}/${fileName}`);
 
   try {
-    // Upload base64 (data URL)
     const snapshot = await uploadString(storageRef, base64, "data_url");
     const url = await getDownloadURL(snapshot.ref);
 

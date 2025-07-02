@@ -86,7 +86,6 @@ export const HusmodellerTable = () => {
       const data: any = await fetchHusmodellData(id);
 
       if (data && data.KundeInfo) {
-        // setHouseModels(data?.KundeInfo);
         const sortedKundeInfo = data.KundeInfo.sort(
           (a: any, b: any) =>
             new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
@@ -149,7 +148,9 @@ export const HusmodellerTable = () => {
         accessorKey: "EPost",
         header: "EPost",
         cell: ({ row }) => (
-          <p className="text-sm font-medium text-black w-max">{row.original.EPost}</p>
+          <p className="text-sm font-medium text-black w-max">
+            {row.original.EPost}
+          </p>
         ),
       },
       {
@@ -243,8 +244,6 @@ export const HusmodellerTable = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-
-        
       </div>
       <div className="rounded-lg border border-gray2 shadow-shadow2 overflow-hidden">
         <Table>
@@ -331,10 +330,7 @@ export const HusmodellerTable = () => {
                 Er du sikker på at du vil slette?
               </p>
               <div className="flex justify-center mt-5 w-full gap-5 items-center">
-                <div
-                  onClick={() => setShowConfirm(false)}
-                  
-                >
+                <div onClick={() => setShowConfirm(false)}>
                   <Button
                     text="Avbryt"
                     className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"

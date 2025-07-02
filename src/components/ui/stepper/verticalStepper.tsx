@@ -106,7 +106,6 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
           </div>
         </div>
 
-        {/* Content Area */}
         <div className="flex-1">
           <div>{currentStepData?.content}</div>
         </div>
