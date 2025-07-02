@@ -258,18 +258,16 @@ export const AddFinalSubmission: React.FC<{
         const element = previewRef.current;
         if (!element) throw new Error("Preview element not found");
 
-        // Force fixed width for consistent capture
         const originalWidth = element.style.width;
-        element.style.width = "794px"; // ≈210mm at 96dpi
+        element.style.width = "794px";
 
         const totalHeight = element.scrollHeight;
-        const pageHeightPx = 1123; // ≈297mm at 96dpi
+        const pageHeightPx = 1123;
 
         const totalPages = Math.ceil(totalHeight / pageHeightPx);
 
         const pdf = new jsPDF("p", "mm", "a4");
 
-        // Margins
         const marginTop = 10;
         const marginLeft = 0;
         const marginRight = 0;
@@ -296,7 +294,6 @@ export const AddFinalSubmission: React.FC<{
 
           if (page > 0) pdf.addPage();
 
-          // Draw image inside margins
           pdf.addImage(
             imgData,
             "PNG",
@@ -306,11 +303,9 @@ export const AddFinalSubmission: React.FC<{
             usableHeight
           );
 
-          // Add header
           pdf.setFontSize(12);
           pdf.text("", 105, 10, { align: "center" });
 
-          // Add footer with page number
           pdf.setFontSize(10);
           pdf.text(`Page ${page + 1} of ${totalPages}`, 105, 290, {
             align: "center",
