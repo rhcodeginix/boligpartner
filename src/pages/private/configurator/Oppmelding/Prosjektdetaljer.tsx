@@ -587,46 +587,6 @@ export const Prosjektdetaljer = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="BestillingsoversiktDatert"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Bestillingsoversikt datert*
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <DatePickerComponent
-                                selectedDate={
-                                  field.value ? new Date(field.value) : null
-                                }
-                                onDateChange={(date) => {
-                                  const formattedDate = date
-                                    ? date.toISOString().split("T")[0]
-                                    : "";
-
-                                  field.onChange(formattedDate);
-                                }}
-                                placeholderText="Velg dato"
-                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
-                                  fieldState?.error
-                                    ? "border-red"
-                                    : "border-gray1"
-                                }`}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
                   <div className="col-span-3 flex gap-4 md:gap-5">
                     <div className="w-1/2">
                       <FormField
@@ -1293,6 +1253,46 @@ export const Prosjektdetaljer = forwardRef(
                         )}
                       />
                     </div>
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="BestillingsoversiktDatert"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Bestillingsoversikt datert*
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <DatePickerComponent
+                                selectedDate={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                onDateChange={(date) => {
+                                  const formattedDate = date
+                                    ? date.toISOString().split("T")[0]
+                                    : "";
+
+                                  field.onChange(formattedDate);
+                                }}
+                                placeholderText="Velg dato"
+                                className={`bg-white rounded-[8px] border w-full overflow-hidden ${
+                                  fieldState?.error
+                                    ? "border-red"
+                                    : "border-gray1"
+                                }`}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                   <div className="col-span-3">
                     <FormField
