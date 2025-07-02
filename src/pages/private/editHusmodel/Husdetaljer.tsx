@@ -121,19 +121,21 @@ export const Husdetaljer: React.FC<{
 
       if (docSnap.exists()) {
         const existingData = docSnap.data();
+
         const existingKundeInfo = existingData.KundeInfo || [];
 
         let updatedKundeInfo;
 
         if (kundeId) {
           updatedKundeInfo = existingKundeInfo.map((item: any) =>
-            item.uniqueId === kundeId ? finalData : item
+            item.uniqueId === kundeId ? { ...item, ...finalData } : item
           );
         } else {
           updatedKundeInfo = [...existingKundeInfo, finalData];
         }
 
         await updateDoc(husmodellDocRef, {
+          ...existingData,
           KundeInfo: updatedKundeInfo,
           updatedAt: formatDate(new Date()),
         });

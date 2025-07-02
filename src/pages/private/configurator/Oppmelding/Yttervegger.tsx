@@ -132,7 +132,10 @@ export const Yttervegger = forwardRef(
       }
     };
 
-    const kledningstype = ["Standard leveranse", "Annen variant"];
+    const kledningstype = [
+      "Standard leveranse i henhold til signatur",
+      "Annen variant",
+    ];
     const OverflaterOptions = [
       "Standard kledning (maskingrunnet hvit)",
       "Grunnet + mellomstrøk maskinbeiset fra fabrikk",
@@ -197,7 +200,10 @@ export const Yttervegger = forwardRef(
                       )}
                     />
                   </div> */}
-                  {/* <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div> */}
+                  <p className="text-black text-sm italic col-span-3">
+                    Oppbygging på yttervegg leveres med standard 198+48mm
+                  </p>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
                   <h4 className="uppercase text-darkBlack font-semibold col-span-3">
                     KLEDNINGSTYPE
                   </h4>

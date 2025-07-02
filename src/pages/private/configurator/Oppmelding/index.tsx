@@ -28,16 +28,16 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [invalidSteps, setInvalidSteps] = useState<number[]>([]);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedIndex = localStorage.getItem("currVerticalIndex");
-      if (savedIndex) {
-        setCurrentStep(Number(savedIndex));
-      } else {
-        setCurrentStep(1);
-      }
-    }
-  }, [currentStep]);
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const savedIndex = localStorage.getItem("currVerticalIndex");
+  //     if (savedIndex) {
+  //       setCurrentStep(Number(savedIndex));
+  //     } else {
+  //       setCurrentStep(1);
+  //     }
+  //   }
+  // }, [currentStep]);
 
   const handleNext = async () => {
     const currentStepComponent = wizardSteps[currentStep - 1]?.content;

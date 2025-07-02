@@ -221,6 +221,7 @@ export const Prosjektdetaljer = forwardRef(
             });
           } else {
             form.setValue("Kundenr", Number(data?.Kundenummer));
+            form.setValue("VelgSerie", data?.HouseType ?? "");
           }
         }
       };

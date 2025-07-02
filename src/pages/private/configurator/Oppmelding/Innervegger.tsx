@@ -150,7 +150,7 @@ export const Innervegger = forwardRef(
             <div className="border border-[#B9C0D4] rounded-lg">
               <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4] uppercase">
                 {/* Innervegger */}
-                Romskjema
+                Oppbygging innervegg
               </div>
               <div className="p-4 md:p-5">
                 <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
@@ -224,10 +224,6 @@ export const Innervegger = forwardRef(
                       }}
                     />
                   </div>
-                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
-                  <h4 className="text-darkBlack font-bold col-span-3">
-                    Innvendige overflater - romskjema
-                  </h4>
                   <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
                   <h4 className="uppercase text-darkBlack font-semibold col-span-3">
                     ROMSKJEMA:
@@ -385,11 +381,11 @@ export const Innervegger = forwardRef(
                                                           <h4 className="text-sm font-medium text-black mb-1">
                                                             {prod.categoryName}
                                                           </h4>
-                                                          <h3 className="text-secondary mb-3">
+                                                          <h3 className="text-secondary">
                                                             {prod?.Produktnavn}
                                                           </h3>
                                                         </div>
-                                                        <div className="flex flex-col gap-2">
+                                                        {/* <div className="flex flex-col gap-2 mt-3">
                                                           <div className="text-secondary text-sm">
                                                             Leveres av:{" "}
                                                             <span className="text-black font-medium">
@@ -406,7 +402,7 @@ export const Innervegger = forwardRef(
                                                               </span>
                                                             </div>
                                                           )}
-                                                        </div>
+                                                        </div> */}
                                                       </div>
                                                     );
                                                   }

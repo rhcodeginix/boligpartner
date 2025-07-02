@@ -184,7 +184,7 @@ export const Dører = forwardRef(
       ],
       []
     );
-    const UtforingFarge = useMemo(() => ["Hvit", "Som vindusfarge"], []);
+    const UtforingFarge = useMemo(() => ["Hvit", "Som dørfarge"], []);
     const SlagretningTofløyetDør = useMemo(() => ["Høyre", "Venstre"], []);
     const BoddørOptions = useMemo(
       () => [

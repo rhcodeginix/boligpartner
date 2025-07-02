@@ -333,7 +333,7 @@ export const TakogTaktekking = forwardRef(
                             }}
                           >
                             <input
-                              type="checkbox"
+                              type="radio"
                               id="Takstein"
                               checked={field.value || false}
                               onChange={(e) => {
@@ -347,6 +347,7 @@ export const TakogTaktekking = forwardRef(
                                   form.resetField("HeisesPåTak");
                                 }
                               }}
+                              className="w-4 h-4"
                             />
                             Takstein
                           </p>

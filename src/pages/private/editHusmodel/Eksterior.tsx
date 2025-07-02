@@ -866,6 +866,7 @@ export const Eksterior: React.FC<{
                     Kundenavn: targetKunde.Kundenavn,
                     Kundenummer: targetKunde.Kundenummer,
                     mobileNummer: targetKunde.mobileNummer,
+                    HouseType: houseData?.husmodell_name,
                   };
 
                   if (docSnap.exists()) {
