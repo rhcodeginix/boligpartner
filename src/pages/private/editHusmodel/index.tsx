@@ -13,7 +13,7 @@ export const EditHouseModel = () => {
   const location = useLocation();
 
   const pathSegments = location.pathname.split("/");
-  const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  // const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
   return (
     <>
@@ -27,13 +27,13 @@ export const EditHouseModel = () => {
               >
                 Husmodeller
               </Link>
-              <ChevronRight className="text-[#5D6B98] w-4 h-4" />
+              {/* <ChevronRight className="text-[#5D6B98] w-4 h-4" />
               <Link
                 to={`/se-series/${id}`}
                 className="text-primary text-sm font-medium"
               >
                 Kundeopplysninger
-              </Link>
+              </Link> */}
               <ChevronRight className="text-[#5D6B98] w-4 h-4" />
               <span className="text-gray text-sm">
                 {kundeId ? "Rediger huset" : "Legg til nytt hus"}

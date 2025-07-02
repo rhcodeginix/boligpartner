@@ -275,8 +275,8 @@ export const Eksterior: React.FC<{
       });
 
       toast.success("Lagret", { position: "top-right" });
-      // navigate(`/Husmodell`);
-      navigate(`/se-series/${id}`);
+      navigate(`/Husmodell`);
+      // navigate(`/se-series/${id}`);
     } catch (error) {
       console.error("Failed to update plantegning:", error);
       toast.error("Noe gikk galt", { position: "top-right" });

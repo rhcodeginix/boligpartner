@@ -141,6 +141,17 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             delieverBy: "BoligPartner",
           },
         ],
+        // Gerikt: [
+        //   {
+        //     Produktnavn: "I henhold til serie",
+        //     isSelected: true,
+        //   },
+        //   { Produktnavn: "Annen serie", isSelected: false },
+        //   {
+        //     Produktnavn: "Listefritt",
+        //     isSelected: false,
+        //   },
+        // ],
         Kommentar: [],
       };
 
@@ -222,13 +233,13 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             Husmodeller
           </Link>
           <ChevronRight className="text-[#5D6B98] w-4 h-4" />
-          <Link
+          {/* <Link
             to={`/se-series/${id}`}
             className="text-primary text-sm font-medium"
           >
             Kundeopplysninger
           </Link>
-          <ChevronRight className="text-[#5D6B98] w-4 h-4" />
+          <ChevronRight className="text-[#5D6B98] w-4 h-4" /> */}
           <div
             onClick={() => {
               setActiveTab(1);
