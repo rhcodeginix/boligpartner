@@ -75,35 +75,40 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   }, []);
 
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
-  const convertPdfToImage = async (pdfData: string) => {
+
+  const convertPdfToImages = async (pdfData: string) => {
     try {
       const loadingTask = pdfjsLib.getDocument({
         data: atob(pdfData.split(",")[1]),
       });
       const pdfDocument = await loadingTask.promise;
 
-      const page = await pdfDocument.getPage(1);
+      const totalPages = pdfDocument.numPages;
+      console.log("Total pages:", totalPages);
 
-      const canvas = document.createElement("canvas");
-      if (!canvas) return;
+      const images: string[] = [];
 
-      const context = canvas.getContext("2d");
-      if (!context) return;
+      for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+        const page = await pdfDocument.getPage(pageNum);
 
-      const viewport = page.getViewport({ scale: 1.0 });
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        if (!context) continue;
 
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
+        const viewport = page.getViewport({ scale: 1.0 });
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
 
-      await page.render({
-        canvasContext: context,
-        viewport: viewport,
-      }).promise;
+        await page.render({ canvasContext: context, viewport }).promise;
 
-      const imgDataUrl = canvas.toDataURL("image/png");
-      return imgDataUrl;
+        const imgDataUrl = canvas.toDataURL("image/png");
+        images.push(imgDataUrl);
+      }
+
+      return images;
     } catch (err) {
       console.error("Error loading PDF document:", err);
+      return [];
     }
   };
 
@@ -141,80 +146,123 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
       if (data && data?.pdf_id) {
         const file = files[0];
 
-        let imageBase64: string | undefined;
-
         if (file.type === "application/pdf") {
           const base64PDF = await fileToBase64(file);
-          imageBase64 = await convertPdfToImage(base64PDF);
+          const imageBase64Array = await convertPdfToImages(base64PDF);
+
+          if (imageBase64Array.length) {
+            const husmodellDocRef = doc(
+              db,
+              "housemodell_configure_broker",
+              String(id)
+            );
+            const docSnap = await getDoc(husmodellDocRef);
+            if (!docSnap.exists()) {
+              toast.error("Husmodell not found", { position: "top-right" });
+              return;
+            }
+
+            const docvData = docSnap.data();
+            const existingKundeInfo = docvData.KundeInfo || [];
+
+            const updatedKundeInfo = existingKundeInfo.map((kunde: any) => {
+              if (kunde.uniqueId === kundeId) {
+                const existingFloors = kunde.Plantegninger || [];
+                let newFloors = [...existingFloors];
+
+                imageBase64Array.forEach((imgDataUrl) => {
+                  const floorIndex = newFloors.length + 1;
+                  const updatedFloor = {
+                    ...data,
+                    image: imgDataUrl,
+                    title: `Floor ${floorIndex}`,
+                  };
+
+                  newFloors.push(updatedFloor);
+
+                  setRoomsData((prev: any) => [
+                    ...(Array.isArray(prev) ? prev : []),
+                    updatedFloor,
+                  ]);
+                });
+
+                return {
+                  ...kunde,
+                  Plantegninger: newFloors,
+                };
+              }
+              return kunde;
+            });
+
+            await updateDoc(husmodellDocRef, {
+              KundeInfo: updatedKundeInfo,
+              updatedAt: new Date().toISOString(),
+            });
+
+            toast.success("PDF uploaded and floors added!", {
+              position: "top-right",
+            });
+          }
         } else if (file.type.startsWith("image/")) {
-          imageBase64 = await fileToBase64(file);
+          const imageBase64 = await fileToBase64(file);
+          const finalImageUrl = await uploadBase64Image(imageBase64);
+
+          if (finalImageUrl) {
+            const husmodellDocRef = doc(
+              db,
+              "housemodell_configure_broker",
+              String(id)
+            );
+            const docSnap = await getDoc(husmodellDocRef);
+            if (!docSnap.exists()) {
+              toast.error("Husmodell not found", { position: "top-right" });
+              return;
+            }
+
+            const docvData = docSnap.data();
+            const existingKundeInfo = docvData.KundeInfo || [];
+
+            const updatedKundeInfo = existingKundeInfo.map((kunde: any) => {
+              if (kunde.uniqueId === kundeId) {
+                const existingFloors = kunde.Plantegninger || [];
+                const newIndex = existingFloors.length + 1;
+
+                const updatedFloor = {
+                  ...data,
+                  image: finalImageUrl,
+                  title: `Floor ${newIndex}`,
+                };
+
+                setRoomsData((prev: any) => [
+                  ...(Array.isArray(prev) ? prev : []),
+                  updatedFloor,
+                ]);
+
+                return {
+                  ...kunde,
+                  Plantegninger: [...existingFloors, updatedFloor],
+                };
+              }
+              return kunde;
+            });
+
+            await updateDoc(husmodellDocRef, {
+              KundeInfo: updatedKundeInfo,
+              updatedAt: new Date().toISOString(),
+            });
+
+            toast.success(data.message, { position: "top-right" });
+          }
         } else {
           console.error("Unsupported file type");
-          setFileUploadLoading(false);
-          return;
-        }
-
-        if (imageBase64) {
-          const finalImageUrl = await uploadBase64Image(imageBase64);
-          const husmodellDocRef = doc(
-            db,
-            "housemodell_configure_broker",
-            String(id)
-          );
-
-          const docSnap = await getDoc(husmodellDocRef);
-          if (!docSnap.exists()) {
-            toast.error("Husmodell not found", { position: "top-right" });
-            return;
-          }
-
-          const docvData = docSnap.data();
-          const existingKundeInfo = docvData.KundeInfo || [];
-
-          const formatDate = (date: Date) => {
-            return date
-              .toLocaleString("sv-SE", { timeZone: "UTC" })
-              .replace(",", "");
-          };
-
-          const updatedKundeInfo = existingKundeInfo.map((kunde: any) => {
-            if (kunde.uniqueId === kundeId) {
-              const existingFloors = kunde.Plantegninger || [];
-              const newIndex = existingFloors.length + 1;
-
-              const updatedFloor = {
-                ...data,
-                image: finalImageUrl,
-                title: `Floor ${newIndex}`,
-              };
-              setRoomsData((prev: any) => [
-                ...(Array.isArray(prev) ? prev : []),
-                updatedFloor,
-              ]);
-              return {
-                ...kunde,
-                Plantegninger: [...existingFloors, updatedFloor],
-              };
-            }
-            return kunde;
-          });
-
-          await updateDoc(husmodellDocRef, {
-            KundeInfo: updatedKundeInfo,
-            updatedAt: formatDate(new Date()),
-          });
-          toast.success(data.message, {
-            position: "top-right",
-          });
-          setFileUploadLoading(false);
+          toast.error("Unsupported file type", { position: "top-right" });
         }
       }
     } catch (error) {
       console.error("Upload error:", error);
+      toast.error("File upload error!", { position: "top-right" });
+    } finally {
       setFileUploadLoading(false);
-      toast.error("File upload error!", {
-        position: "top-right",
-      });
     }
   };
 

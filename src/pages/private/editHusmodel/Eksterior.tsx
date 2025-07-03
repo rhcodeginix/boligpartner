@@ -74,6 +74,7 @@ const productSchema = z
   .superRefine((data, ctx) => {
     if (
       data.Type === "HelpText" &&
+      data.isSelected === true &&
       (!data.customText || data.customText.trim() === "")
     ) {
       ctx.addIssue({
@@ -656,114 +657,70 @@ export const Eksterior: React.FC<{
                         const isSelected = product?.isSelected;
 
                         return (
-                          <div key={index}>
-                            {product.Type === "HelpText" ? (
-                              <div>
-                                <FormField
-                                  control={form.control}
-                                  name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.customText`}
-                                  render={({ field, fieldState }) => (
-                                    <FormItem>
-                                      <p
-                                        className={`${
-                                          fieldState.error
-                                            ? "text-red"
-                                            : "text-black"
-                                        } mb-[6px] text-sm font-medium`}
-                                      >
-                                        {product.Produktnavn}
-                                      </p>
-                                      <FormControl>
-                                        <div className="relative">
-                                          <Input
-                                            placeholder="Angi type og farge"
-                                            {...field}
-                                            className={`bg-white rounded-[8px] border text-black
-                                                     ${
-                                                       fieldState?.error
-                                                         ? "border-red"
-                                                         : "border-gray1"
-                                                     } `}
-                                            type="text"
-                                            value={
-                                              form.watch(
-                                                `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.customText`
-                                              ) || ""
-                                            }
-                                          />
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              </div>
-                            ) : (
-                              <div
-                                // className="cursor-move border-[#EFF1F5] border rounded-lg"
-                                className={`cursor-pointer border rounded-lg ${
-                                  isSelected
-                                    ? "border-2 border-purple bg-lightPurple bg-opacity-10"
-                                    : "border-[#EFF1F5]"
-                                }`}
-                                draggable
-                                onDragStart={() =>
-                                  setDraggingProductIndex(index)
+                          <div key={index} className="flex gap-2 items-start">
+                            <div
+                              // className="cursor-move border-[#EFF1F5] border rounded-lg"
+                              className={`w-full cursor-pointer border rounded-lg ${
+                                isSelected
+                                  ? "border-2 border-purple bg-lightPurple bg-opacity-10"
+                                  : "border-[#EFF1F5]"
+                              }`}
+                              draggable
+                              onDragStart={() => setDraggingProductIndex(index)}
+                              onDragOver={(e) => {
+                                e.preventDefault();
+                                setDragOverProductIndex(index);
+                              }}
+                              onDrop={() => handleDrop()}
+                              onClick={() => {
+                                const productOptions = form.getValues(
+                                  `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
+                                );
+
+                                let updatedProducts;
+
+                                if (productOptions === "Single Select") {
+                                  updatedProducts = produkter.map(
+                                    (p: any, i: number) => ({
+                                      ...p,
+                                      isSelected: i === index,
+                                    })
+                                  );
+                                } else {
+                                  updatedProducts = produkter.map(
+                                    (p: any, i: number) => ({
+                                      ...p,
+                                      isSelected:
+                                        i === index
+                                          ? !p.isSelected
+                                          : p.isSelected,
+                                    })
+                                  );
                                 }
-                                onDragOver={(e) => {
-                                  e.preventDefault();
-                                  setDragOverProductIndex(index);
-                                }}
-                                onDrop={() => handleDrop()}
-                                onClick={() => {
-                                  const productOptions = form.getValues(
-                                    `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
-                                  );
 
-                                  let updatedProducts;
-
-                                  if (productOptions === "Single Select") {
-                                    updatedProducts = produkter.map(
-                                      (p: any, i: number) => ({
-                                        ...p,
-                                        isSelected: i === index,
-                                      })
-                                    );
-                                  } else {
-                                    updatedProducts = produkter.map(
-                                      (p: any, i: number) => ({
-                                        ...p,
-                                        isSelected:
-                                          i === index
-                                            ? !p.isSelected
-                                            : p.isSelected,
-                                      })
-                                    );
-                                  }
-
-                                  form.setValue(
-                                    `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
-                                    updatedProducts,
-                                    { shouldValidate: true }
-                                  );
-                                }}
-                              >
-                                <div className="flex gap-4 p-3">
-                                  {product?.Hovedbilde?.[0] && (
-                                    <div className="w-[100px]">
-                                      <img
-                                        src={`${product?.Hovedbilde?.[0]}`}
-                                        alt="floor"
-                                        className="w-[100px] h-[76px] border border-[#EFF1F5] rounded-[4px]"
-                                      />
-                                    </div>
-                                  )}
-                                  <div className="w-full">
-                                    <div className="flex items-center gap-2 justify-between">
-                                      <h4 className="text-darkBlack text-sm">
-                                        {product?.Produktnavn}
-                                      </h4>
-                                      {/* <div className="flex items-center gap-2 mt-1">
+                                form.setValue(
+                                  `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
+                                  updatedProducts,
+                                  { shouldValidate: true }
+                                );
+                              }}
+                            >
+                              <div className="flex gap-4 p-3">
+                                {product?.Hovedbilde?.[0] && (
+                                  <div className="w-[100px]">
+                                    <img
+                                      src={`${product?.Hovedbilde?.[0]}`}
+                                      alt="floor"
+                                      className="w-[100px] h-[76px] border border-[#EFF1F5] rounded-[4px]"
+                                    />
+                                  </div>
+                                )}
+                                <div className="w-full">
+                                  <div className="flex items-center gap-2 justify-between">
+                                    <h4 className="text-darkBlack text-sm">
+                                      {product?.Produktnavn}
+                                    </h4>
+                                    {/* <div className="flex items-center gap-2 mt-1">
                                   <Pencil
                                     className="w-5 h-5 text-primary cursor-pointer"
                                     onClick={() => {
@@ -786,19 +743,19 @@ export const Eksterior: React.FC<{
                                     }}
                                   />
                                 </div> */}
-                                    </div>
+                                  </div>
 
-                                    {product?.delieverBy && (
-                                      <div className="mb-2 flex items-center gap-2">
-                                        <p className="text-secondary text-xs">
-                                          Deliver by:
-                                        </p>
-                                        <span className="text-darkBlack">
-                                          {product?.delieverBy}
-                                        </span>
-                                      </div>
-                                    )}
-                                    {/* {[
+                                  {product?.delieverBy && (
+                                    <div className="mb-2 flex items-center gap-2">
+                                      <p className="text-secondary text-xs">
+                                        Deliver by:
+                                      </p>
+                                      <span className="text-darkBlack">
+                                        {product?.delieverBy}
+                                      </span>
+                                    </div>
+                                  )}
+                                  {/* {[
                                   "Himlling",
                                   "Vegger",
                                   "Gulv",
@@ -806,21 +763,21 @@ export const Eksterior: React.FC<{
                                 ].includes(title) ? (
                                   ""
                                 ) : ( */}
-                                    <div className="flex items-center justify-between gap-2">
-                                      <span className="text-sm font-medium text-darkBlack">
-                                        {product?.IncludingOffer ? (
-                                          <div className="text-black font-semibold whitespace-nowrap">
-                                            Standard
-                                          </div>
-                                        ) : (
-                                          <div className="text-black font-semibold whitespace-nowrap">
-                                            {product?.pris &&
-                                              `kr ${product?.pris}`}
-                                          </div>
-                                        )}
-                                      </span>
+                                  <div className="flex items-center justify-between gap-2">
+                                    <span className="text-sm font-medium text-darkBlack">
+                                      {product?.IncludingOffer ? (
+                                        <div className="text-black font-semibold whitespace-nowrap">
+                                          Standard
+                                        </div>
+                                      ) : (
+                                        <div className="text-black font-semibold whitespace-nowrap">
+                                          {product?.pris &&
+                                            `kr ${product?.pris}`}
+                                        </div>
+                                      )}
+                                    </span>
 
-                                      {/* <span
+                                    {/* <span
                                   className="text-purple font-medium text-sm cursor-pointer"
                                   onClick={() => {
                                     handleproductViewDrawer();
@@ -829,10 +786,42 @@ export const Eksterior: React.FC<{
                                 >
                                   View Details
                                 </span> */}
-                                    </div>
-                                    {/* )} */}
                                   </div>
+                                  {/* )} */}
                                 </div>
+                              </div>
+                            </div>
+                            {isSelected && product.Type === "HelpText" && (
+                              <div className="w-full">
+                                <FormField
+                                  control={form.control}
+                                  name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.customText`}
+                                  render={({ field, fieldState }) => (
+                                    <FormItem>
+                                      <FormControl>
+                                        <div className="relative">
+                                          <Input
+                                            placeholder="Angi type og farge"
+                                            {...field}
+                                            className={`bg-white rounded-[8px] border text-black
+                                                 ${
+                                                   fieldState?.error
+                                                     ? "border-red"
+                                                     : "border-gray1"
+                                                 } `}
+                                            type="text"
+                                            value={
+                                              form.watch(
+                                                `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.customText`
+                                              ) || ""
+                                            }
+                                          />
+                                        </div>
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
                               </div>
                             )}
                           </div>
