@@ -840,7 +840,7 @@ export const Eksterior: React.FC<{
             }}
           >
             <Button
-              text="Avbryt"
+              text="Tilbake"
               className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
               onClick={() => {
                 setActiveTab(2);

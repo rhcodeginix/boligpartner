@@ -176,7 +176,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           const updatedPdfData = {
             ...data,
             image: finalImageUrl,
-            title: `Floor ${newIndex}`,
+            title: `Plan ${newIndex}`,
           };
           setRoomsData((prev: any) => [...prev, updatedPdfData]);
 

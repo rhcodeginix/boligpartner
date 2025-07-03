@@ -7,12 +7,12 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from "../../../components/ui/form";
-import Button from "../../../components/common/button";
-import { Input } from "../../../components/ui/input";
+} from "../../../../components/ui/form";
+import Button from "../../../../components/common/button";
+import { Input } from "../../../../components/ui/input";
 import { useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../../../config/firebaseConfig";
+import { db } from "../../../../config/firebaseConfig";
 import { useLocation } from "react-router-dom";
 
 const formSchema = z.object({
@@ -115,11 +115,7 @@ export const AddNewCat: React.FC<{
     }
 
     try {
-      const husmodellDocRef = doc(
-        db,
-        "housemodell_configure_broker",
-        String(id)
-      );
+      const husmodellDocRef = doc(db, "room_configurator", String(id));
       const docSnap = await getDoc(husmodellDocRef);
 
       if (docSnap.exists()) {

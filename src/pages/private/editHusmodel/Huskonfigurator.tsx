@@ -175,7 +175,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                   const updatedFloor = {
                     ...data,
                     image: imgDataUrl,
-                    title: `Floor ${floorIndex}`,
+                    title: `Plan ${floorIndex}`,
                   };
 
                   newFloors.push(updatedFloor);
@@ -230,7 +230,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                 const updatedFloor = {
                   ...data,
                   image: finalImageUrl,
-                  title: `Floor ${newIndex}`,
+                  title: `Plan ${newIndex}`,
                 };
 
                 setRoomsData((prev: any) => [

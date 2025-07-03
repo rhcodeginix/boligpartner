@@ -13,6 +13,7 @@ import { db } from "../../../config/firebaseConfig";
 export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
   const navigate = useNavigate();
   const [activeTabData, setActiveTabData] = useState<number | null>(null);
+  const [EditTabData, setEditTabData] = useState<number | null>(null);
   const [AddCategory, setAddCategory] = useState(false);
   const [Category, setCategory] = useState<any>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -353,6 +354,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                               e.stopPropagation();
                               setEditCategory({ index, data: tab });
                               setAddCategory(true);
+                              setEditTabData(index);
                             }}
                           >
                             <Pencil className="w-5 h-5 text-primary" />
@@ -434,6 +436,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               setCategory={setCategory}
               editData={editCategory}
               Category={Category}
+              EditTabData={EditTabData}
             />
           </div>
         </Modal>

@@ -5,7 +5,7 @@ import Button from "../../../../components/common/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { fetchRoomData } from "../../../../lib/utils";
 import { ChevronRight, Pencil, Plus, X } from "lucide-react";
-import { AddNewCat } from "../../editHusmodel/AddNewCat";
+import { AddNewCat } from "./AddNewCat";
 import { Eksterior } from "./Eksterior";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
@@ -20,6 +20,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
     index: number;
     data: any;
   }>(null);
+  const [EditTabData, setEditTabData] = useState<number | null>(null);
 
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
@@ -290,6 +291,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                               e.stopPropagation();
                               setEditCategory({ index, data: tab });
                               setAddCategory(true);
+                              setEditTabData(index);
                             }}
                           >
                             <Pencil className="w-5 h-5 text-primary" />
@@ -375,6 +377,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               setCategory={setCategory}
               editData={editCategory}
               Category={Category}
+              EditTabData={EditTabData}
             />
           </div>
         </Modal>
