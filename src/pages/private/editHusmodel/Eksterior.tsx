@@ -651,7 +651,7 @@ export const Eksterior: React.FC<{
                       </div>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-2 items-center">
                       {produkter?.map((product, index) => {
                         const isSelected = product?.isSelected;
 
@@ -685,7 +685,11 @@ export const Eksterior: React.FC<{
                                                          : "border-gray1"
                                                      } `}
                                             type="text"
-                                            value={field.value}
+                                            value={
+                                              form.watch(
+                                                `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.customText`
+                                              ) || ""
+                                            }
                                           />
                                         </div>
                                       </FormControl>
