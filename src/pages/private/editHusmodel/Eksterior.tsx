@@ -24,6 +24,7 @@ import { fetchHusmodellData } from "../../../lib/utils";
 import { ViewProductDetail } from "./ViewDetailProduct";
 import Modal from "../../../components/common/modal";
 import { Input } from "../../../components/ui/input";
+import { v4 as uuidv4 } from "uuid";
 
 const fileSchema = z.union([
   z
@@ -928,8 +929,9 @@ export const Eksterior: React.FC<{
                     (item: any) => String(item?.pdf_id) === String(pdfId)
                   );
                   if (!finalData) return;
+                  const newId = uuidv4();
 
-                  const docRef = doc(db, "room_configurator", kundeId);
+                  const docRef = doc(db, "room_configurator", newId);
                   const docSnap = await getDoc(docRef);
 
                   const basePayload = {
@@ -1182,8 +1184,8 @@ export const Eksterior: React.FC<{
                 className="bg-purple text-white"
                 onClick={async () => {
                   if (!pendingPayload) return;
-
-                  const docRef = doc(db, "room_configurator", String(kundeId));
+                  const newId = uuidv4();
+                  const docRef = doc(db, "room_configurator", String(newId));
                   const docSnap = await getDoc(docRef);
                   const formatDate = (date: Date) =>
                     date
