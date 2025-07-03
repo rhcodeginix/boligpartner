@@ -115,42 +115,45 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         ],
         Talklist: [
           {
-            Produktnavn: "I henhold til leveransebeskrivelse",
+            Produktnavn: "I henhold til serie",
             isSelected: true,
           },
-          { Produktnavn: "Annen signatur", isSelected: false },
           {
-            Produktnavn: "Uten lister for listefri løsning",
+            Produktnavn: "Annen type list",
             isSelected: false,
-          },
-          { Produktnavn: "Eget valg", isSelected: false },
-          {
-            Produktnavn: "Talklist 21x45 (hvimalt)",
-            isSelected: false,
-            delieverBy: "BoligPartner",
+            Type: "HelpText",
           },
           {
-            Produktnavn: "Talklist 21x45 (Iakkert)",
+            Produktnavn: "Listefritt",
             isSelected: false,
-            delieverBy: "BoligPartner",
-          },
-          {
-            Produktnavn: "Talklist 21x45 (ubehandlet)",
-            isSelected: false,
-            delieverBy: "BoligPartner",
           },
         ],
-        // Gerikt: [
-        //   {
-        //     Produktnavn: "I henhold til serie",
-        //     isSelected: true,
-        //   },
-        //   { Produktnavn: "Annen serie", isSelected: false },
-        //   {
-        //     Produktnavn: "Listefritt",
-        //     isSelected: false,
-        //   },
-        // ],
+        Gerikt: [
+          {
+            Produktnavn: "I henhold til serie",
+            isSelected: true,
+          },
+          {
+            Produktnavn: "Annen type list",
+            isSelected: false,
+            Type: "HelpText",
+          },
+          {
+            Produktnavn: "Listefritt",
+            isSelected: false,
+          },
+        ],
+        Gulvlist: [
+          {
+            Produktnavn: "I henhold til serie",
+            isSelected: true,
+          },
+          {
+            Produktnavn: "Annen type list",
+            isSelected: false,
+            Type: "HelpText",
+          },
+        ],
         Kommentar: [],
       };
 

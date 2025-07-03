@@ -92,7 +92,6 @@ export const AllRoomkonfigurator: React.FC = () => {
         <Button
           text="Legg til ny romkonfigurator"
           className="border border-purple bg-purple text-white text-base rounded-[40px] h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
-          //   path="/add-bolig-configu"
           onClick={() => {
             // setActiveTab(1);
             navigate("/Room-Configurator");

@@ -3,7 +3,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Form } from "../../../components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "../../../components/ui/form";
 import Button from "../../../components/common/button";
 import Ic_x_circle from "../../../assets/images/Ic_x_circle.svg";
 import { ArrowLeft, Pencil, Plus, X } from "lucide-react";
@@ -17,6 +23,7 @@ import { db } from "../../../config/firebaseConfig";
 import { fetchHusmodellData } from "../../../lib/utils";
 import { ViewProductDetail } from "./ViewDetailProduct";
 import Modal from "../../../components/common/modal";
+import { Input } from "../../../components/ui/input";
 
 const fileSchema = z.union([
   z
@@ -39,15 +46,42 @@ const fileSchema = z.union([
 //   isSelected: z.boolean().optional(),
 // });
 
-const productSchema = z.object({
-  Produktnavn: z.string().optional(),
-  delieverBy: z.string().optional(),
-  Hovedbilde: z.array(fileSchema).optional(),
-  pris: z.string().nullable().optional(),
-  IncludingOffer: z.boolean().optional(),
-  Produktbeskrivelse: z.string().optional(),
-  isSelected: z.boolean().optional(),
-});
+// const productSchema = z.object({
+//   Produktnavn: z.string().optional(),
+//   delieverBy: z.string().optional(),
+//   Hovedbilde: z.array(fileSchema).optional(),
+//   pris: z.string().nullable().optional(),
+//   IncludingOffer: z.boolean().optional(),
+//   Produktbeskrivelse: z.string().optional(),
+//   isSelected: z.boolean().optional(),
+//   customText: z.string().optional(),
+//   Type: z.string().optional(),
+// });
+
+const productSchema = z
+  .object({
+    Produktnavn: z.string().optional(),
+    delieverBy: z.string().optional(),
+    Hovedbilde: z.array(fileSchema).optional(),
+    pris: z.string().nullable().optional(),
+    IncludingOffer: z.boolean().optional(),
+    Produktbeskrivelse: z.string().optional(),
+    isSelected: z.boolean().optional(),
+    customText: z.string().optional(),
+    Type: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.Type === "HelpText" &&
+      (!data.customText || data.customText.trim() === "")
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["customText"],
+        message: "Påkrevd.",
+      });
+    }
+  });
 
 // const categorySchema = z.object({
 //   navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
@@ -338,6 +372,8 @@ export const Eksterior: React.FC<{
               Produktbeskrivelse: product.Produktbeskrivelse || "",
               delieverBy: product.delieverBy || "",
               isSelected: product.isSelected || false,
+              customText: product.customText || "",
+              Type: product.Type || "",
             };
           });
         }
@@ -440,17 +476,6 @@ export const Eksterior: React.FC<{
 
   const [editProductIndex, setEditProductIndex] = useState<number | null>(null);
   const [isEditProductDrawerOpen, setIsEditProductDrawerOpen] = useState(false);
-
-  const errorObj: any =
-    form.formState.errors?.hovedkategorinavn?.[activeTabData]?.Kategorinavn?.[
-      activeSubTabData
-    ];
-
-  const hasTextError =
-    errorObj?.productOptions === "Text" &&
-    "text" in errorObj &&
-    !!errorObj.text;
-
   const [showConfiguratorModal, setShowConfiguratorModal] = useState(false);
   const [newConfiguratorName, setNewConfiguratorName] = useState("");
   const [pendingPayload, setPendingPayload] = useState<any>(null);
@@ -598,24 +623,31 @@ export const Eksterior: React.FC<{
                     `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
                   ) === "Text" ? (
                     <div className="mb-4">
-                      <textarea
-                        className={`h-[130px] bg-white rounded-[8px] text-black p-2 w-full resize-none text-sm
-                        ${hasTextError ? "border-red" : "border-gray1"} border
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.text`}
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="relative">
+                                  <textarea
+                                    className={`h-[130px] bg-white rounded-[8px] text-black p-2 w-full resize-none text-sm
+                        ${
+                          fieldState.error ? "border-red" : "border-gray1"
+                        } border
                         flex w-full rounded-[8px] border-input bg-white text-black px-[14px] py-[10px] text-base focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:shadow-none focus-visible:shadow-none resize-none border-input file:border-0 file:bg-transparent file:text-sm file:font-medium focus:bg-lightYellow2 focus:shadow-none focus-visible:shadow-none placeholder:text-[#667085] placeholder:text-opacity-55 placeholder:text-base disabled:text-[#767676] focus:shadow-shadow1`}
-                        placeholder="Skriv kommentar..."
-                        value={
-                          form.watch(
-                            `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.text`
-                          ) || ""
-                        }
-                        onChange={(e) => {
-                          form.setValue(
-                            `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.text`,
-                            e.target.value,
-                            { shouldValidate: true }
-                          );
-                        }}
-                      />
+                                    placeholder="Skriv kommentar..."
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-2">
@@ -623,70 +655,110 @@ export const Eksterior: React.FC<{
                         const isSelected = product?.isSelected;
 
                         return (
-                          <div
-                            // className="cursor-move border-[#EFF1F5] border rounded-lg"
-                            className={`cursor-pointer border rounded-lg ${
-                              isSelected
-                                ? "border-2 border-purple bg-lightPurple bg-opacity-10"
-                                : "border-[#EFF1F5]"
-                            }`}
-                            key={index}
-                            draggable
-                            onDragStart={() => setDraggingProductIndex(index)}
-                            onDragOver={(e) => {
-                              e.preventDefault();
-                              setDragOverProductIndex(index);
-                            }}
-                            onDrop={() => handleDrop()}
-                            onClick={() => {
-                              const productOptions = form.getValues(
-                                `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
-                              );
+                          <div key={index}>
+                            {product.Type === "HelpText" ? (
+                              <div>
+                                <FormField
+                                  control={form.control}
+                                  name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.customText`}
+                                  render={({ field, fieldState }) => (
+                                    <FormItem>
+                                      <p
+                                        className={`${
+                                          fieldState.error
+                                            ? "text-red"
+                                            : "text-black"
+                                        } mb-[6px] text-sm font-medium`}
+                                      >
+                                        {product.Produktnavn}
+                                      </p>
+                                      <FormControl>
+                                        <div className="relative">
+                                          <Input
+                                            placeholder="Angi type og farge"
+                                            {...field}
+                                            className={`bg-white rounded-[8px] border text-black
+                                                     ${
+                                                       fieldState?.error
+                                                         ? "border-red"
+                                                         : "border-gray1"
+                                                     } `}
+                                            type="text"
+                                            value={field.value}
+                                          />
+                                        </div>
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                            ) : (
+                              <div
+                                // className="cursor-move border-[#EFF1F5] border rounded-lg"
+                                className={`cursor-pointer border rounded-lg ${
+                                  isSelected
+                                    ? "border-2 border-purple bg-lightPurple bg-opacity-10"
+                                    : "border-[#EFF1F5]"
+                                }`}
+                                draggable
+                                onDragStart={() =>
+                                  setDraggingProductIndex(index)
+                                }
+                                onDragOver={(e) => {
+                                  e.preventDefault();
+                                  setDragOverProductIndex(index);
+                                }}
+                                onDrop={() => handleDrop()}
+                                onClick={() => {
+                                  const productOptions = form.getValues(
+                                    `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
+                                  );
 
-                              let updatedProducts;
+                                  let updatedProducts;
 
-                              if (productOptions === "Single Select") {
-                                updatedProducts = produkter.map(
-                                  (p: any, i: number) => ({
-                                    ...p,
-                                    isSelected: i === index,
-                                  })
-                                );
-                              } else {
-                                updatedProducts = produkter.map(
-                                  (p: any, i: number) => ({
-                                    ...p,
-                                    isSelected:
-                                      i === index
-                                        ? !p.isSelected
-                                        : p.isSelected,
-                                  })
-                                );
-                              }
+                                  if (productOptions === "Single Select") {
+                                    updatedProducts = produkter.map(
+                                      (p: any, i: number) => ({
+                                        ...p,
+                                        isSelected: i === index,
+                                      })
+                                    );
+                                  } else {
+                                    updatedProducts = produkter.map(
+                                      (p: any, i: number) => ({
+                                        ...p,
+                                        isSelected:
+                                          i === index
+                                            ? !p.isSelected
+                                            : p.isSelected,
+                                      })
+                                    );
+                                  }
 
-                              form.setValue(
-                                `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
-                                updatedProducts,
-                                { shouldValidate: true }
-                              );
-                            }}
-                          >
-                            <div className="flex gap-4 p-3">
-                              {product?.Hovedbilde?.[0] && (
-                                <div className="w-[100px]">
-                                  <img
-                                    src={`${product?.Hovedbilde?.[0]}`}
-                                    alt="floor"
-                                    className="w-[100px] h-[76px] border border-[#EFF1F5] rounded-[4px]"
-                                  />
-                                </div>
-                              )}
-                              <div className="w-full">
-                                <div className="flex items-center gap-2 justify-between">
-                                  <h4 className="text-darkBlack text-sm">
-                                    {product?.Produktnavn}
-                                  </h4>
-                                  {/* <div className="flex items-center gap-2 mt-1">
+                                  form.setValue(
+                                    `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
+                                    updatedProducts,
+                                    { shouldValidate: true }
+                                  );
+                                }}
+                              >
+                                <div className="flex gap-4 p-3">
+                                  {product?.Hovedbilde?.[0] && (
+                                    <div className="w-[100px]">
+                                      <img
+                                        src={`${product?.Hovedbilde?.[0]}`}
+                                        alt="floor"
+                                        className="w-[100px] h-[76px] border border-[#EFF1F5] rounded-[4px]"
+                                      />
+                                    </div>
+                                  )}
+                                  <div className="w-full">
+                                    <div className="flex items-center gap-2 justify-between">
+                                      <h4 className="text-darkBlack text-sm">
+                                        {product?.Produktnavn}
+                                      </h4>
+                                      {/* <div className="flex items-center gap-2 mt-1">
                                   <Pencil
                                     className="w-5 h-5 text-primary cursor-pointer"
                                     onClick={() => {
@@ -709,19 +781,19 @@ export const Eksterior: React.FC<{
                                     }}
                                   />
                                 </div> */}
-                                </div>
+                                    </div>
 
-                                {product?.delieverBy && (
-                                  <div className="mb-2 flex items-center gap-2">
-                                    <p className="text-secondary text-xs">
-                                      Deliver by:
-                                    </p>
-                                    <span className="text-darkBlack">
-                                      {product?.delieverBy}
-                                    </span>
-                                  </div>
-                                )}
-                                {/* {[
+                                    {product?.delieverBy && (
+                                      <div className="mb-2 flex items-center gap-2">
+                                        <p className="text-secondary text-xs">
+                                          Deliver by:
+                                        </p>
+                                        <span className="text-darkBlack">
+                                          {product?.delieverBy}
+                                        </span>
+                                      </div>
+                                    )}
+                                    {/* {[
                                   "Himlling",
                                   "Vegger",
                                   "Gulv",
@@ -729,20 +801,21 @@ export const Eksterior: React.FC<{
                                 ].includes(title) ? (
                                   ""
                                 ) : ( */}
-                                <div className="flex items-center justify-between gap-2">
-                                  <span className="text-sm font-medium text-darkBlack">
-                                    {product?.IncludingOffer ? (
-                                      <div className="text-black font-semibold whitespace-nowrap">
-                                        Standard
-                                      </div>
-                                    ) : (
-                                      <div className="text-black font-semibold whitespace-nowrap">
-                                        {product?.pris && `kr ${product?.pris}`}
-                                      </div>
-                                    )}
-                                  </span>
+                                    <div className="flex items-center justify-between gap-2">
+                                      <span className="text-sm font-medium text-darkBlack">
+                                        {product?.IncludingOffer ? (
+                                          <div className="text-black font-semibold whitespace-nowrap">
+                                            Standard
+                                          </div>
+                                        ) : (
+                                          <div className="text-black font-semibold whitespace-nowrap">
+                                            {product?.pris &&
+                                              `kr ${product?.pris}`}
+                                          </div>
+                                        )}
+                                      </span>
 
-                                  {/* <span
+                                      {/* <span
                                   className="text-purple font-medium text-sm cursor-pointer"
                                   onClick={() => {
                                     handleproductViewDrawer();
@@ -751,10 +824,12 @@ export const Eksterior: React.FC<{
                                 >
                                   View Details
                                 </span> */}
+                                    </div>
+                                    {/* )} */}
+                                  </div>
                                 </div>
-                                {/* )} */}
                               </div>
-                            </div>
+                            )}
                           </div>
                         );
                       })}
@@ -897,6 +972,43 @@ export const Eksterior: React.FC<{
                     }
 
                     await updateDoc(docRef, updatedPayload);
+                    const houseDocRef = doc(
+                      db,
+                      "housemodell_configure_broker",
+                      String(id)
+                    );
+
+                    const houseDocSnap = await getDoc(houseDocRef);
+
+                    if (houseDocSnap.exists()) {
+                      const houseData = houseDocSnap.data();
+                      const existingKundeInfo = houseData.KundeInfo || [];
+
+                      const updatedKundeInfo = existingKundeInfo.map(
+                        (kunde: any) => {
+                          if (kunde.uniqueId === kundeId) {
+                            const newFloors = (
+                              kunde.Plantegninger || []
+                            ).filter(
+                              (i: any) =>
+                                i.pdf_id !==
+                                targetKunde?.Plantegninger[0].pdf_id
+                            );
+
+                            return {
+                              ...kunde,
+                              Plantegninger: newFloors,
+                            };
+                          }
+                          return kunde;
+                        }
+                      );
+
+                      await updateDoc(houseDocRef, {
+                        KundeInfo: updatedKundeInfo,
+                        updatedAt: formatDate(new Date()),
+                      });
+                    }
                   } else {
                     if (!newConfiguratorName.trim()) {
                       setPendingPayload({
@@ -1087,6 +1199,42 @@ export const Eksterior: React.FC<{
                       ...pendingPayload,
                       name: newConfiguratorName.trim(),
                       createdAt: formatDate(new Date()),
+                    });
+                  }
+
+                  const houseDocRef = doc(
+                    db,
+                    "housemodell_configure_broker",
+                    String(id)
+                  );
+
+                  const houseDocSnap = await getDoc(houseDocRef);
+
+                  if (houseDocSnap.exists()) {
+                    const houseData = houseDocSnap.data();
+                    const existingKundeInfo = houseData.KundeInfo || [];
+
+                    const updatedKundeInfo = existingKundeInfo.map(
+                      (kunde: any) => {
+                        if (kunde.uniqueId === kundeId) {
+                          const newFloors = (kunde.Plantegninger || []).filter(
+                            (i: any) =>
+                              i.pdf_id !==
+                              pendingPayload?.Plantegninger[0].pdf_id
+                          );
+
+                          return {
+                            ...kunde,
+                            Plantegninger: newFloors,
+                          };
+                        }
+                        return kunde;
+                      }
+                    );
+
+                    await updateDoc(houseDocRef, {
+                      KundeInfo: updatedKundeInfo,
+                      updatedAt: formatDate(new Date()),
                     });
                   }
 

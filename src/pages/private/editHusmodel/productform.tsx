@@ -71,10 +71,8 @@ export const ProductFormDrawer: React.FC<{
   }, [editData, form]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    // onSubmit(newProduct)
-    // Send full form data to parent component
     if (typeof onSubmitProp === "function") {
-      onSubmitProp(data); // pass the whole form data
+      onSubmitProp(data);
     }
     onClose();
   };

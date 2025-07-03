@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-// import { Spinner } from "../../../../components/Spinner";
 import { fetchRoomData } from "../../../../lib/utils";
 import Button from "../../../../components/common/button";
-// import Ic_multiple_stars from "../../../../assets/images/Ic_multiple_stars.svg";
 import { toast } from "react-hot-toast";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
@@ -52,7 +50,6 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             ? docSnap.data().Plantegninger || []
             : [];
 
-          // Call analyze API for this specific pdfId
           const PDFresponse = await fetch(
             `https://iplotnor-hf-api-version-2.hf.space/analyze/${pdfId}`,
             {
@@ -74,15 +71,14 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
           const PDFdata = await PDFresponse.json();
 
-          // Replace only the matching pdf_id entry in existingData
           const updatedPlantegninger = existingData.map((item: any) => {
             if (String(item?.pdf_id) === String(pdfId)) {
               return {
-                ...item, // keep original
-                ...PDFdata, // override with new fields
+                ...item,
+                ...PDFdata,
               };
             }
-            return item; // untouched others
+            return item;
           });
 
           const formatDate = (date: Date) => {
@@ -97,7 +93,6 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             updatedAt: formatDate(new Date()),
           });
 
-          // update UI
           const finalData = updatedPlantegninger.find(
             (item: any) => String(item?.pdf_id) === String(pdfId)
           );

@@ -81,10 +81,7 @@ export const ExportView: React.FC<{
                               {room?.title}
                             </h3>
                           )}
-                          <div
-                            // key={index}
-                            className="flex flex-col gap-4 bg-gray3 p-4 rounded-lg"
-                          >
+                          <div className="flex flex-col gap-4 bg-gray3 p-4 rounded-lg">
                             <div className="text-black font-semibold text-lg">
                               {innerRoom?.name_no || innerRoom?.name}
                             </div>

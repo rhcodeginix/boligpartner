@@ -73,7 +73,6 @@ export const AddNewCat: React.FC<{
         ...prev,
         {
           name: data.Hovedkategoriname,
-          // Kategoriname: null,
           isSelected: data.isSelected ?? false,
         },
       ]);

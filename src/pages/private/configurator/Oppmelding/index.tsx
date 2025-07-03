@@ -50,7 +50,6 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
         }
         return;
       } else {
-        // Remove from invalidSteps if it was previously marked invalid
         setInvalidSteps(invalidSteps.filter((id) => id !== currentStep));
       }
     }
@@ -96,7 +95,6 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
       title: "Prosjekt- og leveransedetaljer",
       content: (
         <Prosjektdetaljer
-          // ref={(ref) => (formRefs.current[1] = ref)}
           ref={(ref: any): void => {
             formRefs.current[1] = ref;
           }}

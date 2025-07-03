@@ -64,11 +64,9 @@ const formSchema = z.object({
         "Vennligst skriv inn et gyldig telefonnummer for det valgte landet.",
     }
   ),
-  // BestillingsoversiktDatert: z.string().optional(),
   BestillingsoversiktDatert: z.string({
     required_error: "Bestillingsoversikt datert er påkrevd.",
   }),
-
   TypeProsjekt: z.string({ required_error: "Type prosjekt er påkrevd." }),
   Finansiering: z.string({ required_error: "Finansiering er påkrevd." }),
   VelgSerie: z.string({ required_error: "Velg serie er påkrevd." }),
@@ -238,7 +236,7 @@ export const Prosjektdetaljer = forwardRef(
                 PROSJEKTDETALJER
               </div>
               <div className="p-4 md:p-5">
-                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
+                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5 items-center">
                   <div className="col-span-3">
                     <p
                       className={`${
@@ -583,7 +581,7 @@ export const Prosjektdetaljer = forwardRef(
                       )}
                     />
                   </div>
-                  <div className="col-span-3 flex gap-4 md:gap-5">
+                  <div className="col-span-3 flex gap-4 md:gap-5 items-center">
                     <div className="w-1/2">
                       <FormField
                         control={form.control}

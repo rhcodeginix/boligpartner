@@ -269,7 +269,7 @@ export const HusmodellerTable = () => {
 
   return (
     <>
-      <div className="mb-2 flex items-center justify-between bg-lightPurple rounded-[12px] py-3 px-4">
+      <div className="mb-2 flex gap-2 flex-col lg:flex-row lg:items-center justify-between bg-lightPurple rounded-[12px] py-3 px-4">
         <div className="flex items-center border border-gray1 shadow-shadow1 bg-[#fff] gap-2 rounded-lg py-[10px] px-[14px]">
           <img src={Ic_search} alt="search" />
           <input
@@ -280,9 +280,9 @@ export const HusmodellerTable = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <div className="shadow-shadow1 border border-gray1 rounded-[8px] flex flex-col sm:flex-row overflow-hidden md:w-max">
+        <div className="shadow-shadow1 border border-gray1 rounded-[8px] flex flex-col sm:flex-row overflow-hidden sm:w-max">
           <div
-            className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm border-r border-gray1 cursor-pointer ${
+            className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm border-b sm:border-b-0 sm:border-r border-gray1 cursor-pointer ${
               selectedFilter === "" && "bg-white"
             }`}
             onClick={() => setSelectedFilter("")}
@@ -364,7 +364,12 @@ export const HusmodellerTable = () => {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="hover:bg-muted/50"
+                  className="hover:bg-muted/50 cursor-pointer"
+                  onClick={() =>
+                    navigate(
+                      `/se-series/${row.original.parentId}/edit-husmodell/${row.original?.uniqueId}`
+                    )
+                  }
                 >
                   {row.getVisibleCells().map((cell: any) => (
                     <TableCell key={cell.id} className="px-6 py-3">

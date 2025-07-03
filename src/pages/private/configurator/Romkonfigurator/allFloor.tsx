@@ -65,26 +65,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
   const [FloorData, setFloorData] = useState<any>(null);
 
-  // useEffect(() => {
-  //   if (!id || !pdfId) {
-  //     return;
-  //   }
-
-  //   const getData = async () => {
-  //     const data: any = await fetchRoomData(id);
-  //     if (data) {
-  //       const finalData = data?.Plantegninger.find(
-  //         (item: any) => String(item?.pdf_id) === String(pdfId)
-  //       );
-  //       setFloorData(finalData);
-  //       setCategory(finalData?.rooms);
-  //     }
-  //     setLoading(false);
-  //   };
-
-  //   getData();
-  // }, [id, pdfId]);
-
   useEffect(() => {
     if (!id || !pdfId) return;
 
@@ -144,7 +124,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
           const updatedRooms = floor.rooms.map((room: any) => {
             if (!Array.isArray(room.Kategorinavn)) {
-              // Set all required categories if none exist
               return {
                 ...room,
                 Kategorinavn: Object.entries(

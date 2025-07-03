@@ -49,6 +49,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   const [loading, setLoading] = useState(true);
   const [roomsData, setRoomsData] = useState<any>([]);
   const navigate = useNavigate();
+  const [FileUploadLoading, setFileUploadLoading] = useState(false);
 
   useEffect(() => {
     if (!id) {
@@ -120,7 +121,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
 
     const formData = new FormData();
     formData.append("file", files[0]);
-    setLoading(true);
+    setFileUploadLoading(true);
     try {
       const response = await fetch(
         "https://iplotnor-hf-api-version-2.hf.space/upload",
@@ -149,7 +150,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           imageBase64 = await fileToBase64(file);
         } else {
           console.error("Unsupported file type");
-          setLoading(false);
+          setFileUploadLoading(false);
           return;
         }
 
@@ -205,12 +206,12 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           toast.success(data.message, {
             position: "top-right",
           });
-          setLoading(false);
+          setFileUploadLoading(false);
         }
       }
     } catch (error) {
       console.error("Upload error:", error);
-      setLoading(false);
+      setFileUploadLoading(false);
       toast.error("File upload error!", {
         position: "top-right",
       });
@@ -550,6 +551,22 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
             </div>
           </div>
         </Modal>
+      )}
+
+      {FileUploadLoading && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center"
+          style={{ zIndex: 99999 }}
+        >
+          <div className="flex flex-col items-center gap-4 bg-white p-3 rounded-lg">
+            <span className="text-purple text-base font-medium">
+              Opplasting...
+            </span>
+            <div className="w-48 h-1 overflow-hidden rounded-lg">
+              <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

@@ -126,7 +126,7 @@ export const GrunnerOgSkorstein = forwardRef(
                 Grunnmur og pipe/skorstein
               </div>
               <div className="p-4 md:p-5">
-                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
+                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5 items-center">
                   <div className="col-span-3 flex gap-4 md:gap-5">
                     <div>
                       <FormField

@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-// import { Spinner } from "../../../components/Spinner";
 import { fetchHusmodellData } from "../../../lib/utils";
 import Button from "../../../components/common/button";
 import { ChevronRight } from "lucide-react";
-// import Ic_multiple_stars from "../../../assets/images/Ic_multiple_stars.svg";
 import { toast } from "react-hot-toast";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";

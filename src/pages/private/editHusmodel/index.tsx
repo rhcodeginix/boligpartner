@@ -13,7 +13,6 @@ export const EditHouseModel = () => {
   const location = useLocation();
 
   const pathSegments = location.pathname.split("/");
-  // const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
   return (
     <>
@@ -51,7 +50,6 @@ export const EditHouseModel = () => {
                     {...(location.pathname.includes("/edit-husmodell")
                       ? { setActiveTab }
                       : {})}
-                    // setActiveTab={setActiveTab}
                   />
                 </div>
               </div>

@@ -258,7 +258,7 @@ export const Dører = forwardRef(
                 Dører
               </div>
               <div className="p-4 md:p-5">
-                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
+                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5 items-center">
                   <h4 className="uppercase text-darkBlack font-semibold col-span-3">
                     INNGANGSDØR
                   </h4>
