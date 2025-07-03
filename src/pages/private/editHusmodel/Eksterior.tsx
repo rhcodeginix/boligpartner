@@ -652,7 +652,7 @@ export const Eksterior: React.FC<{
                       </div>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2 gap-2 items-center">
+                    <div className="grid grid-cols-2 gap-2 items-start">
                       {produkter?.map((product, index) => {
                         const isSelected = product?.isSelected;
 
