@@ -33,30 +33,6 @@ const fileSchema = z.union([
   z.string(),
 ]);
 
-// const productSchema = z.object({
-//   Produktnavn: z.string().min(1, "Produktnavn må bestå av minst 1 tegn."),
-//   delieverBy: z.string().min(1, "Lever innen må bestå av minst 1 tegn."),
-//   Hovedbilde: z.array(fileSchema).min(1, "Minst én fil må lastes opp."),
-//   pris: z.string().nullable(),
-//   IncludingOffer: z.boolean().optional(),
-//   Produktbeskrivelse: z
-//     .string()
-//     .min(1, "Produktbeskrivelse må bestå av minst 1 tegn."),
-//   isSelected: z.boolean().optional(),
-// });
-
-// const productSchema = z.object({
-//   Produktnavn: z.string().optional(),
-//   delieverBy: z.string().optional(),
-//   Hovedbilde: z.array(fileSchema).optional(),
-//   pris: z.string().nullable().optional(),
-//   IncludingOffer: z.boolean().optional(),
-//   Produktbeskrivelse: z.string().optional(),
-//   isSelected: z.boolean().optional(),
-//   customText: z.string().optional(),
-//   Type: z.string().optional(),
-// });
-
 const productSchema = z
   .object({
     Produktnavn: z.string().optional(),
@@ -83,11 +59,6 @@ const productSchema = z
     }
   });
 
-// const categorySchema = z.object({
-//   navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
-//   productOptions: z.string({ required_error: "Required" }),
-//   produkter: z.array(productSchema).min(1, "Minst ett produkt er påkrevd."),
-// });
 const categorySchema = z.discriminatedUnion("productOptions", [
   z.object({
     navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
@@ -161,16 +132,6 @@ export const Eksterior: React.FC<{
     `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`
   );
 
-  // const { remove } = useFieldArray({
-  //   control: form.control,
-  //   name: `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
-  // });
-
-  // const removeProduct = (index: number) => {
-  //   if (produkter.length > 1) {
-  //     remove(index);
-  //   }
-  // };
   const [pdfId, setPdfId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -318,7 +279,6 @@ export const Eksterior: React.FC<{
 
       toast.success("Lagret", { position: "top-right" });
       navigate(`/Husmodell`);
-      // navigate(`/se-series/${id}`);
     } catch (error) {
       console.error("Failed to update plantegning:", error);
       toast.error("Noe gikk galt", { position: "top-right" });
@@ -652,7 +612,6 @@ export const Eksterior: React.FC<{
                         return (
                           <div key={index} className="flex gap-2 items-start">
                             <div
-                              // className="cursor-move border-[#EFF1F5] border rounded-lg"
                               className={`w-full cursor-pointer border rounded-lg ${
                                 isSelected
                                   ? "border-2 border-purple bg-lightPurple bg-opacity-10"

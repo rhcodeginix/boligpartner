@@ -33,18 +33,6 @@ const fileSchema = z.union([
   z.string(),
 ]);
 
-// const productSchema = z.object({
-//   Produktnavn: z.string().min(1, "Produktnavn må bestå av minst 1 tegn."),
-//   delieverBy: z.string().min(1, "Lever innen må bestå av minst 1 tegn."),
-//   Hovedbilde: z.array(fileSchema).min(1, "Minst én fil må lastes opp."),
-//   pris: z.string().nullable(),
-//   IncludingOffer: z.boolean().optional(),
-//   Produktbeskrivelse: z
-//     .string()
-//     .min(1, "Produktbeskrivelse må bestå av minst 1 tegn."),
-//   isSelected: z.boolean().optional(),
-// });
-
 const productSchema = z
   .object({
     Produktnavn: z.string().optional(),
@@ -71,11 +59,6 @@ const productSchema = z
     }
   });
 
-// const categorySchema = z.object({
-//   navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
-//   productOptions: z.string({ required_error: "Required" }),
-//   produkter: z.array(productSchema).min(1, "Minst ett produkt er påkrevd."),
-// });
 const categorySchema = z.discriminatedUnion("productOptions", [
   z.object({
     navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
@@ -139,16 +122,6 @@ export const Eksterior: React.FC<{
     `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`
   );
 
-  // const { remove } = useFieldArray({
-  //   control: form.control,
-  //   name: `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
-  // });
-
-  // const removeProduct = (index: number) => {
-  //   if (produkter.length > 1) {
-  //     remove(index);
-  //   }
-  // };
   const [pdfId, setPdfId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -213,10 +186,6 @@ export const Eksterior: React.FC<{
   }
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    // const rooms = {
-    //   rooms: data.hovedkategorinavn,
-    // };
-    // Ensure each first product has isSelected: true if none are selected
     const normalizedRooms = data.hovedkategorinavn.map((room: any) => {
       if (!Array.isArray(room.Kategorinavn)) return room;
 
@@ -258,7 +227,6 @@ export const Eksterior: React.FC<{
       const updatedFields = deepCompareAndMerge(finalData, rooms);
       const cleanedFields = removeUndefined(updatedFields);
 
-      // Replace the matching item in the array
       let updatedPlantegninger = [...(houseData?.Plantegninger || [])];
 
       const indexToUpdate = updatedPlantegninger.findIndex(
@@ -281,13 +249,12 @@ export const Eksterior: React.FC<{
       };
 
       await updateDoc(husmodellDocRef, {
-        Plantegninger: updatedPlantegninger, // ✅ send full array with only one item changed
+        Plantegninger: updatedPlantegninger,
         updatedAt: formatDate(new Date()),
       });
 
       toast.success("Lagret", { position: "top-right" });
-      // navigate(`/Bolig-configurator`);
-      // Next();
+
       const params = new URLSearchParams(location.search);
       params.delete("pdf_id");
       navigate(`${location.pathname}?${params.toString()}`, {
@@ -319,100 +286,6 @@ export const Eksterior: React.FC<{
       form.setValue("hovedkategorinavn", formatted);
     }
   }, [form, Category, activeTabData]);
-
-  // useEffect(() => {
-  //   if (Array.isArray(Category) && Category.length > 0) {
-  //     const requiredCategoriesWithProducts = {
-  //       Himlling: [
-  //         {
-  //           Produktnavn: "I henhold til leveransebeskrivelse",
-  //         },
-  //         {
-  //           Produktnavn: "Mdf panel",
-  //         },
-  //         {
-  //           Produktnavn: "Takplate 60x120",
-  //         },
-  //         {
-  //           Produktnavn: "Eget valg",
-  //         },
-  //       ],
-  //       Vegger: [
-  //         {
-  //           Produktnavn: "I henhold til leveransebeskrivelse",
-  //         },
-  //         {
-  //           Produktnavn: "5 bords kostmald mdf plate",
-  //         },
-  //         {
-  //           Produktnavn: "Ubehandlet sponplate",
-  //         },
-  //         {
-  //           Produktnavn: "Eget valg",
-  //         },
-  //       ],
-  //       Gulv: [
-  //         {
-  //           Produktnavn: "Lokalleveranse",
-  //         },
-  //         {
-  //           Produktnavn: "Eikeparkett 3 stavs",
-  //         },
-  //         {
-  //           Produktnavn: "Eikeparkett 1 stavs",
-  //         },
-  //         {
-  //           Produktnavn: "Laminat 1 stavs",
-  //         },
-  //         {
-  //           Produktnavn: "Eget valg",
-  //         },
-  //       ],
-  //       Lister: [
-  //         {
-  //           Produktnavn: "I henhold til leveransebeskrivelse",
-  //         },
-  //         {
-  //           Produktnavn: "Annen signatur",
-  //         },
-  //         {
-  //           Produktnavn: "Uten lister for listefri løsning",
-  //         },
-  //         {
-  //           Produktnavn: "Eget valg",
-  //         },
-  //       ],
-  //       Kommentar: [],
-  //     };
-
-  //     const formatted = Category.map((cat: any, index: number) => {
-  //       const existingKategorinavn =
-  //         index === activeTabData && Array.isArray(cat.Kategorinavn)
-  //           ? cat.Kategorinavn
-  //           : [];
-
-  //       const existingNames = existingKategorinavn.map((k: any) => k.navn);
-
-  //       const missing = Object.entries(requiredCategoriesWithProducts)
-  //         .filter(([name]) => !existingNames.includes(name))
-  //         .map(([name, produkter]) => ({
-  //           navn: name,
-  //           productOptions: name === "Kommentar" ? "Text" : "Multi Select",
-  //           produkter,
-  //         }));
-
-  //       return {
-  //         name: cat.name,
-  //         Kategorinavn:
-  //           index === activeTabData
-  //             ? [...existingKategorinavn, ...missing]
-  //             : null,
-  //       };
-  //     });
-
-  //     form.setValue("hovedkategorinavn", formatted);
-  //   }
-  // }, [activeTabData]);
 
   const prevProductsRef = useRef<any[]>([]);
 
