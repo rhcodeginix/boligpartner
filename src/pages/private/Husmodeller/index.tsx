@@ -88,11 +88,11 @@ export const Husmodeller = () => {
       <div className="px-4 md:px-6 py-5 md:py-8 desktop:p-8 flex gap-3 items-center justify-between bg-lightPurple">
         <div>
           <h1 className="text-darkBlack font-medium text-2xl md:text-[28px] desktop:text-[32px] mb-2">
-            Velg ønsket serie
+            Romskjema
           </h1>
           <p className="text-secondary text-sm md:text-base desktop:text-lg">
-            Velg ønsket serie og du vil kunne konfigurere boligen i henhold til
-            ønsket seier
+            Her kan du konfigurere opp en ny kundebolig i tillegg til at finner
+            du oversikt over alle kontorets lagrede konfigurasjoner
           </p>
         </div>
         <div>

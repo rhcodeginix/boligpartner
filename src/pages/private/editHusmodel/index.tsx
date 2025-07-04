@@ -35,12 +35,12 @@ export const EditHouseModel = () => {
               </Link> */}
               <ChevronRight className="text-[#5D6B98] w-4 h-4" />
               <span className="text-gray text-sm">
-                {kundeId ? "Rediger huset" : "Legg til nytt hus"}
+                {kundeId ? "Romskjema" : "Legg til nytt hus"}
               </span>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between mb-4 md:mb-5">
               <h1 className="text-darkBlack font-semibold text-2xl md:text-[28px] desktop:text-[32px]">
-                {kundeId ? "Rediger huset" : "Legg til nytt hus"}
+                {kundeId ? "Romskjema" : "Legg til nytt hus"}
               </h1>
               <div>
                 <div className="border border-[#EFF1F5] bg-[#F9F9FB] p-1.5 rounded-lg w-max">

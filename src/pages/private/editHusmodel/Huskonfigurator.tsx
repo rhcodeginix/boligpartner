@@ -175,7 +175,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                   const updatedFloor = {
                     ...data,
                     image: imgDataUrl,
-                    title: `Plan ${floorIndex}`,
+                    title: `Romskjema ${floorIndex}`,
                   };
 
                   newFloors.push(updatedFloor);
@@ -230,7 +230,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                 const updatedFloor = {
                   ...data,
                   image: finalImageUrl,
-                  title: `Plan ${newIndex}`,
+                  title: `Romskjema ${newIndex}`,
                 };
 
                 setRoomsData((prev: any) => [
@@ -393,11 +393,10 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           Last opp plantegningen din
         </h3>
         <p className="text-secondary text-sm md:text-base desktop:text-lg">
-          AI har analysert plantegningen og identifisert rommene du kan
-          konfigurere. Du kan fritt legge til nye rom eller fjerne eksisterende.
+          Velg plan for konfigurering
         </p>
       </div>
-      <div className="px-4 md:px-6 py-5 md:py-6 desktop:p-8 pb-[100px]">
+      <div className="px-4 md:px-6 py-5 md:py-6 desktop:p-8 mb-[100px]">
         <div
           className="relative p-2 rounded-lg md:w-max"
           style={{
@@ -482,16 +481,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                     return (
                       <div
                         key={index}
-                        className="relative shadow-shadow2 cursor-pointer p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4"
-                        onClick={() => {
-                          if (item?.rooms) {
-                            setActiveTab(3);
-                          } else {
-                            setActiveTab(2);
-                          }
-
-                          navigate(`?pdf_id=${item?.pdf_id}`);
-                        }}
+                        className="relative shadow-shadow2 p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4"
                       >
                         <div className="flex gap-1.5 md:gap-2 items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -634,6 +624,20 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                             />
                           )}
                         </div>
+                        <Button
+                          text="Konfigurer bolig"
+                          className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2`}
+                          type="button"
+                          onClick={() => {
+                            if (item?.rooms) {
+                              setActiveTab(3);
+                            } else {
+                              setActiveTab(2);
+                            }
+
+                            navigate(`?pdf_id=${item?.pdf_id}`);
+                          }}
+                        />
                       </div>
                     );
                   })
@@ -821,12 +825,12 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
 
                     const updatedKundeInfo = existingKundeInfo.map(
                       (kunde: any) => {
-                        if (kunde.uniqueId === kundeId) {
-                          return {
-                            ...kunde,
-                            Plantegninger: [],
-                          };
-                        }
+                        // if (kunde.uniqueId === kundeId) {
+                        //   return {
+                        //     ...kunde,
+                        //     Plantegninger: [],
+                        //   };
+                        // }
                         return kunde;
                       }
                     );
@@ -834,6 +838,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                     await updateDoc(houseDocRef, {
                       KundeInfo: updatedKundeInfo,
                       updatedAt: formatDate(new Date()),
+                      placeOrder: true,
                     });
                   }
 

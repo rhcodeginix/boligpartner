@@ -176,7 +176,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           const updatedPdfData = {
             ...data,
             image: finalImageUrl,
-            title: `Plan ${newIndex}`,
+            title: `Romskjema ${newIndex}`,
           };
           setRoomsData((prev: any) => [...prev, updatedPdfData]);
 
@@ -424,15 +424,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                     return (
                       <div
                         key={index}
-                        className="relative shadow-shadow2 cursor-pointer p-4 rounded-lg flex flex-col gap-4"
-                        onClick={() => {
-                          if (item?.rooms) {
-                            setActiveTab(3);
-                          } else {
-                            setActiveTab(2);
-                          }
-                          navigate(`?pdf_id=${item?.pdf_id}`);
-                        }}
+                        className="relative shadow-shadow2 p-4 rounded-lg flex flex-col gap-4"
                       >
                         <div className="flex gap-2 items-center justify-between mb-4">
                           {isEditing ? (
@@ -550,6 +542,20 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                             />
                           )}
                         </div>
+                        <Button
+                          text="Konfigurer bolig"
+                          className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2`}
+                          type="button"
+                          onClick={() => {
+                            if (item?.rooms) {
+                              setActiveTab(3);
+                            } else {
+                              setActiveTab(2);
+                            }
+
+                            navigate(`?pdf_id=${item?.pdf_id}`);
+                          }}
+                        />
                       </div>
                     );
                   })

@@ -123,6 +123,14 @@ export const HusmodellerTable = () => {
           photo: item.photo || null,
           husmodell_name: item.husmodell_name || null,
           parentId: item.id,
+          createDataBy: item.createDataBy || null,
+          placeOrder: item.placeOrder || false,
+          configurator:
+            kunde?.Plantegninger &&
+            kunde?.Plantegninger.length > 0 &&
+            kunde?.Plantegninger.some((room: any) => !room.configurator)
+              ? false
+              : true,
         })).filter((kunde: any) => {
           const matchesSearch =
             !searchTerm ||
@@ -194,6 +202,49 @@ export const HusmodellerTable = () => {
             {row.original?.husmodell_name}
           </p>
         ),
+      },
+      {
+        accessorKey: "Boligkonsulent",
+        header: "Boligkonsulent",
+        cell: ({ row }) => {
+          return (
+            <p className="text-sm font-medium text-black w-max">
+              {row.original?.createDataBy?.name}
+            </p>
+          );
+        },
+      },
+      {
+        accessorKey: "TypeProsjekt",
+        header: "TypeProsjekt",
+        cell: ({ row }) => (
+          <p className="text-sm font-medium text-black w-max">
+            {row.original?.TypeProsjekt ?? "-"}
+          </p>
+        ),
+      },
+      {
+        accessorKey: "Status",
+        header: "Status",
+        cell: ({ row }) => {
+          return (
+            <>
+              {row.original?.placeOrder === true ? (
+                <p className="text-sm font-medium text-green w-max bg-lightGreen py-1 px-2 rounded-full">
+                  Bestilt
+                </p>
+              ) : row.original?.configurator === true ? (
+                <p className="text-sm font-medium text-primary w-max bg-lightPurple py-1 px-2 rounded-full">
+                  Ferdig konfiguert
+                </p>
+              ) : (
+                <p className="text-sm font-medium text-black w-max bg-gray2 py-1 px-2 rounded-full">
+                  Under behandling
+                </p>
+              )}
+            </>
+          );
+        },
       },
       {
         accessorKey: "sisteoppdatertav",

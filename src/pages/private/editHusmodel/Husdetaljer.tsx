@@ -17,7 +17,11 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
-import { fetchHusmodellData, phoneNumberValidations } from "../../../lib/utils";
+import {
+  fetchAdminDataByEmail,
+  fetchHusmodellData,
+  phoneNumberValidations,
+} from "../../../lib/utils";
 import { InputMobile } from "../../../components/ui/inputMobile";
 import { parsePhoneNumber } from "react-phone-number-input";
 import ApiUtils from "../../../api";
@@ -55,9 +59,9 @@ const formSchema = z.object({
   Kundenummer: z.string().min(1, {
     message: "Kundenummer må bestå av minst 2 tegn.",
   }),
-  Postnr: z.string({ required_error: "Postnr er påkrevd." }),
-  Poststed: z.string({ required_error: "Poststed er påkrevd." }),
-  Kommune: z.number({ required_error: "Kommune er påkrevd." }),
+  Postnr: z.string().optional(),
+  Poststed: z.string().optional(),
+  Kommune: z.number().optional(),
   TypeProsjekt: z.string().optional(),
 });
 
@@ -74,6 +78,17 @@ export const Husdetaljer: React.FC<{
   const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
   const [address, setAddress] = useState("");
   const navigate = useNavigate();
+  const [createData, setCreateData] = useState<any>(null);
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        setCreateData(data);
+      }
+    };
+
+    getData();
+  }, []);
 
   useEffect(() => {
     if (!id || !kundeId) {
@@ -151,6 +166,13 @@ export const Husdetaljer: React.FC<{
           ...existingData,
           KundeInfo: updatedKundeInfo,
           updatedAt: formatDate(new Date()),
+          createDataBy: {
+            email: createData?.email,
+            photo: createData?.photo,
+            name: createData?.f_name
+              ? `${createData?.f_name} ${createData?.l_name}`
+              : createData?.name,
+          },
         });
 
         toast.success("Updated successfully", { position: "top-right" });
@@ -425,7 +447,7 @@ export const Husdetaljer: React.FC<{
                                               ? "border-red"
                                               : "border-gray1"
                                           } `}
-                              type="number"
+                              type="text"
                             />
                           </div>
                         </FormControl>
