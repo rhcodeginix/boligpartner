@@ -3,13 +3,14 @@ import Ic_upload_blue_img from "../../../assets/images/Ic_upload_blue_img.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { fetchHusmodellData } from "../../../lib/utils";
 import Button from "../../../components/common/button";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../config/firebaseConfig";
 import { toast } from "react-hot-toast";
 import * as pdfjsLib from "pdfjs-dist-es5";
-import { Pencil, Trash2 } from "lucide-react";
+import { CircleCheckBig, Pencil, Trash2, X } from "lucide-react";
 import Modal from "../../../components/common/modal";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
+import { v4 as uuidv4 } from "uuid";
 
 const uploadBase64Image = async (base64: string) => {
   if (!base64) return;
@@ -355,6 +356,36 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     setImageLoaded((prev) => ({ ...prev, [index]: true }));
   };
 
+  // -----
+  const [showConfiguratorModal, setShowConfiguratorModal] = useState(false);
+  const [newConfiguratorName, setNewConfiguratorName] = useState("");
+  const [pendingPayload, setPendingPayload] = useState<any>(null);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!id) {
+        setShowConfiguratorModal(true);
+      }
+    }, 200);
+
+    return () => clearTimeout(timeout);
+  }, [id]);
+
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  useEffect(() => {
+    if (showConfiguratorModal) {
+      setNewConfiguratorName(
+        `${pendingPayload?.Anleggsadresse} - ${pendingPayload?.Kundenavn}`
+      );
+    } else {
+      setNewConfiguratorName("");
+    }
+  }, [showConfiguratorModal, pendingPayload]);
+
+  const isDisable = roomsData.some((room: any) => !room.configurator)
+    ? true
+    : false;
+
   return (
     <>
       <div className="px-4 md:px-6 py-5 md:py-6 desktop:p-8">
@@ -463,21 +494,26 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                         }}
                       >
                         <div className="flex gap-1.5 md:gap-2 items-center justify-between">
-                          {isEditing ? (
-                            <input
-                              type="text"
-                              value={editedFloorName}
-                              onChange={(e) =>
-                                setEditedFloorName(e.target.value)
-                              }
-                              className="border border-gray1 rounded px-2 py-1 w-full"
-                              onClick={(e) => e.stopPropagation()}
-                            />
-                          ) : (
-                            <span className="text-darkBlack font-medium truncate">
-                              {item?.title || `Floor ${index + 1}`}
-                            </span>
-                          )}
+                          <div className="flex items-center gap-2">
+                            {isEditing ? (
+                              <input
+                                type="text"
+                                value={editedFloorName}
+                                onChange={(e) =>
+                                  setEditedFloorName(e.target.value)
+                                }
+                                className="border border-gray1 rounded px-2 py-1 w-full"
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                            ) : (
+                              <span className="text-darkBlack font-medium truncate">
+                                {item?.title || `Floor ${index + 1}`}
+                              </span>
+                            )}
+                            {item.configurator === true && (
+                              <CircleCheckBig className="text-darkGreen" />
+                            )}
+                          </div>
                           <div className="flex items-center gap-2 md:gap-3">
                             {isEditing ? (
                               <button
@@ -631,6 +667,204 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
             </div>
           </div>
         </Modal>
+      )}
+
+      <div
+        className="flex justify-end w-full gap-5 items-center fixed bottom-0 bg-white border-t border-gray2 p-4 left-0"
+        style={{
+          zIndex: 99999,
+        }}
+      >
+        <Button
+          text="Bekreft konfigurering"
+          className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 ${
+            isDisable ? "cursor-not-allowed opacity-50" : ""
+          }`}
+          type="button"
+          onClick={async () => {
+            if (isDisable === true) return;
+            if (!id || !kundeId) return;
+            setIsPlacingOrder(true);
+            const formatDate = (date: Date) =>
+              date
+                .toLocaleString("sv-SE", { timeZone: "UTC" })
+                .replace(",", "");
+
+            try {
+              const houseData: any = await fetchHusmodellData(id);
+              const kundeList = houseData?.KundeInfo || [];
+
+              const targetKundeIndex = kundeList.findIndex(
+                (k: any) => String(k.uniqueId) === String(kundeId)
+              );
+              if (targetKundeIndex === -1) return;
+
+              const refetched = await fetchHusmodellData(id);
+              const targetKunde = refetched?.KundeInfo?.find(
+                (kunde: any) => String(kunde.uniqueId) === String(kundeId)
+              );
+
+              const newId = uuidv4();
+
+              const docRef = doc(db, "room_configurator", newId);
+              const docSnap = await getDoc(docRef);
+
+              if (docSnap.exists()) {
+                const existingData = docSnap.data();
+
+                if (!existingData?.name) {
+                  setPendingPayload(existingData);
+                  setShowConfiguratorModal(true);
+                  return;
+                }
+
+                await updateDoc(docRef, existingData);
+              } else {
+                if (!newConfiguratorName.trim()) {
+                  setPendingPayload({
+                    ...targetKunde,
+                    createdAt: formatDate(new Date()),
+                  });
+                  setShowConfiguratorModal(true);
+                  return;
+                }
+
+                await setDoc(docRef, {
+                  ...targetKunde,
+                  createdAt: formatDate(new Date()),
+                  name: newConfiguratorName.trim(),
+                });
+              }
+
+              toast.success("Bestillingen er lagt inn!", {
+                position: "top-right",
+              });
+              navigate(`/Room-Configurator/${newId}`);
+            } catch (err) {
+              console.error("Error saving data:", err);
+              toast.error("Noe gikk galt", { position: "top-right" });
+            } finally {
+              setIsPlacingOrder(false);
+            }
+          }}
+        />
+      </div>
+
+      {showConfiguratorModal && (
+        <Modal
+          isOpen={true}
+          onClose={() => setShowConfiguratorModal(false)}
+          outSideClick={true}
+        >
+          <div className="p-6 bg-white rounded-lg shadow-lg relative w-full sm:w-[546px]">
+            <X
+              className="text-primary absolute top-2.5 right-2.5 w-5 h-5 cursor-pointer"
+              onClick={() => {
+                setShowConfiguratorModal(false);
+              }}
+            />
+            <h2 className="text-lg font-bold mb-4">
+              Sett navn på konfigurasjonen
+            </h2>
+            <input
+              type="text"
+              value={newConfiguratorName}
+              onChange={(e) => setNewConfiguratorName(e.target.value)}
+              placeholder="Skriv inn navn på konfigurator"
+              className="bg-white rounded-[8px] border text-black border-gray1 flex h-11 w-full border-input px-[14px] py-[10px] text-base file:border-0 file:bg-transparent file:text-sm file:font-medium  focus-visible:outline-none focus:bg-lightYellow2 disabled:cursor-not-allowed disabled:bg-[#F5F5F5] disabled:hover:border-gray7 focus:shadow-none focus-visible:shadow-none placeholder:text-[#667085] placeholder:text-opacity-55 placeholder:text-base disabled:text-[#767676] focus:shadow-shadow1 mb-4"
+            />
+            <div className="flex justify-end gap-4">
+              <Button
+                text="Avbryt"
+                className="border border-gray2 text-black"
+                onClick={() => {
+                  setNewConfiguratorName("");
+                  setShowConfiguratorModal(false);
+                }}
+              />
+              <Button
+                text="Opprett"
+                className="bg-purple text-white"
+                onClick={async () => {
+                  if (!pendingPayload) return;
+                  const newId = uuidv4();
+                  const docRef = doc(db, "room_configurator", String(newId));
+                  const docSnap = await getDoc(docRef);
+                  const formatDate = (date: Date) =>
+                    date
+                      .toLocaleString("sv-SE", { timeZone: "UTC" })
+                      .replace(",", "");
+                  if (docSnap.exists()) {
+                    await updateDoc(docRef, {
+                      ...pendingPayload,
+                      name: newConfiguratorName.trim(),
+                    });
+                  } else {
+                    await setDoc(docRef, {
+                      ...pendingPayload,
+                      name: newConfiguratorName.trim(),
+                      createdAt: formatDate(new Date()),
+                    });
+                  }
+
+                  const houseDocRef = doc(
+                    db,
+                    "housemodell_configure_broker",
+                    String(id)
+                  );
+
+                  const houseDocSnap = await getDoc(houseDocRef);
+
+                  if (houseDocSnap.exists()) {
+                    const houseData = houseDocSnap.data();
+                    const existingKundeInfo = houseData.KundeInfo || [];
+
+                    const updatedKundeInfo = existingKundeInfo.map(
+                      (kunde: any) => {
+                        if (kunde.uniqueId === kundeId) {
+                          return {
+                            ...kunde,
+                            Plantegninger: [],
+                          };
+                        }
+                        return kunde;
+                      }
+                    );
+
+                    await updateDoc(houseDocRef, {
+                      KundeInfo: updatedKundeInfo,
+                      updatedAt: formatDate(new Date()),
+                    });
+                  }
+
+                  toast.success("Bestillingen er lagt inn!", {
+                    position: "top-right",
+                  });
+
+                  setShowConfiguratorModal(false);
+                  setNewConfiguratorName("");
+                  navigate(`/Room-Configurator/${newId}`);
+                  setIsPlacingOrder(false);
+                }}
+              />
+            </div>
+          </div>
+        </Modal>
+      )}
+      {isPlacingOrder && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center"
+          style={{ zIndex: 99999 }}
+        >
+          <div className="flex flex-col items-center gap-4 bg-white p-3 rounded-lg">
+            <span className="text-purple text-base font-medium">
+              Overfører til Aktive tiltak...
+            </span>
+            <div className="w-48 h-1 overflow-hidden rounded-lg">
+              <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
+            </div>
+          </div>
+        </div>
       )}
 
       {FileUploadLoading && (

@@ -399,6 +399,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               Category={Category}
               activeTabData={activeTabData}
               setCategory={setCategory}
+              FloorData={FloorData}
             />
           ) : (
             <img src={FloorData?.image} alt="floor" className="w-full h-full" />

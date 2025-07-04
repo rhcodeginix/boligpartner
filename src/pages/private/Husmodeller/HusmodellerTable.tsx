@@ -223,7 +223,9 @@ export const HusmodellerTable = () => {
 
               <Trash
                 className="h-5 w-5 text-primary cursor-pointer"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   confirmDelete(row.original?.uniqueId);
                   setId(row.original.parentId);
                 }}
