@@ -7,7 +7,7 @@ import { fetchRoomData } from "../../../../lib/utils";
 import { ChevronRight, Pencil, Plus, X } from "lucide-react";
 import { AddNewCat } from "./AddNewCat";
 import { Eksterior } from "./Eksterior";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 
 export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
@@ -305,6 +305,46 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                                 prev.filter((_, i) => i !== index)
                               );
                               setActiveTabData(0);
+                              const deleteRoomFromFirestore = async () => {
+                                if (!id || !pdfId) return;
+
+                                const husmodellDocRef = doc(
+                                  db,
+                                  "room_configurator",
+                                  id
+                                );
+
+                                try {
+                                  const docSnap = await getDoc(husmodellDocRef);
+                                  if (!docSnap.exists()) return;
+
+                                  const data = docSnap.data();
+                                  const updatedPlantegninger = (
+                                    data?.Plantegninger || []
+                                  ).map((floor: any) => {
+                                    if (String(floor?.pdf_id) !== String(pdfId))
+                                      return floor;
+
+                                    return {
+                                      ...floor,
+                                      rooms: floor?.rooms?.filter(
+                                        (_: any, i: number) => i !== index
+                                      ),
+                                    };
+                                  });
+
+                                  await updateDoc(husmodellDocRef, {
+                                    Plantegninger: updatedPlantegninger,
+                                  });
+                                } catch (err) {
+                                  console.error(
+                                    "Error deleting room from Firestore:",
+                                    err
+                                  );
+                                }
+                              };
+
+                              deleteRoomFromFirestore();
                             }}
                             className="w-5 h-5"
                           >

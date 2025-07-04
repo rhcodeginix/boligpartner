@@ -7,7 +7,7 @@ import Button from "../../../components/common/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { fetchHusmodellData } from "../../../lib/utils";
 import { ChevronRight, Pencil, Plus, X } from "lucide-react";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 
 export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
@@ -354,6 +354,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                               e.stopPropagation();
                               setEditCategory({ index, data: tab });
                               setAddCategory(true);
+
                               setEditTabData(index);
                             }}
                           >
@@ -368,6 +369,62 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                                 prev.filter((_, i) => i !== index)
                               );
                               setActiveTabData(0);
+                              const deleteRoomFromFirestore = async () => {
+                                if (!id || !kundeId || !pdfId) return;
+
+                                const husmodellDocRef = doc(
+                                  db,
+                                  "housemodell_configure_broker",
+                                  id
+                                );
+                                try {
+                                  const docSnap = await getDoc(husmodellDocRef);
+                                  if (docSnap.exists()) {
+                                    const houseData = docSnap.data();
+                                    const kundeList =
+                                      houseData?.KundeInfo || [];
+                                    const targetKundeIndex =
+                                      kundeList.findIndex(
+                                        (k: any) =>
+                                          String(k.uniqueId) === String(kundeId)
+                                      );
+                                    if (targetKundeIndex === -1) return;
+
+                                    const targetKunde =
+                                      kundeList[targetKundeIndex];
+                                    const existingPlantegninger =
+                                      targetKunde?.Plantegninger || [];
+
+                                    const itemToUpdate =
+                                      existingPlantegninger.find(
+                                        (item: any) =>
+                                          String(item?.pdf_id) === String(pdfId)
+                                      );
+
+                                    if (!itemToUpdate) return;
+
+                                    itemToUpdate.rooms =
+                                      itemToUpdate.rooms?.filter(
+                                        (_: any, i: number) => i !== index
+                                      );
+
+                                    targetKunde.Plantegninger =
+                                      existingPlantegninger;
+                                    kundeList[targetKundeIndex] = targetKunde;
+
+                                    await updateDoc(husmodellDocRef, {
+                                      KundeInfo: kundeList,
+                                    });
+                                  }
+                                } catch (error) {
+                                  console.error(
+                                    "Error deleting room from Firestore:",
+                                    error
+                                  );
+                                }
+                              };
+
+                              deleteRoomFromFirestore();
                             }}
                             className="w-5 h-5"
                           >

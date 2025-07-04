@@ -22,6 +22,47 @@ const formSchema = z.object({
   isSelected: z.boolean().optional(),
 });
 
+const requiredCategoriesWithProducts = {
+  Himlling: [
+    {
+      Produktnavn: "I henhold til leveransebeskrivelse",
+      isSelected: true,
+    },
+    { Produktnavn: "Mdf panel", isSelected: false },
+    { Produktnavn: "Takplate 60x120", isSelected: false },
+    { Produktnavn: "Eget valg", isSelected: false },
+  ],
+  Vegger: [
+    {
+      Produktnavn: "I henhold til leveransebeskrivelse",
+      isSelected: true,
+    },
+    { Produktnavn: "5 bords kostmald mdf plate", isSelected: false },
+    { Produktnavn: "Ubehandlet sponplate", isSelected: false },
+    { Produktnavn: "Eget valg", isSelected: false },
+  ],
+  Gulv: [
+    { Produktnavn: "Lokalleveranse", isSelected: true },
+    { Produktnavn: "Eikeparkett 3 stavs", isSelected: false },
+    { Produktnavn: "Eikeparkett 1 stavs", isSelected: false },
+    { Produktnavn: "Laminat 1 stavs", isSelected: false },
+    { Produktnavn: "Eget valg", isSelected: false },
+  ],
+  Lister: [
+    {
+      Produktnavn: "I henhold til leveransebeskrivelse",
+      isSelected: true,
+    },
+    { Produktnavn: "Annen signatur", isSelected: false },
+    {
+      Produktnavn: "Uten lister for listefri løsning",
+      isSelected: false,
+    },
+    { Produktnavn: "Eget valg", isSelected: false },
+  ],
+  Kommentar: [],
+};
+
 export const AddNewCat: React.FC<{
   onClose: any;
   setCategory: any;
@@ -110,6 +151,13 @@ export const AddNewCat: React.FC<{
           name_no: data.Hovedkategoriname,
           name: data.Hovedkategoriname,
           isSelected: data.isSelected ?? false,
+          Kategorinavn: Object.entries(requiredCategoriesWithProducts).map(
+            ([name, produkter]) => ({
+              navn: name,
+              productOptions: name === "Kommentar" ? "Text" : "Single Select",
+              produkter,
+            })
+          ),
         },
       ]);
     }
@@ -140,11 +188,21 @@ export const AddNewCat: React.FC<{
         );
 
         if (targetRoomIndex === -1) {
-          console.error(
-            "No matching room found for EditTabData id:",
-            EditTabData?.id
-          );
-          return;
+          roomsList.push({
+            name: data.Hovedkategoriname,
+            name_no: data.Hovedkategoriname,
+            isSelected: data.isSelected ?? false,
+            Kategorinavn: Object.entries(requiredCategoriesWithProducts).map(
+              ([name, produkter]) => ({
+                navn: name,
+                productOptions: name === "Kommentar" ? "Text" : "Single Select",
+                produkter,
+              })
+            ),
+          });
+        } else {
+          roomsList[targetRoomIndex].name = data.Hovedkategoriname;
+          roomsList[targetRoomIndex].name_no = data.Hovedkategoriname;
         }
 
         roomsList[targetRoomIndex].name = data.Hovedkategoriname;

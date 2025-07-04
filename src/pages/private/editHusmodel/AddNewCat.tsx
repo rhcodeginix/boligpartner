@@ -22,6 +22,76 @@ const formSchema = z.object({
   isSelected: z.boolean().optional(),
 });
 
+const requiredCategoriesWithProducts = {
+  Himlling: [
+    {
+      Produktnavn: "I henhold til leveransebeskrivelse",
+      isSelected: true,
+    },
+    { Produktnavn: "Mdf panel", isSelected: false },
+    { Produktnavn: "Takplate 60x120", isSelected: false },
+    { Produktnavn: "Eget valg", isSelected: false },
+  ],
+  Vegger: [
+    {
+      Produktnavn: "I henhold til leveransebeskrivelse",
+      isSelected: true,
+    },
+    { Produktnavn: "5 bords kostmald mdf plate", isSelected: false },
+    { Produktnavn: "Ubehandlet sponplate", isSelected: false },
+    { Produktnavn: "Eget valg", isSelected: false },
+  ],
+  Gulv: [
+    { Produktnavn: "Lokalleveranse", isSelected: true },
+    { Produktnavn: "Eikeparkett 3 stavs", isSelected: false },
+    { Produktnavn: "Eikeparkett 1 stavs", isSelected: false },
+    { Produktnavn: "Laminat 1 stavs", isSelected: false },
+    { Produktnavn: "Eget valg", isSelected: false },
+  ],
+  Talklist: [
+    {
+      Produktnavn: "I henhold til serie",
+      isSelected: true,
+    },
+    {
+      Produktnavn: "Annen type list",
+      isSelected: false,
+      Type: "HelpText",
+    },
+    {
+      Produktnavn: "Listefritt",
+      isSelected: false,
+    },
+  ],
+  Gerikt: [
+    {
+      Produktnavn: "I henhold til serie",
+      isSelected: true,
+    },
+    {
+      Produktnavn: "Annen type list",
+      isSelected: false,
+      Type: "HelpText",
+    },
+    {
+      Produktnavn: "Listefritt",
+      isSelected: false,
+    },
+  ],
+  Gulvlist: [
+    {
+      Produktnavn: "I henhold til serie",
+      isSelected: true,
+    },
+    {
+      Produktnavn: "Annen type list",
+      isSelected: false,
+      Type: "HelpText",
+    },
+  ],
+  Kommentar: [],
+};
+
 export const AddNewCat: React.FC<{
   onClose: any;
   setCategory: any;
@@ -110,6 +180,13 @@ export const AddNewCat: React.FC<{
           name_no: data.Hovedkategoriname,
           name: data.Hovedkategoriname,
           isSelected: data.isSelected ?? false,
+          Kategorinavn: Object.entries(requiredCategoriesWithProducts).map(
+            ([name, produkter]) => ({
+              navn: name,
+              productOptions: name === "Kommentar" ? "Text" : "Single Select",
+              produkter,
+            })
+          ),
         },
       ]);
     }
@@ -124,6 +201,7 @@ export const AddNewCat: React.FC<{
 
       if (docSnap.exists()) {
         const houseData = docSnap.data();
+
         const kundeList = houseData?.KundeInfo || [];
 
         const targetKundeIndex = kundeList.findIndex(
@@ -144,15 +222,22 @@ export const AddNewCat: React.FC<{
         );
 
         if (targetRoomIndex === -1) {
-          console.error(
-            "No matching room found for EditTabData id:",
-            EditTabData?.id
-          );
-          return;
+          roomsList.push({
+            name: data.Hovedkategoriname,
+            name_no: data.Hovedkategoriname,
+            isSelected: data.isSelected ?? false,
+            Kategorinavn: Object.entries(requiredCategoriesWithProducts).map(
+              ([name, produkter]) => ({
+                navn: name,
+                productOptions: name === "Kommentar" ? "Text" : "Multi Select",
+                produkter,
+              })
+            ),
+          });
+        } else {
+          roomsList[targetRoomIndex].name = data.Hovedkategoriname;
+          roomsList[targetRoomIndex].name_no = data.Hovedkategoriname;
         }
-
-        roomsList[targetRoomIndex].name = data.Hovedkategoriname;
-        roomsList[targetRoomIndex].name_no = data.Hovedkategoriname;
 
         itemToUpdate.rooms = roomsList;
         targetKunde.Plantegninger = existingPlantegninger;
