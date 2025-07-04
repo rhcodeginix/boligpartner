@@ -14,7 +14,7 @@ import Button from "../../../../components/common/button";
 import Ic_x_circle from "../../../../assets/images/Ic_x_circle.svg";
 import { ArrowLeft, Pencil, Plus, X } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import Drawer from "../../../../components/ui/drawer";
 import { toast } from "react-hot-toast";
 import { db } from "../../../../config/firebaseConfig";
@@ -605,8 +605,65 @@ export const Eksterior: React.FC<{
                         } border
                         flex w-full rounded-[8px] border-input bg-white text-black px-[14px] py-[10px] text-base focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:shadow-none focus-visible:shadow-none resize-none border-input file:border-0 file:bg-transparent file:text-sm file:font-medium focus:bg-lightYellow2 focus:shadow-none focus-visible:shadow-none placeholder:text-[#667085] placeholder:text-opacity-55 placeholder:text-base disabled:text-[#767676] focus:shadow-shadow1`}
                                     placeholder="Skriv kommentar..."
-                                    value={field.value}
-                                    onChange={field.onChange}
+                                    value={
+                                      form.watch(
+                                        `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.text`
+                                      ) || ""
+                                    }
+                                    onChange={(e) =>
+                                      form.setValue(
+                                        `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.text`,
+                                        e.target.value,
+                                        {
+                                          shouldValidate: true,
+                                          shouldDirty: true,
+                                        }
+                                      )
+                                    }
+                                    onBlur={async (e: any) => {
+                                      field.onBlur();
+
+                                      const newCustomText = e.target.value;
+
+                                      try {
+                                        const husmodellDocRef = doc(
+                                          db,
+                                          "room_configurator",
+                                          id
+                                        );
+                                        const docSnap = await getDoc(
+                                          husmodellDocRef
+                                        );
+
+                                        if (!docSnap.exists() || !pdfId) return;
+
+                                        const houseData = docSnap.data();
+
+                                        const existingPlantegninger =
+                                          houseData?.Plantegninger || [];
+
+                                        const indexToUpdate =
+                                          existingPlantegninger.findIndex(
+                                            (item: any) =>
+                                              String(item?.pdf_id) ===
+                                              String(pdfId)
+                                          );
+                                        if (indexToUpdate === -1) return;
+
+                                        existingPlantegninger[
+                                          indexToUpdate
+                                        ].rooms[activeTabData].Kategorinavn[
+                                          activeSubTabData
+                                        ].text = newCustomText;
+
+                                        await updateDoc(husmodellDocRef, {
+                                          Plantegninger: existingPlantegninger,
+                                          updatedAt: new Date().toISOString(),
+                                        });
+                                      } catch (err) {
+                                        console.error("firebase", err);
+                                      }
+                                    }}
                                   />
                                 </div>
                               </FormControl>
@@ -625,7 +682,7 @@ export const Eksterior: React.FC<{
                           <div key={index} className="flex gap-2 items-start">
                             <div
                               // className="cursor-move border-[#EFF1F5] border rounded-lg"
-                              className={`cursor-pointer border rounded-lg ${
+                              className={`w-full cursor-pointer border rounded-lg ${
                                 isSelected
                                   ? "border-2 border-purple bg-lightPurple bg-opacity-10"
                                   : "border-[#EFF1F5]"
@@ -637,7 +694,7 @@ export const Eksterior: React.FC<{
                                 setDragOverProductIndex(index);
                               }}
                               onDrop={() => handleDrop()}
-                              onClick={() => {
+                              onClick={async () => {
                                 const productOptions = form.getValues(
                                   `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
                                 );
@@ -668,6 +725,41 @@ export const Eksterior: React.FC<{
                                   updatedProducts,
                                   { shouldValidate: true }
                                 );
+
+                                try {
+                                  const husmodellDocRef = doc(
+                                    db,
+                                    "room_configurator",
+                                    id
+                                  );
+                                  const docSnap = await getDoc(husmodellDocRef);
+
+                                  if (!docSnap.exists() || !pdfId) return;
+
+                                  const houseData = docSnap.data();
+
+                                  const existingPlantegninger =
+                                    houseData?.Plantegninger || [];
+
+                                  const indexToUpdate =
+                                    existingPlantegninger.findIndex(
+                                      (item: any) =>
+                                        String(item?.pdf_id) === String(pdfId)
+                                    );
+                                  if (indexToUpdate === -1) return;
+
+                                  existingPlantegninger[indexToUpdate].rooms[
+                                    activeTabData
+                                  ].Kategorinavn[activeSubTabData].produkter =
+                                    updatedProducts;
+
+                                  await updateDoc(husmodellDocRef, {
+                                    Plantegninger: existingPlantegninger,
+                                    updatedAt: new Date().toISOString(),
+                                  });
+                                } catch (err) {
+                                  console.error("firebase", err);
+                                }
                               }}
                             >
                               <div className="flex gap-4 p-3">
@@ -783,6 +875,63 @@ export const Eksterior: React.FC<{
                                                 `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.customText`
                                               ) || ""
                                             }
+                                            onBlur={async (e: any) => {
+                                              field.onBlur();
+
+                                              const newCustomText =
+                                                e.target.value;
+
+                                              try {
+                                                const husmodellDocRef = doc(
+                                                  db,
+                                                  "room_configurator",
+                                                  id
+                                                );
+                                                const docSnap = await getDoc(
+                                                  husmodellDocRef
+                                                );
+
+                                                if (!docSnap.exists() || !pdfId)
+                                                  return;
+
+                                                const houseData =
+                                                  docSnap.data();
+
+                                                const existingPlantegninger =
+                                                  houseData?.Plantegninger ||
+                                                  [];
+
+                                                const indexToUpdate =
+                                                  existingPlantegninger.findIndex(
+                                                    (item: any) =>
+                                                      String(item?.pdf_id) ===
+                                                      String(pdfId)
+                                                  );
+                                                if (indexToUpdate === -1)
+                                                  return;
+
+                                                existingPlantegninger[
+                                                  indexToUpdate
+                                                ].rooms[
+                                                  activeTabData
+                                                ].Kategorinavn[
+                                                  activeSubTabData
+                                                ].produkter[index].customText =
+                                                  newCustomText;
+
+                                                await updateDoc(
+                                                  husmodellDocRef,
+                                                  {
+                                                    Plantegninger:
+                                                      existingPlantegninger,
+                                                    updatedAt:
+                                                      new Date().toISOString(),
+                                                  }
+                                                );
+                                              } catch (err) {
+                                                console.error("firebase", err);
+                                              }
+                                            }}
                                           />
                                         </div>
                                       </FormControl>

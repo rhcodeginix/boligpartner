@@ -593,8 +593,90 @@ export const Eksterior: React.FC<{
                         } border
                         flex w-full rounded-[8px] border-input bg-white text-black px-[14px] py-[10px] text-base focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:shadow-none focus-visible:shadow-none resize-none border-input file:border-0 file:bg-transparent file:text-sm file:font-medium focus:bg-lightYellow2 focus:shadow-none focus-visible:shadow-none placeholder:text-[#667085] placeholder:text-opacity-55 placeholder:text-base disabled:text-[#767676] focus:shadow-shadow1`}
                                     placeholder="Skriv kommentar..."
-                                    value={field.value}
-                                    onChange={field.onChange}
+                                    value={
+                                      form.watch(
+                                        `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.text`
+                                      ) || ""
+                                    }
+                                    onChange={(e) =>
+                                      form.setValue(
+                                        `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.text`,
+                                        e.target.value,
+                                        {
+                                          shouldValidate: true,
+                                          shouldDirty: true,
+                                        }
+                                      )
+                                    }
+                                    onBlur={async (e: any) => {
+                                      field.onBlur();
+
+                                      const newCustomText = e.target.value;
+
+                                      try {
+                                        const husmodellDocRef = doc(
+                                          db,
+                                          "housemodell_configure_broker",
+                                          id
+                                        );
+                                        const docSnap = await getDoc(
+                                          husmodellDocRef
+                                        );
+
+                                        if (
+                                          !docSnap.exists() ||
+                                          !kundeId ||
+                                          !pdfId
+                                        )
+                                          return;
+
+                                        const houseData = docSnap.data();
+                                        const kundeList =
+                                          houseData?.KundeInfo || [];
+                                        const targetKundeIndex =
+                                          kundeList.findIndex(
+                                            (k: any) =>
+                                              String(k.uniqueId) ===
+                                              String(kundeId)
+                                          );
+                                        if (targetKundeIndex === -1) return;
+
+                                        const targetKunde =
+                                          kundeList[targetKundeIndex];
+                                        const existingPlantegninger =
+                                          targetKunde?.Plantegninger || [];
+                                        const indexToUpdate =
+                                          existingPlantegninger.findIndex(
+                                            (item: any) =>
+                                              String(item?.pdf_id) ===
+                                              String(pdfId)
+                                          );
+                                        if (indexToUpdate === -1) return;
+
+                                        existingPlantegninger[
+                                          indexToUpdate
+                                        ].rooms[activeTabData].Kategorinavn[
+                                          activeSubTabData
+                                        ].text = newCustomText;
+
+                                        const updatedKundeInfo = kundeList.map(
+                                          (kunde: any, idx: number) =>
+                                            idx === targetKundeIndex
+                                              ? {
+                                                  ...kunde,
+                                                  Plantegninger:
+                                                    existingPlantegninger,
+                                                }
+                                              : kunde
+                                        );
+                                        await updateDoc(husmodellDocRef, {
+                                          KundeInfo: updatedKundeInfo,
+                                          updatedAt: new Date().toISOString(),
+                                        });
+                                      } catch (err) {
+                                        console.error("firebase", err);
+                                      }
+                                    }}
                                   />
                                 </div>
                               </FormControl>
@@ -624,7 +706,7 @@ export const Eksterior: React.FC<{
                                 setDragOverProductIndex(index);
                               }}
                               onDrop={() => handleDrop()}
-                              onClick={() => {
+                              onClick={async () => {
                                 const productOptions = form.getValues(
                                   `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
                                 );
@@ -655,6 +737,51 @@ export const Eksterior: React.FC<{
                                   updatedProducts,
                                   { shouldValidate: true }
                                 );
+
+                                try {
+                                  const husmodellDocRef = doc(
+                                    db,
+                                    "housemodell_configure_broker",
+                                    id
+                                  );
+                                  const docSnap = await getDoc(husmodellDocRef);
+                                  if (!docSnap.exists() || !kundeId || !pdfId)
+                                    return;
+
+                                  const houseData = docSnap.data();
+                                  const kundeList = houseData?.KundeInfo || [];
+                                  const targetKundeIndex = kundeList.findIndex(
+                                    (k: any) =>
+                                      String(k.uniqueId) === String(kundeId)
+                                  );
+                                  if (targetKundeIndex === -1) return;
+
+                                  const targetKunde =
+                                    kundeList[targetKundeIndex];
+                                  const existingPlantegninger =
+                                    targetKunde?.Plantegninger || [];
+                                  const indexToUpdate =
+                                    existingPlantegninger.findIndex(
+                                      (item: any) =>
+                                        String(item?.pdf_id) === String(pdfId)
+                                    );
+                                  if (indexToUpdate === -1) return;
+
+                                  const kundeInfo = [...kundeList];
+
+                                  kundeInfo[targetKundeIndex].Plantegninger[
+                                    indexToUpdate
+                                  ].rooms[activeTabData].Kategorinavn[
+                                    activeSubTabData
+                                  ].produkter = updatedProducts;
+
+                                  await updateDoc(husmodellDocRef, {
+                                    KundeInfo: kundeInfo,
+                                    updatedAt: new Date().toISOString(),
+                                  });
+                                } catch (err) {
+                                  console.error("selection in firebase", err);
+                                }
                               }}
                             >
                               <div className="flex gap-4 p-3">
@@ -767,6 +894,88 @@ export const Eksterior: React.FC<{
                                                 `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.customText`
                                               ) || ""
                                             }
+                                            onBlur={async (e: any) => {
+                                              field.onBlur();
+
+                                              const newCustomText =
+                                                e.target.value;
+
+                                              try {
+                                                const husmodellDocRef = doc(
+                                                  db,
+                                                  "housemodell_configure_broker",
+                                                  id
+                                                );
+                                                const docSnap = await getDoc(
+                                                  husmodellDocRef
+                                                );
+
+                                                if (
+                                                  !docSnap.exists() ||
+                                                  !kundeId ||
+                                                  !pdfId
+                                                )
+                                                  return;
+
+                                                const houseData =
+                                                  docSnap.data();
+                                                const kundeList =
+                                                  houseData?.KundeInfo || [];
+                                                const targetKundeIndex =
+                                                  kundeList.findIndex(
+                                                    (k: any) =>
+                                                      String(k.uniqueId) ===
+                                                      String(kundeId)
+                                                  );
+                                                if (targetKundeIndex === -1)
+                                                  return;
+
+                                                const targetKunde =
+                                                  kundeList[targetKundeIndex];
+                                                const existingPlantegninger =
+                                                  targetKunde?.Plantegninger ||
+                                                  [];
+                                                const indexToUpdate =
+                                                  existingPlantegninger.findIndex(
+                                                    (item: any) =>
+                                                      String(item?.pdf_id) ===
+                                                      String(pdfId)
+                                                  );
+                                                if (indexToUpdate === -1)
+                                                  return;
+
+                                                existingPlantegninger[
+                                                  indexToUpdate
+                                                ].rooms[
+                                                  activeTabData
+                                                ].Kategorinavn[
+                                                  activeSubTabData
+                                                ].produkter[index].customText =
+                                                  newCustomText;
+
+                                                const updatedKundeInfo =
+                                                  kundeList.map(
+                                                    (kunde: any, idx: number) =>
+                                                      idx === targetKundeIndex
+                                                        ? {
+                                                            ...kunde,
+                                                            Plantegninger:
+                                                              existingPlantegninger,
+                                                          }
+                                                        : kunde
+                                                  );
+                                                await updateDoc(
+                                                  husmodellDocRef,
+                                                  {
+                                                    KundeInfo: updatedKundeInfo,
+                                                    updatedAt:
+                                                      new Date().toISOString(),
+                                                  }
+                                                );
+                                              } catch (err) {
+                                                console.error("firebase", err);
+                                              }
+                                            }}
                                           />
                                         </div>
                                       </FormControl>
