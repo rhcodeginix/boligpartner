@@ -75,8 +75,7 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
                       currentStep === step.id
                         ? "bg-primary text-white"
                         : currentStep > step.id
-                        ? // ? "bg-[#099250]"
-                          invalidSteps.includes(step.id)
+                        ? invalidSteps.includes(step.id)
                           ? "bg-[#ECE9FE] text-darkBlack"
                           : "bg-[#099250]"
                         : "bg-[#ECE9FE] text-darkBlack"

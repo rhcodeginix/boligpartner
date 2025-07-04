@@ -112,69 +112,6 @@ export const AddFinalSubmission: React.FC<{
         position: "top-right",
       });
 
-      // if (data.exportType === "PDF") {
-      //   setIsExporting(true);
-      //   const element = previewRef.current;
-      //   if (!element) throw new Error("Preview element not found");
-
-      //   const originalWidth = element.style.width;
-      //   element.style.width = "794px";
-
-      //   const totalHeight = element.scrollHeight;
-      //   const pageHeightPx = 1123;
-
-      //   const totalPages = Math.ceil(totalHeight / pageHeightPx);
-
-      //   const pdf = new jsPDF("p", "mm", "a4");
-
-      //   const marginTop = 10;
-      //   const marginLeft = 0;
-      //   const marginRight = 0;
-      //   const marginBottom = 15;
-
-      //   const usableWidth = 210 - marginLeft - marginRight;
-      //   const usableHeight = 297 - marginTop - marginBottom;
-
-      //   for (let page = 0; page < totalPages; page++) {
-      //     element.scrollTop = page * pageHeightPx;
-
-      //     // eslint-disable-next-line no-await-in-loop
-      //     await new Promise((res) => setTimeout(res, 300));
-
-      //     const canvas = await html2canvas(element, {
-      //       useCORS: true,
-      //       backgroundColor: "#ffffff",
-      //       scale: 2,
-      //       height: pageHeightPx,
-      //       y: page * pageHeightPx,
-      //     });
-
-      //     const imgData = canvas.toDataURL("image/png");
-
-      //     if (page > 0) pdf.addPage();
-
-      //     pdf.addImage(
-      //       imgData,
-      //       "PNG",
-      //       marginLeft,
-      //       marginTop,
-      //       usableWidth,
-      //       usableHeight
-      //     );
-
-      //     pdf.setFontSize(12);
-      //     pdf.text("", 105, 10, { align: "center" });
-
-      //     pdf.setFontSize(10);
-      //     pdf.text(`Page ${page + 1} of ${totalPages}`, 105, 290, {
-      //       align: "center",
-      //     });
-      //   }
-
-      //   pdf.save(`preview-${Date.now()}.pdf`);
-      //   element.style.width = originalWidth;
-      // }
-
       if (data.exportType === "PDF") {
         setIsExporting(true);
         const element = previewRef.current;

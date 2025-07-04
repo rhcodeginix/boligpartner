@@ -105,9 +105,6 @@ export const Husdetaljer: React.FC<{
 
     if (typeProsjekt) {
       form.setValue("TypeProsjekt", typeProsjekt);
-
-      // params.delete("TypeProsjekt");
-      // navigate(`${location.pathname}?${params.toString()}`, { replace: true });
     }
   }, [location]);
 
