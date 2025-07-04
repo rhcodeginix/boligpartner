@@ -171,7 +171,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                 ).map(([name, produkter]) => ({
                   navn: name,
                   productOptions:
-                    name === "Kommentar" ? "Text" : "Multi Select",
+                    name === "Kommentar" ? "Text" : "Single Select",
                   produkter,
                 })),
               };
@@ -409,7 +409,17 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
       {!activeTabData && (
         <div className="flex justify-end w-full gap-5 items-center fixed bottom-0 bg-white z-50 border-t border-gray2 p-4 left-0">
           <div className="flex items-center gap-5">
-            <div onClick={() => setActiveTab(2)}>
+            <div
+              onClick={() => {
+                setActiveTab(1);
+                const params = new URLSearchParams(location.search);
+                params.delete("pdf_id");
+
+                navigate(`${location.pathname}?${params.toString()}`, {
+                  replace: true,
+                });
+              }}
+            >
               <Button
                 text="Avbryt"
                 className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"

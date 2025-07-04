@@ -55,6 +55,10 @@ const formSchema = z.object({
   Kundenummer: z.string().min(1, {
     message: "Kundenummer må bestå av minst 2 tegn.",
   }),
+  Postnr: z.string({ required_error: "Postnr er påkrevd." }),
+  Poststed: z.string({ required_error: "Poststed er påkrevd." }),
+  Kommune: z.number({ required_error: "Kommune er påkrevd." }),
+  TypeProsjekt: z.string().optional(),
 });
 
 export const Husdetaljer: React.FC<{
@@ -94,6 +98,18 @@ export const Husdetaljer: React.FC<{
 
     getData();
   }, [form, id, kundeId]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const typeProsjekt = params.get("TypeProsjekt");
+
+    if (typeProsjekt) {
+      form.setValue("TypeProsjekt", typeProsjekt);
+
+      // params.delete("TypeProsjekt");
+      // navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+    }
+  }, [location]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
@@ -284,6 +300,18 @@ export const Husdetaljer: React.FC<{
                                             setAddressData(null);
                                             setAddress(
                                               `${address.adressetekst} ${address.postnummer} ${address.poststed}`
+                                            );
+                                            form.setValue(
+                                              "Postnr",
+                                              address.postnummer
+                                            );
+                                            form.setValue(
+                                              "Kommune",
+                                              Number(address.kommunenummer)
+                                            );
+                                            form.setValue(
+                                              "Poststed",
+                                              address.poststed
                                             );
                                           }}
                                         >

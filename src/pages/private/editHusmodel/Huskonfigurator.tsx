@@ -84,7 +84,6 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
       const pdfDocument = await loadingTask.promise;
 
       const totalPages = pdfDocument.numPages;
-      console.log("Total pages:", totalPages);
 
       const images: string[] = [];
 
@@ -298,6 +297,8 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   const [confirmDeleteIndex, setConfirmDeleteIndex] = useState<number | null>(
     null
   );
+  const [updatingIndex, setUpdatingIndex] = useState<number | null>(null);
+
   const handleDeleteFloor = async (indexToDelete: number) => {
     const husmodellDocRef = doc(db, "housemodell_configure_broker", String(id));
 
@@ -452,7 +453,12 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                         key={index}
                         className="relative shadow-shadow2 cursor-pointer p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4"
                         onClick={() => {
-                          setActiveTab(2);
+                          if (item?.rooms) {
+                            setActiveTab(3);
+                          } else {
+                            setActiveTab(2);
+                          }
+
                           navigate(`?pdf_id=${item?.pdf_id}`);
                         }}
                       >
@@ -476,7 +482,9 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                             {isEditing ? (
                               <button
                                 className="bg-purple text-white px-2 md:px-4 py-2 rounded text-sm self-end"
+                                disabled={updatingIndex === index}
                                 onClick={async (e) => {
+                                  setUpdatingIndex(index);
                                   e.preventDefault();
                                   e.stopPropagation();
 
@@ -487,7 +495,6 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                                   };
 
                                   setRoomsData(updatedRooms);
-                                  setEditIndex(null);
 
                                   const husmodellDocRef = doc(
                                     db,
@@ -521,9 +528,34 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                                       position: "top-right",
                                     });
                                   }
+                                  setUpdatingIndex(null);
+                                  setEditIndex(null);
                                 }}
                               >
-                                Oppdater
+                                {updatingIndex === index ? (
+                                  <svg
+                                    className="animate-spin h-4 w-4 text-white"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                    ></path>
+                                  </svg>
+                                ) : (
+                                  "Oppdater"
+                                )}
                               </button>
                             ) : (
                               <Pencil

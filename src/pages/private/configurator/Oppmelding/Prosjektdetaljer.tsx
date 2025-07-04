@@ -220,6 +220,12 @@ export const Prosjektdetaljer = forwardRef(
           } else {
             form.setValue("Kundenr", Number(data?.Kundenummer));
             form.setValue("VelgSerie", data?.HouseType ?? "");
+            form.setValue("Byggeadresse", data?.Anleggsadresse ?? "");
+            form.setValue("Poststed", data?.Poststed ?? "");
+            form.setValue("Kommune", data?.Kommune ?? "");
+            form.setValue("Postnr", data?.Postnr ?? "");
+            form.setValue("TypeProsjekt", data?.TypeProsjekt ?? "");
+            setAddress(String(data?.Anleggsadresse) ?? "");
           }
         }
       };

@@ -348,7 +348,13 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           <div className="flex items-center gap-5">
             <div
               onClick={() => {
-                setActiveTab(2);
+                setActiveTab(1);
+                const params = new URLSearchParams(location.search);
+                params.delete("pdf_id");
+
+                navigate(`${location.pathname}?${params.toString()}`, {
+                  replace: true,
+                });
               }}
             >
               <Button

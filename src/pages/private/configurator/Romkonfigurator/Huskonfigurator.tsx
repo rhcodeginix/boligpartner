@@ -242,6 +242,9 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
   const [confirmDeleteIndex, setConfirmDeleteIndex] = useState<number | null>(
     null
   );
+
+  const [updatingIndex, setUpdatingIndex] = useState<number | null>(null);
+
   const handleDeleteFloor = async (indexToDelete: number) => {
     const husmodellDocRef = doc(db, "room_configurator", String(id));
 
@@ -423,7 +426,11 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                         key={index}
                         className="relative shadow-shadow2 cursor-pointer p-4 rounded-lg flex flex-col gap-4"
                         onClick={() => {
-                          setActiveTab(2);
+                          if (item?.rooms) {
+                            setActiveTab(3);
+                          } else {
+                            setActiveTab(2);
+                          }
                           navigate(`?pdf_id=${item?.pdf_id}`);
                         }}
                       >
@@ -447,6 +454,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                             {isEditing ? (
                               <button
                                 className="bg-purple text-white px-4 py-2 rounded text-sm self-end"
+                                disabled={updatingIndex === index}
                                 onClick={async (e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
@@ -457,7 +465,6 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                                   };
 
                                   setRoomsData(updatedRooms);
-                                  setEditIndex(null);
 
                                   const husmodellDocRef = doc(
                                     db,
@@ -473,9 +480,34 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                                   toast.success("Navn oppdatert!", {
                                     position: "top-right",
                                   });
+                                  setEditIndex(null);
+                                  setUpdatingIndex(null);
                                 }}
                               >
-                                Oppdater
+                                {updatingIndex === index ? (
+                                  <svg
+                                    className="animate-spin h-4 w-4 text-white"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                    ></path>
+                                  </svg>
+                                ) : (
+                                  "Oppdater"
+                                )}
                               </button>
                             ) : (
                               <Pencil
@@ -584,7 +616,9 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                 navigate("/Bolig-configurator");
               }}
             />
-            <h2 className="text-lg font-bold mb-4">Opprett ny konfigurator</h2>
+            <h2 className="text-lg font-bold mb-4">
+              Sett navn på konfigurasjonen
+            </h2>
             <input
               type="text"
               value={newConfiguratorName}
@@ -596,7 +630,10 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
               <Button
                 text="Avbryt"
                 className="border border-gray2 text-black"
-                onClick={() => setNewConfiguratorName("")}
+                onClick={() => {
+                  setNewConfiguratorName("");
+                  setShowConfiguratorModal(false);
+                }}
               />
               <Button
                 text="Opprett"

@@ -493,6 +493,13 @@ export const Eksterior: React.FC<{
   }, [id]);
 
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  useEffect(() => {
+    if (showConfiguratorModal) {
+      setNewConfiguratorName(
+        `${pendingPayload?.Anleggsadresse} - ${pendingPayload?.Kundenavn}`
+      );
+    }
+  }, [showConfiguratorModal]);
 
   return (
     <>
@@ -852,7 +859,7 @@ export const Eksterior: React.FC<{
               type="submit"
             />
             <Button
-              text="Legg inn bestilling"
+              text="Bekreft konfigurering"
               className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2"
               type="button"
               onClick={async () => {
@@ -932,11 +939,15 @@ export const Eksterior: React.FC<{
                     Plantegninger: [finalData],
                     updatedAt: formatDate(new Date()),
                     Anleggsadresse: targetKunde.Anleggsadresse,
+                    Postnr: targetKunde.Postnr,
+                    Kommune: targetKunde.Kommune,
+                    Poststed: targetKunde.Poststed,
                     EPost: targetKunde.EPost,
                     Kundenavn: targetKunde.Kundenavn,
                     Kundenummer: targetKunde.Kundenummer,
                     mobileNummer: targetKunde.mobileNummer,
                     HouseType: houseData?.husmodell_name,
+                    TypeProsjekt: targetKunde?.TypeProsjekt,
                   };
 
                   if (docSnap.exists()) {
@@ -1151,14 +1162,16 @@ export const Eksterior: React.FC<{
           onClose={() => setShowConfiguratorModal(false)}
           outSideClick={true}
         >
-          <div className="p-6 bg-white rounded-lg shadow-lg relative">
+          <div className="p-6 bg-white rounded-lg shadow-lg relative w-full sm:w-[546px]">
             <X
               className="text-primary absolute top-2.5 right-2.5 w-5 h-5 cursor-pointer"
               onClick={() => {
                 setShowConfiguratorModal(false);
               }}
             />
-            <h2 className="text-lg font-bold mb-4">Opprett ny konfigurator</h2>
+            <h2 className="text-lg font-bold mb-4">
+              Sett navn på konfigurasjonen
+            </h2>
             <input
               type="text"
               value={newConfiguratorName}
@@ -1170,7 +1183,10 @@ export const Eksterior: React.FC<{
               <Button
                 text="Avbryt"
                 className="border border-gray2 text-black"
-                onClick={() => setNewConfiguratorName("")}
+                onClick={() => {
+                  setNewConfiguratorName("");
+                  setShowConfiguratorModal(false);
+                }}
               />
               <Button
                 text="Opprett"
@@ -1254,7 +1270,7 @@ export const Eksterior: React.FC<{
         >
           <div className="flex flex-col items-center gap-4 bg-white p-3 rounded-lg">
             <span className="text-purple text-base font-medium">
-              Plasserer bestilling...
+              Overfører til Aktive tiltak...
             </span>
             <div className="w-48 h-1 overflow-hidden rounded-lg">
               <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
