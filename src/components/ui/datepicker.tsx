@@ -83,24 +83,36 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
   placeholderText = "Select a date",
   className,
 }) => {
-  // Custom input needs to use forwardRef
   const CustomInput = forwardRef<HTMLInputElement, any>(
-    ({ value, onClick, onChange, placeholder }, ref) => (
-      <div
-        className={`${className} flex h-11 items-center justify-between py-2.5 px-3.5 gap-2 border border-gray-300 rounded`}
-      >
-        <input
-          type="text"
-          value={value}
-          onChange={onChange}
-          onClick={onClick}
-          placeholder={placeholder}
-          ref={ref}
-          className="text-base font-medium focus:outline-none w-full text-black"
-        />
-        <img src={Ic_calendar} alt="Calendar icon" />
-      </div>
-    )
+    ({ value, onClick, onChange, placeholder }, ref) => {
+      const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let val = e.target.value.replace(/\D/g, "");
+        if (val.length > 2 && val.length <= 4) {
+          val = `${val.slice(0, 2)}.${val.slice(2)}`;
+        } else if (val.length > 4) {
+          val = `${val.slice(0, 2)}.${val.slice(2, 4)}.${val.slice(4, 8)}`;
+        }
+        e.target.value = val;
+        onChange(e);
+      };
+
+      return (
+        <div
+          className={`${className} flex h-11 items-center justify-between py-2.5 px-3.5 gap-2 border border-gray-300 rounded`}
+        >
+          <input
+            type="text"
+            value={value}
+            onChange={handleInputChange}
+            onClick={onClick}
+            placeholder={placeholder}
+            ref={ref}
+            className="text-base font-medium focus:outline-none w-full text-black"
+          />
+          <img src={Ic_calendar} alt="Calendar icon" />
+        </div>
+      );
+    }
   );
 
   return (
