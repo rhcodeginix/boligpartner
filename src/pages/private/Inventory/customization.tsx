@@ -16,6 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-hot-toast";
 import { EditProductFormDrawer } from "./editProductForm";
 import { db } from "../../../config/firebaseConfig";
+import { Spinner } from "../../../components/Spinner";
 
 const fileSchema = z.union([
   z
@@ -109,8 +110,11 @@ export const Customization: React.FC<{
       remove(index);
     }
   };
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsSubmitLoading(true);
+
     try {
       const hovedkategorinavn = data?.hovedkategorinavn;
 
@@ -188,6 +192,8 @@ export const Customization: React.FC<{
     } catch (error) {
       console.error("Firestore update failed:", error);
       toast.error("Noe gikk galt. Prøv igjen.", { position: "top-right" });
+    } finally {
+      setIsSubmitLoading(false);
     }
   };
 
@@ -337,6 +343,8 @@ export const Customization: React.FC<{
 
   return (
     <>
+      {isSubmitLoading && <Spinner />}
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div>

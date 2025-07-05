@@ -18,13 +18,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../components/ui/select";
-import { forwardRef, useEffect, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { toast } from "react-hot-toast";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useLocation } from "react-router-dom";
 import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
 import DatePickerComponent from "../../../../components/ui/datepicker";
+import { Spinner } from "../../../../components/Spinner";
 
 const formSchema = z.object({
   LassLeveresByggeplass: z.string({
@@ -70,7 +71,11 @@ export const Leveransedetaljer = forwardRef(
       },
     }));
 
+    const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
+      setIsSubmitLoading(true);
+
       try {
         const husmodellDocRef = doc(db, "room_configurator", String(id));
 
@@ -106,6 +111,8 @@ export const Leveransedetaljer = forwardRef(
         toast.error("Something went wrong!", {
           position: "top-right",
         });
+      } finally {
+        setIsSubmitLoading(false);
       }
     };
     const weekArray = Array.from({ length: 53 }, (_, i) => (i + 1).toString());
@@ -122,6 +129,7 @@ export const Leveransedetaljer = forwardRef(
 
     return (
       <>
+        {isSubmitLoading && <Spinner />}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">

@@ -23,6 +23,7 @@ import { ProductFormDrawer } from "../../editHusmodel/productform";
 import { ViewProductDetail } from "../../editHusmodel/ViewDetailProduct";
 import { AddNewSubCat } from "../../editHusmodel/AddNewSubCat";
 import { Input } from "../../../../components/ui/input";
+import { Spinner } from "../../../../components/Spinner";
 
 const fileSchema = z.union([
   z
@@ -185,7 +186,11 @@ export const Eksterior: React.FC<{
     return obj;
   }
 
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsSubmitLoading(true);
+
     const normalizedRooms = data.hovedkategorinavn.map((room: any) => {
       if (!Array.isArray(room.Kategorinavn)) return room;
 
@@ -266,6 +271,8 @@ export const Eksterior: React.FC<{
       toast.error("Something went wrong. Please try again.", {
         position: "top-right",
       });
+    } finally {
+      setIsSubmitLoading(false);
     }
   };
 
@@ -461,6 +468,8 @@ export const Eksterior: React.FC<{
 
   return (
     <>
+      {isSubmitLoading && <Spinner />}
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div>

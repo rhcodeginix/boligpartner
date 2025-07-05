@@ -10,13 +10,14 @@ import {
 import Button from "../../../../components/common/button";
 import { z } from "zod";
 import { Input } from "../../../../components/ui/input";
-import { forwardRef, useEffect, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
 import DatePickerComponent from "../../../../components/ui/datepicker";
+import { Spinner } from "../../../../components/Spinner";
 
 const formSchema = z.object({
   Byggeplassinformasjon: z.boolean().optional(),
@@ -63,8 +64,11 @@ export const SluttføringDokumentasjon = forwardRef(
         return valid;
       },
     }));
+    const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
+      setIsSubmitLoading(true);
+
       try {
         const husmodellDocRef = doc(db, "room_configurator", String(id));
 
@@ -99,6 +103,8 @@ export const SluttføringDokumentasjon = forwardRef(
         toast.error("Something went wrong!", {
           position: "top-right",
         });
+      } finally {
+        setIsSubmitLoading(false);
       }
     };
     const StiftpakkeLimLeveresFor = ["17°", "21°", "34°"];
@@ -122,6 +128,8 @@ export const SluttføringDokumentasjon = forwardRef(
 
     return (
       <>
+        {isSubmitLoading && <Spinner />}
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">

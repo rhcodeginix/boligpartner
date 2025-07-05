@@ -10,12 +10,13 @@ import {
 import Button from "../../../../components/common/button";
 import { Input } from "../../../../components/ui/input";
 import { z } from "zod";
-import { forwardRef, useEffect, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { removeUndefinedOrNull } from "./Yttervegger";
 import { toast } from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import { db } from "../../../../config/firebaseConfig";
+import { Spinner } from "../../../../components/Spinner";
 
 const formSchema = z.object({
   TypeGrunnFundament: z.string().optional(),
@@ -56,8 +57,11 @@ export const GrunnerOgSkorstein = forwardRef(
         return valid;
       },
     }));
+    const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
+      setIsSubmitLoading(true);
+
       try {
         const husmodellDocRef = doc(db, "room_configurator", String(id));
 
@@ -93,6 +97,8 @@ export const GrunnerOgSkorstein = forwardRef(
         toast.error("Something went wrong!", {
           position: "top-right",
         });
+      } finally {
+        setIsSubmitLoading(false);
       }
     };
     const SkorsteinEnkelDobbel = ["Enkel", "Dobbel"];
@@ -119,6 +125,8 @@ export const GrunnerOgSkorstein = forwardRef(
     const TypeGrunnmurValue = form.watch("TypeGrunnmur");
     return (
       <>
+        {isSubmitLoading && <Spinner />}
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">

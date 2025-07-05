@@ -10,12 +10,13 @@ import {
 import Button from "../../../../components/common/button";
 import { z } from "zod";
 import { Input } from "../../../../components/ui/input";
-import { forwardRef, useEffect, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
+import { Spinner } from "../../../../components/Spinner";
 
 const formSchema = z.object({
   Ventilasjon: z.boolean().optional(),
@@ -57,8 +58,11 @@ export const VentilasjonSentralstøvsuger = forwardRef(
         return valid;
       },
     }));
+    const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
+      setIsSubmitLoading(true);
+
       try {
         const husmodellDocRef = doc(db, "room_configurator", String(id));
 
@@ -94,6 +98,8 @@ export const VentilasjonSentralstøvsuger = forwardRef(
         toast.error("Something went wrong!", {
           position: "top-right",
         });
+      } finally {
+        setIsSubmitLoading(false);
       }
     };
     const FargeønskeUtvendigKombirist = ["Hvit", "Svart"];
@@ -114,6 +120,8 @@ export const VentilasjonSentralstøvsuger = forwardRef(
     }, [roomsData]);
     return (
       <>
+        {" "}
+        {isSubmitLoading && <Spinner />}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">

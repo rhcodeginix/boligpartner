@@ -38,6 +38,7 @@ import {
   SelectValue,
 } from "../../../../components/ui/select";
 import DatePickerComponent from "../../../../components/ui/datepicker";
+import { Spinner } from "../../../../components/Spinner";
 
 const formSchema = z.object({
   Kundenr: z.number({ required_error: "Kundenr er påkrevd." }),
@@ -131,7 +132,11 @@ export const Prosjektdetaljer = forwardRef(
     const selectedHouseType = form.watch("TypeProsjekt");
     const VelgSerie = form.watch("VelgSerie");
 
+    const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
+      setIsSubmitLoading(true);
+
       try {
         const husmodellDocRef = doc(db, "room_configurator", String(id));
 
@@ -166,6 +171,8 @@ export const Prosjektdetaljer = forwardRef(
         toast.error("Something went wrong!", {
           position: "top-right",
         });
+      } finally {
+        setIsSubmitLoading(false);
       }
     };
     const Finansiering = useMemo(() => ["Ja", "Nei"], []);
@@ -235,6 +242,8 @@ export const Prosjektdetaljer = forwardRef(
 
     return (
       <>
+        {isSubmitLoading && <Spinner />}
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">

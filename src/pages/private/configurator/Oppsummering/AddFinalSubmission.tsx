@@ -34,6 +34,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import Modal from "../../../../components/common/modal";
 import { ExportView } from "./exportView";
+import { Spinner } from "../../../../components/Spinner";
 
 const formSchema = z.object({
   Kundenavn: z.string({
@@ -82,7 +83,11 @@ export const AddFinalSubmission: React.FC<{
   });
   const [isExporting, setIsExporting] = useState(false);
 
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsSubmitLoading(true);
+
     try {
       const husmodellDocRef = doc(db, "room_configurator", String(id));
 
@@ -369,6 +374,7 @@ export const AddFinalSubmission: React.FC<{
       });
     } finally {
       setIsExporting(false);
+      setIsSubmitLoading(false);
     }
   };
 
@@ -409,6 +415,8 @@ export const AddFinalSubmission: React.FC<{
 
   return (
     <>
+      {isSubmitLoading && <Spinner />}
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

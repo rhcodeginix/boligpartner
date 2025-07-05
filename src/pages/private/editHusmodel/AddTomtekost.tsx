@@ -10,6 +10,8 @@ import {
 } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
 import { Input } from "../../../components/ui/input";
+import { Spinner } from "../../../components/Spinner";
+import { useState } from "react";
 
 const formSchema = z.object({
   TomtekostID: z.string(),
@@ -42,8 +44,11 @@ export const AddTomtekost: React.FC<{
       IncludingOffer: false,
     },
   });
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof formSchema>, e: any) => {
+    setIsSubmitLoading(true);
+
     e.preventDefault();
 
     data.TomtekostID = new Date().toISOString();
@@ -59,10 +64,13 @@ export const AddTomtekost: React.FC<{
         shouldValidate: true,
         shouldDirty: true,
       });
+    setIsSubmitLoading(false);
   };
 
   return (
     <>
+      {isSubmitLoading && <Spinner />}
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
           <div className="flex flex-col gap-[18px]">

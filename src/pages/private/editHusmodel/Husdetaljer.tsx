@@ -26,6 +26,7 @@ import { InputMobile } from "../../../components/ui/inputMobile";
 import { parsePhoneNumber } from "react-phone-number-input";
 import ApiUtils from "../../../api";
 import Ic_search_location from "../../../assets/images/Ic_search_location.svg";
+import { Spinner } from "../../../components/Spinner";
 
 const formSchema = z.object({
   Kundenavn: z.string().min(1, {
@@ -79,6 +80,7 @@ export const Husdetaljer: React.FC<{
   const [address, setAddress] = useState("");
   const navigate = useNavigate();
   const [createData, setCreateData] = useState<any>(null);
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
   useEffect(() => {
     const getData = async () => {
       const data = await fetchAdminDataByEmail();
@@ -124,6 +126,7 @@ export const Husdetaljer: React.FC<{
   }, [location]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsSubmitLoading(true);
     try {
       const formatDate = (date: Date) => {
         return date
@@ -186,6 +189,8 @@ export const Husdetaljer: React.FC<{
       toast.error("Something went wrong. Please try again.", {
         position: "top-right",
       });
+    } finally {
+      setIsSubmitLoading(false);
     }
   };
 
@@ -217,6 +222,7 @@ export const Husdetaljer: React.FC<{
 
   return (
     <>
+      {isSubmitLoading && <Spinner />}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
           <div className="pt-6 px-4 md:px-6 desktop:px-8 mb-[130px]">

@@ -683,7 +683,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
         }}
       >
         <Button
-          text="Bekreft konfigurering"
+          text="Legg inn bestilling"
           className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 ${
             isDisable ? "cursor-not-allowed opacity-50" : ""
           }`}

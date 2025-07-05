@@ -10,7 +10,8 @@ import {
 } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
 import { Input } from "../../../components/ui/input";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Spinner } from "../../../components/Spinner";
 
 const formSchema = z.object({
   Kategorinavn: z.string().min(1, {
@@ -46,7 +47,11 @@ export const AddNewSubCat: React.FC<{
     }
   }, [defaultValue]);
 
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsSubmitLoading(true);
+
     onClose();
     const updatedName = data.Kategorinavn;
     const updatedOption = data.productOptions;
@@ -94,6 +99,8 @@ export const AddNewSubCat: React.FC<{
         { shouldValidate: true }
       );
     }
+
+    setIsSubmitLoading(false);
   };
 
   const productOptions = [
@@ -104,6 +111,8 @@ export const AddNewSubCat: React.FC<{
 
   return (
     <>
+      {isSubmitLoading && <Spinner />}
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

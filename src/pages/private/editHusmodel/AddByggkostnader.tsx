@@ -10,6 +10,8 @@ import {
 } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
 import { Input } from "../../../components/ui/input";
+import { Spinner } from "../../../components/Spinner";
+import { useState } from "react";
 
 const formSchema = z.object({
   byggkostnaderID: z.string(),
@@ -42,9 +44,11 @@ export const AddByggkostnader: React.FC<{
       IncludingOffer: false,
     },
   });
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof formSchema>, e: any) => {
     e.preventDefault();
+    setIsSubmitLoading(true);
 
     data.byggkostnaderID = new Date().toISOString();
     const existingByggekostnader = formValue.getValues("Byggekostnader") || [];
@@ -59,10 +63,14 @@ export const AddByggkostnader: React.FC<{
         shouldValidate: true,
         shouldDirty: true,
       });
+
+    setIsSubmitLoading(false);
   };
 
   return (
     <>
+      {isSubmitLoading && <Spinner />}
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
           <div className="flex flex-col gap-[18px]">

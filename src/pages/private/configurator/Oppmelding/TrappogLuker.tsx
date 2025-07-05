@@ -10,12 +10,19 @@ import {
 import Button from "../../../../components/common/button";
 import { z } from "zod";
 import { Input } from "../../../../components/ui/input";
-import { forwardRef, useEffect, useImperativeHandle, useMemo } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
+import { Spinner } from "../../../../components/Spinner";
 
 const formSchema = z.object({
   Trapp: z
@@ -70,8 +77,11 @@ export const TrappogLuker = forwardRef(
         return valid;
       },
     }));
+    const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
+      setIsSubmitLoading(true);
+
       try {
         const husmodellDocRef = doc(db, "room_configurator", String(id));
 
@@ -107,6 +117,8 @@ export const TrappogLuker = forwardRef(
         toast.error("Something went wrong!", {
           position: "top-right",
         });
+      } finally {
+        setIsSubmitLoading(false);
       }
     };
 
@@ -134,6 +146,8 @@ export const TrappogLuker = forwardRef(
     }, [roomsData, form]);
     return (
       <>
+        {isSubmitLoading && <Spinner />}
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
