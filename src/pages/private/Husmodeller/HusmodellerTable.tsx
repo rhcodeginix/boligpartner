@@ -250,11 +250,9 @@ export const HusmodellerTable = () => {
         accessorKey: "sisteoppdatertav",
         header: "Siste oppdatert av",
         cell: ({ row }) => (
-          <div className="flex items-start gap-3">
-            <p className="text-sm font-medium text-black w-max">
-              {formatDateTime(row.original?.updatedAt)}
-            </p>
-          </div>
+          <p className="text-sm font-medium text-black w-max">
+            {formatDateTime(row.original?.updatedAt)}
+          </p>
         ),
       },
       {
@@ -382,7 +380,10 @@ export const HusmodellerTable = () => {
             {table.getHeaderGroups().map((headerGroup: any) => (
               <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header: any) => (
-                  <TableHead key={header.id} className="h-8 text-sm">
+                  <TableHead
+                    key={header.id}
+                    className="h-8 text-sm whitespace-nowrap"
+                  >
                     {flexRender(
                       header.column.columnDef.header,
                       header.getContext()
