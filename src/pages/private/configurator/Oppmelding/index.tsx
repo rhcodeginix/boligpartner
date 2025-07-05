@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import VerticalWizard from "../../../../components/ui/stepper/verticalStepper";
 import { Prosjektdetaljer } from "./Prosjektdetaljer";
-// import { Leveransedetaljer } from "./Leveransedetaljer";
 import { GrunnerOgSkorstein } from "./GrunnerOgSkorstein";
 import { GulvBjelkelagHimling } from "./GulvBjelkelagHimling";
 import { Yttervegger } from "./Yttervegger";
@@ -9,15 +8,11 @@ import { Innervegger } from "./Innervegger";
 import { TakogTaktekking } from "./TakogTaktekking";
 import { Dører } from "./Dører";
 import { Vinduer } from "./Vinduer";
-// import { KjøkkenGarderobeBad } from "./KjøkkenGarderobeBad";
 import { TrappogLuker } from "./TrappogLuker";
 import { BalkongTerrasse } from "./BalkongTerrasse";
-// import { ListverkogBelistning } from "./ListverkogBelistning";
 import { VentilasjonSentralstøvsuger } from "./VentilasjonSentralstøvsuger";
 import { Brannvern } from "./Brannvern";
 import { TekniskeInstallasjoner } from "./TekniskeInstallasjoner";
-// import { SluttføringDokumentasjon } from "./SluttføringDokumentasjon";
-// import { TakrennerBeslag } from "./TakrennerBeslag";
 import { useLocation } from "react-router-dom";
 import { fetchRoomData } from "../../../../lib/utils";
 

@@ -76,8 +76,9 @@ export const ExportView: React.FC<{
                               </div>
                             </div>
                           )}
+
                           {index === 0 && (
-                            <h3 className="mb-4 text-darkBlack text-xl font-semibold">
+                            <h3 className="mb-4 text-darkBlack text-xl font-semibold border-t border-gray2">
                               {room?.title}
                             </h3>
                           )}
@@ -155,9 +156,6 @@ export const ExportView: React.FC<{
                     })
                   : "Ingen rom funnet."}
               </div>
-              {roomIndex < rooms.length - 1 && (
-                <div className="border-b border-[#DCDFEA] mt-6"></div>
-              )}
             </div>
           ))}
       </div>

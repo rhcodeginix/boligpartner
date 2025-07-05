@@ -18,17 +18,6 @@ const formSchema = z.object({
       colorCode: z.string().optional(),
     })
     .optional(),
-  // romskjema: z
-  //   .array(
-  //     z.object({
-  //       romNavn: z.string().optional(),
-  //       himling: z.string().optional(),
-  //       vegger: z.string().optional(),
-  //       lister: z.string().optional(),
-  //       beskrivelse: z.string().optional(),
-  //     })
-  //   )
-  //   .optional(),
 });
 
 export const Innervegger = forwardRef(
@@ -50,14 +39,6 @@ export const Innervegger = forwardRef(
     const pathSegments = location.pathname.split("/");
     const id = pathSegments.length > 2 ? pathSegments[2] : null;
 
-    // const defaultRows = Array.from({ length: 4 }).map(() => ({
-    //   romNavn: "",
-    //   himling: "",
-    //   vegger: "",
-    //   lister: "",
-    //   beskrivelse: "",
-    // }));
-
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
       defaultValues: {
@@ -65,7 +46,6 @@ export const Innervegger = forwardRef(
           type: "",
           colorCode: "",
         },
-        // romskjema: defaultRows,
       },
     });
     useImperativeHandle(ref, () => ({
@@ -118,11 +98,6 @@ export const Innervegger = forwardRef(
       "100 mm mineralull 36",
     ];
 
-    // const { fields } = useFieldArray({
-    //   control: form.control,
-    //   name: "romskjema",
-    // });
-
     useEffect(() => {
       if (roomsData && roomsData?.Innervegger) {
         Object.entries(roomsData?.Innervegger).forEach(([key, value]) => {
@@ -149,7 +124,6 @@ export const Innervegger = forwardRef(
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
               <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4] uppercase">
-                {/* Innervegger */}
                 Oppbygging innervegg
               </div>
               <div className="p-4 md:p-5">
@@ -228,75 +202,7 @@ export const Innervegger = forwardRef(
                   <h4 className="uppercase text-darkBlack font-semibold col-span-3">
                     ROMSKJEMA:
                   </h4>
-                  {/* <div className="col-span-3">
-                    <div className="grid grid-cols-5 gap-2 font-semibold text-sm mb-2">
-                      <div>Rom Navn</div>
-                      <div>Himling</div>
-                      <div>Vegger</div>
-                      <div>Lister</div>
-                      <div>Beskrivelse</div>
-                    </div>
 
-                    {fields.map((field, index) => (
-                      <div
-                        key={field.id}
-                        className="grid grid-cols-5 gap-2 mb-2"
-                      >
-                        <Input
-                          value={form.watch(`romskjema.${index}.romNavn`) || ""}
-                          onChange={(e: any) => {
-                            form.setValue(
-                              `romskjema.${index}.romNavn`,
-                              e.target.value
-                            );
-                          }}
-                          className="bg-white rounded-[8px] border text-black border-gray1"
-                        />
-                        <Input
-                          value={form.watch(`romskjema.${index}.himling`) || ""}
-                          onChange={(e: any) => {
-                            form.setValue(
-                              `romskjema.${index}.himling`,
-                              e.target.value
-                            );
-                          }}
-                          className="bg-white rounded-[8px] border text-black border-gray1"
-                        />
-                        <Input
-                          value={form.watch(`romskjema.${index}.vegger`) || ""}
-                          onChange={(e: any) => {
-                            form.setValue(
-                              `romskjema.${index}.vegger`,
-                              e.target.value
-                            );
-                          }}
-                          className="bg-white rounded-[8px] border text-black border-gray1"
-                        />
-                        <Input
-                          value={form.watch(`romskjema.${index}.lister`) || ""}
-                          onChange={(e: any) => {
-                            form.setValue(
-                              `romskjema.${index}.lister`,
-                              e.target.value
-                            );
-                          }}
-                          className="bg-white rounded-[8px] border text-black border-gray1"
-                        />
-                        <Input
-                          value={
-                            form.watch(`romskjema.${index}.beskrivelse`) || ""
-                          }
-                          onChange={(e: any) => {
-                            form.setValue(
-                              `romskjema.${index}.beskrivelse`,
-                              e.target.value
-                            );
-                          }}
-                          className="bg-white rounded-[8px] border text-black border-gray1"
-                        />
-                      </div>
-                    ))}
-                  </div> */}
                   <div className="col-span-3">
                     <div className="bg-gray3 border border-[#EFF1F5] rounded-lg p-2 flex items-center gap-2 mb-3.5">
                       {roomsData?.Plantegninger &&
@@ -385,24 +291,6 @@ export const Innervegger = forwardRef(
                                                             {prod?.Produktnavn}
                                                           </h3>
                                                         </div>
-                                                        {/* <div className="flex flex-col gap-2 mt-3">
-                                                          <div className="text-secondary text-sm">
-                                                            Leveres av:{" "}
-                                                            <span className="text-black font-medium">
-                                                              Boligpartner
-                                                            </span>
-                                                          </div>
-                                                          {prod?.delieverBy && (
-                                                            <div className="text-secondary text-sm">
-                                                              Assembled by:{" "}
-                                                              <span className="text-black font-medium">
-                                                                {
-                                                                  prod?.delieverBy
-                                                                }
-                                                              </span>
-                                                            </div>
-                                                          )}
-                                                        </div> */}
                                                       </div>
                                                     );
                                                   }
