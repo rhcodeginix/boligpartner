@@ -120,7 +120,7 @@ export const Navbar: React.FC = () => {
               );
             }}
           >
-            Mine tiltak
+            Oppmelding
           </Link>
           {/* <Link
             to={"/Inventory"}
@@ -217,7 +217,7 @@ export const Navbar: React.FC = () => {
                 );
               }}
             >
-              Mine tiltak
+              Oppmelding
             </Link>
             {/* <Link
             to={"/Inventory"}

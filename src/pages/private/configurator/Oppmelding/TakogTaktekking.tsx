@@ -32,7 +32,7 @@ const formSchema = z.object({
   TaksteinFarge: z.string().optional(),
   TaksteinStruktur: z.string().optional(),
   HeisesPåTak: z.boolean().optional(),
-  SnøfangereMeter: z.string().optional(),
+  Snøfangere: z.string().optional(),
   SnøfangereFarge: z.string().optional(),
   SnøfangerkrokerIGrad: z.string().optional(),
   GradrennerBeslagFarge: z.string().optional(),
@@ -544,7 +544,7 @@ export const TakogTaktekking = forwardRef(
                   <div>
                     <FormField
                       control={form.control}
-                      name="SnøfangereMeter"
+                      name="Snøfangere"
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <p
@@ -552,12 +552,12 @@ export const TakogTaktekking = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Snøfangere meter
+                            Snøfangere
                           </p>
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Antall meter"
+                                placeholder="Kommentar"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${

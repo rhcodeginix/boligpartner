@@ -123,7 +123,7 @@ export const GrunnerOgSkorstein = forwardRef(
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
               <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4] uppercase">
-                Grunnmur og pipe/skorstein
+                Grunnmur og pipe
               </div>
               <div className="p-4 md:p-5">
                 <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5 items-center">

@@ -116,7 +116,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     // },
     {
       id: 2,
-      title: "Grunnmur og pipe/skorstein",
+      title: "Grunnmur og pipe",
       content: (
         <GrunnerOgSkorstein
           handleNext={handleNext}

@@ -715,17 +715,17 @@ export const Prosjektdetaljer = forwardRef(
                           value: "Nostalgi",
                         },
                         {
-                          label: "Tradisjonelt",
+                          label: "Herskaplig",
                           icon: (
                             <Warehouse
                               className={`${
-                                VelgSerie === "Tradisjonelt"
+                                VelgSerie === "Herskaplig"
                                   ? "text-[#444CE7]"
                                   : "text-[#5D6B98]"
                               }`}
                             />
                           ),
-                          value: "Tradisjonelt",
+                          value: "Herskaplig",
                         },
                         {
                           label: "Moderne",
