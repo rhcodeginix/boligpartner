@@ -112,7 +112,7 @@ export const RoomTable = () => {
         accessorKey: "Navn",
         header: "Navn",
         cell: ({ row }) => (
-          <div className="flex gap-2 items-center justify-between mb-4">
+          <div className="flex gap-2 items-center justify-between">
             <p className="text-sm font-medium text-black w-max">
               {row.original?.name}
             </p>
