@@ -510,7 +510,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                           <div className="flex items-center gap-2 md:gap-3">
                             {isEditing ? (
                               <button
-                                className="bg-purple text-white px-2 md:px-4 py-2 rounded text-sm self-end"
+                                className="bg-purple text-white px-2 md:px-3 py-2 rounded text-sm self-end"
                                 disabled={updatingIndex === index}
                                 onClick={async (e) => {
                                   setUpdatingIndex(index);

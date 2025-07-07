@@ -341,7 +341,7 @@ export const RoomTable = () => {
                 />
                 <Button
                   text="Oppdater"
-                  className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px]"
+                  className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-3 py-[10px]"
                   onClick={async () => {
                     try {
                       const husmodellDocRef = doc(

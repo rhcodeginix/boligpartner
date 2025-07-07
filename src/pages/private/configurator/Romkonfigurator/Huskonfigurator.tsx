@@ -445,7 +445,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                           <div className="flex items-center gap-3">
                             {isEditing ? (
                               <button
-                                className="bg-purple text-white px-4 py-2 rounded text-sm self-end"
+                                className="bg-purple text-white px-3 py-2 rounded text-sm self-end"
                                 disabled={updatingIndex === index}
                                 onClick={async (e) => {
                                   e.preventDefault();
