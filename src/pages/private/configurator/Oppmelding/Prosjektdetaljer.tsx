@@ -259,6 +259,26 @@ export const Prosjektdetaljer = forwardRef(
       getData();
     }, [form, id]);
 
+    const typeProsjekt = form.watch("TypeProsjekt")?.toLowerCase();
+
+    const seriesOptions: any = {
+      bolig: [
+        { label: "Funkis", value: "Funkis", Icon: House },
+        { label: "Nostalgi", value: "Nostalgi", Icon: Store },
+        { label: "Herskaplig", value: "Herskaplig", Icon: Warehouse },
+        { label: "Moderne", value: "Moderne", Icon: Warehouse },
+      ],
+      hytte: [
+        { label: "Karakter", value: "Karakter", Icon: House },
+        { label: "Tur", value: "Tur", Icon: Store },
+        { label: "V-serie", value: "V-serie", Icon: Warehouse },
+        { label: "Moderne", value: "Moderne", Icon: Warehouse },
+      ],
+    };
+
+    const selectedOptions = seriesOptions[typeProsjekt] || [];
+    const velgSerie = VelgSerie;
+
     return (
       <>
         {isSubmitLoading && <Spinner />}
@@ -718,119 +738,7 @@ export const Prosjektdetaljer = forwardRef(
                         Velg serie*
                       </p>
                       <div className="flex flex-wrap gap-2 lg:gap-4 items-center">
-                        {(form.watch("TypeProsjekt")?.toLowerCase() === "Bolig"
-                          ? [
-                              {
-                                label: "Funkis",
-                                value: "Funkis",
-                                icon: (
-                                  <House
-                                    className={`${
-                                      VelgSerie === "Funkis"
-                                        ? "text-[#444CE7]"
-                                        : "text-[#5D6B98]"
-                                    }`}
-                                  />
-                                ),
-                              },
-                              {
-                                label: "Nostalgi",
-                                value: "Nostalgi",
-                                icon: (
-                                  <Store
-                                    className={`${
-                                      VelgSerie === "Nostalgi"
-                                        ? "text-[#444CE7]"
-                                        : "text-[#5D6B98]"
-                                    }`}
-                                  />
-                                ),
-                              },
-                              {
-                                label: "Herskaplig",
-                                value: "Herskaplig",
-                                icon: (
-                                  <Warehouse
-                                    className={`${
-                                      VelgSerie === "Herskaplig"
-                                        ? "text-[#444CE7]"
-                                        : "text-[#5D6B98]"
-                                    }`}
-                                  />
-                                ),
-                              },
-                              {
-                                label: "Moderne",
-                                value: "Moderne",
-                                icon: (
-                                  <Warehouse
-                                    className={`${
-                                      VelgSerie === "Moderne"
-                                        ? "text-[#444CE7]"
-                                        : "text-[#5D6B98]"
-                                    }`}
-                                  />
-                                ),
-                              },
-                            ]
-                          : form.watch("TypeProsjekt")?.toLowerCase() ===
-                            "Hytte"
-                          ? [
-                              {
-                                label: "Karakter",
-                                value: "Karakter",
-                                icon: (
-                                  <House
-                                    className={`${
-                                      VelgSerie === "Karakter"
-                                        ? "text-[#444CE7]"
-                                        : "text-[#5D6B98]"
-                                    }`}
-                                  />
-                                ),
-                              },
-                              {
-                                label: "Tur",
-                                value: "Tur",
-                                icon: (
-                                  <Store
-                                    className={`${
-                                      VelgSerie === "Tur"
-                                        ? "text-[#444CE7]"
-                                        : "text-[#5D6B98]"
-                                    }`}
-                                  />
-                                ),
-                              },
-                              {
-                                label: "V-serie",
-                                value: "V-serie",
-                                icon: (
-                                  <Warehouse
-                                    className={`${
-                                      VelgSerie === "V-serie"
-                                        ? "text-[#444CE7]"
-                                        : "text-[#5D6B98]"
-                                    }`}
-                                  />
-                                ),
-                              },
-                              {
-                                label: "Moderne",
-                                value: "Moderne",
-                                icon: (
-                                  <Warehouse
-                                    className={`${
-                                      VelgSerie === "Moderne"
-                                        ? "text-[#444CE7]"
-                                        : "text-[#5D6B98]"
-                                    }`}
-                                  />
-                                ),
-                              },
-                            ]
-                          : []
-                        ).map((item, index) => (
+                        {selectedOptions.map((item: any, index: number) => (
                           <div
                             key={index}
                             onClick={() => {
@@ -843,7 +751,13 @@ export const Prosjektdetaljer = forwardRef(
                                 : "border-[#EFF1F5]"
                             }`}
                           >
-                            {item.icon}
+                            <item.Icon
+                              className={`${
+                                velgSerie === item.value
+                                  ? "text-[#444CE7]"
+                                  : "text-[#5D6B98]"
+                              }`}
+                            />
                             <div className="text-darkBlack text-sm text-center">
                               {item.label}
                             </div>
