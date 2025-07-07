@@ -1299,39 +1299,6 @@ export const Dører = forwardRef(
                   <div className="col-span-3">
                     <FormField
                       control={form.control}
-                      name="InnvendigeDører.KommentarTilInnvendigeDører"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Kommentar til innvendige dører:
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv her"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="col-span-3">
-                    <FormField
-                      control={form.control}
                       name="InnvendigeDører.Glassdør"
                       render={({ field, fieldState }) => (
                         <FormItem>
@@ -1831,6 +1798,39 @@ export const Dører = forwardRef(
                       />
                     </div>
                   )}
+                  <div className="col-span-3">
+                    <FormField
+                      control={form.control}
+                      name="InnvendigeDører.KommentarTilInnvendigeDører"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`${
+                              fieldState.error ? "text-red" : "text-black"
+                            } mb-[6px] text-sm`}
+                          >
+                            Kommentar til innvendige dører:
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Skriv her"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
                   <div className="col-span-3 text-darkBlack font-medium text-base">
                     DØRVRIDERE

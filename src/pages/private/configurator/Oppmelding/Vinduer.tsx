@@ -412,7 +412,7 @@ export const Vinduer = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
                       name="VinduerNedTilGulv"
@@ -436,7 +436,7 @@ export const Vinduer = forwardRef(
                       )}
                     />
                   </div>
-                  <div>
+                  <div className="col-span-3">
                     <FormField
                       control={form.control}
                       name="HeltreUutforingPpristillegg"
