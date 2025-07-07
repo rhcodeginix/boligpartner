@@ -154,13 +154,13 @@ export const AllRoomkonfigurator: React.FC = () => {
                   return (
                     <div
                       key={index}
-                      className="relative shadow-shadow2 cursor-pointer p-4 rounded-lg flex flex-col gap-4"
+                      className="relative shadow-shadow2 cursor-pointer p-4 rounded-lg flex flex-col justify-between gap-4"
                       onClick={() => {
                         // setActiveTab(1);
                         navigate(`/Room-Configurator/${item?.id}`);
                       }}
                     >
-                      <div className="flex gap-2 items-center justify-between mb-4">
+                      <div className="flex gap-2 items-center justify-between">
                         {isEditing ? (
                           <input
                             type="text"

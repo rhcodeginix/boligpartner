@@ -122,7 +122,6 @@ export const Vinduer = forwardRef(
     const VinduerOptions = [
       "Standard hvitmalt utv. og innv. ihht. leveransebeskrivelse",
       "Annen farge:",
-      // "Alubeslått utvendig",
     ];
     const TakvinduVeluxOptions = [
       "Ikke relevant",

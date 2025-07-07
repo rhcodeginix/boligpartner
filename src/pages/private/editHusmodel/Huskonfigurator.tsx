@@ -484,7 +484,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                     return (
                       <div
                         key={index}
-                        className="relative shadow-shadow2 p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4"
+                        className="relative shadow-shadow2 p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4 justify-between"
                       >
                         <div className="flex gap-1.5 md:gap-2 items-center justify-between">
                           <div className="flex items-center gap-2">
