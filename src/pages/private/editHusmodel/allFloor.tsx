@@ -203,10 +203,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         (item: any) => String(item?.pdf_id) === String(pdfId)
       );
 
-      // if (finalData) {
-      //   setFloorData(finalData);
-      //   setCategory(finalData.rooms || []);
-      // }
       // const husmodellDocRef = doc(db, "housemodell_configure_broker", id);
       // await updateDoc(husmodellDocRef, {
       //   KundeInfo: data.KundeInfo.map((kunde: any) => {

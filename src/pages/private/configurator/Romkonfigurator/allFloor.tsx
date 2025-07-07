@@ -164,8 +164,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         (item: any) => String(item?.pdf_id) === String(pdfId)
       );
 
-      // setFloorData(finalData);
-      // setCategory(finalData?.rooms);
       // // setLoading(false);
 
       // const husmodellDocRef = doc(db, "room_configurator", id);
