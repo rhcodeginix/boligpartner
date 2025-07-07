@@ -29,7 +29,7 @@ const formSchema = z
     VelgSerie: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.TypeProsjekt === "bolig" || data.TypeProsjekt === "hytte") {
+    if (data.TypeProsjekt === "Bolig" || data.TypeProsjekt === "Hytte") {
       if (!data.options) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -161,7 +161,7 @@ export const Husmodeller = () => {
               >
                 Type prosjekt
               </button>
-              {form.watch("TypeProsjekt") !== "prosjekt" && (
+              {form.watch("TypeProsjekt") !== "Prosjekt" && (
                 <button
                   onClick={() => setCurrentTab("models")}
                   className={`px-4 py-2 ${
@@ -179,7 +179,7 @@ export const Husmodeller = () => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="relative w-full"
               >
-                {form.watch("TypeProsjekt") !== "prosjekt" && (
+                {form.watch("TypeProsjekt") !== "Prosjekt" && (
                   <>
                     {currentTab === "models" && (
                       <FormField
@@ -275,11 +275,11 @@ export const Husmodeller = () => {
                               {[
                                 {
                                   label: "Bolig",
-                                  value: "bolig",
+                                  value: "Bolig",
                                   icon: (
                                     <House
                                       className={`${
-                                        field.value === "bolig"
+                                        field.value === "Bolig"
                                           ? "text-[#444CE7]"
                                           : "text-[#5D6B98]"
                                       }`}
@@ -288,11 +288,11 @@ export const Husmodeller = () => {
                                 },
                                 {
                                   label: "Hytte",
-                                  value: "hytte",
+                                  value: "Hytte",
                                   icon: (
                                     <Store
                                       className={`${
-                                        field.value === "hytte"
+                                        field.value === "Hytte"
                                           ? "text-[#444CE7]"
                                           : "text-[#5D6B98]"
                                       }`}
@@ -301,11 +301,11 @@ export const Husmodeller = () => {
                                 },
                                 {
                                   label: "Prosjekt",
-                                  value: "prosjekt",
+                                  value: "Prosjekt",
                                   icon: (
                                     <Warehouse
                                       className={`${
-                                        field.value === "prosjekt"
+                                        field.value === "Prosjekt"
                                           ? "text-[#444CE7]"
                                           : "text-[#5D6B98]"
                                       }`}
@@ -321,7 +321,7 @@ export const Husmodeller = () => {
                                     form.resetField("VelgSerie");
                                     form.resetField("options");
                                     if (
-                                      form.watch("TypeProsjekt") === "prosjekt"
+                                      form.watch("TypeProsjekt") === "Prosjekt"
                                     ) {
                                       const finalData: any = houseModels.find(
                                         (item: any) => item?.tag === "Prosjekt"

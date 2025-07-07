@@ -40,68 +40,81 @@ import {
 import DatePickerComponent from "../../../../components/ui/datepicker";
 import { Spinner } from "../../../../components/Spinner";
 
-const formSchema = z.object({
-  Kundenr: z.number({ required_error: "Kundenr er påkrevd." }),
-  Tiltakshaver: z.string({ required_error: "Tiltakshaver er påkrevd." }),
-  Byggeadresse: z.string({ required_error: "Byggeadresse er påkrevd." }),
-  Postnr: z.string({ required_error: "Postnr er påkrevd." }),
-  Poststed: z.string({ required_error: "Poststed er påkrevd." }),
-  Kommune: z.number({ required_error: "Kommune er påkrevd." }),
-  TelefonMobile: z.string().refine(
-    (value) => {
-      const parsedNumber = parsePhoneNumber(value);
-      const countryCode = parsedNumber?.countryCallingCode
-        ? `+${parsedNumber.countryCallingCode}`
-        : "";
-      const phoneNumber = parsedNumber?.nationalNumber || "";
-      if (countryCode !== "+47") {
-        return false;
+const formSchema = z
+  .object({
+    Kundenr: z.number({ required_error: "Kundenr er påkrevd." }),
+    Tiltakshaver: z.string({ required_error: "Tiltakshaver er påkrevd." }),
+    Byggeadresse: z.string({ required_error: "Byggeadresse er påkrevd." }),
+    Postnr: z.string({ required_error: "Postnr er påkrevd." }),
+    Poststed: z.string({ required_error: "Poststed er påkrevd." }),
+    Kommune: z.number({ required_error: "Kommune er påkrevd." }),
+    TelefonMobile: z.string().refine(
+      (value) => {
+        const parsedNumber = parsePhoneNumber(value);
+        const countryCode = parsedNumber?.countryCallingCode
+          ? `+${parsedNumber.countryCallingCode}`
+          : "";
+        const phoneNumber = parsedNumber?.nationalNumber || "";
+        if (countryCode !== "+47") {
+          return false;
+        }
+        const validator = phoneNumberValidations[countryCode];
+        return validator ? validator(phoneNumber) : false;
+      },
+      {
+        message:
+          "Vennligst skriv inn et gyldig telefonnummer for det valgte landet.",
       }
-      const validator = phoneNumberValidations[countryCode];
-      return validator ? validator(phoneNumber) : false;
-    },
-    {
-      message:
-        "Vennligst skriv inn et gyldig telefonnummer for det valgte landet.",
+    ),
+    BestillingsoversiktDatert: z.string({
+      required_error: "Bestillingsoversikt datert er påkrevd.",
+    }),
+    TypeProsjekt: z.string({ required_error: "Type prosjekt er påkrevd." }),
+    Finansiering: z.string({ required_error: "Finansiering er påkrevd." }),
+    // VelgSerie: z.string({ required_error: "Velg serie er påkrevd." }),
+    VelgSerie: z.string().optional(),
+    DatoBoligPartnerLeveransebeskrivelse: z.string({
+      required_error: "Dato BoligPartner leveransebeskrivelse er påkrevd.",
+    }),
+    TypeKalkyle: z.string({ required_error: "Type kalkyle er påkrevd." }),
+    VedleggTilKontraktDatert: z.string({
+      required_error: "Vedlegg til kontrakt datert er påkrevd.",
+    }),
+    KommentarProsjektLeveransedetaljer: z.string().optional(),
+    Situasjonsplan: z.string({
+      required_error: "Situasjonsplan dat er påkrevd.",
+    }),
+    TegnNummer: z.number({ required_error: "Tegn.nummer er påkrevd." }),
+    GjeldendeDato: z.string({
+      required_error: "Gjeldende 1:50 tegning datert er påkrevd.",
+    }),
+    SignertDato: z.string({
+      required_error: "Signert 1:100 tegning datert er påkrevd.",
+    }),
+    Kalkyledato: z.string({
+      required_error: "Referanse / kalkyledato er påkrevd.",
+    }),
+    ØnsketLeveranseukeForFørsteKtkjøring: z.string({
+      required_error: "Ønsket leveranseuke for første utkjøring er påkrevd.",
+    }),
+    TakstolerLeveresUke: z.string({
+      required_error: "Takstoler leveres uke er påkrevd.",
+    }),
+    VinduerLeveresUke: z.string({
+      required_error: "Vinduer leveres uke er påkrevd.",
+    }),
+  })
+  .superRefine((data, ctx) => {
+    if (data.TypeProsjekt === "Bolig" || data.TypeProsjekt === "Hytte") {
+      if (!data.VelgSerie) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Obligatorisk",
+          path: ["VelgSerie"],
+        });
+      }
     }
-  ),
-  BestillingsoversiktDatert: z.string({
-    required_error: "Bestillingsoversikt datert er påkrevd.",
-  }),
-  TypeProsjekt: z.string({ required_error: "Type prosjekt er påkrevd." }),
-  Finansiering: z.string({ required_error: "Finansiering er påkrevd." }),
-  VelgSerie: z.string({ required_error: "Velg serie er påkrevd." }),
-  DatoBoligPartnerLeveransebeskrivelse: z.string({
-    required_error: "Dato BoligPartner leveransebeskrivelse er påkrevd.",
-  }),
-  TypeKalkyle: z.string({ required_error: "Type kalkyle er påkrevd." }),
-  VedleggTilKontraktDatert: z.string({
-    required_error: "Vedlegg til kontrakt datert er påkrevd.",
-  }),
-  KommentarProsjektLeveransedetaljer: z.string().optional(),
-  Situasjonsplan: z.string({
-    required_error: "Situasjonsplan dat er påkrevd.",
-  }),
-  TegnNummer: z.number({ required_error: "Tegn.nummer er påkrevd." }),
-  GjeldendeDato: z.string({
-    required_error: "Gjeldende 1:50 tegning datert er påkrevd.",
-  }),
-  SignertDato: z.string({
-    required_error: "Signert 1:100 tegning datert er påkrevd.",
-  }),
-  Kalkyledato: z.string({
-    required_error: "Referanse / kalkyledato er påkrevd.",
-  }),
-  ØnsketLeveranseukeForFørsteKtkjøring: z.string({
-    required_error: "Ønsket leveranseuke for første utkjøring er påkrevd.",
-  }),
-  TakstolerLeveresUke: z.string({
-    required_error: "Takstoler leveres uke er påkrevd.",
-  }),
-  VinduerLeveresUke: z.string({
-    required_error: "Vinduer leveres uke er påkrevd.",
-  }),
-});
+  });
 
 export const Prosjektdetaljer = forwardRef(
   (
@@ -232,14 +245,14 @@ export const Prosjektdetaljer = forwardRef(
             form.setValue("Poststed", data?.Poststed ?? "");
             form.setValue("Kommune", data?.Kommune ?? "");
             form.setValue("Postnr", data?.Postnr ?? "");
-            form.setValue("TypeProsjekt", data?.TypeProsjekt ?? "bolig");
+            form.setValue("TypeProsjekt", data?.TypeProsjekt ?? "Bolig");
             form.setValue("VelgSerie", data?.VelgSerie ?? "");
             form.setValue("TelefonMobile", data?.mobileNummer ?? "");
             form.setValue("Tiltakshaver", data?.Kundenavn ?? "");
             setAddress(String(data?.Anleggsadresse) ?? "");
           }
         } else {
-          form.setValue("TypeProsjekt", "bolig");
+          form.setValue("TypeProsjekt", "Bolig");
         }
       };
 
@@ -275,39 +288,39 @@ export const Prosjektdetaljer = forwardRef(
                           icon: (
                             <House
                               className={`${
-                                selectedHouseType === "bolig"
+                                selectedHouseType === "Bolig"
                                   ? "text-[#444CE7]"
                                   : "text-[#5D6B98]"
                               }`}
                             />
                           ),
-                          value: "bolig",
+                          value: "Bolig",
                         },
                         {
                           label: "Hytte",
                           icon: (
                             <Store
                               className={`${
-                                selectedHouseType === "hytte"
+                                selectedHouseType === "Hytte"
                                   ? "text-[#444CE7]"
                                   : "text-[#5D6B98]"
                               }`}
                             />
                           ),
-                          value: "hytte",
+                          value: "Hytte",
                         },
                         {
                           label: "Prosjekt",
                           icon: (
                             <Warehouse
                               className={`${
-                                selectedHouseType === "prosjekt"
+                                selectedHouseType === "Prosjekt"
                                   ? "text-[#444CE7]"
                                   : "text-[#5D6B98]"
                               }`}
                             />
                           ),
-                          value: "prosjekt",
+                          value: "Prosjekt",
                         },
                       ].map((item: any, index: number) => (
                         <div
@@ -315,6 +328,8 @@ export const Prosjektdetaljer = forwardRef(
                           onClick={() => {
                             form.setValue("TypeProsjekt", item.value);
                             form.clearErrors("TypeProsjekt");
+                            form.resetField("VelgSerie");
+                            form.setValue("VelgSerie", "");
                           }}
                           className={`flex items-center gap-2 border-2 rounded-lg py-2 px-3 cursor-pointer ${
                             selectedHouseType === item.value
@@ -691,96 +706,157 @@ export const Prosjektdetaljer = forwardRef(
                   <h4 className="uppercase text-darkBlack font-semibold col-span-3">
                     Velg serie og leveransebeskrivelse
                   </h4>
-                  <div className="col-span-3">
-                    <p
-                      className={`${
-                        form.formState.errors.VelgSerie
-                          ? "text-red"
-                          : "text-black"
-                      } mb-[6px] text-sm`}
-                    >
-                      Velg serie*
-                    </p>
-                    <div className="flex flex-wrap gap-2 lg:gap-4 items-center">
-                      {[
-                        {
-                          label: "Funkis",
-                          icon: (
-                            <House
-                              className={`${
-                                VelgSerie === "Funkis"
-                                  ? "text-[#444CE7]"
-                                  : "text-[#5D6B98]"
-                              }`}
-                            />
-                          ),
-                          value: "Funkis",
-                        },
-                        {
-                          label: "Nostalgi",
-                          icon: (
-                            <Store
-                              className={`${
-                                VelgSerie === "Nostalgi"
-                                  ? "text-[#444CE7]"
-                                  : "text-[#5D6B98]"
-                              }`}
-                            />
-                          ),
-                          value: "Nostalgi",
-                        },
-                        {
-                          label: "Herskaplig",
-                          icon: (
-                            <Warehouse
-                              className={`${
-                                VelgSerie === "Herskaplig"
-                                  ? "text-[#444CE7]"
-                                  : "text-[#5D6B98]"
-                              }`}
-                            />
-                          ),
-                          value: "Herskaplig",
-                        },
-                        {
-                          label: "Moderne",
-                          icon: (
-                            <Warehouse
-                              className={`${
-                                VelgSerie === "Moderne"
-                                  ? "text-[#444CE7]"
-                                  : "text-[#5D6B98]"
-                              }`}
-                            />
-                          ),
-                          value: "Moderne",
-                        },
-                      ].map((item: any, index: number) => (
-                        <div
-                          key={index}
-                          onClick={() => {
-                            form.setValue("VelgSerie", item.value);
-                            form.clearErrors("VelgSerie");
-                          }}
-                          className={`flex items-center gap-2 border-2 rounded-lg py-2 px-3 cursor-pointer ${
-                            VelgSerie === item.value
-                              ? "border-[#444CE7]"
-                              : "border-[#EFF1F5]"
-                          }`}
-                        >
-                          {item.icon}
-                          <div className="text-darkBlack text-sm text-center">
-                            {item.label}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    {form.formState.errors.VelgSerie && (
-                      <p className="text-red text-sm mt-1">
-                        {form.formState.errors.VelgSerie.message}
+                  {form.watch("TypeProsjekt") !== "Prosjekt" && (
+                    <div className="col-span-3">
+                      <p
+                        className={`${
+                          form.formState.errors.VelgSerie
+                            ? "text-red"
+                            : "text-black"
+                        } mb-[6px] text-sm`}
+                      >
+                        Velg serie*
                       </p>
-                    )}
-                  </div>
+                      <div className="flex flex-wrap gap-2 lg:gap-4 items-center">
+                        {(form.watch("TypeProsjekt")?.toLowerCase() === "Bolig"
+                          ? [
+                              {
+                                label: "Funkis",
+                                value: "Funkis",
+                                icon: (
+                                  <House
+                                    className={`${
+                                      VelgSerie === "Funkis"
+                                        ? "text-[#444CE7]"
+                                        : "text-[#5D6B98]"
+                                    }`}
+                                  />
+                                ),
+                              },
+                              {
+                                label: "Nostalgi",
+                                value: "Nostalgi",
+                                icon: (
+                                  <Store
+                                    className={`${
+                                      VelgSerie === "Nostalgi"
+                                        ? "text-[#444CE7]"
+                                        : "text-[#5D6B98]"
+                                    }`}
+                                  />
+                                ),
+                              },
+                              {
+                                label: "Herskaplig",
+                                value: "Herskaplig",
+                                icon: (
+                                  <Warehouse
+                                    className={`${
+                                      VelgSerie === "Herskaplig"
+                                        ? "text-[#444CE7]"
+                                        : "text-[#5D6B98]"
+                                    }`}
+                                  />
+                                ),
+                              },
+                              {
+                                label: "Moderne",
+                                value: "Moderne",
+                                icon: (
+                                  <Warehouse
+                                    className={`${
+                                      VelgSerie === "Moderne"
+                                        ? "text-[#444CE7]"
+                                        : "text-[#5D6B98]"
+                                    }`}
+                                  />
+                                ),
+                              },
+                            ]
+                          : form.watch("TypeProsjekt")?.toLowerCase() ===
+                            "Hytte"
+                          ? [
+                              {
+                                label: "Karakter",
+                                value: "Karakter",
+                                icon: (
+                                  <House
+                                    className={`${
+                                      VelgSerie === "Karakter"
+                                        ? "text-[#444CE7]"
+                                        : "text-[#5D6B98]"
+                                    }`}
+                                  />
+                                ),
+                              },
+                              {
+                                label: "Tur",
+                                value: "Tur",
+                                icon: (
+                                  <Store
+                                    className={`${
+                                      VelgSerie === "Tur"
+                                        ? "text-[#444CE7]"
+                                        : "text-[#5D6B98]"
+                                    }`}
+                                  />
+                                ),
+                              },
+                              {
+                                label: "V-serie",
+                                value: "V-serie",
+                                icon: (
+                                  <Warehouse
+                                    className={`${
+                                      VelgSerie === "V-serie"
+                                        ? "text-[#444CE7]"
+                                        : "text-[#5D6B98]"
+                                    }`}
+                                  />
+                                ),
+                              },
+                              {
+                                label: "Moderne",
+                                value: "Moderne",
+                                icon: (
+                                  <Warehouse
+                                    className={`${
+                                      VelgSerie === "Moderne"
+                                        ? "text-[#444CE7]"
+                                        : "text-[#5D6B98]"
+                                    }`}
+                                  />
+                                ),
+                              },
+                            ]
+                          : []
+                        ).map((item, index) => (
+                          <div
+                            key={index}
+                            onClick={() => {
+                              form.setValue("VelgSerie", item.value);
+                              form.clearErrors("VelgSerie");
+                            }}
+                            className={`flex items-center gap-2 border-2 rounded-lg py-2 px-3 cursor-pointer ${
+                              VelgSerie === item.value
+                                ? "border-[#444CE7]"
+                                : "border-[#EFF1F5]"
+                            }`}
+                          >
+                            {item.icon}
+                            <div className="text-darkBlack text-sm text-center">
+                              {item.label}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {form.formState.errors.VelgSerie && (
+                        <p className="text-red text-sm mt-1">
+                          {form.formState.errors.VelgSerie.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
                   <div className="col-span-3">
                     <FormField
                       control={form.control}
