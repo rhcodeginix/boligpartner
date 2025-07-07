@@ -25,7 +25,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
   const handleToggleSubCategoryPopup = () => {
     if (AddCategory) {
@@ -74,7 +74,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
       if (!data) {
         console.error("No data found for ID:", id);
-        setLoading(false);
+        // setLoading(false);
         return;
       }
 
@@ -166,7 +166,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
       setFloorData(finalData);
       setCategory(finalData?.rooms);
-      setLoading(false);
+      // setLoading(false);
 
       const husmodellDocRef = doc(db, "room_configurator", id);
       await updateDoc(husmodellDocRef, { Plantegninger: updatedPlantegninger });
@@ -234,7 +234,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             </div>
           </div>
           <div className="flex flex-col p-4 pb-0 rounded-lg gap-3 h-full max-h-[calc(100%-90px)] overflow-y-auto overFlowAutoY sticky top-[80px]">
-            {loading ? (
+            {/* {loading ? (
               <>
                 {Array.from({ length: 10 }, (_, i) => i + 1).map(
                   (item, index) => {
@@ -258,108 +258,108 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                 )}
               </>
             ) : (
-              <>
-                {Category && Category?.length > 0
-                  ? Category.map((tab: any, index: number) => (
+              <> */}
+            {Category && Category?.length > 0
+              ? Category.map((tab: any, index: number) => (
+                  <div
+                    key={index}
+                    draggable
+                    onDragStart={() => handleDragStart(index)}
+                    onDragOver={handleDragOver}
+                    onDrop={() => handleDrop(index)}
+                    className={`bg-white cursor-pointer rounded-lg flex items-center justify-between gap-1 px-3 ${
+                      activeTabData === index
+                        ? "border-2 border-primary bg-lightPurple rounded-t-[12px]"
+                        : "border border-gray2"
+                    }`}
+                    onClick={() => setActiveTabData(index)}
+                  >
+                    <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold">
+                      <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
+                        {index + 1}
+                      </span>
+                      <span className="w-[135px] truncate">
+                        {tab?.name_no === "" || !tab?.name_no
+                          ? tab?.name
+                          : tab?.name_no}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
                       <div
-                        key={index}
-                        draggable
-                        onDragStart={() => handleDragStart(index)}
-                        onDragOver={handleDragOver}
-                        onDrop={() => handleDrop(index)}
-                        className={`bg-white cursor-pointer rounded-lg flex items-center justify-between gap-1 px-3 ${
-                          activeTabData === index
-                            ? "border-2 border-primary bg-lightPurple rounded-t-[12px]"
-                            : "border border-gray2"
-                        }`}
-                        onClick={() => setActiveTabData(index)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setEditCategory({ index, data: tab });
+                          setAddCategory(true);
+                          setEditTabData(index);
+                        }}
                       >
-                        <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold">
-                          <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
-                            {index + 1}
-                          </span>
-                          <span className="w-[135px] truncate">
-                            {tab?.name_no === "" || !tab?.name_no
-                              ? tab?.name
-                              : tab?.name_no}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <div
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setEditCategory({ index, data: tab });
-                              setAddCategory(true);
-                              setEditTabData(index);
-                            }}
-                          >
-                            <Pencil className="w-5 h-5 text-primary" />
-                          </div>
-
-                          <div
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setCategory((prev: any[]) =>
-                                prev.filter((_, i) => i !== index)
-                              );
-                              setActiveTabData(0);
-                              const deleteRoomFromFirestore = async () => {
-                                if (!id || !pdfId) return;
-
-                                const husmodellDocRef = doc(
-                                  db,
-                                  "room_configurator",
-                                  id
-                                );
-
-                                try {
-                                  const docSnap = await getDoc(husmodellDocRef);
-                                  if (!docSnap.exists()) return;
-
-                                  const data = docSnap.data();
-                                  const updatedPlantegninger = (
-                                    data?.Plantegninger || []
-                                  ).map((floor: any) => {
-                                    if (String(floor?.pdf_id) !== String(pdfId))
-                                      return floor;
-
-                                    return {
-                                      ...floor,
-                                      rooms: floor?.rooms?.filter(
-                                        (_: any, i: number) => i !== index
-                                      ),
-                                    };
-                                  });
-
-                                  await updateDoc(husmodellDocRef, {
-                                    Plantegninger: updatedPlantegninger,
-                                  });
-                                } catch (err) {
-                                  console.error(
-                                    "Error deleting room from Firestore:",
-                                    err
-                                  );
-                                }
-                              };
-
-                              deleteRoomFromFirestore();
-                            }}
-                            className="w-5 h-5"
-                          >
-                            <img
-                              src={Ic_trash}
-                              alt="delete"
-                              className="w-full h-full"
-                            />
-                          </div>
-                        </div>
+                        <Pencil className="w-5 h-5 text-primary" />
                       </div>
-                    ))
-                  : "No data found!"}
-              </>
-            )}
+
+                      <div
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setCategory((prev: any[]) =>
+                            prev.filter((_, i) => i !== index)
+                          );
+                          setActiveTabData(0);
+                          const deleteRoomFromFirestore = async () => {
+                            if (!id || !pdfId) return;
+
+                            const husmodellDocRef = doc(
+                              db,
+                              "room_configurator",
+                              id
+                            );
+
+                            try {
+                              const docSnap = await getDoc(husmodellDocRef);
+                              if (!docSnap.exists()) return;
+
+                              const data = docSnap.data();
+                              const updatedPlantegninger = (
+                                data?.Plantegninger || []
+                              ).map((floor: any) => {
+                                if (String(floor?.pdf_id) !== String(pdfId))
+                                  return floor;
+
+                                return {
+                                  ...floor,
+                                  rooms: floor?.rooms?.filter(
+                                    (_: any, i: number) => i !== index
+                                  ),
+                                };
+                              });
+
+                              await updateDoc(husmodellDocRef, {
+                                Plantegninger: updatedPlantegninger,
+                              });
+                            } catch (err) {
+                              console.error(
+                                "Error deleting room from Firestore:",
+                                err
+                              );
+                            }
+                          };
+
+                          deleteRoomFromFirestore();
+                        }}
+                        className="w-5 h-5"
+                      >
+                        <img
+                          src={Ic_trash}
+                          alt="delete"
+                          className="w-full h-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))
+              : "No data found!"}
+            {/* </>
+            )} */}
           </div>
         </div>
 
