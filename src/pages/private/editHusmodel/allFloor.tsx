@@ -203,22 +203,53 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         (item: any) => String(item?.pdf_id) === String(pdfId)
       );
 
+      // if (finalData) {
+      //   setFloorData(finalData);
+      //   setCategory(finalData.rooms || []);
+      // }
+      // const husmodellDocRef = doc(db, "housemodell_configure_broker", id);
+      // await updateDoc(husmodellDocRef, {
+      //   KundeInfo: data.KundeInfo.map((kunde: any) => {
+      //     if (String(kunde.uniqueId) === String(kundeId)) {
+      //       return {
+      //         ...kunde,
+      //         Plantegninger: updatedPlantegninger,
+      //       };
+      //     }
+      //     return kunde;
+      //   }),
+      // });
+
       if (finalData) {
+        const filteredRooms = (finalData.rooms || []).filter((room: any) => {
+          const roomName = room?.name_no || room?.name || "";
+          return !/Terrace|Terrasse/i.test(roomName);
+        });
+
         setFloorData(finalData);
-        setCategory(finalData.rooms || []);
+        setCategory(filteredRooms);
+
+        const husmodellDocRef = doc(db, "housemodell_configure_broker", id);
+        await updateDoc(husmodellDocRef, {
+          KundeInfo: data.KundeInfo.map((kunde: any) => {
+            if (String(kunde.uniqueId) === String(kundeId)) {
+              return {
+                ...kunde,
+                Plantegninger: kunde.Plantegninger.map((plan: any) => {
+                  if (String(plan?.pdf_id) === String(pdfId)) {
+                    return {
+                      ...plan,
+                      rooms: filteredRooms,
+                    };
+                  }
+                  return plan;
+                }),
+              };
+            }
+            return kunde;
+          }),
+        });
       }
-      const husmodellDocRef = doc(db, "housemodell_configure_broker", id);
-      await updateDoc(husmodellDocRef, {
-        KundeInfo: data.KundeInfo.map((kunde: any) => {
-          if (String(kunde.uniqueId) === String(kundeId)) {
-            return {
-              ...kunde,
-              Plantegninger: updatedPlantegninger,
-            };
-          }
-          return kunde;
-        }),
-      });
 
       // setLoading(false);
     };

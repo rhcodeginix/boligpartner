@@ -164,12 +164,32 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         (item: any) => String(item?.pdf_id) === String(pdfId)
       );
 
-      setFloorData(finalData);
-      setCategory(finalData?.rooms);
-      // setLoading(false);
+      // setFloorData(finalData);
+      // setCategory(finalData?.rooms);
+      // // setLoading(false);
 
-      const husmodellDocRef = doc(db, "room_configurator", id);
-      await updateDoc(husmodellDocRef, { Plantegninger: updatedPlantegninger });
+      // const husmodellDocRef = doc(db, "room_configurator", id);
+      // await updateDoc(husmodellDocRef, { Plantegninger: updatedPlantegninger });
+
+      if (finalData) {
+        const filteredRooms = (finalData.rooms || []).filter((room: any) => {
+          const roomName = room?.name_no || room?.name || "";
+          return !/Terrace|Terrasse/i.test(roomName);
+        });
+
+        setFloorData(finalData);
+        setCategory(filteredRooms);
+
+        const husmodellDocRef = doc(db, "room_configurator", id);
+        await updateDoc(husmodellDocRef, {
+          Plantegninger: (data?.Plantegninger || []).map((floor: any) => {
+            if (String(floor?.pdf_id) === String(pdfId)) {
+              return { ...floor, rooms: filteredRooms };
+            }
+            return floor;
+          }),
+        });
+      }
     };
 
     getData();
