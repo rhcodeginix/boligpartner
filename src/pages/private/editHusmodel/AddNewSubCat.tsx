@@ -17,7 +17,7 @@ const formSchema = z.object({
   Kategorinavn: z.string().min(1, {
     message: "Kategorinavn må bestå av minst 2 tegn.",
   }),
-  productOptions: z.string({ required_error: "Required" }),
+  productOptions: z.string({ required_error: "Obligatorisk" }),
 });
 
 export const AddNewSubCat: React.FC<{

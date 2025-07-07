@@ -65,7 +65,7 @@ const formSchema = z.object({
   Husmodell: z.string({
     required_error: "Husmodell må spesifiseres.",
   }),
-  exportType: z.string({ required_error: "Required" }),
+  exportType: z.string({ required_error: "Obligatorisk" }),
 });
 
 export const AddFinalSubmission: React.FC<{

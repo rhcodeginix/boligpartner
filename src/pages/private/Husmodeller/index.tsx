@@ -18,7 +18,7 @@ import {
 } from "../../../components/ui/form";
 
 const formSchema = z.object({
-  options: z.string({ required_error: "Required" }),
+  options: z.string({ required_error: "Obligatorisk" }),
   TypeProsjekt: z.string({ required_error: "Type prosjekt er påkrevd." }),
   VelgSerie: z.string({ required_error: "Type prosjekt er påkrevd." }),
 });
@@ -147,71 +147,6 @@ export const Husmodeller = () => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="relative w-full"
               >
-                {/* <div>
-                  <FormField
-                    control={form.control}
-                    name={`options`}
-                    render={({ field, fieldState }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 items-center gap-3">
-                            {houseModels.map((option: any, index: number) => {
-                              const loaded = imageLoaded[index];
-                              return (
-                                <div
-                                  key={index}
-                                  className="relative cursor-pointer rounded-lg"
-                                  onClick={() => {
-                                    form.setValue("options", option.id);
-                                  }}
-                                >
-                                  <input
-                                    className={`hidden bg-white rounded-[8px] border text-black
-        ${
-          fieldState?.error ? "border-red" : "border-gray1"
-        } h-4 w-4 accent-[#444CE7]`}
-                                    type="radio"
-                                    value={option.id}
-                                    onChange={(e) => {
-                                      form.setValue(`options`, e.target.value);
-                                    }}
-                                    style={{ display: "none" }}
-                                  />
-                                  <div className="w-full h-[160px] mb-2.5 md:mb-4 relative">
-                                    {!loaded && (
-                                      <div className="w-full h-full rounded-lg custom-shimmer"></div>
-                                    )}
-                                    {option?.photo && (
-                                      <img
-                                        src={option?.photo}
-                                        alt="house"
-                                        className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
-                                          loaded ? "opacity-100" : "opacity-0"
-                                        }`}
-                                        onLoad={() => handleImageLoad(index)}
-                                        onError={() => handleImageLoad(index)}
-                                        loading="lazy"
-                                      />
-                                    )}
-                                  </div>
-                                  <p className="mt-2">
-                                    {option?.husmodell_name}
-                                  </p>
-                                  {field.value === option.id && (
-                                    <div className="bg-white absolute top-2 right-2 h-7 w-7 rounded-full flex items-center justify-center">
-                                      <Check className="w-5 h-5 text-primary" />
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div> */}
                 {currentTab === "models" && (
                   <FormField
                     control={form.control}
@@ -220,50 +155,57 @@ export const Husmodeller = () => {
                       <FormItem>
                         <FormControl>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            {houseModels.map((option: any, index: number) => {
-                              const loaded = imageLoaded[index];
-                              return (
-                                <div
-                                  key={index}
-                                  className="relative cursor-pointer rounded-lg"
-                                  onClick={() => {
-                                    form.setValue("options", option.id);
-                                    form.setValue(
-                                      "VelgSerie",
-                                      option.husmodell_name
-                                    );
-                                    form.clearErrors("options");
-                                    form.clearErrors("VelgSerie");
-                                  }}
-                                >
-                                  <div className="w-full h-[160px] mb-2.5 relative">
-                                    {!loaded && (
-                                      <div className="w-full h-full rounded-lg custom-shimmer"></div>
-                                    )}
-                                    {option?.photo && (
-                                      <img
-                                        src={option?.photo}
-                                        alt="house"
-                                        className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
-                                          loaded ? "opacity-100" : "opacity-0"
-                                        }`}
-                                        onLoad={() => handleImageLoad(index)}
-                                        onError={() => handleImageLoad(index)}
-                                        loading="lazy"
-                                      />
+                            {houseModels
+                              .filter(
+                                (item: any) =>
+                                  item?.tag?.toLowerCase() ===
+                                    form.watch("TypeProsjekt") &&
+                                  form.watch("TypeProsjekt").toLowerCase()
+                              )
+                              .map((option: any, index: number) => {
+                                const loaded = imageLoaded[index];
+                                return (
+                                  <div
+                                    key={index}
+                                    className="relative cursor-pointer rounded-lg"
+                                    onClick={() => {
+                                      form.setValue("options", option.id);
+                                      form.setValue(
+                                        "VelgSerie",
+                                        option.husmodell_name
+                                      );
+                                      form.clearErrors("options");
+                                      form.clearErrors("VelgSerie");
+                                    }}
+                                  >
+                                    <div className="w-full h-[160px] mb-2.5 relative">
+                                      {!loaded && (
+                                        <div className="w-full h-full rounded-lg custom-shimmer"></div>
+                                      )}
+                                      {option?.photo && (
+                                        <img
+                                          src={option?.photo}
+                                          alt="house"
+                                          className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
+                                            loaded ? "opacity-100" : "opacity-0"
+                                          }`}
+                                          onLoad={() => handleImageLoad(index)}
+                                          onError={() => handleImageLoad(index)}
+                                          loading="lazy"
+                                        />
+                                      )}
+                                    </div>
+                                    <p className="mt-2">
+                                      {option?.husmodell_name}
+                                    </p>
+                                    {field.value === option.id && (
+                                      <div className="bg-white absolute top-2 right-2 h-7 w-7 rounded-full flex items-center justify-center">
+                                        <Check className="w-5 h-5 text-primary" />
+                                      </div>
                                     )}
                                   </div>
-                                  <p className="mt-2">
-                                    {option?.husmodell_name}
-                                  </p>
-                                  {field.value === option.id && (
-                                    <div className="bg-white absolute top-2 right-2 h-7 w-7 rounded-full flex items-center justify-center">
-                                      <Check className="w-5 h-5 text-primary" />
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })}
+                                );
+                              })}
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -335,6 +277,8 @@ export const Husmodeller = () => {
                                   onClick={() => {
                                     form.setValue("TypeProsjekt", item.value);
                                     form.clearErrors("TypeProsjekt");
+                                    form.resetField("VelgSerie");
+                                    form.resetField("options");
                                   }}
                                   className={`flex items-center gap-2 border-2 rounded-lg py-2 px-3 cursor-pointer ${
                                     field.value === item.value
