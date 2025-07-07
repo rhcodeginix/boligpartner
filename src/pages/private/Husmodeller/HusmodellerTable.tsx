@@ -46,6 +46,10 @@ export const HusmodellerTable = () => {
   const [id, setId] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState<string>("");
 
+  const [activeTab, setActiveTab] = useState<"Bolig" | "Hytte" | "Prosjekt">(
+    "Bolig"
+  );
+
   const handleDelete = async (entryId: string) => {
     try {
       const docRef = doc(db, "housemodell_configure_broker", String(id));
@@ -121,10 +125,11 @@ export const HusmodellerTable = () => {
         return item.KundeInfo.map((kunde: any) => ({
           ...kunde,
           photo: item.photo || null,
-          husmodell_name: item.husmodell_name || null,
+          husmodell_name: item?.husmodell_name || null,
           parentId: item.id,
-          createDataBy: item.createDataBy || null,
-          placeOrder: item.placeOrder || false,
+          createDataBy: item?.createDataBy || null,
+          tag: item?.tag || null,
+          placeOrder: item?.placeOrder || false,
           configurator:
             kunde?.Plantegninger &&
             kunde?.Plantegninger.length > 0 &&
@@ -139,16 +144,18 @@ export const HusmodellerTable = () => {
             !selectedFilter ||
             selectedFilter === "" ||
             kunde.husmodell_name === selectedFilter;
+          const matchesTypeProsjekt =
+            !activeTab || kunde.tag.toLowerCase() === activeTab.toLowerCase();
 
-          return matchesSearch && matchesFilter;
+          return matchesSearch && matchesFilter && matchesTypeProsjekt;
         });
       }
       return [];
     });
-  }, [houseModels, searchTerm, selectedFilter]);
+  }, [houseModels, searchTerm, selectedFilter, activeTab]);
 
-  const columns = useMemo<ColumnDef<any>[]>(
-    () => [
+  const columns = useMemo<ColumnDef<any>[]>(() => {
+    const baseColumns: ColumnDef<any>[] = [
       {
         accessorKey: "Kundenavn",
         header: "Kundenavn",
@@ -167,24 +174,6 @@ export const HusmodellerTable = () => {
           </p>
         ),
       },
-      // {
-      //   accessorKey: "Mobilnummer",
-      //   header: "Mobilnummer",
-      //   cell: ({ row }) => (
-      //     <p className="text-sm font-medium text-black w-max">
-      //       {row.original?.mobileNummer}
-      //     </p>
-      //   ),
-      // },
-      // {
-      //   accessorKey: "EPost",
-      //   header: "EPost",
-      //   cell: ({ row }) => (
-      //     <p className="text-sm font-medium text-black w-max">
-      //       {row.original?.EPost}
-      //     </p>
-      //   ),
-      // },
       {
         accessorKey: "Kundenummer",
         header: "Kundenummer",
@@ -195,24 +184,13 @@ export const HusmodellerTable = () => {
         ),
       },
       {
-        accessorKey: "Serienavn",
-        header: "Serienavn",
-        cell: ({ row }) => (
-          <p className="text-sm font-medium text-black w-max">
-            {row.original?.husmodell_name}
-          </p>
-        ),
-      },
-      {
         accessorKey: "Boligkonsulent",
         header: "Boligkonsulent",
-        cell: ({ row }) => {
-          return (
-            <p className="text-sm font-medium text-black w-max">
-              {row.original?.createDataBy?.name}
-            </p>
-          );
-        },
+        cell: ({ row }) => (
+          <p className="text-sm font-medium text-black w-max">
+            {row.original?.createDataBy?.name}
+          </p>
+        ),
       },
       {
         accessorKey: "TypeProsjekt",
@@ -226,25 +204,23 @@ export const HusmodellerTable = () => {
       {
         accessorKey: "Status",
         header: "Status",
-        cell: ({ row }) => {
-          return (
-            <>
-              {row.original?.placeOrder === true ? (
-                <p className="text-sm font-medium text-green w-max bg-lightGreen py-1 px-2 rounded-full">
-                  Bestilt
-                </p>
-              ) : row.original?.configurator === true ? (
-                <p className="text-sm font-medium text-primary w-max bg-lightPurple py-1 px-2 rounded-full">
-                  Ferdig konfiguert
-                </p>
-              ) : (
-                <p className="text-sm font-medium text-black w-max bg-gray2 py-1 px-2 rounded-full">
-                  Under behandling
-                </p>
-              )}
-            </>
-          );
-        },
+        cell: ({ row }) => (
+          <>
+            {row.original?.placeOrder ? (
+              <p className="text-sm font-medium text-green w-max bg-lightGreen py-1 px-2 rounded-full">
+                Bestilt
+              </p>
+            ) : row.original?.configurator ? (
+              <p className="text-sm font-medium text-primary w-max bg-lightPurple py-1 px-2 rounded-full">
+                Ferdig konfiguert
+              </p>
+            ) : (
+              <p className="text-sm font-medium text-black w-max bg-gray2 py-1 px-2 rounded-full">
+                Under behandling
+              </p>
+            )}
+          </>
+        ),
       },
       {
         accessorKey: "sisteoppdatertav",
@@ -259,33 +235,43 @@ export const HusmodellerTable = () => {
         id: "action",
         header: "Action",
         cell: ({ row }) => (
-          <>
-            <div className="flex items-center justify-center gap-3">
-              <Pencil
-                className="h-5 w-5 text-primary cursor-pointer"
-                onClick={() =>
-                  navigate(
-                    `/se-series/${row.original.parentId}/edit-husmodell/${row.original?.uniqueId}`
-                  )
-                }
-              />
-
-              <Trash
-                className="h-5 w-5 text-primary cursor-pointer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  confirmDelete(row.original?.uniqueId);
-                  setId(row.original.parentId);
-                }}
-              />
-            </div>
-          </>
+          <div className="flex items-center justify-center gap-3">
+            <Pencil
+              className="h-5 w-5 text-primary cursor-pointer"
+              onClick={() =>
+                navigate(
+                  `/se-series/${row.original.parentId}/edit-husmodell/${row.original?.uniqueId}`
+                )
+              }
+            />
+            <Trash
+              className="h-5 w-5 text-primary cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                confirmDelete(row.original?.uniqueId);
+                setId(row.original.parentId);
+              }}
+            />
+          </div>
         ),
       },
-    ],
-    [navigate]
-  );
+    ];
+
+    if (activeTab !== "Prosjekt") {
+      baseColumns.splice(3, 0, {
+        accessorKey: "Serienavn",
+        header: "Serienavn",
+        cell: ({ row }) => (
+          <p className="text-sm font-medium text-black w-max">
+            {row.original?.husmodell_name}
+          </p>
+        ),
+      });
+    }
+
+    return baseColumns;
+  }, [navigate, activeTab]);
 
   const pageSize = 10;
   const paginatedData = useMemo(() => {
@@ -320,6 +306,26 @@ export const HusmodellerTable = () => {
 
   return (
     <>
+      <div className="mb-5 flex justify-center">
+        <div className="flex gap-1.5">
+          {["Bolig", "Hytte", "Prosjekt"].filter(Boolean).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => {
+                setActiveTab(tab as "Bolig" | "Hytte" | "Prosjekt");
+                setSelectedFilter("");
+              }}
+              className={`px-2 md:px-4 py-2 text-sm font-medium ${
+                activeTab === tab
+                  ? "border-b-2 border-purple text-purple"
+                  : "text-gray-500"
+              }`}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
       <div className="mb-2 flex gap-2 flex-col lg:flex-row lg:items-center justify-between bg-lightPurple rounded-[12px] py-3 px-4">
         <div className="flex items-center border border-gray1 shadow-shadow1 bg-[#fff] gap-2 rounded-lg py-[10px] px-[14px]">
           <img src={Ic_search} alt="search" />
@@ -332,46 +338,86 @@ export const HusmodellerTable = () => {
           />
         </div>
         <div className="shadow-shadow1 border border-gray1 rounded-[8px] flex flex-col sm:flex-row overflow-hidden sm:w-max">
-          <div
-            className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm border-b sm:border-b-0 sm:border-r border-gray1 cursor-pointer ${
-              selectedFilter === "" && "bg-white"
-            }`}
-            onClick={() => setSelectedFilter("")}
-          >
-            Alle
-          </div>{" "}
-          <div
-            className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm cursor-pointer ${
-              selectedFilter === "Nostalgi" && "bg-white"
-            }`}
-            onClick={() => setSelectedFilter("Nostalgi")}
-          >
-            Nostalgi
-          </div>
-          <div
-            className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm border-b border-t sm:border-t-0 sm:border-b-0 sm:border-r sm:border-l border-gray1 cursor-pointer ${
-              selectedFilter === "Herskapelig" && "bg-white"
-            }`}
-            onClick={() => setSelectedFilter("Herskapelig")}
-          >
-            Herskapelig
-          </div>
-          <div
-            className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm cursor-pointer border-b sm:border-b-0 sm:border-r border-gray1 ${
-              selectedFilter === "Moderne" && "bg-white"
-            }`}
-            onClick={() => setSelectedFilter("Moderne")}
-          >
-            Moderne
-          </div>
-          <div
-            className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm cursor-pointer ${
-              selectedFilter === "Funkis" && "bg-white"
-            }`}
-            onClick={() => setSelectedFilter("Funkis")}
-          >
-            Funkis
-          </div>
+          {activeTab !== "Prosjekt" && (
+            <div
+              className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm border-b sm:border-b-0 sm:border-r border-gray1 cursor-pointer ${
+                selectedFilter === "" && "bg-white"
+              }`}
+              onClick={() => setSelectedFilter("")}
+            >
+              Alle
+            </div>
+          )}
+          {activeTab === "Bolig" && (
+            <div
+              className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm cursor-pointer ${
+                selectedFilter === "Nostalgi" && "bg-white"
+              }`}
+              onClick={() => setSelectedFilter("Nostalgi")}
+            >
+              Nostalgi
+            </div>
+          )}
+          {activeTab === "Hytte" && (
+            <div
+              className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm cursor-pointer ${
+                selectedFilter === "Karakter" && "bg-white"
+              }`}
+              onClick={() => setSelectedFilter("Karakter")}
+            >
+              Karakter
+            </div>
+          )}
+          {activeTab === "Bolig" && (
+            <div
+              className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm border-b border-t sm:border-t-0 sm:border-b-0 sm:border-r sm:border-l border-gray1 cursor-pointer ${
+                selectedFilter === "Herskapelig" && "bg-white"
+              }`}
+              onClick={() => setSelectedFilter("Herskapelig")}
+            >
+              Herskapelig
+            </div>
+          )}
+          {activeTab === "Hytte" && (
+            <div
+              className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm border-b border-t sm:border-t-0 sm:border-b-0 sm:border-r sm:border-l border-gray1 cursor-pointer ${
+                selectedFilter === "Tur" && "bg-white"
+              }`}
+              onClick={() => setSelectedFilter("Tur")}
+            >
+              Tur
+            </div>
+          )}
+          {activeTab !== "Prosjekt" && (
+            <div
+              className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm cursor-pointer border-b sm:border-b-0 sm:border-r border-gray1 ${
+                selectedFilter === "Moderne" && "bg-white"
+              }`}
+              onClick={() => setSelectedFilter("Moderne")}
+            >
+              Moderne
+            </div>
+          )}
+          {activeTab === "Bolig" && (
+            <div
+              className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm cursor-pointer ${
+                selectedFilter === "Funkis" && "bg-white"
+              }`}
+              onClick={() => setSelectedFilter("Funkis")}
+            >
+              Funkis
+            </div>
+          )}
+          {activeTab === "Hytte" && (
+            <div
+              className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm cursor-pointer ${
+                selectedFilter === "V-serie" && "bg-white"
+              }`}
+              onClick={() => setSelectedFilter("V-serie")}
+            >
+              V-serie
+            </div>
+          )}
         </div>
       </div>
       <div className="rounded-lg border border-gray2 shadow-shadow2 overflow-hidden">
