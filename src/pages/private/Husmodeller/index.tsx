@@ -68,7 +68,7 @@ export const Husmodeller = () => {
       `/se-series/${data.options}/add-husmodell?TypeProsjekt=${data.TypeProsjekt}&VelgSerie=${data.VelgSerie}`
     );
   };
-  const [currentTab, setCurrentTab] = useState<"models" | "type">("models");
+  const [currentTab, setCurrentTab] = useState<"models" | "type">("type");
 
   const handleNext = async () => {
     const isValid = await form.trigger();
