@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useRef } from "react";
 import Ic_Check_white from "../../../assets/images/Ic_Check_white.svg";
 
 interface WizardStep {
@@ -46,13 +46,29 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
 
   const currentStepData = steps[currentStep - 1];
 
+  const stepRefs = useRef<Record<number, HTMLDivElement | null>>({});
+
+  useEffect(() => {
+    const currentRef = stepRefs.current[currentStep];
+    if (currentRef) {
+      currentRef.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [currentStep]);
+
   return (
     <div className={`${className}`}>
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="w-full lg:w-80 bg-[#F9F9FB] border border-[#EFF1F5] rounded-lg p-5 h-full max-h-[500px] overflow-y-auto overFlowAutoY sticky top-[90px]">
           <div className="space-y-6">
             {steps.map((step, index) => (
-              <div key={step.id} className={"relative"}>
+              <div
+                key={step.id}
+                className={"relative"}
+                ref={(el: any) => (stepRefs.current[step.id] = el)}
+              >
                 {index < steps.length - 1 && (
                   <div
                     className={`absolute left-3 z-30 w-0.5 h-16 border-l border-dashed border-[#B9C0D4]`}
