@@ -155,7 +155,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             Type: "HelpText",
           },
         ],
-        Kommentar: [],
+        // Kommentar: [],
       };
 
       const updatedPlantegninger = (targetKunde?.Plantegninger || []).map(

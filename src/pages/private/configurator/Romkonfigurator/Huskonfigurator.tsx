@@ -7,7 +7,7 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../../config/firebaseConfig";
 import { toast } from "react-hot-toast";
 import * as pdfjsLib from "pdfjs-dist-es5";
-import { Pencil, Trash2, X } from "lucide-react";
+import { CircleCheckBig, Pencil, Trash2, X } from "lucide-react";
 import Modal from "../../../../components/common/modal";
 import { v4 as uuidv4 } from "uuid";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
@@ -427,21 +427,26 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                         className="relative shadow-shadow2 p-4 rounded-lg flex flex-col gap-4 justify-between"
                       >
                         <div className="flex gap-2 items-center justify-between">
-                          {isEditing ? (
-                            <input
-                              type="text"
-                              value={editedFloorName}
-                              onChange={(e) =>
-                                setEditedFloorName(e.target.value)
-                              }
-                              className="border border-gray1 rounded px-2 py-1 w-full"
-                              onClick={(e) => e.stopPropagation()}
-                            />
-                          ) : (
-                            <span className="text-darkBlack font-medium">
-                              {item?.title || `Floor ${index + 1}`}
-                            </span>
-                          )}
+                          <div className="flex items-center gap-2">
+                            {isEditing ? (
+                              <input
+                                type="text"
+                                value={editedFloorName}
+                                onChange={(e) =>
+                                  setEditedFloorName(e.target.value)
+                                }
+                                className="border border-gray1 rounded px-2 py-1 w-full"
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                            ) : (
+                              <span className="text-darkBlack font-medium truncate">
+                                {item?.title || `Floor ${index + 1}`}
+                              </span>
+                            )}
+                            {item.configurator === true && (
+                              <CircleCheckBig className="text-darkGreen" />
+                            )}
+                          </div>
                           <div className="flex items-center gap-3">
                             {isEditing ? (
                               <button

@@ -212,6 +212,7 @@ export const Prosjektdetaljer = forwardRef(
       if (!id) {
         return;
       }
+
       const getData = async () => {
         const data = await fetchRoomData(id);
         if (data) {
@@ -231,9 +232,14 @@ export const Prosjektdetaljer = forwardRef(
             form.setValue("Poststed", data?.Poststed ?? "");
             form.setValue("Kommune", data?.Kommune ?? "");
             form.setValue("Postnr", data?.Postnr ?? "");
-            form.setValue("TypeProsjekt", data?.TypeProsjekt ?? "");
+            form.setValue("TypeProsjekt", data?.TypeProsjekt ?? "bolig");
+            form.setValue("VelgSerie", data?.VelgSerie ?? "");
+            form.setValue("TelefonMobile", data?.mobileNummer ?? "");
+            form.setValue("Tiltakshaver", data?.Kundenavn ?? "");
             setAddress(String(data?.Anleggsadresse) ?? "");
           }
+        } else {
+          form.setValue("TypeProsjekt", "bolig");
         }
       };
 
@@ -796,9 +802,15 @@ export const Prosjektdetaljer = forwardRef(
                                 }
                                 onDateChange={(date) => {
                                   const formattedDate = date
-                                    ? date.toISOString().split("T")[0]
+                                    ? `${date.getFullYear()}-${(
+                                        date.getMonth() + 1
+                                      )
+                                        .toString()
+                                        .padStart(2, "0")}-${date
+                                        .getDate()
+                                        .toString()
+                                        .padStart(2, "0")}`
                                     : "";
-
                                   field.onChange(formattedDate);
                                 }}
                                 placeholderText="Skriv inn Dato BoligPartner leveransebeskrivelse"
@@ -876,9 +888,15 @@ export const Prosjektdetaljer = forwardRef(
                                 }
                                 onDateChange={(date) => {
                                   const formattedDate = date
-                                    ? date.toISOString().split("T")[0]
+                                    ? `${date.getFullYear()}-${(
+                                        date.getMonth() + 1
+                                      )
+                                        .toString()
+                                        .padStart(2, "0")}-${date
+                                        .getDate()
+                                        .toString()
+                                        .padStart(2, "0")}`
                                     : "";
-
                                   field.onChange(formattedDate);
                                 }}
                                 placeholderText="Skriv inn Signert 1:100 tegning datert"
@@ -916,9 +934,15 @@ export const Prosjektdetaljer = forwardRef(
                                 }
                                 onDateChange={(date) => {
                                   const formattedDate = date
-                                    ? date.toISOString().split("T")[0]
+                                    ? `${date.getFullYear()}-${(
+                                        date.getMonth() + 1
+                                      )
+                                        .toString()
+                                        .padStart(2, "0")}-${date
+                                        .getDate()
+                                        .toString()
+                                        .padStart(2, "0")}`
                                     : "";
-
                                   field.onChange(formattedDate);
                                 }}
                                 placeholderText="Skriv inn Gjeldende 1:50 tegning datert"
@@ -956,9 +980,15 @@ export const Prosjektdetaljer = forwardRef(
                                 }
                                 onDateChange={(date) => {
                                   const formattedDate = date
-                                    ? date.toISOString().split("T")[0]
+                                    ? `${date.getFullYear()}-${(
+                                        date.getMonth() + 1
+                                      )
+                                        .toString()
+                                        .padStart(2, "0")}-${date
+                                        .getDate()
+                                        .toString()
+                                        .padStart(2, "0")}`
                                     : "";
-
                                   field.onChange(formattedDate);
                                 }}
                                 placeholderText="Skriv inn Situasjonsplan dat"
@@ -996,9 +1026,15 @@ export const Prosjektdetaljer = forwardRef(
                                 }
                                 onDateChange={(date) => {
                                   const formattedDate = date
-                                    ? date.toISOString().split("T")[0]
+                                    ? `${date.getFullYear()}-${(
+                                        date.getMonth() + 1
+                                      )
+                                        .toString()
+                                        .padStart(2, "0")}-${date
+                                        .getDate()
+                                        .toString()
+                                        .padStart(2, "0")}`
                                     : "";
-
                                   field.onChange(formattedDate);
                                 }}
                                 placeholderText="Skriv inn Referanse / kalkyledato"
@@ -1243,9 +1279,15 @@ export const Prosjektdetaljer = forwardRef(
                                   }
                                   onDateChange={(date) => {
                                     const formattedDate = date
-                                      ? date.toISOString().split("T")[0]
+                                      ? `${date.getFullYear()}-${(
+                                          date.getMonth() + 1
+                                        )
+                                          .toString()
+                                          .padStart(2, "0")}-${date
+                                          .getDate()
+                                          .toString()
+                                          .padStart(2, "0")}`
                                       : "";
-
                                     field.onChange(formattedDate);
                                   }}
                                   placeholderText="Skriv inn Vedlegg til kontrakt datert"
@@ -1284,9 +1326,15 @@ export const Prosjektdetaljer = forwardRef(
                                 }
                                 onDateChange={(date) => {
                                   const formattedDate = date
-                                    ? date.toISOString().split("T")[0]
+                                    ? `${date.getFullYear()}-${(
+                                        date.getMonth() + 1
+                                      )
+                                        .toString()
+                                        .padStart(2, "0")}-${date
+                                        .getDate()
+                                        .toString()
+                                        .padStart(2, "0")}`
                                     : "";
-
                                   field.onChange(formattedDate);
                                 }}
                                 placeholderText="Velg dato"

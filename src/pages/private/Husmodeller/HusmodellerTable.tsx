@@ -167,24 +167,24 @@ export const HusmodellerTable = () => {
           </p>
         ),
       },
-      {
-        accessorKey: "Mobilnummer",
-        header: "Mobilnummer",
-        cell: ({ row }) => (
-          <p className="text-sm font-medium text-black w-max">
-            {row.original?.mobileNummer}
-          </p>
-        ),
-      },
-      {
-        accessorKey: "EPost",
-        header: "EPost",
-        cell: ({ row }) => (
-          <p className="text-sm font-medium text-black w-max">
-            {row.original?.EPost}
-          </p>
-        ),
-      },
+      // {
+      //   accessorKey: "Mobilnummer",
+      //   header: "Mobilnummer",
+      //   cell: ({ row }) => (
+      //     <p className="text-sm font-medium text-black w-max">
+      //       {row.original?.mobileNummer}
+      //     </p>
+      //   ),
+      // },
+      // {
+      //   accessorKey: "EPost",
+      //   header: "EPost",
+      //   cell: ({ row }) => (
+      //     <p className="text-sm font-medium text-black w-max">
+      //       {row.original?.EPost}
+      //     </p>
+      //   ),
+      // },
       {
         accessorKey: "Kundenummer",
         header: "Kundenummer",

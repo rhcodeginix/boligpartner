@@ -64,6 +64,7 @@ const formSchema = z.object({
   Poststed: z.string().optional(),
   Kommune: z.number().optional(),
   TypeProsjekt: z.string().optional(),
+  VelgSerie: z.string().optional(),
 });
 
 export const Husdetaljer: React.FC<{
@@ -119,9 +120,13 @@ export const Husdetaljer: React.FC<{
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const typeProsjekt = params.get("TypeProsjekt");
+    const VelgSerie = params.get("VelgSerie");
 
     if (typeProsjekt) {
       form.setValue("TypeProsjekt", typeProsjekt);
+    }
+    if (VelgSerie) {
+      form.setValue("VelgSerie", VelgSerie);
     }
   }, [location]);
 

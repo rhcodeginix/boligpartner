@@ -20,6 +20,7 @@ import {
 const formSchema = z.object({
   options: z.string({ required_error: "Required" }),
   TypeProsjekt: z.string({ required_error: "Type prosjekt er påkrevd." }),
+  VelgSerie: z.string({ required_error: "Type prosjekt er påkrevd." }),
 });
 
 export const Husmodeller = () => {
@@ -64,7 +65,7 @@ export const Husmodeller = () => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     navigate(
-      `/se-series/${data.options}/add-husmodell?TypeProsjekt=${data.TypeProsjekt}`
+      `/se-series/${data.options}/add-husmodell?TypeProsjekt=${data.TypeProsjekt}&VelgSerie=${data.VelgSerie}`
     );
   };
   const [currentTab, setCurrentTab] = useState<"models" | "type">("models");
@@ -121,16 +122,6 @@ export const Husmodeller = () => {
             </h3>
             <div className="flex mb-5 border-b border-gray2">
               <button
-                onClick={() => setCurrentTab("models")}
-                className={`px-4 py-2 ${
-                  currentTab === "models"
-                    ? "border-b-2 border-primary font-semibold"
-                    : "text-gray-500"
-                }`}
-              >
-                Serie
-              </button>
-              <button
                 onClick={() => setCurrentTab("type")}
                 className={`px-4 py-2 ${
                   currentTab === "type"
@@ -139,6 +130,16 @@ export const Husmodeller = () => {
                 }`}
               >
                 Type prosjekt
+              </button>
+              <button
+                onClick={() => setCurrentTab("models")}
+                className={`px-4 py-2 ${
+                  currentTab === "models"
+                    ? "border-b-2 border-primary font-semibold"
+                    : "text-gray-500"
+                }`}
+              >
+                Serie
               </button>
             </div>
             <Form {...form}>
@@ -215,7 +216,7 @@ export const Husmodeller = () => {
                   <FormField
                     control={form.control}
                     name={`options`}
-                    render={({ field, fieldState }) => (
+                    render={({ field }) => (
                       <FormItem>
                         <FormControl>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -227,7 +228,12 @@ export const Husmodeller = () => {
                                   className="relative cursor-pointer rounded-lg"
                                   onClick={() => {
                                     form.setValue("options", option.id);
+                                    form.setValue(
+                                      "VelgSerie",
+                                      option.husmodell_name
+                                    );
                                     form.clearErrors("options");
+                                    form.clearErrors("VelgSerie");
                                   }}
                                 >
                                   <div className="w-full h-[160px] mb-2.5 relative">

@@ -90,7 +90,7 @@ const requiredCategoriesWithProducts = {
       Type: "HelpText",
     },
   ],
-  Kommentar: [],
+  // Kommentar: [],
 };
 
 export const AddNewCat: React.FC<{
