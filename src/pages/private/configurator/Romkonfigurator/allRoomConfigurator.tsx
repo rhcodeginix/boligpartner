@@ -106,10 +106,10 @@ export const AllRoomkonfigurator: React.FC = () => {
         />
       </div>
       {isGridView ? (
-        <div className="p-8 grid grid-cols-4 gap-x-6 gap-y-[40px]">
+        <div className="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 desktop:grid-cols-4 gap-x-6 gap-y-[40px]">
           {isLoading ? (
             <>
-              {Array.from({ length: 3 }, (_, i) => i + 1).map((item, index) => {
+              {Array.from({ length: 12 }, (_, i) => i + 1).map((_, index) => {
                 return (
                   <div
                     key={index}
