@@ -193,8 +193,10 @@ export const Husmodeller = () => {
                                   .filter(
                                     (item: any) =>
                                       item?.tag?.toLowerCase() ===
-                                        form.watch("TypeProsjekt") &&
-                                      form.watch("TypeProsjekt").toLowerCase()
+                                      (form.watch("TypeProsjekt") &&
+                                        form
+                                          .watch("TypeProsjekt")
+                                          .toLowerCase())
                                   )
                                   .map((option: any, index: number) => {
                                     const loaded = imageLoaded[index];
