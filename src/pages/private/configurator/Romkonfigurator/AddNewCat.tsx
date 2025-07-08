@@ -248,12 +248,9 @@ export const AddNewCat: React.FC<{
                       <Input
                         placeholder="Skriv inn Hovedkategoriname"
                         {...field}
-                        className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
+                        className={`bg-white rounded-[8px] border text-black ${
+                          fieldState?.error ? "border-red" : "border-gray1"
+                        } `}
                         type="text"
                       />
                     </div>
@@ -277,12 +274,9 @@ export const AddNewCat: React.FC<{
                       }}
                     >
                       <input
-                        className={`bg-white rounded-[8px] accent-primary border text-black
-                                  ${
-                                    fieldState?.error
-                                      ? "border-red"
-                                      : "border-gray1"
-                                  } h-4 w-4`}
+                        className={`bg-white rounded-[8px] accent-primary border text-black ${
+                          fieldState?.error ? "border-red" : "border-gray1"
+                        } h-4 w-4`}
                         type="radio"
                         onChange={(e) => {
                           const isChecked = e.target.checked;
