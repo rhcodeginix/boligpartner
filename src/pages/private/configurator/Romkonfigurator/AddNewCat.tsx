@@ -14,7 +14,6 @@ import { useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { useLocation } from "react-router-dom";
-// import { Spinner } from "../../../../components/Spinner";
 
 const formSchema = z.object({
   Hovedkategoriname: z.string().min(1, {
@@ -108,11 +107,8 @@ export const AddNewCat: React.FC<{
     const params = new URLSearchParams(window.location.search);
     setPdfId(params.get("pdf_id"));
   }, []);
-  // const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    // setIsSubmitLoading(true);
-
     const isDuplicate = Category.some((cat: any, idx: number) => {
       if (editData) {
         return (
@@ -226,14 +222,9 @@ export const AddNewCat: React.FC<{
     } catch (error) {
       console.error("Error updating Firestore:", error);
     }
-    // finally {
-    //   setIsSubmitLoading(false);
-    // }
   };
   return (
     <>
-      {/* {isSubmitLoading && <Spinner />} */}
-
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
