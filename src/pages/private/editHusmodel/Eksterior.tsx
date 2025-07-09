@@ -283,7 +283,8 @@ export const Eksterior: React.FC<{
       });
 
       toast.success("Lagret", { position: "top-right" });
-      navigate(`/Husmodell`);
+      // navigate(`/Husmodell`);
+      setActiveTab(1);
     } catch (error) {
       console.error("Failed to update plantegning:", error);
       toast.error("Noe gikk galt", { position: "top-right" });

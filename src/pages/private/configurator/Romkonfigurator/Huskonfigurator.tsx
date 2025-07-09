@@ -11,6 +11,7 @@ import { CircleCheckBig, Pencil, Trash2, X } from "lucide-react";
 import Modal from "../../../../components/common/modal";
 import { v4 as uuidv4 } from "uuid";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
+import { Spinner } from "../../../../components/Spinner";
 
 const uploadBase64Image = async (base64: string) => {
   if (!base64) return;
@@ -244,8 +245,11 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
   );
 
   const [updatingIndex, setUpdatingIndex] = useState<number | null>(null);
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
   const handleDeleteFloor = async (indexToDelete: number) => {
+    setIsSubmitLoading(true);
+
     const husmodellDocRef = doc(db, "room_configurator", String(id));
 
     try {
@@ -270,6 +274,8 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
     } catch (error) {
       console.error("Error deleting floor:", error);
       toast.error("Failed to delete floor", { position: "top-right" });
+    } finally {
+      setIsSubmitLoading(false);
     }
   };
   const handleConfirmPopup = () => {
@@ -320,6 +326,8 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
 
   return (
     <>
+      {isSubmitLoading && <Spinner />}
+
       <div className="bg-lightPurple px-8 py-3">
         <h3 className="text-darkBlack font-medium text-xl md:text-[24px] lg:text-[28px] desktop:text-[2rem] desktop:leading-[44.8px] mb-2">
           Romkonfigurator
@@ -331,7 +339,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
       </div>
       <div className="px-8 py-6">
         <h3 className="text-darkBlack text-2xl font-semibold mb-2">
-          Opplasting av plantegninger
+          Prosjektets plantegning
         </h3>
         <p className="text-secondary text-lg">
           Her laster du opp plantegninger for hver etasje, og ved å trykke på
@@ -548,7 +556,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                           )}
                         </div>
                         <Button
-                          text="Konfigurer bolig"
+                          text="Konfigurer plan"
                           className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2`}
                           type="button"
                           onClick={() => {
@@ -579,7 +587,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           }}
         />
         <Button
-          text="Neste"
+          text="Start oppmelding"
           className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
           onClick={() => {
             Next();

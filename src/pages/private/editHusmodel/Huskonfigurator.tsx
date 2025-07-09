@@ -11,6 +11,7 @@ import { CircleCheckBig, Pencil, Trash2, X } from "lucide-react";
 import Modal from "../../../components/common/modal";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
+import { Spinner } from "../../../components/Spinner";
 
 const uploadBase64Image = async (base64: string) => {
   if (!base64) return;
@@ -299,8 +300,10 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     null
   );
   const [updatingIndex, setUpdatingIndex] = useState<number | null>(null);
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
   const handleDeleteFloor = async (indexToDelete: number) => {
+    setIsSubmitLoading(true);
     const husmodellDocRef = doc(db, "housemodell_configure_broker", String(id));
 
     try {
@@ -338,6 +341,8 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     } catch (error) {
       console.error("Error deleting floor:", error);
       toast.error("Failed to delete floor", { position: "top-right" });
+    } finally {
+      setIsSubmitLoading(false);
     }
   };
   const handleConfirmPopup = () => {
@@ -391,6 +396,8 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
 
   return (
     <>
+      {isSubmitLoading && <Spinner />}
+
       <div className="px-4 md:px-6 py-5 md:py-6 desktop:p-8">
         <h3 className="text-darkBlack text-2xl font-semibold mb-2">
           Last opp plantegningen din
@@ -628,7 +635,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                           )}
                         </div>
                         <Button
-                          text="Konfigurer bolig"
+                          text="Konfigurer plan"
                           className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2`}
                           type="button"
                           onClick={() => {
@@ -650,32 +657,6 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
         </div>
       </div>
 
-      {confirmDeleteIndex !== null && (
-        <Modal onClose={handleConfirmPopup} isOpen={true}>
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <p className="text-lg font-bold">
-                Er du sikker på at du vil slette?
-              </p>
-              <div className="flex justify-center mt-5 w-full gap-5 items-center">
-                <div onClick={() => setConfirmDeleteIndex(null)}>
-                  <Button
-                    text="Avbryt"
-                    className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
-                  />
-                </div>
-                <div onClick={() => handleDeleteFloor(confirmDeleteIndex)}>
-                  <Button
-                    text="Bekreft"
-                    className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </Modal>
-      )}
-
       <div
         className="flex justify-end w-full gap-5 items-center fixed bottom-0 bg-white border-t border-gray2 p-4 left-0"
         style={{
@@ -683,7 +664,13 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
         }}
       >
         <Button
-          text="Legg inn bestilling"
+          text="Lukk og lagre"
+          className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
+          type="button"
+          onClick={() => navigate("/Husmodell")}
+        />
+        <Button
+          text="Overfør til oppmelding"
           className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 ${
             isDisable ? "cursor-not-allowed opacity-50" : ""
           }`}
@@ -757,6 +744,31 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
         />
       </div>
 
+      {confirmDeleteIndex !== null && (
+        <Modal onClose={handleConfirmPopup} isOpen={true}>
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <p className="text-lg font-bold">
+                Er du sikker på at du vil slette?
+              </p>
+              <div className="flex justify-center mt-5 w-full gap-5 items-center">
+                <div onClick={() => setConfirmDeleteIndex(null)}>
+                  <Button
+                    text="Avbryt"
+                    className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  />
+                </div>
+                <div onClick={() => handleDeleteFloor(confirmDeleteIndex)}>
+                  <Button
+                    text="Bekreft"
+                    className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
       {showConfiguratorModal && (
         <Modal
           isOpen={true}

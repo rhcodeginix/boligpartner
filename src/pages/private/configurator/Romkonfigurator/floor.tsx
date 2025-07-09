@@ -125,7 +125,8 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           <p className="text-secondary text-lg">
             AI har analysert plantegningen og identifisert rommene du kan
             konfigurere. Du kan fritt legge til nye rom eller fjerne
-            eksisterende.
+            eksisterende. Har legger du inn valg for gulv, vegg, himling og
+            listverk for de ulike rommene på planet.
           </p>
         </div>
       </div>

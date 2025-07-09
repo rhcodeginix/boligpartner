@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { Loader2, Pencil, Trash } from "lucide-react";
+import { FileText, Loader2, Pencil, Trash } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -17,7 +17,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Ic_search from "../../../assets/images/Ic_search.svg";
 import {
   collection,
@@ -34,6 +34,9 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Modal from "../../../components/common/modal";
 import Button from "../../../components/common/button";
+import { ExportView } from "../configurator/Oppsummering/exportView";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export const HusmodellerTable = () => {
   const [page, setPage] = useState(1);
@@ -154,6 +157,10 @@ export const HusmodellerTable = () => {
     });
   }, [houseModels, searchTerm, selectedFilter, activeTab]);
 
+  const [isExporting, setIsExporting] = useState(false);
+  const [selectedData, setSelectedData] = useState<any>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+
   const columns = useMemo<ColumnDef<any>[]>(() => {
     const baseColumns: ColumnDef<any>[] = [
       {
@@ -176,7 +183,7 @@ export const HusmodellerTable = () => {
       },
       {
         accessorKey: "Kundenummer",
-        header: "Kundenummer",
+        header: "BP prosjektnummer",
         cell: ({ row }) => (
           <p className="text-sm font-medium text-black w-max">
             {row.original?.Kundenummer}
@@ -208,7 +215,7 @@ export const HusmodellerTable = () => {
           <>
             {row.original?.placeOrder ? (
               <p className="text-sm font-medium text-green w-max bg-lightGreen py-1 px-2 rounded-full">
-                Bestilt
+                Overført til oppmelding
               </p>
             ) : row.original?.configurator ? (
               <p className="text-sm font-medium text-primary w-max bg-lightPurple py-1 px-2 rounded-full">
@@ -235,7 +242,81 @@ export const HusmodellerTable = () => {
         id: "action",
         header: "Action",
         cell: ({ row }) => (
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex items-center justify-end gap-3">
+            {row.original?.Plantegninger &&
+              row.original?.Plantegninger?.length > 0 &&
+              row.original?.Plantegninger?.filter(
+                (p: any) => p?.rooms && p.rooms.length > 0
+              ) && (
+                <FileText
+                  className="h-5 w-5 text-primary cursor-pointer"
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    try {
+                      setSelectedData(row.original);
+                      setIsExporting(true);
+
+                      await new Promise((resolve) => setTimeout(resolve, 500));
+
+                      const element = previewRef.current;
+                      if (!element)
+                        throw new Error("Preview element not found");
+
+                      const canvas = await html2canvas(element, {
+                        scale: 2,
+                        useCORS: true,
+                      });
+
+                      const imgData = canvas.toDataURL("image/png");
+                      const pdf = new jsPDF("p", "mm", "a4");
+                      const pdfWidth = pdf.internal.pageSize.getWidth();
+                      const pdfHeight = pdf.internal.pageSize.getHeight();
+                      const imgWidth = pdfWidth;
+                      const imgHeight =
+                        (canvas.height * pdfWidth) / canvas.width;
+
+                      let position = 0;
+                      pdf.addImage(
+                        imgData,
+                        "PNG",
+                        0,
+                        position,
+                        imgWidth,
+                        imgHeight
+                      );
+
+                      if (imgHeight > pdfHeight) {
+                        while (position + imgHeight > pdfHeight) {
+                          position -= pdfHeight;
+                          pdf.addPage();
+                          pdf.addImage(
+                            imgData,
+                            "PNG",
+                            0,
+                            position,
+                            imgWidth,
+                            imgHeight
+                          );
+                        }
+                      }
+
+                      pdf.save(
+                        `lead-${
+                          row.original?.Kundenavn || "kunde"
+                        }-${Date.now()}.pdf`
+                      );
+                    } catch (err) {
+                      console.error("Failed to generate PDF:", err);
+                      toast.error("Kunne ikke laste ned PDF.");
+                    } finally {
+                      setIsExporting(false);
+                      setSelectedData(null);
+                    }
+                  }}
+                />
+              )}
             <Pencil
               className="h-5 w-5 text-primary cursor-pointer"
               onClick={() =>
@@ -245,7 +326,7 @@ export const HusmodellerTable = () => {
               }
             />
             <Trash
-              className="h-5 w-5 text-primary cursor-pointer"
+              className="h-5 w-5 text-red cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -525,6 +606,42 @@ export const HusmodellerTable = () => {
                     className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   />
                 </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      <div
+        style={{
+          position: "absolute",
+          top: "-9999px",
+          left: "-9999px",
+          opacity: 0,
+          pointerEvents: "none",
+        }}
+      >
+        <div ref={previewRef}>
+          <ExportView
+            rooms={selectedData?.Plantegninger}
+            kundeInfo={selectedData}
+            roomsData={selectedData}
+          />
+        </div>
+      </div>
+      {isExporting && (
+        <Modal
+          onClose={() => setIsExporting(false)}
+          isOpen={true}
+          outSideClick={false}
+        >
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="flex flex-col items-center gap-4 bg-white p-3 rounded-lg">
+              <span className="text-purple text-base font-medium">
+                Eksporterer...
+              </span>
+              <div className="w-48 h-1 overflow-hidden rounded-lg">
+                <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
               </div>
             </div>
           </div>
