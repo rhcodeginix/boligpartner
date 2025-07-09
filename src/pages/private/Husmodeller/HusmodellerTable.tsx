@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { FileText, Loader2, Pencil, Trash } from "lucide-react";
+import { Download, Loader2, Pencil, Trash } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -248,7 +248,7 @@ export const HusmodellerTable = () => {
               row.original?.Plantegninger?.filter(
                 (p: any) => p?.rooms && p.rooms.length > 0
               ) && (
-                <FileText
+                <Download
                   className="h-5 w-5 text-primary cursor-pointer"
                   onClick={async (e) => {
                     e.preventDefault();
