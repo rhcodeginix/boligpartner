@@ -154,7 +154,13 @@ export const GrunnerOgSkorstein = forwardRef(
                                 {TypeGrunnFundament.map((option) => (
                                   <div
                                     key={option}
-                                    className="relative flex items-center gap-2"
+                                    className="relative flex items-center gap-2 cursor-pointer"
+                                    onClick={() => {
+                                      form.setValue(
+                                        "TypeGrunnFundament",
+                                        option
+                                      );
+                                    }}
                                   >
                                     <input
                                       className={`bg-white rounded-[8px] border text-black
@@ -202,7 +208,10 @@ export const GrunnerOgSkorstein = forwardRef(
                                   {TypeGrunnmur.map((option) => (
                                     <div
                                       key={option}
-                                      className="relative flex items-center gap-2"
+                                      className="relative flex items-center gap-2 cursor-pointer"
+                                      onClick={() => {
+                                        form.setValue("TypeGrunnmur", option);
+                                      }}
                                     >
                                       <input
                                         className={`bg-white rounded-[8px] border text-black
@@ -323,7 +332,13 @@ export const GrunnerOgSkorstein = forwardRef(
                               {SkorsteinEnkelDobbel.map((option) => (
                                 <div
                                   key={option}
-                                  className="relative flex items-center gap-2"
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue(
+                                      "SkorsteinEnkelDobbel",
+                                      option
+                                    );
+                                  }}
                                 >
                                   <input
                                     className={`bg-white rounded-[8px] border text-black
@@ -370,7 +385,10 @@ export const GrunnerOgSkorstein = forwardRef(
                               {SkorsteinLeveresAv.map((option) => (
                                 <div
                                   key={option}
-                                  className="relative flex items-center gap-2"
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue("SkorsteinLeveresAv", option);
+                                  }}
                                 >
                                   <input
                                     className={`bg-white rounded-[8px] border text-black
@@ -450,7 +468,10 @@ export const GrunnerOgSkorstein = forwardRef(
                               {SkorsteinLeveresAv.map((option) => (
                                 <div
                                   key={option}
-                                  className="relative flex items-center gap-2"
+                                  className="relative flex items-center gap-2 cursor-pointer"
+                                  onClick={() => {
+                                    form.setValue("IldstedLeveresAv", option);
+                                  }}
                                 >
                                   <input
                                     className={`bg-white rounded-[8px] border text-black
