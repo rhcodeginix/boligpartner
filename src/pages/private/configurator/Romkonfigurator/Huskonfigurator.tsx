@@ -12,6 +12,7 @@ import Modal from "../../../../components/common/modal";
 import { v4 as uuidv4 } from "uuid";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { Spinner } from "../../../../components/Spinner";
+import { RoomProjectTable } from "./RoomProjectTable";
 
 const uploadBase64Image = async (base64: string) => {
   if (!base64) return;
@@ -53,6 +54,8 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
   const [roomsData, setRoomsData] = useState<any>([]);
   const navigate = useNavigate();
 
+  const [isGridView, setIsGridView] = useState(true);
+
   useEffect(() => {
     if (!id) {
       setLoading(false);
@@ -68,7 +71,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
     };
 
     getData();
-  }, [id]);
+  }, [id, isGridView]);
   useEffect(() => {
     pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
   }, []);
@@ -114,17 +117,18 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
       reader.readAsDataURL(file);
     });
   }
+  const [FileUploadLoading, setFileUploadLoading] = useState(false);
 
   const handleFileUpload = async (files: FileList) => {
     if (!files.length) return;
 
     const formData = new FormData();
     formData.append("file", files[0]);
-    setLoading(true);
+    setFileUploadLoading(true);
     try {
       let currentId: string | null = id;
 
-      setLoading(true);
+      setFileUploadLoading(true);
 
       const response = await fetch(
         "https://iplotnor-hf-api-version-2.hf.space/upload",
@@ -137,15 +141,15 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           mode: "cors",
         }
       );
-      setLoading(true);
+      setFileUploadLoading(true);
 
       if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-      setLoading(true);
+      setFileUploadLoading(true);
 
       const data = await response.json();
       if (data && data?.pdf_id && currentId) {
         const file = files[0];
-        setLoading(true);
+        setFileUploadLoading(true);
 
         let imageBase64: string | undefined;
 
@@ -156,7 +160,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           imageBase64 = await fileToBase64(file);
         } else {
           console.error("Unsupported file type");
-          setLoading(false);
+          setFileUploadLoading(false);
           return;
         }
 
@@ -199,12 +203,12 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           toast.success(data.message, {
             position: "top-right",
           });
-          setLoading(false);
+          setFileUploadLoading(false);
         }
       }
     } catch (error) {
       console.error("Upload error:", error);
-      setLoading(false);
+      setFileUploadLoading(false);
       toast.error("File upload error!", {
         position: "top-right",
       });
@@ -240,9 +244,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
   };
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editedFloorName, setEditedFloorName] = useState<string>("");
-  const [confirmDeleteIndex, setConfirmDeleteIndex] = useState<number | null>(
-    null
-  );
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
   const [updatingIndex, setUpdatingIndex] = useState<number | null>(null);
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
@@ -268,7 +270,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
       });
 
       setRoomsData(updatedData);
-      setConfirmDeleteIndex(null);
+      setConfirmDeleteId(null);
 
       toast.success("Floor deleted successfully!", { position: "top-right" });
     } catch (error) {
@@ -279,10 +281,10 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
     }
   };
   const handleConfirmPopup = () => {
-    if (confirmDeleteIndex) {
-      setConfirmDeleteIndex(null);
+    if (confirmDeleteId) {
+      setConfirmDeleteId(null);
     } else {
-      setConfirmDeleteIndex(confirmDeleteIndex);
+      setConfirmDeleteId(confirmDeleteId);
     }
   };
 
@@ -330,11 +332,19 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
 
       <div className="bg-lightPurple px-8 py-3">
         <h3 className="text-darkBlack font-medium text-xl md:text-[24px] lg:text-[28px] desktop:text-[2rem] desktop:leading-[44.8px] mb-2">
-          Romkonfigurator
+          Oppmelding
         </h3>
         <p className="text-secondary text-sm md:text-base desktop:text-lg">
-          Her laster du opp plantegninger som bruker AI til å trekke ut alle
-          rommene, du kan så konfigurere hvert enkelt rom.
+          {/* Her laster du opp plantegninger som bruker AI til å trekke ut alle
+          rommene, du kan så konfigurere hvert enkelt rom. */}
+          I denne digitale løypen velger du de ulike leveransedetaljene som
+          danner grunnlaget for leveransen fra BoligPartner til forhandler. Når
+          du er ferdig med å fylle ut i Boligkonfiguratoren, vil det bli
+          generert en Pdf fil. Dette dokumentet laster du opp i dokumentrommet i
+          CRM under mappen «til logistikk/oppmelding. Husk å sende inn oppdraget
+          «oppmelding» i CRM. Under CRM fanen «Oppmelding» finner du en oversikt
+          over hvilke andre dokumenter som må lastes opp, før logistikk kan
+          igangsette oppmeldingen»”
         </p>
       </div>
       <div className="px-8 py-6">
@@ -347,6 +357,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           plantegningene.
         </p>
       </div>
+
       <div className="px-8 pb-[100px]">
         <div
           className="relative p-2 rounded-lg w-max"
@@ -385,197 +396,212 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-6 w-full mt-8">
-          {loading ? (
-            <>
-              {Array.from({ length: 3 }, (_, i) => i + 1).map((item, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="relative shadow-shadow2 p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4"
-                  >
-                    <div className="flex gap-1.5 md:gap-2 items-center justify-between">
-                      <div
-                        className="w-[80px] h-[20px] rounded-lg custom-shimmer"
-                        style={{ borderRadius: "8px" }}
-                      ></div>
-                      <div className="flex items-center gap-2 md:gap-3">
-                        <div
-                          className="w-[80px] h-[20px] rounded-lg custom-shimmer"
-                          style={{ borderRadius: "8px" }}
-                        ></div>
-
-                        <div
-                          className="w-[80px] h-[20px] rounded-lg custom-shimmer"
-                          style={{ borderRadius: "8px" }}
-                        ></div>
-                      </div>
-                    </div>
-
-                    <div className="w-full h-[200px] relative">
-                      <div
-                        className="w-ull h-full rounded-lg custom-shimmer"
-                        style={{ borderRadius: "8px" }}
-                      ></div>
-                    </div>
-                  </div>
-                );
-              })}
-            </>
-          ) : (
-            <>
-              {roomsData && roomsData.length > 0
-                ? roomsData.map((item: any, index: number) => {
-                    const isEditing = editIndex === index;
-                    const loaded = imageLoaded[index];
-
+        <div className="mt-8 flex justify-end">
+          <Button
+            text={isGridView ? "Bytt til listevisning" : "Bytt til gridvisning"}
+            className="border border-gray2 text-black text-base rounded-[40px] h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
+            onClick={() => setIsGridView(!isGridView)}
+          />
+        </div>
+        {isGridView ? (
+          <div className="grid grid-cols-3 gap-6 w-full mt-8">
+            {loading ? (
+              <>
+                {Array.from({ length: 3 }, (_, i) => i + 1).map(
+                  (item, index) => {
                     return (
                       <div
                         key={index}
-                        className="relative shadow-shadow2 p-4 rounded-lg flex flex-col gap-4 justify-between"
+                        className="relative shadow-shadow2 p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4"
                       >
-                        <div className="flex gap-2 items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            {isEditing ? (
-                              <input
-                                type="text"
-                                value={editedFloorName}
-                                onChange={(e) =>
-                                  setEditedFloorName(e.target.value)
-                                }
-                                className="border border-gray1 rounded px-2 py-1 w-full"
-                                onClick={(e) => e.stopPropagation()}
-                              />
-                            ) : (
-                              <span className="text-darkBlack font-medium truncate">
-                                {item?.title || `Floor ${index + 1}`}
-                              </span>
-                            )}
-                            {item.configurator === true && (
-                              <CircleCheckBig className="text-darkGreen" />
-                            )}
+                        <div className="flex gap-1.5 md:gap-2 items-center justify-between">
+                          <div
+                            className="w-[80px] h-[20px] rounded-lg custom-shimmer"
+                            style={{ borderRadius: "8px" }}
+                          ></div>
+                          <div className="flex items-center gap-2 md:gap-3">
+                            <div
+                              className="w-[80px] h-[20px] rounded-lg custom-shimmer"
+                              style={{ borderRadius: "8px" }}
+                            ></div>
+
+                            <div
+                              className="w-[80px] h-[20px] rounded-lg custom-shimmer"
+                              style={{ borderRadius: "8px" }}
+                            ></div>
                           </div>
-                          <div className="flex items-center gap-3">
-                            {isEditing ? (
-                              <button
-                                className="bg-purple text-white px-3 py-2 rounded text-sm self-end"
-                                disabled={updatingIndex === index}
-                                onClick={async (e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  const updatedRooms = [...roomsData];
-                                  updatedRooms[index] = {
-                                    ...updatedRooms[index],
-                                    title: editedFloorName,
-                                  };
+                        </div>
 
-                                  setRoomsData(updatedRooms);
+                        <div className="w-full h-[200px] relative">
+                          <div
+                            className="w-ull h-full rounded-lg custom-shimmer"
+                            style={{ borderRadius: "8px" }}
+                          ></div>
+                        </div>
+                      </div>
+                    );
+                  }
+                )}
+              </>
+            ) : (
+              <>
+                {roomsData && roomsData.length > 0
+                  ? roomsData.map((item: any, index: number) => {
+                      const isEditing = editIndex === index;
+                      const loaded = imageLoaded[index];
 
-                                  const husmodellDocRef = doc(
-                                    db,
-                                    "room_configurator",
-                                    String(id)
-                                  );
+                      return (
+                        <div
+                          key={index}
+                          className="relative shadow-shadow2 p-4 rounded-lg flex flex-col gap-4 justify-between"
+                        >
+                          <div className="flex gap-2 items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              {isEditing ? (
+                                <input
+                                  type="text"
+                                  value={editedFloorName}
+                                  onChange={(e) =>
+                                    setEditedFloorName(e.target.value)
+                                  }
+                                  className="border border-gray1 rounded px-2 py-1 w-full"
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                              ) : (
+                                <span className="text-darkBlack font-medium truncate">
+                                  {item?.title || `Floor ${index + 1}`}
+                                </span>
+                              )}
+                              {item.configurator === true && (
+                                <CircleCheckBig className="text-darkGreen" />
+                              )}
+                            </div>
+                            <div className="flex items-center gap-3">
+                              {isEditing ? (
+                                <button
+                                  className="bg-purple text-white px-3 py-2 rounded text-sm self-end"
+                                  disabled={updatingIndex === index}
+                                  onClick={async (e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    const updatedRooms = [...roomsData];
+                                    updatedRooms[index] = {
+                                      ...updatedRooms[index],
+                                      title: editedFloorName,
+                                    };
 
-                                  await updateDoc(husmodellDocRef, {
-                                    Plantegninger: updatedRooms,
-                                    updatedAt: new Date().toISOString(),
-                                  });
+                                    setRoomsData(updatedRooms);
 
-                                  toast.success("Navn oppdatert!", {
-                                    position: "top-right",
-                                  });
-                                  setEditIndex(null);
-                                  setUpdatingIndex(null);
-                                }}
-                              >
-                                {updatingIndex === index ? (
-                                  <svg
-                                    className="animate-spin h-4 w-4 text-white"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <circle
-                                      className="opacity-25"
-                                      cx="12"
-                                      cy="12"
-                                      r="10"
-                                      stroke="currentColor"
-                                      strokeWidth="4"
-                                    ></circle>
-                                    <path
-                                      className="opacity-75"
-                                      fill="currentColor"
-                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                                    ></path>
-                                  </svg>
-                                ) : (
-                                  "Oppdater"
-                                )}
-                              </button>
-                            ) : (
-                              <Pencil
-                                className="w-6 h-6 text-purple cursor-pointer"
+                                    const husmodellDocRef = doc(
+                                      db,
+                                      "room_configurator",
+                                      String(id)
+                                    );
+
+                                    await updateDoc(husmodellDocRef, {
+                                      Plantegninger: updatedRooms,
+                                      updatedAt: new Date().toISOString(),
+                                    });
+
+                                    toast.success("Navn oppdatert!", {
+                                      position: "top-right",
+                                    });
+                                    setEditIndex(null);
+                                    setUpdatingIndex(null);
+                                  }}
+                                >
+                                  {updatingIndex === index ? (
+                                    <svg
+                                      className="animate-spin h-4 w-4 text-white"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                      ></circle>
+                                      <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                      ></path>
+                                    </svg>
+                                  ) : (
+                                    "Oppdater"
+                                  )}
+                                </button>
+                              ) : (
+                                <Pencil
+                                  className="w-6 h-6 text-purple cursor-pointer"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setEditIndex(index);
+                                    setEditedFloorName(
+                                      item?.title || `Floor ${index + 1}`
+                                    );
+                                  }}
+                                />
+                              )}
+
+                              <Trash2
+                                className="w-6 h-6 text-red cursor-pointer"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
-                                  setEditIndex(index);
-                                  setEditedFloorName(
-                                    item?.title || `Floor ${index + 1}`
-                                  );
+                                  setConfirmDeleteId(index);
                                 }}
                               />
-                            )}
-
-                            <Trash2
-                              className="w-6 h-6 text-red cursor-pointer"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setConfirmDeleteIndex(index);
-                              }}
-                            />
+                            </div>
                           </div>
-                        </div>
-                        <div className="w-full h-[200px] relative">
-                          {!loaded && (
-                            <div className="w-full h-full rounded-lg custom-shimmer"></div>
-                          )}
-                          {item?.image && (
-                            <img
-                              src={item?.image}
-                              alt="floor"
-                              className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
-                                loaded ? "opacity-100" : "opacity-0"
-                              }`}
-                              onLoad={() => handleImageLoad(index)}
-                              onError={() => handleImageLoad(index)}
-                              loading="lazy"
-                            />
-                          )}
-                        </div>
-                        <Button
-                          text="Konfigurer plan"
-                          className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2`}
-                          type="button"
-                          onClick={() => {
-                            if (item?.rooms) {
-                              setActiveTab(3);
-                            } else {
-                              setActiveTab(2);
-                            }
+                          <div className="w-full h-[200px] relative">
+                            {!loaded && (
+                              <div className="w-full h-full rounded-lg custom-shimmer"></div>
+                            )}
+                            {item?.image && (
+                              <img
+                                src={item?.image}
+                                alt="floor"
+                                className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
+                                  loaded ? "opacity-100" : "opacity-0"
+                                }`}
+                                onLoad={() => handleImageLoad(index)}
+                                onError={() => handleImageLoad(index)}
+                                loading="lazy"
+                              />
+                            )}
+                          </div>
+                          <Button
+                            text="Konfigurer plan"
+                            className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2`}
+                            type="button"
+                            onClick={() => {
+                              if (item?.rooms) {
+                                setActiveTab(3);
+                              } else {
+                                setActiveTab(2);
+                              }
 
-                            navigate(`?pdf_id=${item?.pdf_id}`);
-                          }}
-                        />
-                      </div>
-                    );
-                  })
-                : "No Data Found!"}
-            </>
-          )}
-        </div>
+                              navigate(`?pdf_id=${item?.pdf_id}`);
+                            }}
+                          />
+                        </div>
+                      );
+                    })
+                  : "No Data Found!"}
+              </>
+            )}
+          </div>
+        ) : (
+          <div className="w-full mt-8">
+            <RoomProjectTable />
+          </div>
+        )}
       </div>
 
       <div className="flex justify-end w-full gap-5 items-center fixed bottom-0 bg-white z-50 border-t border-gray2 p-4 left-0">
@@ -595,7 +621,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
         />
       </div>
 
-      {confirmDeleteIndex !== null && (
+      {confirmDeleteId !== null && (
         <Modal onClose={handleConfirmPopup} isOpen={true}>
           <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
             <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -603,13 +629,13 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                 Er du sikker på at du vil slette?
               </p>
               <div className="flex justify-center mt-5 w-full gap-5 items-center">
-                <div onClick={() => setConfirmDeleteIndex(null)}>
+                <div onClick={() => setConfirmDeleteId(null)}>
                   <Button
                     text="Avbryt"
                     className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   />
                 </div>
-                <div onClick={() => handleDeleteFloor(confirmDeleteIndex)}>
+                <div onClick={() => handleDeleteFloor(confirmDeleteId)}>
                   <Button
                     text="Bekreft"
                     className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
@@ -662,6 +688,21 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
             </div>
           </div>
         </Modal>
+      )}
+      {FileUploadLoading && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center"
+          style={{ zIndex: 99999 }}
+        >
+          <div className="flex flex-col items-center gap-4 bg-white p-3 rounded-lg">
+            <span className="text-purple text-base font-medium">
+              Opplasting...
+            </span>
+            <div className="w-48 h-1 overflow-hidden rounded-lg">
+              <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

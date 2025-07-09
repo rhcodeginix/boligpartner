@@ -94,9 +94,27 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             Produktnavn: "I henhold til leveransebeskrivelse",
             isSelected: true,
           },
-          { Produktnavn: "Mdf panel", isSelected: false },
-          { Produktnavn: "Takplate 60x120", isSelected: false },
+          {
+            Produktnavn: "Mdf panel",
+            isSelected: false,
+            InfoText: "Beskriv type og farge",
+          },
+          {
+            Produktnavn: "Takplate 60x120",
+            isSelected: false,
+            InfoText: "Beskriv evt avvik fra standard",
+          },
           { Produktnavn: "Eget valg", isSelected: false },
+          {
+            Produktnavn: "Gips",
+            isSelected: false,
+            InfoText: "Beskriv evt avvik fra standard gips",
+          },
+          {
+            Produktnavn: "Panel",
+            isSelected: false,
+            InfoText: "Beskriv type og farge",
+          },
         ],
         Vegger: [
           {
@@ -104,8 +122,32 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             isSelected: true,
           },
           { Produktnavn: "5 bords kostmald mdf plate", isSelected: false },
-          { Produktnavn: "Ubehandlet sponplate", isSelected: false },
+          {
+            Produktnavn: "Ubehandlet sponplate",
+            isSelected: false,
+            InfoText: "Beskriv evt avvik fra standard",
+          },
           { Produktnavn: "Eget valg", isSelected: false },
+          {
+            Produktnavn: "Gips",
+            isSelected: false,
+            InfoText: "Beskriv evt avvik fra standard gips",
+          },
+          {
+            Produktnavn: "Mdf panel",
+            isSelected: false,
+            InfoText: "Beskriv type og farge",
+          },
+          {
+            Produktnavn: "Panel",
+            isSelected: false,
+            InfoText: "Beskriv type og farge",
+          },
+          {
+            Produktnavn: "Annet",
+            isSelected: false,
+            InfoText: "Beskriv type og farge",
+          },
         ],
         Gulv: [
           { Produktnavn: "Lokalleveranse", isSelected: true },
@@ -113,6 +155,21 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           { Produktnavn: "Eikeparkett 1 stavs", isSelected: false },
           { Produktnavn: "Laminat 1 stavs", isSelected: false },
           { Produktnavn: "Eget valg", isSelected: false },
+          {
+            Produktnavn: "Parkett (leveres av forhandler)",
+            isSelected: false,
+            InfoText: "Beskriv type og farge",
+          },
+          {
+            Produktnavn: "Laminat",
+            isSelected: false,
+            InfoText: "Beskriv type og farge",
+          },
+          {
+            Produktnavn: "Annet",
+            isSelected: false,
+            InfoText: "Beskriv type og farge",
+          },
         ],
         Talklist: [
           {
@@ -162,33 +219,104 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         (floor: any) => {
           if (!Array.isArray(floor.rooms)) return floor;
 
+          // const updatedRooms = floor.rooms.map((room: any) => {
+          //   const existingMap = new Map(
+          //     (room.Kategorinavn || []).map((k: any) => [k.navn, k])
+          //   );
+
+          //   const finalKategorinavn = Object.entries(
+          //     requiredCategoriesWithProducts
+          //   ).map(([name, produkter]) => {
+          //     if (existingMap.has(name)) {
+          //       return existingMap.get(name);
+          //     }
+          //     return {
+          //       navn: name,
+          //       productOptions: name === "Kommentar" ? "Text" : "Single Select",
+          //       produkter,
+          //     };
+          //   });
+
+          //   return {
+          //     ...room,
+          //     Kategorinavn: finalKategorinavn,
+          //   };
+          // });
           const updatedRooms = floor.rooms.map((room: any) => {
-            if (!Array.isArray(room.Kategorinavn)) {
-              return {
-                ...room,
-                Kategorinavn: Object.entries(
-                  requiredCategoriesWithProducts
-                ).map(([name, produkter]) => ({
+            const isWetRoom = /Bad|Vaskerom/i.test(
+              room?.name_no || room?.name || ""
+            );
+
+            const existingMap = new Map(
+              (room.Kategorinavn || []).map((k: any) => [k.navn, k])
+            );
+
+            const finalKategorinavn = Object.entries(
+              requiredCategoriesWithProducts
+            )
+              .filter(([name]) => !(isWetRoom && name === "Gulvlist")) // hide Gulvlist
+              .map(([name, produkter]) => {
+                if (isWetRoom && (name === "Vegg" || name === "Vegger")) {
+                  return {
+                    navn: "Vegg",
+                    productOptions: "Single Select",
+                    produkter: [
+                      {
+                        Produktnavn: "Flis",
+                        isSelected: false,
+                        InfoText: "Ev beskriv type og farge",
+                      },
+                      {
+                        Produktnavn: "Baderomsplate",
+                        isSelected: false,
+                        InfoText: "Beskriv type og farge",
+                      },
+                      {
+                        Produktnavn: "Annet",
+                        isSelected: false,
+                        InfoText: "Beskriv type og farge",
+                      },
+                    ],
+                  };
+                }
+                if (isWetRoom && name === "Gulv") {
+                  return {
+                    navn: "Gulv",
+                    productOptions: "Single Select",
+                    produkter: [
+                      {
+                        Produktnavn: "Flis",
+                        isSelected: false,
+                        InfoText: "Ev beskriv type og farge",
+                      },
+                      {
+                        Produktnavn: "Belegg",
+                        isSelected: false,
+                        InfoText: "Beskriv type og farge",
+                      },
+                      {
+                        Produktnavn: "Annet",
+                        isSelected: false,
+                        InfoText: "Beskriv type og farge",
+                      },
+                    ],
+                  };
+                }
+
+                if (existingMap.has(name)) {
+                  return existingMap.get(name);
+                }
+                return {
                   navn: name,
                   productOptions:
                     name === "Kommentar" ? "Text" : "Single Select",
                   produkter,
-                })),
-              };
-            }
-
-            const existingNames = room.Kategorinavn.map((k: any) => k.navn);
-            const missing = Object.entries(requiredCategoriesWithProducts)
-              .filter(([name]) => !existingNames.includes(name))
-              .map(([name, produkter]) => ({
-                navn: name,
-                productOptions: name === "Kommentar" ? "Text" : "Single Select",
-                produkter,
-              }));
+                };
+              });
 
             return {
               ...room,
-              Kategorinavn: [...room.Kategorinavn, ...missing],
+              Kategorinavn: finalKategorinavn,
             };
           });
 

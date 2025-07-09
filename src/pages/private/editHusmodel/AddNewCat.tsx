@@ -28,9 +28,27 @@ const requiredCategoriesWithProducts = {
       Produktnavn: "I henhold til leveransebeskrivelse",
       isSelected: true,
     },
-    { Produktnavn: "Mdf panel", isSelected: false },
-    { Produktnavn: "Takplate 60x120", isSelected: false },
+    {
+      Produktnavn: "Mdf panel",
+      isSelected: false,
+      InfoText: "Beskriv type og farge",
+    },
+    {
+      Produktnavn: "Takplate 60x120",
+      isSelected: false,
+      InfoText: "Beskriv evt avvik fra standard",
+    },
     { Produktnavn: "Eget valg", isSelected: false },
+    {
+      Produktnavn: "Gips",
+      isSelected: false,
+      InfoText: "Beskriv evt avvik fra standard gips",
+    },
+    {
+      Produktnavn: "Panel",
+      isSelected: false,
+      InfoText: "Beskriv type og farge",
+    },
   ],
   Vegger: [
     {
@@ -38,8 +56,32 @@ const requiredCategoriesWithProducts = {
       isSelected: true,
     },
     { Produktnavn: "5 bords kostmald mdf plate", isSelected: false },
-    { Produktnavn: "Ubehandlet sponplate", isSelected: false },
+    {
+      Produktnavn: "Ubehandlet sponplate",
+      isSelected: false,
+      InfoText: "Beskriv evt avvik fra standard",
+    },
     { Produktnavn: "Eget valg", isSelected: false },
+    {
+      Produktnavn: "Gips",
+      isSelected: false,
+      InfoText: "Beskriv evt avvik fra standard gips",
+    },
+    {
+      Produktnavn: "Mdf panel",
+      isSelected: false,
+      InfoText: "Beskriv type og farge",
+    },
+    {
+      Produktnavn: "Panel",
+      isSelected: false,
+      InfoText: "Beskriv type og farge",
+    },
+    {
+      Produktnavn: "Annet",
+      isSelected: false,
+      InfoText: "Beskriv type og farge",
+    },
   ],
   Gulv: [
     { Produktnavn: "Lokalleveranse", isSelected: true },
@@ -47,6 +89,21 @@ const requiredCategoriesWithProducts = {
     { Produktnavn: "Eikeparkett 1 stavs", isSelected: false },
     { Produktnavn: "Laminat 1 stavs", isSelected: false },
     { Produktnavn: "Eget valg", isSelected: false },
+    {
+      Produktnavn: "Parkett (leveres av forhandler)",
+      isSelected: false,
+      InfoText: "Beskriv type og farge",
+    },
+    {
+      Produktnavn: "Laminat",
+      isSelected: false,
+      InfoText: "Beskriv type og farge",
+    },
+    {
+      Produktnavn: "Annet",
+      isSelected: false,
+      InfoText: "Beskriv type og farge",
+    },
   ],
   Talklist: [
     {

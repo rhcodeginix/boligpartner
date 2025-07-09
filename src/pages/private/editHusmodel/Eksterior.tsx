@@ -12,7 +12,7 @@ import {
 } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
 import Ic_x_circle from "../../../assets/images/Ic_x_circle.svg";
-import { ArrowLeft, Pencil, Plus, X } from "lucide-react";
+import { ArrowLeft, Info, Pencil, Plus, X } from "lucide-react";
 import { AddNewSubCat } from "./AddNewSubCat";
 import { useLocation, useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -45,6 +45,7 @@ const productSchema = z
     isSelected: z.boolean().optional(),
     customText: z.string().optional(),
     Type: z.string().optional(),
+    InfoText: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (
@@ -65,16 +66,19 @@ const categorySchema = z.discriminatedUnion("productOptions", [
     navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
     productOptions: z.literal("Multi Select"),
     produkter: z.array(productSchema).min(1, "Minst ett produkt er påkrevd."),
+    comment: z.string().optional(),
   }),
   z.object({
     navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
     productOptions: z.literal("Single Select"),
     produkter: z.array(productSchema).min(1, "Minst ett produkt er påkrevd."),
+    comment: z.string().optional(),
   }),
   z.object({
     navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
     productOptions: z.literal("Text"),
     text: z.string().min(1, "Kommentar er påkrevd."),
+    comment: z.string().optional(),
   }),
 ]);
 const mainCategorySchema = z.object({
@@ -350,6 +354,7 @@ export const Eksterior: React.FC<{
               isSelected: product.isSelected || false,
               customText: product.customText || "",
               Type: product.Type || "",
+              InfoText: product.InfoText || "",
             };
           });
         }
@@ -455,6 +460,36 @@ export const Eksterior: React.FC<{
 
   const [isConfigurating, setIsConfigurating] = useState(false);
 
+  const infoRef = useRef<HTMLDivElement | null>(null);
+  const [infoPopupIndex, setInfoPopupIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (infoRef.current && !infoRef.current.contains(event.target as Node)) {
+        setInfoPopupIndex(null);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const [comment, setComment] = useState("");
+
+  useEffect(() => {
+    const subscription = form.watch((values) => {
+      const safeValue =
+        values.hovedkategorinavn?.[activeTabData]?.Kategorinavn?.[
+          activeSubTabData
+        ]?.comment ?? "";
+      setComment(safeValue);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [activeTabData, activeSubTabData]);
+
   return (
     <>
       {isSubmitLoading && <Spinner />}
@@ -481,7 +516,7 @@ export const Eksterior: React.FC<{
               </div>
             </div>
             <div className="border-t border-gray2"></div>
-            <div className="p-4">
+            <div className="p-5">
               <div className="flex items-center gap-6 h-[48px] mb-8 border border-[#EFF1F5] rounded-lg bg-[#F9F9FB] p-2">
                 {hovedkategorinavn?.length > 0 && (
                   <div className="flex items-center gap-4 overflow-x-auto overflowXAuto">
@@ -702,114 +737,144 @@ export const Eksterior: React.FC<{
                         const isSelected = product?.isSelected;
 
                         return (
-                          <div key={index} className="flex gap-2 items-start">
-                            <div
-                              className={`w-full cursor-pointer border rounded-lg ${
-                                isSelected
-                                  ? "border-2 border-purple bg-lightPurple bg-opacity-10"
-                                  : "border-[#EFF1F5]"
-                              }`}
-                              draggable
-                              onDragStart={() => setDraggingProductIndex(index)}
-                              onDragOver={(e) => {
-                                e.preventDefault();
-                                setDragOverProductIndex(index);
-                              }}
-                              onDrop={() => handleDrop()}
-                              onClick={async () => {
-                                const productOptions = form.getValues(
-                                  `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
-                                );
-
-                                let updatedProducts;
-
-                                if (productOptions === "Single Select") {
-                                  updatedProducts = produkter.map(
-                                    (p: any, i: number) => ({
-                                      ...p,
-                                      isSelected: i === index,
-                                    })
-                                  );
-                                } else {
-                                  updatedProducts = produkter.map(
-                                    (p: any, i: number) => ({
-                                      ...p,
-                                      isSelected:
-                                        i === index
-                                          ? !p.isSelected
-                                          : p.isSelected,
-                                    })
-                                  );
+                          <div key={index}>
+                            <div className="flex gap-2 items-start">
+                              <div
+                                className={`w-full cursor-pointer border rounded-lg ${
+                                  isSelected
+                                    ? "border-2 border-purple bg-lightPurple bg-opacity-10"
+                                    : "border-[#EFF1F5]"
+                                }`}
+                                draggable
+                                onDragStart={() =>
+                                  setDraggingProductIndex(index)
                                 }
-
-                                form.setValue(
-                                  `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
-                                  updatedProducts,
-                                  { shouldValidate: true }
-                                );
-
-                                try {
-                                  const husmodellDocRef = doc(
-                                    db,
-                                    "housemodell_configure_broker",
-                                    id
+                                onDragOver={(e) => {
+                                  e.preventDefault();
+                                  setDragOverProductIndex(index);
+                                }}
+                                onDrop={() => handleDrop()}
+                                onClick={async () => {
+                                  const productOptions = form.getValues(
+                                    `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
                                   );
-                                  const docSnap = await getDoc(husmodellDocRef);
-                                  if (!docSnap.exists() || !kundeId || !pdfId)
-                                    return;
 
-                                  const houseData = docSnap.data();
-                                  const kundeList = houseData?.KundeInfo || [];
-                                  const targetKundeIndex = kundeList.findIndex(
-                                    (k: any) =>
-                                      String(k.uniqueId) === String(kundeId)
-                                  );
-                                  if (targetKundeIndex === -1) return;
+                                  let updatedProducts;
 
-                                  const targetKunde =
-                                    kundeList[targetKundeIndex];
-                                  const existingPlantegninger =
-                                    targetKunde?.Plantegninger || [];
-                                  const indexToUpdate =
-                                    existingPlantegninger.findIndex(
-                                      (item: any) =>
-                                        String(item?.pdf_id) === String(pdfId)
+                                  if (productOptions === "Single Select") {
+                                    updatedProducts = produkter.map(
+                                      (p: any, i: number) => ({
+                                        ...p,
+                                        isSelected: i === index,
+                                      })
                                     );
-                                  if (indexToUpdate === -1) return;
+                                  } else {
+                                    updatedProducts = produkter.map(
+                                      (p: any, i: number) => ({
+                                        ...p,
+                                        isSelected:
+                                          i === index
+                                            ? !p.isSelected
+                                            : p.isSelected,
+                                      })
+                                    );
+                                  }
 
-                                  const kundeInfo = [...kundeList];
+                                  form.setValue(
+                                    `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter`,
+                                    updatedProducts,
+                                    { shouldValidate: true }
+                                  );
 
-                                  kundeInfo[targetKundeIndex].Plantegninger[
-                                    indexToUpdate
-                                  ].rooms[activeTabData].Kategorinavn[
-                                    activeSubTabData
-                                  ].produkter = updatedProducts;
+                                  try {
+                                    const husmodellDocRef = doc(
+                                      db,
+                                      "housemodell_configure_broker",
+                                      id
+                                    );
+                                    const docSnap = await getDoc(
+                                      husmodellDocRef
+                                    );
+                                    if (!docSnap.exists() || !kundeId || !pdfId)
+                                      return;
 
-                                  await updateDoc(husmodellDocRef, {
-                                    KundeInfo: kundeInfo,
-                                    updatedAt: new Date().toISOString(),
-                                  });
-                                } catch (err) {
-                                  console.error("selection in firebase", err);
-                                }
-                              }}
-                            >
-                              <div className="flex gap-4 p-3">
-                                {product?.Hovedbilde?.[0] && (
-                                  <div className="w-[100px]">
-                                    <img
-                                      src={`${product?.Hovedbilde?.[0]}`}
-                                      alt="floor"
-                                      className="w-[100px] h-[76px] border border-[#EFF1F5] rounded-[4px]"
-                                    />
-                                  </div>
-                                )}
-                                <div className="w-full">
-                                  <div className="flex items-center gap-2 justify-between">
-                                    <h4 className="text-darkBlack text-sm">
-                                      {product?.Produktnavn}
-                                    </h4>
-                                    {/* <div className="flex items-center gap-2 mt-1">
+                                    const houseData = docSnap.data();
+                                    const kundeList =
+                                      houseData?.KundeInfo || [];
+                                    const targetKundeIndex =
+                                      kundeList.findIndex(
+                                        (k: any) =>
+                                          String(k.uniqueId) === String(kundeId)
+                                      );
+                                    if (targetKundeIndex === -1) return;
+
+                                    const targetKunde =
+                                      kundeList[targetKundeIndex];
+                                    const existingPlantegninger =
+                                      targetKunde?.Plantegninger || [];
+                                    const indexToUpdate =
+                                      existingPlantegninger.findIndex(
+                                        (item: any) =>
+                                          String(item?.pdf_id) === String(pdfId)
+                                      );
+                                    if (indexToUpdate === -1) return;
+
+                                    const kundeInfo = [...kundeList];
+
+                                    kundeInfo[targetKundeIndex].Plantegninger[
+                                      indexToUpdate
+                                    ].rooms[activeTabData].Kategorinavn[
+                                      activeSubTabData
+                                    ].produkter = updatedProducts;
+
+                                    await updateDoc(husmodellDocRef, {
+                                      KundeInfo: kundeInfo,
+                                      updatedAt: new Date().toISOString(),
+                                    });
+                                  } catch (err) {
+                                    console.error("selection in firebase", err);
+                                  }
+                                }}
+                              >
+                                <div className="flex gap-4 p-3">
+                                  {product?.Hovedbilde?.[0] && (
+                                    <div className="w-[100px]">
+                                      <img
+                                        src={`${product?.Hovedbilde?.[0]}`}
+                                        alt="floor"
+                                        className="w-[100px] h-[76px] border border-[#EFF1F5] rounded-[4px]"
+                                      />
+                                    </div>
+                                  )}
+                                  <div className="w-full">
+                                    <div className="flex items-center gap-2 justify-between">
+                                      <h4 className="text-darkBlack text-sm">
+                                        {product?.Produktnavn}
+                                      </h4>
+                                      {product?.InfoText && (
+                                        <div className="relative" ref={infoRef}>
+                                          <Info
+                                            className="text-primary w-5 h-5 cursor-pointer"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setInfoPopupIndex(
+                                                infoPopupIndex === index
+                                                  ? null
+                                                  : index
+                                              );
+                                            }}
+                                          />
+                                          {infoPopupIndex === index && (
+                                            <div className="absolute right-0 mt-1 w-max bg-white border border-gray1 rounded shadow-lg p-2 z-50">
+                                              <p className="text-sm text-darkBlack">
+                                                {product.InfoText}
+                                              </p>
+                                            </div>
+                                          )}
+                                        </div>
+                                      )}
+
+                                      {/* <div className="flex items-center gap-2 mt-1">
                                   <Pencil
                                     className="w-5 h-5 text-primary cursor-pointer"
                                     onClick={() => {
@@ -832,19 +897,19 @@ export const Eksterior: React.FC<{
                                     }}
                                   />
                                 </div> */}
-                                  </div>
-
-                                  {product?.delieverBy && (
-                                    <div className="mb-2 flex items-center gap-2">
-                                      <p className="text-secondary text-xs">
-                                        Deliver by:
-                                      </p>
-                                      <span className="text-darkBlack">
-                                        {product?.delieverBy}
-                                      </span>
                                     </div>
-                                  )}
-                                  {/* {[
+
+                                    {product?.delieverBy && (
+                                      <div className="mb-2 flex items-center gap-2">
+                                        <p className="text-secondary text-xs">
+                                          Deliver by:
+                                        </p>
+                                        <span className="text-darkBlack">
+                                          {product?.delieverBy}
+                                        </span>
+                                      </div>
+                                    )}
+                                    {/* {[
                                   "Himlling",
                                   "Vegger",
                                   "Gulv",
@@ -852,21 +917,21 @@ export const Eksterior: React.FC<{
                                 ].includes(title) ? (
                                   ""
                                 ) : ( */}
-                                  <div className="flex items-center justify-between gap-2">
-                                    <span className="text-sm font-medium text-darkBlack">
-                                      {product?.IncludingOffer ? (
-                                        <div className="text-black font-semibold whitespace-nowrap">
-                                          Standard
-                                        </div>
-                                      ) : (
-                                        <div className="text-black font-semibold whitespace-nowrap">
-                                          {product?.pris &&
-                                            `kr ${product?.pris}`}
-                                        </div>
-                                      )}
-                                    </span>
+                                    <div className="flex items-center justify-between gap-2">
+                                      <span className="text-sm font-medium text-darkBlack">
+                                        {product?.IncludingOffer ? (
+                                          <div className="text-black font-semibold whitespace-nowrap">
+                                            Standard
+                                          </div>
+                                        ) : (
+                                          <div className="text-black font-semibold whitespace-nowrap">
+                                            {product?.pris &&
+                                              `kr ${product?.pris}`}
+                                          </div>
+                                        )}
+                                      </span>
 
-                                    {/* <span
+                                      {/* <span
                                   className="text-purple font-medium text-sm cursor-pointer"
                                   onClick={() => {
                                     handleproductViewDrawer();
@@ -875,129 +940,241 @@ export const Eksterior: React.FC<{
                                 >
                                   View Details
                                 </span> */}
+                                    </div>
+                                    {/* )} */}
                                   </div>
-                                  {/* )} */}
                                 </div>
                               </div>
-                            </div>
-                            {isSelected && product.Type === "HelpText" && (
-                              <div className="w-full">
-                                <FormField
-                                  control={form.control}
-                                  name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.customText`}
-                                  render={({ field, fieldState }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <div className="relative">
-                                          <Input
-                                            placeholder="Angi type og farge"
-                                            {...field}
-                                            className={`bg-white rounded-[8px] border text-black
+                              {isSelected && product.Type === "HelpText" && (
+                                <div className="w-full">
+                                  <FormField
+                                    control={form.control}
+                                    name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.customText`}
+                                    render={({ field, fieldState }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <div className="relative">
+                                            <Input
+                                              placeholder="Angi type og farge"
+                                              {...field}
+                                              className={`bg-white rounded-[8px] border text-black
                                                  ${
                                                    fieldState?.error
                                                      ? "border-red"
                                                      : "border-gray1"
                                                  } `}
-                                            type="text"
-                                            value={
-                                              form.watch(
-                                                `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.customText`
-                                              ) || ""
-                                            }
-                                            onBlur={async (e: any) => {
-                                              field.onBlur();
-
-                                              const newCustomText =
-                                                e.target.value;
-
-                                              try {
-                                                const husmodellDocRef = doc(
-                                                  db,
-                                                  "housemodell_configure_broker",
-                                                  id
-                                                );
-                                                const docSnap = await getDoc(
-                                                  husmodellDocRef
-                                                );
-
-                                                if (
-                                                  !docSnap.exists() ||
-                                                  !kundeId ||
-                                                  !pdfId
-                                                )
-                                                  return;
-
-                                                const houseData =
-                                                  docSnap.data();
-                                                const kundeList =
-                                                  houseData?.KundeInfo || [];
-                                                const targetKundeIndex =
-                                                  kundeList.findIndex(
-                                                    (k: any) =>
-                                                      String(k.uniqueId) ===
-                                                      String(kundeId)
-                                                  );
-                                                if (targetKundeIndex === -1)
-                                                  return;
-
-                                                const targetKunde =
-                                                  kundeList[targetKundeIndex];
-                                                const existingPlantegninger =
-                                                  targetKunde?.Plantegninger ||
-                                                  [];
-                                                const indexToUpdate =
-                                                  existingPlantegninger.findIndex(
-                                                    (item: any) =>
-                                                      String(item?.pdf_id) ===
-                                                      String(pdfId)
-                                                  );
-                                                if (indexToUpdate === -1)
-                                                  return;
-
-                                                existingPlantegninger[
-                                                  indexToUpdate
-                                                ].rooms[
-                                                  activeTabData
-                                                ].Kategorinavn[
-                                                  activeSubTabData
-                                                ].produkter[index].customText =
-                                                  newCustomText;
-
-                                                const updatedKundeInfo =
-                                                  kundeList.map(
-                                                    (kunde: any, idx: number) =>
-                                                      idx === targetKundeIndex
-                                                        ? {
-                                                            ...kunde,
-                                                            Plantegninger:
-                                                              existingPlantegninger,
-                                                          }
-                                                        : kunde
-                                                  );
-                                                await updateDoc(
-                                                  husmodellDocRef,
-                                                  {
-                                                    KundeInfo: updatedKundeInfo,
-                                                    updatedAt:
-                                                      new Date().toISOString(),
-                                                  }
-                                                );
-                                              } catch (err) {
-                                                console.error("firebase", err);
+                                              type="text"
+                                              value={
+                                                form.watch(
+                                                  `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.produkter.${index}.customText`
+                                                ) || ""
                                               }
-                                            }}
-                                          />
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              </div>
-                            )}
+                                              onBlur={async (e: any) => {
+                                                field.onBlur();
+
+                                                const newCustomText =
+                                                  e.target.value;
+
+                                                try {
+                                                  const husmodellDocRef = doc(
+                                                    db,
+                                                    "housemodell_configure_broker",
+                                                    id
+                                                  );
+                                                  const docSnap = await getDoc(
+                                                    husmodellDocRef
+                                                  );
+
+                                                  if (
+                                                    !docSnap.exists() ||
+                                                    !kundeId ||
+                                                    !pdfId
+                                                  )
+                                                    return;
+
+                                                  const houseData =
+                                                    docSnap.data();
+                                                  const kundeList =
+                                                    houseData?.KundeInfo || [];
+                                                  const targetKundeIndex =
+                                                    kundeList.findIndex(
+                                                      (k: any) =>
+                                                        String(k.uniqueId) ===
+                                                        String(kundeId)
+                                                    );
+                                                  if (targetKundeIndex === -1)
+                                                    return;
+
+                                                  const targetKunde =
+                                                    kundeList[targetKundeIndex];
+                                                  const existingPlantegninger =
+                                                    targetKunde?.Plantegninger ||
+                                                    [];
+                                                  const indexToUpdate =
+                                                    existingPlantegninger.findIndex(
+                                                      (item: any) =>
+                                                        String(item?.pdf_id) ===
+                                                        String(pdfId)
+                                                    );
+                                                  if (indexToUpdate === -1)
+                                                    return;
+
+                                                  existingPlantegninger[
+                                                    indexToUpdate
+                                                  ].rooms[
+                                                    activeTabData
+                                                  ].Kategorinavn[
+                                                    activeSubTabData
+                                                  ].produkter[
+                                                    index
+                                                  ].customText = newCustomText;
+
+                                                  const updatedKundeInfo =
+                                                    kundeList.map(
+                                                      (
+                                                        kunde: any,
+                                                        idx: number
+                                                      ) =>
+                                                        idx === targetKundeIndex
+                                                          ? {
+                                                              ...kunde,
+                                                              Plantegninger:
+                                                                existingPlantegninger,
+                                                            }
+                                                          : kunde
+                                                    );
+                                                  await updateDoc(
+                                                    husmodellDocRef,
+                                                    {
+                                                      KundeInfo:
+                                                        updatedKundeInfo,
+                                                      updatedAt:
+                                                        new Date().toISOString(),
+                                                    }
+                                                  );
+                                                } catch (err) {
+                                                  console.error(
+                                                    "firebase",
+                                                    err
+                                                  );
+                                                }
+                                              }}
+                                            />
+                                          </div>
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
+                              )}
+                            </div>
                           </div>
                         );
                       })}
+                      <div className="col-span-2">
+                        <FormField
+                          control={form.control}
+                          name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.comment`}
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Evt kommentar til valg"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                                 ${
+                                                   fieldState?.error
+                                                     ? "border-red"
+                                                     : "border-gray1"
+                                                 } `}
+                                    type="text"
+                                    value={comment}
+                                    onBlur={async (e: any) => {
+                                      field.onBlur();
+
+                                      const newComment = e.target.value;
+
+                                      try {
+                                        const husmodellDocRef = doc(
+                                          db,
+                                          "housemodell_configure_broker",
+                                          id
+                                        );
+                                        const docSnap = await getDoc(
+                                          husmodellDocRef
+                                        );
+
+                                        if (
+                                          !docSnap.exists() ||
+                                          !kundeId ||
+                                          !pdfId
+                                        )
+                                          return;
+
+                                        const houseData = docSnap.data();
+                                        const kundeList =
+                                          houseData?.KundeInfo || [];
+                                        const targetKundeIndex =
+                                          kundeList.findIndex(
+                                            (k: any) =>
+                                              String(k.uniqueId) ===
+                                              String(kundeId)
+                                          );
+                                        if (targetKundeIndex === -1) return;
+
+                                        const targetKunde =
+                                          kundeList[targetKundeIndex];
+                                        const existingPlantegninger =
+                                          targetKunde?.Plantegninger || [];
+                                        const indexToUpdate =
+                                          existingPlantegninger.findIndex(
+                                            (item: any) =>
+                                              String(item?.pdf_id) ===
+                                              String(pdfId)
+                                          );
+                                        if (indexToUpdate === -1) return;
+
+                                        existingPlantegninger[
+                                          indexToUpdate
+                                        ].rooms[activeTabData].Kategorinavn[
+                                          activeSubTabData
+                                        ].comment = newComment;
+
+                                        const updatedKundeInfo = kundeList.map(
+                                          (kunde: any, idx: number) =>
+                                            idx === targetKundeIndex
+                                              ? {
+                                                  ...kunde,
+                                                  Plantegninger:
+                                                    existingPlantegninger,
+                                                }
+                                              : kunde
+                                        );
+                                        await updateDoc(husmodellDocRef, {
+                                          KundeInfo: updatedKundeInfo,
+                                          updatedAt: new Date().toISOString(),
+                                        });
+                                      } catch (err) {
+                                        console.error("firebase", err);
+                                      }
+                                    }}
+                                    onChange={(e: any) =>
+                                      form.setValue(
+                                        `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.comment`,
+                                        e.target.value,
+                                        { shouldValidate: true }
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </div>
                   )}
                 </>

@@ -279,6 +279,10 @@ export const Prosjektdetaljer = forwardRef(
     const selectedOptions = seriesOptions[typeProsjekt] || [];
     const velgSerie = VelgSerie;
 
+    const selectedOnsketLeveranseukeWeek = form.watch(
+      "ØnsketLeveranseukeForFørsteKtkjøring"
+    );
+
     return (
       <>
         {isSubmitLoading && <Spinner />}
@@ -1114,6 +1118,8 @@ export const Prosjektdetaljer = forwardRef(
                                 <Select
                                   onValueChange={(value) => {
                                     field.onChange(value);
+                                    form.setValue("TakstolerLeveresUke", "");
+                                    form.setValue("VinduerLeveresUke", "");
                                   }}
                                   value={field.value}
                                 >
@@ -1180,8 +1186,27 @@ export const Prosjektdetaljer = forwardRef(
                                   <SelectContent className="bg-white">
                                     <SelectGroup>
                                       {weekArray?.map((item, index) => {
+                                        const weekNumber = parseInt(item);
+                                        const selectedWeekNumber =
+                                          selectedOnsketLeveranseukeWeek
+                                            ? parseInt(
+                                                selectedOnsketLeveranseukeWeek
+                                              )
+                                            : 0;
+                                        const isDisabled =
+                                          weekNumber <= selectedWeekNumber;
+
                                         return (
-                                          <SelectItem key={index} value={item}>
+                                          <SelectItem
+                                            key={index}
+                                            value={item}
+                                            disabled={isDisabled}
+                                            className={
+                                              isDisabled
+                                                ? "text-gray-400 cursor-not-allowed"
+                                                : ""
+                                            }
+                                          >
                                             {item}
                                           </SelectItem>
                                         );
@@ -1232,8 +1257,27 @@ export const Prosjektdetaljer = forwardRef(
                                   <SelectContent className="bg-white">
                                     <SelectGroup>
                                       {weekArray?.map((item, index) => {
+                                        const weekNumber = parseInt(item);
+                                        const selectedWeekNumber =
+                                          selectedOnsketLeveranseukeWeek
+                                            ? parseInt(
+                                                selectedOnsketLeveranseukeWeek
+                                              )
+                                            : 0;
+                                        const isDisabled =
+                                          weekNumber <= selectedWeekNumber;
+
                                         return (
-                                          <SelectItem key={index} value={item}>
+                                          <SelectItem
+                                            key={index}
+                                            value={item}
+                                            disabled={isDisabled}
+                                            className={
+                                              isDisabled
+                                                ? "text-gray-400 cursor-not-allowed"
+                                                : ""
+                                            }
+                                          >
                                             {item}
                                           </SelectItem>
                                         );

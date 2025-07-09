@@ -164,11 +164,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         (item: any) => String(item?.pdf_id) === String(pdfId)
       );
 
-      // // setLoading(false);
-
-      // const husmodellDocRef = doc(db, "room_configurator", id);
-      // await updateDoc(husmodellDocRef, { Plantegninger: updatedPlantegninger });
-
       if (finalData) {
         const filteredRooms = (finalData.rooms || []).filter((room: any) => {
           const roomName = room?.name_no || room?.name || "";

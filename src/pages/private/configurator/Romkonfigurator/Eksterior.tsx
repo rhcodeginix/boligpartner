@@ -12,7 +12,7 @@ import {
 } from "../../../../components/ui/form";
 import Button from "../../../../components/common/button";
 import Ic_x_circle from "../../../../assets/images/Ic_x_circle.svg";
-import { ArrowLeft, Pencil, X } from "lucide-react";
+import { ArrowLeft, Info, Pencil, X } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import Drawer from "../../../../components/ui/drawer";
@@ -45,6 +45,7 @@ const productSchema = z
     isSelected: z.boolean().optional(),
     customText: z.string().optional(),
     Type: z.string().optional(),
+    InfoText: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (
@@ -65,16 +66,19 @@ const categorySchema = z.discriminatedUnion("productOptions", [
     navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
     productOptions: z.literal("Multi Select"),
     produkter: z.array(productSchema).min(1, "Minst ett produkt er påkrevd."),
+    comment: z.string().optional(),
   }),
   z.object({
     navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
     productOptions: z.literal("Single Select"),
     produkter: z.array(productSchema).min(1, "Minst ett produkt er påkrevd."),
+    comment: z.string().optional(),
   }),
   z.object({
     navn: z.string().min(1, "Kategorinavn må bestå av minst 1 tegn."),
     productOptions: z.literal("Text"),
     text: z.string().min(1, "Kommentar er påkrevd."),
+    comment: z.string().optional(),
   }),
 ]);
 const mainCategorySchema = z.object({
@@ -333,6 +337,7 @@ export const Eksterior: React.FC<{
               isSelected: product.isSelected || false,
               customText: product.customText || "",
               Type: product.Type || "",
+              InfoText: product.InfoText || "",
             };
           });
         }
@@ -465,6 +470,36 @@ export const Eksterior: React.FC<{
       });
     }
   }, [produkter]);
+
+  const infoRef = useRef<HTMLDivElement | null>(null);
+  const [infoPopupIndex, setInfoPopupIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (infoRef.current && !infoRef.current.contains(event.target as Node)) {
+        setInfoPopupIndex(null);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const [comment, setComment] = useState("");
+
+  useEffect(() => {
+    const subscription = form.watch((values) => {
+      const safeValue =
+        values.hovedkategorinavn?.[activeTabData]?.Kategorinavn?.[
+          activeSubTabData
+        ]?.comment ?? "";
+      setComment(safeValue);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [activeTabData, activeSubTabData]);
 
   return (
     <>
@@ -786,6 +821,28 @@ export const Eksterior: React.FC<{
                                     <h4 className="text-darkBlack text-sm">
                                       {product?.Produktnavn}
                                     </h4>
+                                    {product?.InfoText && (
+                                      <div className="relative" ref={infoRef}>
+                                        <Info
+                                          className="text-primary w-5 h-5 cursor-pointer"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setInfoPopupIndex(
+                                              infoPopupIndex === index
+                                                ? null
+                                                : index
+                                            );
+                                          }}
+                                        />
+                                        {infoPopupIndex === index && (
+                                          <div className="absolute right-0 mt-1 w-max bg-white border border-gray1 rounded shadow-lg p-2 z-50">
+                                            <p className="text-sm text-darkBlack">
+                                              {product.InfoText}
+                                            </p>
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
                                     {/* <div className="flex items-center gap-2 mt-1">
                                   <Pencil
                                     className="w-5 h-5 text-primary cursor-pointer"
@@ -953,6 +1010,77 @@ export const Eksterior: React.FC<{
                           </div>
                         );
                       })}
+                      <div className="col-span-2">
+                        <FormField
+                          control={form.control}
+                          name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.comment`}
+                          render={({ field, fieldState }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Evt kommentar til valg"
+                                    {...field}
+                                    className={`bg-white rounded-[8px] border text-black
+                                                 ${
+                                                   fieldState?.error
+                                                     ? "border-red"
+                                                     : "border-gray1"
+                                                 } `}
+                                    type="text"
+                                    value={comment}
+                                    onBlur={async (e: any) => {
+                                      field.onBlur();
+
+                                      const newComment = e.target.value;
+
+                                      try {
+                                        const husmodellDocRef = doc(
+                                          db,
+                                          "room_configurator",
+                                          id
+                                        );
+                                        const docSnap = await getDoc(
+                                          husmodellDocRef
+                                        );
+
+                                        if (!docSnap.exists() || !pdfId) return;
+
+                                        const houseData = docSnap.data();
+
+                                        const existingPlantegninger =
+                                          houseData?.Plantegninger || [];
+
+                                        const indexToUpdate =
+                                          existingPlantegninger.findIndex(
+                                            (item: any) =>
+                                              String(item?.pdf_id) ===
+                                              String(pdfId)
+                                          );
+                                        if (indexToUpdate === -1) return;
+
+                                        existingPlantegninger[
+                                          indexToUpdate
+                                        ].rooms[activeTabData].Kategorinavn[
+                                          activeSubTabData
+                                        ].comment = newComment;
+
+                                        await updateDoc(husmodellDocRef, {
+                                          Plantegninger: existingPlantegninger,
+                                          updatedAt: new Date().toISOString(),
+                                        });
+                                      } catch (err) {
+                                        console.error("firebase", err);
+                                      }
+                                    }}
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </div>
                   )}
                 </>

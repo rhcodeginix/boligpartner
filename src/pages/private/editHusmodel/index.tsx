@@ -39,9 +39,14 @@ export const EditHouseModel = () => {
               </span>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between mb-4 md:mb-5">
-              <h1 className="text-darkBlack font-semibold text-2xl md:text-[28px] desktop:text-[32px]">
-                {kundeId ? "Romskjema" : "Legg til nytt hus"}
-              </h1>
+              <div>
+                <h1 className="text-darkBlack font-semibold text-2xl md:text-[28px] desktop:text-[32px] mb-3">
+                  {kundeId ? "Romskjema" : "Legg til nytt hus"}
+                </h1>
+                <p className="text-secondary">
+                  Du må laste opp hvert enkelt plan..
+                </p>
+              </div>
               <div>
                 <div className="border border-[#EFF1F5] bg-[#F9F9FB] p-1.5 rounded-lg w-max">
                   <Tabs
