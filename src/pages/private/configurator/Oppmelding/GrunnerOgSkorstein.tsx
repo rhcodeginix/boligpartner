@@ -474,10 +474,11 @@ export const GrunnerOgSkorstein = forwardRef(
                                   }}
                                 >
                                   <input
-                                    className={`bg-white rounded-[8px] border text-black
-        ${
-          fieldState?.error ? "border-red" : "border-gray1"
-        } h-4 w-4 accent-[#444CE7]`}
+                                    className={`bg-white rounded-[8px] border text-black ${
+                                      fieldState?.error
+                                        ? "border-red"
+                                        : "border-gray1"
+                                    } h-4 w-4 accent-[#444CE7]`}
                                     type="radio"
                                     value={option}
                                     onChange={(e) => {
