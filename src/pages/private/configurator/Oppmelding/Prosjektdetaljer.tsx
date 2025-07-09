@@ -189,7 +189,7 @@ export const Prosjektdetaljer = forwardRef(
       }
     };
     const Finansiering = useMemo(() => ["Ja", "Nei"], []);
-    const TypeKalkyle = useMemo(() => ["Tilbud", "Prisoverslag"], []);
+    const TypeKalkyle = useMemo(() => ["Kostnadsoverslag", "Prisgrunnlag"], []);
 
     const [address, setAddress] = useState("");
     const [addressData, setAddressData] = useState<any>(null);
