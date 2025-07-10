@@ -33,8 +33,8 @@ import PptxGenJS from "pptxgenjs";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import Modal from "../../../../components/common/modal";
-import { ExportView } from "./exportView";
 import { Spinner } from "../../../../components/Spinner";
+import { ExportViewData } from "./exportViewData";
 
 const formSchema = z.object({
   Kundenavn: z.string({
@@ -119,60 +119,57 @@ export const AddFinalSubmission: React.FC<{
 
       if (data.exportType === "PDF") {
         setIsExporting(true);
-        const element = previewRef.current;
+
+        const element = previewRef.current as HTMLElement | null;
         if (!element) throw new Error("Preview element not found");
+
+        const canvas = await html2canvas(element, {
+          scale: 2,
+          useCORS: true,
+        });
+
+        const imgData = canvas.toDataURL("image/jpeg", 1.0);
+        const imgProps = new jsPDF().getImageProperties(imgData);
 
         const pdf: any = new jsPDF("p", "mm", "a4");
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
-        const marginTop = 10;
-        const marginLeft = 0;
-        const marginBottom = 15;
-        const usableWidth = pdfWidth;
 
-        let currentY = marginTop;
+        const footerHeight = 12;
+        const usableHeight = pdfHeight - footerHeight;
 
-        const innerRoomElements = element.querySelectorAll(".inner-room-block");
+        const imgWidth = pdfWidth;
+        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
-        for (let i = 0; i < innerRoomElements.length; i++) {
-          const innerRoomEl: any = innerRoomElements[i];
+        let heightLeft = imgHeight;
+        let pageOffset = 0;
 
-          const roomCanvas = await html2canvas(innerRoomEl, {
-            scale: 1,
-            useCORS: true,
-          });
+        while (heightLeft > 0) {
+          const position = -pageOffset;
+          pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
 
-          const roomImgData = roomCanvas.toDataURL("image/jpeg", 0.6);
-          const imgProps = pdf.getImageProperties(roomImgData);
-          const imgHeight = (imgProps.height * usableWidth) / imgProps.width;
+          pdf.setFillColor(255, 255, 255);
+          pdf.rect(0, pdfHeight - footerHeight, pdfWidth, footerHeight, "F");
 
-          if (currentY + imgHeight > pdfHeight - marginBottom) {
+          pdf.setFontSize(10);
+          pdf.setTextColor(50);
+          pdf.text("", pdfWidth / 2, pdfHeight - 7, { align: "center" });
+
+          heightLeft -= usableHeight;
+          pageOffset += usableHeight;
+
+          if (heightLeft > 0) {
             pdf.addPage();
-            currentY = marginTop;
           }
-
-          pdf.addImage(
-            roomImgData,
-            "JPEG",
-            marginLeft,
-            currentY,
-            usableWidth,
-            imgHeight
-          );
-
-          currentY += imgHeight + 5;
         }
 
         const totalPages = pdf.internal.getNumberOfPages();
-        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-          pdf.setPage(pageNum);
+        for (let i = 1; i <= totalPages; i++) {
+          pdf.setPage(i);
           pdf.setFontSize(10);
-          pdf.text(
-            `Page ${pageNum} of ${totalPages}`,
-            pdfWidth / 2,
-            pdfHeight - 5,
-            { align: "center" }
-          );
+          pdf.text(`Page ${i} of ${totalPages}`, pdfWidth / 2, pdfHeight - 5, {
+            align: "center",
+          });
         }
 
         pdf.save(`preview-${Date.now()}.pdf`);
@@ -190,27 +187,21 @@ export const AddFinalSubmission: React.FC<{
       //   const marginTop = 10;
       //   const marginLeft = 0;
       //   const marginBottom = 15;
-      //   const usableWidth = pdfWidth - marginLeft * 2;
+      //   const usableWidth = pdfWidth;
+
       //   let currentY = marginTop;
 
-      //   // Get all elements
-      //   const innerRoomElements = Array.from(
-      //     element.querySelectorAll(".inner-room-block")
-      //   ).filter(el => el.offsetParent !== null);
+      //   const innerRoomElements = element.querySelectorAll(".inner-room-block");
 
-      //   // Generate all canvases in parallel
-      //   const roomCanvases = await Promise.all(
-      //     innerRoomElements.map(el =>
-      //       html2canvas(el, {
-      //         scale: 1.5,
-      //         useCORS: true,
-      //       })
-      //     )
-      //   );
+      //   for (let i = 0; i < innerRoomElements.length; i++) {
+      //     const innerRoomEl: any = innerRoomElements[i];
 
-      //   for (let i = 0; i < roomCanvases.length; i++) {
-      //     const roomCanvas = roomCanvases[i];
-      //     const roomImgData = roomCanvas.toDataURL("image/png");
+      //     const roomCanvas = await html2canvas(innerRoomEl, {
+      //       scale: 1,
+      //       useCORS: true,
+      //     });
+
+      //     const roomImgData = roomCanvas.toDataURL("image/jpeg", 0.6);
       //     const imgProps = pdf.getImageProperties(roomImgData);
       //     const imgHeight = (imgProps.height * usableWidth) / imgProps.width;
 
@@ -219,18 +210,28 @@ export const AddFinalSubmission: React.FC<{
       //       currentY = marginTop;
       //     }
 
-      //     pdf.addImage(roomImgData, "PNG", marginLeft, currentY, usableWidth, imgHeight);
+      //     pdf.addImage(
+      //       roomImgData,
+      //       "JPEG",
+      //       marginLeft,
+      //       currentY,
+      //       usableWidth,
+      //       imgHeight
+      //     );
+
       //     currentY += imgHeight + 5;
       //   }
 
-      //   // Footer
       //   const totalPages = pdf.internal.getNumberOfPages();
       //   for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
       //     pdf.setPage(pageNum);
       //     pdf.setFontSize(10);
-      //     pdf.text(`Page ${pageNum} of ${totalPages}`, pdfWidth / 2, pdfHeight - 5, {
-      //       align: "center",
-      //     });
+      //     pdf.text(
+      //       `Page ${pageNum} of ${totalPages}`,
+      //       pdfWidth / 2,
+      //       pdfHeight - 5,
+      //       { align: "center" }
+      //     );
       //   }
 
       //   pdf.save(`preview-${Date.now()}.pdf`);
@@ -687,7 +688,7 @@ export const AddFinalSubmission: React.FC<{
         }}
       >
         <div ref={previewRef}>
-          <ExportView
+          <ExportViewData
             rooms={rooms}
             kundeInfo={form.getValues()}
             roomsData={roomsData}
