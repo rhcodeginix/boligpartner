@@ -379,7 +379,11 @@ export const AddFinalSubmission: React.FC<{
     }
   };
 
-  const exportType = ["PDF", "PPT", "Excel"];
+  const exportType = [
+    "PDF",
+    "PPT",
+    // "Excel"
+  ];
   const array = ["BoligPartner Herskapelig", "Abc", "Xyz"];
 
   useEffect(() => {
