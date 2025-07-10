@@ -278,7 +278,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     overflow-x: auto;
   }
   .stepper-wrapper {
-    width: 1050px;
+    width: 600px;
+    padding: 4px 0;
   }
   .screen-indicator-span span {
     font-size: 12px;
@@ -293,16 +294,26 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     overflow-x: auto;
   }
   .stepper-wrapper {
-    width: 1150px;
+    width: 700px;
+    padding: 6px 0;
   }
 }
-@media only screen and (min-width: 800px) and (max-width: 939px) {
+@media only screen and (min-width: 768px) and (max-width: 899px) {
+  .stepper_main {
+    overflow-x: auto;
+  }
+  .stepper-wrapper {
+    width: 780px;
+    padding: 6px 0;
+  }
+}
+@media only screen and (min-width: 900px) and (max-width: 991px) {
   .screen-indicator-span {
     width: 18%;
   }
 }
 
-@media only screen and (min-width: 940px) and (max-width: 1279px) {
+@media only screen and (min-width: 992px) and (max-width: 1279px) {
   .screen-indicator-span {
     width: 16%;
   }

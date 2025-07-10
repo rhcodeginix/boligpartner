@@ -40,7 +40,7 @@ const Stepper: React.FC<StepperProps> = ({
     <>
       <>
         <div className="py-3 bg-[#00284C]">
-          <div className="px-6 lg:px-8">
+          <div className="px-4 lg:px-6 desktop:px-8">
             <div className="stepper_main overFlowScrollHidden">
               <div className="stepper-wrapper">
                 <div className="progress"></div>

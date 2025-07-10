@@ -142,7 +142,7 @@ export const TakogTaktekking = forwardRef(
           }
         );
       }
-    }, [roomsData, TaksteinStruktur]);
+    }, [roomsData]);
     return (
       <>
         {isSubmitLoading && <Spinner />}

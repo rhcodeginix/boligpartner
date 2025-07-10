@@ -98,7 +98,7 @@ export const Rooms: React.FC<{
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 desktop:grid-cols-3 gap-4">
                           {Array.from({ length: 4 }, (_, i) => i + 1).map(
-                            (prod: any, prodIndex: number) => {
+                            (_: any, prodIndex: number) => {
                               return (
                                 <div key={prodIndex} className="flex flex-col">
                                   <div>

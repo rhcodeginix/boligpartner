@@ -158,6 +158,16 @@ export const AllRoomkonfigurator: React.FC = () => {
                       onClick={() => {
                         // setActiveTab(1);
                         navigate(`/Room-Configurator/${item?.id}`);
+                        const currIndex = 0;
+                        const currVerticalIndex = 1;
+                        localStorage.setItem(
+                          "currIndexBolig",
+                          currIndex.toString()
+                        );
+                        localStorage.setItem(
+                          "currVerticalIndex",
+                          currVerticalIndex.toString()
+                        );
                       }}
                     >
                       <div className="flex gap-2 items-center justify-between">

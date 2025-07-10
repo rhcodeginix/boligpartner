@@ -1,6 +1,6 @@
 import Ic_logo from "../../../../assets/images/Ic_logo.svg";
 
-function formatPhoneNumber(number: any) {
+export function formatPhoneNumber(number: any) {
   let cleaned = number.replace(/[^\d+]/g, "");
 
   const countryCode = cleaned.slice(0, 3);

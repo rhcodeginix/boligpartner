@@ -145,9 +145,16 @@ export const RoomTable = () => {
             <div className="flex items-center justify-center gap-3">
               <Pencil
                 className="h-5 w-5 text-primary cursor-pointer"
-                onClick={() =>
-                  navigate(`/Room-Configurator/${row.original?.id}`)
-                }
+                onClick={() => {
+                  navigate(`/Room-Configurator/${row.original?.id}`);
+                  const currIndex = 0;
+                  const currVerticalIndex = 1;
+                  localStorage.setItem("currIndexBolig", currIndex.toString());
+                  localStorage.setItem(
+                    "currVerticalIndex",
+                    currVerticalIndex.toString()
+                  );
+                }}
               />
 
               <Trash
@@ -257,9 +264,19 @@ export const RoomTable = () => {
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                   className="hover:bg-muted/50 cursor-pointer"
-                  onClick={() =>
-                    navigate(`/Room-Configurator/${row.original?.id}`)
-                  }
+                  onClick={() => {
+                    navigate(`/Room-Configurator/${row.original?.id}`);
+                    const currIndex = 0;
+                    const currVerticalIndex = 1;
+                    localStorage.setItem(
+                      "currIndexBolig",
+                      currIndex.toString()
+                    );
+                    localStorage.setItem(
+                      "currVerticalIndex",
+                      currVerticalIndex.toString()
+                    );
+                  }}
                 >
                   {row.getVisibleCells().map((cell: any) => (
                     <TableCell key={cell.id} className="px-6 py-3">
