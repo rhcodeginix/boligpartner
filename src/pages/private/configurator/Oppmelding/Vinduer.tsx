@@ -266,102 +266,6 @@ export const Vinduer = forwardRef(
                       )}
                     </div>
                   </div>
-                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
-                  <div className="col-span-3 text-darkBlack font-medium text-base">
-                    Valg om soldemping
-                  </div>
-                  <div className="col-span-3">
-                    <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
-                      <FormField
-                        control={form.control}
-                        name="ØnskerSoldempingGlass"
-                        render={({ field }) => (
-                          <FormItem>
-                            <p
-                              className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                                field.value ? "text-black" : "text-black"
-                              }`}
-                              onClick={() => field.onChange(!field.value)}
-                            >
-                              <input
-                                type="checkbox"
-                                id="ØnskerSoldempingGlass"
-                                checked={field.value || false}
-                                onChange={(e) =>
-                                  field.onChange(e.target.checked)
-                                }
-                              />
-                              Ønsker soldemping i glass
-                            </p>
-                          </FormItem>
-                        )}
-                      />
-                      {form.watch("ØnskerSoldempingGlass") === true && (
-                        <div className="col-span-2">
-                          <Input
-                            placeholder="Beskriv hvilke rom og type"
-                            value={
-                              form.watch("ØnskerSoldempingGlassText") || ""
-                            }
-                            onChange={(e: any) => {
-                              form.setValue(
-                                "ØnskerSoldempingGlassText",
-                                e.target.value
-                              );
-                            }}
-                            className={`bg-white rounded-[8px] border text-black border-gray1`}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
-                  <div className="col-span-3 text-darkBlack font-medium text-base">
-                    Valg om screen
-                  </div>
-                  <div className="col-span-3">
-                    <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
-                      <FormField
-                        control={form.control}
-                        name="ØnskerScreens"
-                        render={({ field }) => (
-                          <FormItem>
-                            <p
-                              className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                                field.value ? "text-black" : "text-black"
-                              }`}
-                              onClick={() => field.onChange(!field.value)}
-                            >
-                              <input
-                                type="checkbox"
-                                id="ØnskerScreens"
-                                checked={field.value || false}
-                                onChange={(e) =>
-                                  field.onChange(e.target.checked)
-                                }
-                              />
-                              Ønsker screens
-                            </p>
-                          </FormItem>
-                        )}
-                      />
-                      {form.watch("ØnskerScreens") === true && (
-                        <div className="col-span-2">
-                          <Input
-                            placeholder="Beskriv hvilke rom og type"
-                            value={form.watch("ØnskerScreensText") || ""}
-                            onChange={(e: any) => {
-                              form.setValue(
-                                "ØnskerScreensText",
-                                e.target.value
-                              );
-                            }}
-                            className={`bg-white rounded-[8px] border text-black border-gray1`}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </div>
                   <div>
                     <FormField
                       control={form.control}
@@ -506,6 +410,103 @@ export const Vinduer = forwardRef(
                       )}
                     />
                   </div>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
+                  <div className="col-span-3 text-darkBlack font-medium text-base">
+                    Valg om soldemping
+                  </div>
+                  <div className="col-span-3">
+                    <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
+                      <FormField
+                        control={form.control}
+                        name="ØnskerSoldempingGlass"
+                        render={({ field }) => (
+                          <FormItem>
+                            <p
+                              className={`text-sm flex gap-2 items-baseline cursor-pointer ${
+                                field.value ? "text-black" : "text-black"
+                              }`}
+                              onClick={() => field.onChange(!field.value)}
+                            >
+                              <input
+                                type="checkbox"
+                                id="ØnskerSoldempingGlass"
+                                checked={field.value || false}
+                                onChange={(e) =>
+                                  field.onChange(e.target.checked)
+                                }
+                              />
+                              Ønsker soldemping i glass
+                            </p>
+                          </FormItem>
+                        )}
+                      />
+                      {form.watch("ØnskerSoldempingGlass") === true && (
+                        <div className="col-span-2">
+                          <Input
+                            placeholder="Beskriv hvilke rom og type"
+                            value={
+                              form.watch("ØnskerSoldempingGlassText") || ""
+                            }
+                            onChange={(e: any) => {
+                              form.setValue(
+                                "ØnskerSoldempingGlassText",
+                                e.target.value
+                              );
+                            }}
+                            className={`bg-white rounded-[8px] border text-black border-gray1`}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
+                  <div className="col-span-3 text-darkBlack font-medium text-base">
+                    Valg om screen
+                  </div>
+                  <div className="col-span-3">
+                    <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5">
+                      <FormField
+                        control={form.control}
+                        name="ØnskerScreens"
+                        render={({ field }) => (
+                          <FormItem>
+                            <p
+                              className={`text-sm flex gap-2 items-baseline cursor-pointer ${
+                                field.value ? "text-black" : "text-black"
+                              }`}
+                              onClick={() => field.onChange(!field.value)}
+                            >
+                              <input
+                                type="checkbox"
+                                id="ØnskerScreens"
+                                checked={field.value || false}
+                                onChange={(e) =>
+                                  field.onChange(e.target.checked)
+                                }
+                              />
+                              Ønsker screens
+                            </p>
+                          </FormItem>
+                        )}
+                      />
+                      {form.watch("ØnskerScreens") === true && (
+                        <div className="col-span-2">
+                          <Input
+                            placeholder="Beskriv hvilke rom og type"
+                            value={form.watch("ØnskerScreensText") || ""}
+                            onChange={(e: any) => {
+                              form.setValue(
+                                "ØnskerScreensText",
+                                e.target.value
+                              );
+                            }}
+                            className={`bg-white rounded-[8px] border text-black border-gray1`}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                   <div className="col-span-3">
                     <FormField
                       control={form.control}
