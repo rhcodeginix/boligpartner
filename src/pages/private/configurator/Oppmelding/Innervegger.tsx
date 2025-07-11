@@ -275,6 +275,7 @@ export const Innervegger = forwardRef(
                                                   allSelectedProducts.push({
                                                     ...prod,
                                                     categoryName: kat?.navn,
+                                                    comment: kat?.comment ?? "",
                                                   });
                                                 });
                                             });
@@ -296,8 +297,20 @@ export const Innervegger = forwardRef(
                                                             {prod.categoryName}
                                                           </h4>
                                                           <h3 className="text-secondary">
-                                                            {prod?.Produktnavn}
+                                                            {prod?.Produktnavn}{" "}
+                                                            {prod?.customText && (
+                                                              <span className="text-darkBlack">
+                                                                (
+                                                                {
+                                                                  prod?.customText
+                                                                }
+                                                                )
+                                                              </span>
+                                                            )}
                                                           </h3>
+                                                          <div className="text-darkBlack mt-0.5 text-sm">
+                                                            {prod.comment}
+                                                          </div>
                                                         </div>
                                                       </div>
                                                     );

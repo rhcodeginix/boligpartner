@@ -391,6 +391,20 @@ export const AddFinalSubmission: React.FC<{
     if (!id) {
       return;
     }
+
+    if (
+      roomsData?.Prosjektdetaljer?.TypeProsjekt === "Bolig" ||
+      roomsData?.TypeProsjekt === "Bolig"
+    ) {
+      const finalArray = ["Herskapelig", "Moderne", "Nostalgi", "Funkis"];
+      setArray(finalArray);
+    } else if (
+      roomsData?.Prosjektdetaljer?.TypeProsjekt === "Hytte" ||
+      roomsData?.TypeProsjekt === "Hytte"
+    ) {
+      const finalArray = ["Tur", "V-serie", "Karakter", "Moderne"];
+      setArray(finalArray);
+    }
     const getData = async () => {
       const data = await fetchRoomData(id);
 
@@ -419,20 +433,6 @@ export const AddFinalSubmission: React.FC<{
             roomsData?.Kundenavn ??
             "",
         });
-
-        if (
-          roomsData?.Prosjektdetaljer?.TypeProsjekt === "Bolig" ||
-          roomsData?.TypeProsjekt === "Bolig"
-        ) {
-          const finalArray = ["Herskapelig", "Moderne", "Nostalgi", "Funkis"];
-          setArray(finalArray);
-        } else if (
-          roomsData?.Prosjektdetaljer?.TypeProsjekt === "Hytte" ||
-          roomsData?.TypeProsjekt === "Hytte"
-        ) {
-          const finalArray = ["Tur", "V-serie", "Karakter", "Moderne"];
-          setArray(finalArray);
-        }
       }
     };
 
