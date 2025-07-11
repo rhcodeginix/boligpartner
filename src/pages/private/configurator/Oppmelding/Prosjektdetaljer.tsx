@@ -71,7 +71,6 @@ const formSchema = z
     }),
     TypeProsjekt: z.string({ required_error: "Type prosjekt er påkrevd." }),
     Finansiering: z.string({ required_error: "Finansiering er påkrevd." }),
-    // VelgSerie: z.string({ required_error: "Velg serie er påkrevd." }),
     VelgSerie: z.string().optional(),
     DatoBoligPartnerLeveransebeskrivelse: z.string({
       required_error: "Dato BoligPartner leveransebeskrivelse er påkrevd.",

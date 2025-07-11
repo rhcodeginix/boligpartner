@@ -722,7 +722,6 @@ export const Eksterior: React.FC<{
                         return (
                           <div key={index} className="flex gap-2 items-start">
                             <div
-                              // className="cursor-move border-[#EFF1F5] border rounded-lg"
                               className={`w-full cursor-pointer border rounded-lg ${
                                 isSelected
                                   ? "border-2 border-purple bg-lightPurple bg-opacity-10"

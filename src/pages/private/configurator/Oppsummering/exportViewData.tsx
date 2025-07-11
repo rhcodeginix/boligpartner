@@ -16,9 +16,7 @@ export function formatPhoneNumber(number: any) {
 }
 
 export const ExportViewData: React.FC<{
-  // rooms: any;
   kundeInfo: any;
-  // roomsData: any;
 }> = ({ kundeInfo }) => {
   const [roomsData, setRoomsData] = useState<any>([]);
   const location = useLocation();
@@ -35,7 +33,6 @@ export const ExportViewData: React.FC<{
       if (data) {
         setRoomsData(data);
       }
-      // setLoading(false);
     };
 
     getData();

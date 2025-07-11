@@ -27,8 +27,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
 
-  // const [loading, setLoading] = useState(true);
-
   const handleToggleSubCategoryPopup = () => {
     if (AddCategory) {
       setAddCategory(false);
@@ -75,7 +73,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
       const data: any = await fetchHusmodellData(id);
 
       if (!data?.KundeInfo) {
-        // setLoading(false);
         return;
       }
 
@@ -84,7 +81,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
       );
 
       if (!targetKunde) {
-        // setLoading(false);
         return;
       }
 

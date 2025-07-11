@@ -27,7 +27,6 @@ const formSchema = z.object({
       colorCode: z.string().optional(),
     })
     .optional(),
-  // Takstein: z.boolean().optional(),
   TaksteinType: z.string().optional(),
   TaksteinKode: z.string().optional(),
   TaksteinFarge: z.string().optional(),
@@ -327,52 +326,6 @@ export const TakogTaktekking = forwardRef(
                       }}
                     />
                   </div>
-                  {/* <div className="col-span-3">
-                    <FormField
-                      control={form.control}
-                      name="Takstein"
-                      render={({ field }) => (
-                        <FormItem>
-                          <p
-                            className={`text-sm flex gap-2 items-baseline cursor-pointer ${
-                              field.value ? "text-black" : "text-black"
-                            }`}
-                            onClick={() => {
-                              const checked = field.value;
-
-                              field.onChange(!field.value);
-                              if (!checked) {
-                                form.resetField("TaksteinFarge");
-                                form.resetField("TaksteinKode");
-                                form.resetField("TaksteinType");
-                                form.resetField("TaksteinStruktur");
-                                form.resetField("HeisesPåTak");
-                              }
-                            }}
-                          >
-                            <input
-                              type="radio"
-                              id="Takstein"
-                              checked={field.value || false}
-                              onChange={(e) => {
-                                const checked = e.target.checked;
-                                field.onChange(e.target.checked);
-                                if (!checked) {
-                                  form.resetField("TaksteinFarge");
-                                  form.resetField("TaksteinKode");
-                                  form.resetField("TaksteinType");
-                                  form.resetField("TaksteinStruktur");
-                                  form.resetField("HeisesPåTak");
-                                }
-                              }}
-                              className="w-4 h-4"
-                            />
-                            Takstein
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-                  </div> */}
                   {Takstein && Takstein.type === "Takstein" && (
                     <>
                       <div>

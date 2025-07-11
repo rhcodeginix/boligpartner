@@ -25,7 +25,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
-  // const [loading, setLoading] = useState(true);
 
   const handleToggleSubCategoryPopup = () => {
     if (AddCategory) {
@@ -74,7 +73,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
       if (!data) {
         console.error("No data found for ID:", id);
-        // setLoading(false);
         return;
       }
 
