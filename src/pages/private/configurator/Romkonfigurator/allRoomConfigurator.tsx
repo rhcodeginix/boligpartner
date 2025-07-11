@@ -21,7 +21,7 @@ import { Spinner } from "../../../../components/Spinner";
 export const AllRoomkonfigurator: React.FC = () => {
   const navigate = useNavigate();
   const [RoomConfigurator, setRoomConfigurator] = useState<any>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isGridView, setIsGridView] = useState(true);
 
   const fetchRoomConfiguratorData = async () => {
