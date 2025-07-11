@@ -18,10 +18,6 @@ import { db } from "../../../../config/firebaseConfig";
 import { Spinner } from "../../../../components/Spinner";
 
 const formSchema = z.object({
-  // DeliveryDetail: z.string({
-  //   required_error:
-  //     "Beskriv eventuelle leveransedetaljer på kledningstype og farge er påkrevd.",
-  // }),
   kledningstype: z.string().optional(),
   kledningstypeText: z.string().optional(),
   Overflater: z
@@ -31,10 +27,6 @@ const formSchema = z.object({
     })
     .optional(),
   OverflaterDeliveryDetail: z.string().optional(),
-  // OverflaterKontrastfeltDeliveryDetail: z.string({
-  //   required_error:
-  //     "Beskriv eventuelle leveransedetaljer på kledningstype og farge er påkrevd.",
-  // }),
   Garasje: z.string().optional(),
 });
 
@@ -171,44 +163,6 @@ export const Yttervegger = forwardRef(
               </div>
               <div className="p-4 md:p-5">
                 <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5 items-center">
-                  {/* <div className="col-span-3">
-                    <FormField
-                      control={form.control}
-                      name="DeliveryDetail"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Beskriv eventuelle leveransedetaljer på
-                            kledningstype og farge:*
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Kommentar"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-                          <p className="text-black text-sm italic mt-2">
-                            Oppbygging på yttervegg leveres med standard
-                            198+48mm
-                          </p>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div> */}
                   <p className="text-black text-sm italic col-span-3">
                     Oppbygging på yttervegg leveres med standard 198+48mm
                   </p>
@@ -394,45 +348,6 @@ export const Yttervegger = forwardRef(
                       )}
                     />
                   </div>
-                  {/* <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
-                  <h4 className="uppercase text-darkBlack font-semibold col-span-3">
-                    OVERFLATER KONTRASTFELT DEKOR OG STAFASJE
-                  </h4>
-                  <div className="col-span-3">
-                    <FormField
-                      control={form.control}
-                      name="OverflaterKontrastfeltDeliveryDetail"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <p
-                            className={`${
-                              fieldState.error ? "text-red" : "text-black"
-                            } mb-[6px] text-sm`}
-                          >
-                            Beskriv eventuelle leveransedetaljer på
-                            kledningstype og farge:*
-                          </p>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Skriv inn Kommentar"
-                                {...field}
-                                className={`bg-white rounded-[8px] border text-black
-                                          ${
-                                            fieldState?.error
-                                              ? "border-red"
-                                              : "border-gray1"
-                                          } `}
-                                type="text"
-                              />
-                            </div>
-                          </FormControl>
-
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div> */}
                   <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
                   <h4 className="uppercase text-darkBlack font-semibold col-span-3">
                     GARASJE

@@ -549,10 +549,6 @@ export const Eksterior: React.FC<{
                         >
                           <Pencil className="w-5 h-5 text-primary" />
                         </div>
-                        {/* {cat.navn !== "Himlling" &&
-                          cat.navn !== "Vegger" &&
-                          cat.navn !== "Gulv" &&
-                          cat.navn !== "Lister" && ( */}
                         <img
                           src={Ic_x_circle}
                           alt="close"
@@ -579,7 +575,6 @@ export const Eksterior: React.FC<{
                             );
                           }}
                         />
-                        {/* )} */}
                       </div>
                     ))}
                   </div>

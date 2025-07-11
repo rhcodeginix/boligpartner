@@ -143,13 +143,6 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           <Link to={"/Husmodell"} className="text-primary text-sm font-medium">
             Husmodeller
           </Link>
-          {/* <ChevronRight className="text-[#5D6B98] w-4 h-4" />
-          <Link
-            to={`/se-series/${id}`}
-            className="text-primary text-sm font-medium"
-          >
-            Kundeopplysninger
-          </Link> */}
           <ChevronRight className="text-[#5D6B98] w-4 h-4" />
           <div
             onClick={() => {

@@ -336,8 +336,6 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           Oppmelding
         </h3>
         <p className="text-secondary text-sm md:text-base desktop:text-lg">
-          {/* Her laster du opp plantegninger som bruker AI til å trekke ut alle
-          rommene, du kan så konfigurere hvert enkelt rom. */}
           I denne digitale løypen velger du de ulike leveransedetaljene som
           danner grunnlaget for leveransen fra BoligPartner til forhandler. Når
           du er ferdig med å fylle ut i Boligkonfiguratoren, vil det bli
