@@ -91,20 +91,15 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
       const requiredCategoriesWithProducts = {
         Himlling: [
           {
-            Produktnavn: "I henhold til leveransebeskrivelse",
-            isSelected: true,
-          },
-          {
             Produktnavn: "Mdf panel",
-            isSelected: false,
+            isSelected: true,
             InfoText: "Beskriv type og farge",
           },
           {
-            Produktnavn: "Takplate 60x120",
+            Produktnavn: "Takplater",
             isSelected: false,
             InfoText: "Beskriv evt avvik fra standard",
           },
-          { Produktnavn: "Eget valg", isSelected: false },
           {
             Produktnavn: "Gips",
             isSelected: false,
@@ -117,24 +112,24 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           },
         ],
         Vegger: [
-          {
-            Produktnavn: "I henhold til leveransebeskrivelse",
-            isSelected: true,
-          },
-          { Produktnavn: "5 bords kostmald mdf plate", isSelected: false },
+          // {
+          //   Produktnavn: "I henhold til leveransebeskrivelse",
+          //   isSelected: true,
+          // },
+          // { Produktnavn: "5 bords kostmald mdf plate", isSelected: false },
           {
             Produktnavn: "Ubehandlet sponplate",
-            isSelected: false,
+            isSelected: true,
             InfoText: "Beskriv evt avvik fra standard",
           },
-          { Produktnavn: "Eget valg", isSelected: false },
+          // { Produktnavn: "Eget valg", isSelected: false },
           {
             Produktnavn: "Gips",
             isSelected: false,
             InfoText: "Beskriv evt avvik fra standard gips",
           },
           {
-            Produktnavn: "Mdf panel",
+            Produktnavn: "Mdf panelplater",
             isSelected: false,
             InfoText: "Beskriv type og farge",
           },
@@ -150,14 +145,14 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           },
         ],
         Gulv: [
-          { Produktnavn: "Lokalleveranse", isSelected: true },
-          { Produktnavn: "Eikeparkett 3 stavs", isSelected: false },
-          { Produktnavn: "Eikeparkett 1 stavs", isSelected: false },
-          { Produktnavn: "Laminat 1 stavs", isSelected: false },
-          { Produktnavn: "Eget valg", isSelected: false },
+          // { Produktnavn: "Lokalleveranse", isSelected: true },
+          // { Produktnavn: "Eikeparkett 3 stavs", isSelected: false },
+          // { Produktnavn: "Eikeparkett 1 stavs", isSelected: false },
+          // { Produktnavn: "Laminat 1 stavs", isSelected: false },
+          // { Produktnavn: "Eget valg", isSelected: false },
           {
             Produktnavn: "Parkett (leveres av forhandler)",
-            isSelected: false,
+            isSelected: true,
             InfoText: "Beskriv type og farge",
           },
           {
@@ -247,14 +242,14 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               room?.name_no || room?.name || ""
             );
 
-            const existingMap = new Map(
+            const existingMap: any = new Map(
               (room.Kategorinavn || []).map((k: any) => [k.navn, k])
             );
 
             const finalKategorinavn = Object.entries(
               requiredCategoriesWithProducts
             )
-              .filter(([name]) => !(isWetRoom && name === "Gulvlist")) // hide Gulvlist
+              .filter(([name]) => !(isWetRoom && name === "Gulvlist"))
               .map(([name, produkter]) => {
                 if (isWetRoom && (name === "Vegg" || name === "Vegger")) {
                   return {
@@ -306,11 +301,14 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                 if (existingMap.has(name)) {
                   return existingMap.get(name);
                 }
+                const existingComment = existingMap.get(name)?.comment ?? "";
+
                 return {
                   navn: name,
                   productOptions:
                     name === "Kommentar" ? "Text" : "Single Select",
                   produkter,
+                  comment: existingComment,
                 };
               });
 

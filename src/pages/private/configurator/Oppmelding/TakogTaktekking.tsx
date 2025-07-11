@@ -27,7 +27,7 @@ const formSchema = z.object({
       colorCode: z.string().optional(),
     })
     .optional(),
-  Takstein: z.boolean().optional(),
+  // Takstein: z.boolean().optional(),
   TaksteinType: z.string().optional(),
   TaksteinKode: z.string().optional(),
   TaksteinFarge: z.string().optional(),
@@ -126,11 +126,13 @@ export const TakogTaktekking = forwardRef(
       "Shingel",
       "Stålplatetak",
       "Protan",
+      "Takstein",
     ];
 
     const TaksteinStruktur = ["Struktur", "Glatt 5.2"];
     const SnøfangerkrokerIGrad = ["Ja", "Nei"];
-    const Takstein = form.watch("Takstein");
+
+    const Takstein = form.watch("Taktekking");
 
     useEffect(() => {
       if (roomsData && roomsData?.TakogTaktekkingTakogTaktekking) {
@@ -269,12 +271,19 @@ export const TakogTaktekking = forwardRef(
                                         name="Taktekking"
                                         value={option}
                                         checked={isSelected}
-                                        onChange={() =>
+                                        onChange={() => {
                                           form.setValue("Taktekking", {
                                             type: option,
                                             colorCode: "",
-                                          })
-                                        }
+                                          });
+                                          if (option === "Takstein") {
+                                            form.resetField("TaksteinFarge");
+                                            form.resetField("TaksteinKode");
+                                            form.resetField("TaksteinType");
+                                            form.resetField("TaksteinStruktur");
+                                            form.resetField("HeisesPåTak");
+                                          }
+                                        }}
                                         className="h-4 w-4 accent-[#444CE7]"
                                       />
                                       <span className="text-black text-sm">
@@ -318,7 +327,7 @@ export const TakogTaktekking = forwardRef(
                       }}
                     />
                   </div>
-                  <div className="col-span-3">
+                  {/* <div className="col-span-3">
                     <FormField
                       control={form.control}
                       name="Takstein"
@@ -363,8 +372,8 @@ export const TakogTaktekking = forwardRef(
                         </FormItem>
                       )}
                     />
-                  </div>
-                  {Takstein === true && (
+                  </div> */}
+                  {Takstein && Takstein.type === "Takstein" && (
                     <>
                       <div>
                         <FormField

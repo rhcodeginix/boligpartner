@@ -19,7 +19,7 @@ export const ExportViewData: React.FC<{
 }> = ({ rooms, kundeInfo, roomsData }) => {
   return (
     <div className="p-8">
-      <div>
+      <div className="inner-room-block px-8">
         <div className="mb-5 flex items-center justify-between">
           <h4 className="text-darkBlack font-semibold text-xl">
             Her følger oppsummering

@@ -1,7 +1,7 @@
 import React from "react";
 import { formatPhoneNumber } from "./exportView";
 
-function formatDate(inputDate: string) {
+export function formatDate(inputDate: string) {
   if (inputDate === "") {
     return "-";
   }
@@ -16,7 +16,7 @@ function formatDate(inputDate: string) {
   return `${day}.${month}.${year}`;
 }
 
-function displayValue(value: any) {
+export function displayValue(value: any) {
   if (value === undefined || value === null) return "-";
   if (typeof value === "string" && value.trim() === "") return "-";
   return value;
@@ -31,21 +31,21 @@ export const AllSummury: React.FC<{
   return (
     <>
       <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-4">
-          <h4 className="text-darkBlack font-bold text-base uppercase">
+        <div className="flex flex-col gap-4 inner-room-block px-8">
+          <h4 className="text-darkBlack font-bold text-xl uppercase">
             PROSJEKTDETALJER
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Type prosjekt</p>
+                <p className="text-secondary text-base">Type prosjekt</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Prosjektdetaljer?.TypeProsjekt)}
                 </p>
               )}
@@ -54,12 +54,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Kundenr</p>
+                <p className="text-secondary text-base">Kundenr</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Prosjektdetaljer?.Kundenr)}
                 </p>
               )}
@@ -68,12 +68,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Tiltakshaver</p>
+                <p className="text-secondary text-base">Tiltakshaver</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Prosjektdetaljer?.Tiltakshaver)}
                 </p>
               )}
@@ -82,12 +82,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Byggeadresse</p>
+                <p className="text-secondary text-base">Byggeadresse</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Prosjektdetaljer?.Byggeadresse)}
                 </p>
               )}
@@ -96,12 +96,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Postnr</p>
+                <p className="text-secondary text-base">Postnr</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Prosjektdetaljer?.Postnr)}
                 </p>
               )}
@@ -110,12 +110,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Poststed</p>
+                <p className="text-secondary text-base">Poststed</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Prosjektdetaljer?.Poststed)}
                 </p>
               )}
@@ -124,12 +124,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Kommune</p>
+                <p className="text-secondary text-base">Kommune</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Prosjektdetaljer?.Kommune)}
                 </p>
               )}
@@ -138,12 +138,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Tlf. Mobil</p>
+                <p className="text-secondary text-base">Tlf. Mobil</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {(roomsData?.Prosjektdetaljer?.TelefonMobile &&
                     formatPhoneNumber(
                       roomsData?.Prosjektdetaljer?.TelefonMobile
@@ -156,34 +156,34 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Har kunden godkjent finansiering?
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Prosjektdetaljer?.Finansiering)}
                 </p>
               )}
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">
+          <div className="text-darkBlack font-medium text-lg">
             Serie og leveransebeskrivelse
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg serie</p>
+                <p className="text-secondary text-base">Velg serie</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Prosjektdetaljer?.VelgSerie)}
                 </p>
               )}
@@ -192,14 +192,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Dato BoligPartner leveransebeskrivelse
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {(roomsData?.Prosjektdetaljer
                     ?.DatoBoligPartnerLeveransebeskrivelse &&
                     formatDate(
@@ -212,20 +212,20 @@ export const AllSummury: React.FC<{
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">
+          <div className="text-darkBlack font-medium text-lg">
             Prosjekteringsunderlag
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Tegn.nummer</p>
+                <p className="text-secondary text-base">Tegn.nummer</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Prosjektdetaljer?.TegnNummer)}
                 </p>
               )}
@@ -234,14 +234,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Signert 1:100 tegning datert
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {(roomsData?.Prosjektdetaljer?.SignertDato &&
                     formatDate(roomsData?.Prosjektdetaljer?.SignertDato)) ??
                     "-"}
@@ -252,14 +252,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Gjeldende 1:50 tegning datert
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {(roomsData?.Prosjektdetaljer?.GjeldendeDato &&
                     formatDate(roomsData?.Prosjektdetaljer?.GjeldendeDato)) ??
                     "-"}
@@ -270,12 +270,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Situasjonsplan (dato)</p>
+                <p className="text-secondary text-base">
+                  Situasjonsplan (dato)
+                </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {(roomsData?.Prosjektdetaljer?.Situasjonsplan &&
                     formatDate(roomsData?.Prosjektdetaljer?.Situasjonsplan)) ??
                     "-"}
@@ -286,12 +288,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Kalkyledato</p>
+                <p className="text-secondary text-base">Kalkyledato</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {(roomsData?.Prosjektdetaljer?.Kalkyledato &&
                     formatDate(roomsData?.Prosjektdetaljer?.Kalkyledato)) ??
                     "-"}
@@ -302,34 +304,34 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Type kalkyle</p>
+                <p className="text-secondary text-base">Type kalkyle</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Prosjektdetaljer?.TypeKalkyle)}
                 </p>
               )}
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">
+          <div className="text-darkBlack font-medium text-lg">
             Leveransedetaljer
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Ønsket leveranseuke for første utkjøring
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Prosjektdetaljer
                       ?.ØnsketLeveranseukeForFørsteKtkjøring
@@ -341,12 +343,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Takstoler leveres uke</p>
+                <p className="text-secondary text-base">
+                  Takstoler leveres uke
+                </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Prosjektdetaljer?.TakstolerLeveresUke
                   )}
@@ -357,12 +361,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Vinduer leveres uke</p>
+                <p className="text-secondary text-base">Vinduer leveres uke</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Prosjektdetaljer?.VinduerLeveresUke)}
                 </p>
               )}
@@ -371,14 +375,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Vedlegg til kontrakt datert
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {(roomsData?.Prosjektdetaljer?.VedleggTilKontraktDatert &&
                     formatDate(
                       roomsData?.Prosjektdetaljer?.VedleggTilKontraktDatert
@@ -391,14 +395,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Bestillingsoversikt datert
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {(roomsData?.Prosjektdetaljer?.BestillingsoversiktDatert &&
                     formatDate(
                       roomsData?.Prosjektdetaljer?.BestillingsoversiktDatert
@@ -411,14 +415,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Kommentar til prosjekt- og leveransedetaljer
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Prosjektdetaljer
                       ?.KommentarProsjektLeveransedetaljer
@@ -429,23 +433,23 @@ export const AllSummury: React.FC<{
           </div>
         </div>
         <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4">
-          <h4 className="text-darkBlack font-bold text-base uppercase">
+        <div className="flex flex-col gap-4 inner-room-block px-8">
+          <h4 className="text-darkBlack font-bold text-xl uppercase">
             Grunnmur og pipe
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Type grunn og fundament
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.GrunnerOgSkorstein?.TypeGrunnFundament
                   )}
@@ -458,12 +462,12 @@ export const AllSummury: React.FC<{
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
-                  <p className="text-secondary text-xs">Type grunnmur</p>
+                  <p className="text-secondary text-base">Type grunnmur</p>
                 )}
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
-                  <p className="text-darkBlack text-sm">
+                  <p className="text-darkBlack text-lg">
                     {displayValue(roomsData?.GrunnerOgSkorstein?.TypeGrunnmur)}
                   </p>
                 )}
@@ -474,14 +478,14 @@ export const AllSummury: React.FC<{
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
-                  <p className="text-secondary text-xs">
+                  <p className="text-secondary text-base">
                     Detaljnummer for Termomur
                   </p>
                 )}
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
-                  <p className="text-darkBlack text-sm">
+                  <p className="text-darkBlack text-lg">
                     {displayValue(roomsData?.GrunnerOgSkorstein?.detaljnummer)}
                   </p>
                 )}
@@ -489,20 +493,20 @@ export const AllSummury: React.FC<{
             )}
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">
+          <div className="text-darkBlack font-medium text-lg">
             Pipe og Ildsted
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Skorstein type</p>
+                <p className="text-secondary text-base">Skorstein type</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.GrunnerOgSkorstein?.SkorsteinType)}
                 </p>
               )}
@@ -511,12 +515,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Skorstein Enkel/Dobbel</p>
+                <p className="text-secondary text-base">
+                  Skorstein Enkel/Dobbel
+                </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.GrunnerOgSkorstein?.SkorsteinEnkelDobbel
                   )}
@@ -527,12 +533,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Skorstein Leveres av</p>
+                <p className="text-secondary text-base">Skorstein Leveres av</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.GrunnerOgSkorstein?.SkorsteinLeveresAv
                   )}
@@ -543,12 +549,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Ildsted Type</p>
+                <p className="text-secondary text-base">Ildsted Type</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.GrunnerOgSkorstein?.SkorsteinType)}
                 </p>
               )}
@@ -557,12 +563,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Ildsted leveres av</p>
+                <p className="text-secondary text-base">Ildsted leveres av</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.GrunnerOgSkorstein?.IldstedLeveresAv
                   )}
@@ -572,24 +578,24 @@ export const AllSummury: React.FC<{
           </div>
         </div>
         <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4">
-          <h4 className="text-darkBlack font-bold text-base uppercase">
+        <div className="flex flex-col gap-4 inner-room-block px-8">
+          <h4 className="text-darkBlack font-bold text-xl uppercase">
             Gulv OG bjelkelag
           </h4>
-          <div className="text-darkBlack font-medium text-sm">
+          <div className="text-darkBlack font-medium text-lg">
             Bjelkelag mellom etasjer
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.GulvBjelkelagHimling?.BjelkelagMellomEtasjer
                   )}
@@ -600,14 +606,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Kommentar til etasjeskiller
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.GulvBjelkelagHimling?.KommentarEtasjeskiller
                   )}
@@ -618,14 +624,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Bjelkelag forsterkes for påstøp i følgende rom
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.GulvBjelkelagHimling?.BjelkelagForsterkesFølgende
                   )}
@@ -634,18 +640,18 @@ export const AllSummury: React.FC<{
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">Loft</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="text-darkBlack font-medium text-lg">Loft</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.GulvBjelkelagHimling?.Loft)}
                 </p>
               )}
@@ -654,12 +660,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Kommentar til loft</p>
+                <p className="text-secondary text-base">Kommentar til loft</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.GulvBjelkelagHimling?.KommentarLoft)}
                 </p>
               )}
@@ -667,26 +673,26 @@ export const AllSummury: React.FC<{
           </div>
         </div>
         <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 inner-room-block px-8">
           <div className="flex flex-col gap-1">
-            <h4 className="text-darkBlack font-bold text-base uppercase">
+            <h4 className="text-darkBlack font-bold text-xl uppercase">
               Yttervegger
             </h4>
-            <p className="text-secondary text-xs">
+            <p className="text-secondary text-base">
               Oppbygging på yttervegg leveres med standard 198+48mm
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Kledningstype</p>
+                <p className="text-secondary text-base">Kledningstype</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Yttervegger?.kledningstype)}
                 </p>
               )}
@@ -695,30 +701,30 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Skriv type</p>
+                <p className="text-secondary text-base">Skriv type</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Yttervegger?.kledningstypeText)}
                 </p>
               )}
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">Overflater</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="text-darkBlack font-medium text-lg">Overflater</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Yttervegger?.Overflater?.type)}
                 </p>
               )}
@@ -727,27 +733,27 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Beskriv eventuelle leveransedetaljer til overflater
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Yttervegger?.Overflater?.colorCode)}
                 </p>
               )}
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">Garasje</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="text-darkBlack font-medium text-lg">Garasje</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5 col-span-4">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Beskriv eventuelle leveransedetaljer på kledningstype og farge
                   som avviker fra husleveransen
                 </p>
@@ -755,7 +761,7 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Yttervegger?.Garasje)}
                 </p>
               )}
@@ -763,22 +769,22 @@ export const AllSummury: React.FC<{
           </div>
         </div>
         <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4">
-          <h4 className="text-darkBlack font-bold text-base uppercase">
+        <div className="flex flex-col gap-4 inner-room-block px-8">
+          <h4 className="text-darkBlack font-bold text-xl uppercase">
             Tak og taktekking
           </h4>
-          <div className="text-darkBlack font-medium text-sm">Undertak</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="text-darkBlack font-medium text-lg">Undertak</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.TakogTaktekkingTakogTaktekking?.Undertak
                   )}
@@ -789,12 +795,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Kommentar til undertak</p>
+                <p className="text-secondary text-base">
+                  Kommentar til undertak
+                </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.TakogTaktekkingTakogTaktekking?.KommentarUndertak
                   )}
@@ -803,18 +811,18 @@ export const AllSummury: React.FC<{
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">Taktekking</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="text-darkBlack font-medium text-lg">Taktekking</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.TakogTaktekkingTakogTaktekking?.Taktekking?.type
                   )}
@@ -825,12 +833,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Beskriv type og farge</p>
+                <p className="text-secondary text-base">
+                  Beskriv type og farge
+                </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.TakogTaktekkingTakogTaktekking?.Taktekking
                       ?.colorCode
@@ -838,20 +848,115 @@ export const AllSummury: React.FC<{
                 </p>
               )}
             </div>
-          </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">Tak Annet</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Snøfangere</p>
+                <p className="text-secondary text-base">Takstein type</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
+                  {displayValue(
+                    roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinType
+                  )}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-1.5">
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-secondary text-base">Takstein kode</p>
+              )}
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-darkBlack text-lg">
+                  {displayValue(
+                    roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinKode
+                  )}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-1.5">
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-secondary text-base">Takstein farge</p>
+              )}
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-darkBlack text-lg">
+                  {displayValue(
+                    roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinFarge
+                  )}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-1.5">
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-secondary text-base">Takstein struktur</p>
+              )}
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-darkBlack text-lg">
+                  {displayValue(
+                    roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinStruktur
+                  )}
+                </p>
+              )}
+            </div>
+            <div className={`text-lg flex gap-2 items-center text-black`}>
+              <label className="relative">
+                <input
+                  type="checkbox"
+                  id="TakogTaktekkingTakogTaktekking?.HeisesPåTak"
+                  checked={
+                    roomsData?.TakogTaktekkingTakogTaktekking?.HeisesPåTak ||
+                    false
+                  }
+                  readOnly
+                  className="peer sr-only"
+                />
+                <div className="w-5 h-5 border-2 border-[#444CE7] rounded-sm"></div>
+                <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
+                  <svg
+                    className="w-4 h-4 text-[#444CE7]"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+              </label>
+              Portåpner
+            </div>
+          </div>
+          <div className="border-t border-[#EBEBEB] w-full"></div>
+          <div className="text-darkBlack font-medium text-lg">Tak Annet</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="flex flex-col gap-1.5">
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-secondary text-base">Snøfangere</p>
+              )}
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.TakogTaktekkingTakogTaktekking?.Snøfangere
                   )}
@@ -862,12 +967,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Snøfangere farge</p>
+                <p className="text-secondary text-base">Snøfangere farge</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.TakogTaktekkingTakogTaktekking?.SnøfangereFarge
                   )}
@@ -878,12 +983,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Snøfangerkroker i grad</p>
+                <p className="text-secondary text-base">
+                  Snøfangerkroker i grad
+                </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.TakogTaktekkingTakogTaktekking
                       ?.SnøfangerkrokerIGrad
@@ -895,14 +1002,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Gradrenner/beslag farge
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.TakogTaktekkingTakogTaktekking
                       ?.GradrennerBeslagFarge
@@ -914,12 +1021,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Feieplatå</p>
+                <p className="text-secondary text-base">Feieplatå</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.TakogTaktekkingTakogTaktekking?.Feieplatå
                   )}
@@ -930,39 +1037,39 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Avløpslufter</p>
+                <p className="text-secondary text-base">Avløpslufter</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.TakogTaktekkingTakogTaktekking?.Avløpslufter
                   )}
                 </p>
               )}
             </div>
-            <div className="text-secondary text-xs col-span-4">
+            <div className="text-secondary text-base col-span-4">
               Ved innvendige nedløp må dette leveres av lokal rørlegger
             </div>
           </div>
         </div>
         <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4">
-          <h4 className="text-darkBlack font-bold text-base uppercase">
+        <div className="flex flex-col gap-4 inner-room-block px-8">
+          <h4 className="text-darkBlack font-bold text-xl uppercase">
             Oppbygging innervegg
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Innervegger?.Innervegger?.type)}
                 </p>
               )}
@@ -971,14 +1078,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Beskriv hvilke vegger dette gjelder
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Innervegger?.Innervegger?.colorCode)}
                 </p>
               )}
@@ -995,14 +1102,14 @@ export const AllSummury: React.FC<{
                       room.rooms.length > 0 &&
                       room.rooms.map((innerRoom: any, index: number) => {
                         return (
-                          <div key={index} className="inner-room-block">
+                          <div key={index} className="">
                             {index === 0 && (
-                              <h3 className="mb-4 text-darkBlack text-sm font-medium">
+                              <h3 className="mb-4 text-darkBlack text-lg font-medium">
                                 {room?.title}
                               </h3>
                             )}
                             <div className="flex flex-col gap-3 bg-gray3 p-4 rounded-lg">
-                              <div className="text-black font-semibold text-sm">
+                              <div className="text-black font-semibold text-lg">
                                 {innerRoom?.name_no || innerRoom?.name}
                               </div>
                               {innerRoom?.Kategorinavn &&
@@ -1020,12 +1127,13 @@ export const AllSummury: React.FC<{
                                         allSelectedProducts.push({
                                           ...prod,
                                           categoryName: kat?.navn,
+                                          comment: kat?.comment ?? "",
                                         });
                                       });
                                   });
 
                                   return (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 lg:gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 lg:gap-4">
                                       {allSelectedProducts.map(
                                         (prod: any, prodIndex: number) => {
                                           return (
@@ -1034,12 +1142,20 @@ export const AllSummury: React.FC<{
                                               className="flex flex-col"
                                             >
                                               <div>
-                                                <h4 className="text-sm font-medium text-black mb-0.5">
+                                                <h4 className="text-lg font-medium text-black mb-0.5">
                                                   {prod.categoryName}
                                                 </h4>
                                                 <h3 className="text-secondary">
-                                                  {prod?.Produktnavn}
+                                                  {prod?.Produktnavn}{" "}
+                                                  {prod?.customText && (
+                                                    <span className="text-darkBlack">
+                                                      ({prod?.customText})
+                                                    </span>
+                                                  )}
                                                 </h3>
+                                                <div className="text-darkBlack mt-0.5 text-base">
+                                                  {prod.comment}
+                                                </div>
                                               </div>
                                             </div>
                                           );
@@ -1058,22 +1174,20 @@ export const AllSummury: React.FC<{
           </div>
         </div>
         <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4">
-          <h4 className="text-darkBlack font-bold text-base uppercase">
-            DØRER
-          </h4>
-          <div className="text-darkBlack font-medium text-sm">Inngangsdør</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="flex flex-col gap-4 inner-room-block px-8">
+          <h4 className="text-darkBlack font-bold text-xl uppercase">DØRER</h4>
+          <div className="text-darkBlack font-medium text-lg">Inngangsdør</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.Inngangsdør?.type)}
                 </p>
               )}
@@ -1082,12 +1196,26 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Dør</p>
+                <p className="text-secondary text-base">Skriv kode</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
+                  {displayValue(roomsData?.Dører?.Inngangsdør?.colorCode)}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-1.5">
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-secondary text-base">Dør</p>
+              )}
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.Inngangsdør?.dør)}
                 </p>
               )}
@@ -1096,30 +1224,30 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Dørfarge</p>
+                <p className="text-secondary text-base">Dørfarge</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.Inngangsdør?.Dørfarge)}
                 </p>
               )}
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">Andre valg</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="text-darkBlack font-medium text-lg">Andre valg</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Utforing farge</p>
+                <p className="text-secondary text-base">Utforing farge</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.UtforingFarge)}
                 </p>
               )}
@@ -1128,14 +1256,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Slagretning tofløyet dør
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.SlagretningTofløyetDør)}
                 </p>
               )}
@@ -1144,12 +1272,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Sikkerhetslås type</p>
+                <p className="text-secondary text-base">Sikkerhetslås type</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.SikkerhetslåsType)}
                 </p>
               )}
@@ -1158,12 +1286,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Tilleggslås type</p>
+                <p className="text-secondary text-base">Tilleggslås type</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.TilleggslåsType)}
                 </p>
               )}
@@ -1172,14 +1300,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Kommentar til inngangsdør
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.KommentarInngangsdør)}
                 </p>
               )}
@@ -1187,20 +1315,20 @@ export const AllSummury: React.FC<{
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
           <div className="flex flex-col gap-1">
-            <div className="text-darkBlack font-medium text-sm">Boddør</div>
-            <div className="text-darkBlack text-xs">Ikke relevant</div>
+            <div className="text-darkBlack font-medium text-lg">Boddør</div>
+            <div className="text-darkBlack text-base">Ikke relevant</div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.Boddør?.type)}
                 </p>
               )}
@@ -1209,12 +1337,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Skriv fargekode</p>
+                <p className="text-secondary text-base">Skriv fargekode</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.Boddør?.colorCode)}
                 </p>
               )}
@@ -1223,12 +1351,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Likelås med hoveddør</p>
+                <p className="text-secondary text-base">Likelås med hoveddør</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.LikelåsMedHoveddør)}
                 </p>
               )}
@@ -1237,12 +1365,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Kommentar til boddør</p>
+                <p className="text-secondary text-base">Kommentar til boddør</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.KommentarBoddør)}
                 </p>
               )}
@@ -1250,24 +1378,24 @@ export const AllSummury: React.FC<{
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
           <div className="flex flex-col gap-1">
-            <div className="text-darkBlack font-medium text-sm">
+            <div className="text-darkBlack font-medium text-lg">
               Balkong/Terrassedør
             </div>
-            <div className="text-darkBlack text-xs">
+            <div className="text-darkBlack text-base">
               Standard hvitmalt utvendig/innvendig
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.BalkongTerrassedør?.BalkongTerrassedør
                       ?.type
@@ -1279,12 +1407,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Dørfarge</p>
+                <p className="text-secondary text-base">Dørfarge</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.BalkongTerrassedør?.BalkongTerrassedør
                       ?.colorCode
@@ -1296,12 +1424,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Utforing farge</p>
+                <p className="text-secondary text-base">Utforing farge</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.BalkongTerrassedør?.UtforingFarge
                   )}
@@ -1312,14 +1440,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Slagretning tofløyet dør/skyveretning
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.BalkongTerrassedør?.SlagretningTofløyetDør
                   )}
@@ -1330,12 +1458,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Med terskelforing</p>
+                <p className="text-secondary text-base">Med terskelforing</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.BalkongTerrassedør?.MedTerskelforing
                   )}
@@ -1346,12 +1474,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Likelås med hoveddør</p>
+                <p className="text-secondary text-base">Likelås med hoveddør</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.BalkongTerrassedør?.LikelåsMedHoveddør
                   )}
@@ -1362,14 +1490,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Utvendig/innvendig sylinder
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.BalkongTerrassedør
                       ?.UtvendigInnvendigSylinder
@@ -1381,14 +1509,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Kommentar til balkongdør
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.BalkongTerrassedør?.KommentarBalkongdør
                   )}
@@ -1397,20 +1525,20 @@ export const AllSummury: React.FC<{
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">
+          <div className="text-darkBlack font-medium text-lg">
             Innvendige Dører
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.InnvendigeDører?.InnvendigeDører?.type
                   )}
@@ -1421,12 +1549,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Dørfarge</p>
+                <p className="text-secondary text-base">Dørfarge</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.InnvendigeDører?.InnvendigeDører
                       ?.colorCode
@@ -1438,12 +1566,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Glassdør</p>
+                <p className="text-secondary text-base">Glassdør</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.InnvendigeDører?.Glassdør)}
                 </p>
               )}
@@ -1452,12 +1580,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Skyvedør med glass</p>
+                <p className="text-secondary text-base">Skyvedør med glass</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.InnvendigeDører?.SkyvedørMedGlass
                   )}
@@ -1468,14 +1596,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Skyvedørskarm separat ordre
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {(roomsData?.Dører?.InnvendigeDører
                     ?.SkyvedørskarmSeparatOrdre &&
                     formatDate(
@@ -1490,12 +1618,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Utforing farge</p>
+                <p className="text-secondary text-base">Utforing farge</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.InnvendigeDører?.UtforingFarge
                   )}
@@ -1506,14 +1634,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Slagretning tofløyet dør
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.InnvendigeDører?.SlagretningTofløyetDør
                   )}
@@ -1524,12 +1652,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Dempelister</p>
+                <p className="text-secondary text-base">Dempelister</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.InnvendigeDører?.Dempelister)}
                 </p>
               )}
@@ -1538,12 +1666,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Terskeltype</p>
+                <p className="text-secondary text-base">Terskeltype</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {roomsData?.Dører?.InnvendigeDører?.Terskeltype &&
                   roomsData?.Dører?.InnvendigeDører?.Terskeltype.length > 0
                     ? roomsData?.Dører?.InnvendigeDører?.Terskeltype.join(", ")
@@ -1555,14 +1683,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Kommentar til terskeltype
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.InnvendigeDører?.TerskeltypeText
                   )}
@@ -1573,12 +1701,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Hengsler</p>
+                <p className="text-secondary text-base">Hengsler</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.InnvendigeDører?.Hengsler)}
                 </p>
               )}
@@ -1587,12 +1715,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Spor for belegg</p>
+                <p className="text-secondary text-base">Spor for belegg</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.InnvendigeDører?.SporBelegg)}
                 </p>
               )}
@@ -1601,14 +1729,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Kommentar til innvendige dører
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.InnvendigeDører
                       ?.KommentarTilInnvendigeDører
@@ -1618,48 +1746,64 @@ export const AllSummury: React.FC<{
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">Dørvridere</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="text-darkBlack font-medium text-lg">Dørvridere</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.Dørvridere?.type)}
                 </p>
               )}
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">
+          <div className="text-darkBlack font-medium text-lg">
             Dører i kjellerrom
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.DørerKjellerrom?.type)}
                 </p>
               )}
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">Garasjeport</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <div className="flex flex-col gap-1.5 col-span-4">
+          <div className="text-darkBlack font-medium text-lg">Garasjeport</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.Garasjeport?.Garasjeport?.type
+                  )}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-1.5 col-span-3">
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-secondary text-base">Beskriv her</p>
+              )}
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-darkBlack text-lg">
+                  {displayValue(
+                    roomsData?.Dører?.Garasjeport?.Garasjeport?.colorCode
                   )}
                 </p>
               )}
@@ -1668,17 +1812,17 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Bredde x høyde</p>
+                <p className="text-secondary text-base">Bredde x høyde</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Dører?.Garasjeport?.BreddeXhøyde)}
                 </p>
               )}
             </div>
-            <div className={`text-sm flex gap-2 items-center text-black`}>
+            <div className={`text-lg flex gap-2 items-center text-black`}>
               <label className="relative">
                 <input
                   type="checkbox"
@@ -1710,12 +1854,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Micro-sender antall</p>
+                <p className="text-secondary text-base">Micro-sender antall</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.Garasjeport?.MicroSenderAntall
                   )}
@@ -1726,14 +1870,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Fargekode på garasjeport
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.Dører?.Garasjeport?.FargekodePåGarasjeport
                   )}
@@ -1743,21 +1887,21 @@ export const AllSummury: React.FC<{
           </div>
         </div>
         <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4">
-          <h4 className="text-darkBlack font-bold text-base uppercase">
+        <div className="flex flex-col gap-4 inner-room-block px-8">
+          <h4 className="text-darkBlack font-bold text-xl uppercase">
             Vinduer
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Vinduer?.Vinduer?.type)}
                 </p>
               )}
@@ -1766,12 +1910,26 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Alubeslått utvendig</p>
+                <p className="text-secondary text-base">Skriv fargekode</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
+                  {displayValue(roomsData?.Vinduer?.Vinduer?.colorCode)}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-1.5">
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-secondary text-base">Alubeslått utvendig</p>
+              )}
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Vinduer?.AlubeslåttUtvendigText)}
                 </p>
               )}
@@ -1780,17 +1938,17 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Utforing farge</p>
+                <p className="text-secondary text-base">Utforing farge</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Vinduer?.UtforingFarge)}
                 </p>
               )}
             </div>
-            <div className={`text-sm flex gap-2 items-center text-black`}>
+            <div className={`text-lg flex gap-2 items-center text-black`}>
               <label className="relative">
                 <input
                   type="checkbox"
@@ -1818,7 +1976,7 @@ export const AllSummury: React.FC<{
               </label>
               Vinduer ned til gulv
             </div>
-            <div className={`text-sm flex gap-2 items-center text-black`}>
+            <div className={`text-lg flex gap-2 items-center text-black`}>
               <label className="relative">
                 <input
                   type="checkbox"
@@ -1852,12 +2010,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Foringer separat ordre</p>
+                <p className="text-secondary text-base">
+                  Foringer separat ordre
+                </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {(roomsData?.Vinduer?.ForingerSeparatOrdre &&
                     formatDate(roomsData?.Vinduer?.ForingerSeparatOrdre)) ??
                     "-"}
@@ -1868,12 +2028,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Kommentar til vindu</p>
+                <p className="text-secondary text-base">Kommentar til vindu</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Vinduer?.KommentarVindu)}
                 </p>
               )}
@@ -1882,21 +2042,21 @@ export const AllSummury: React.FC<{
           <div className="border-t border-[#EBEBEB] w-full"></div>
           <div className="flex gap-8">
             <div>
-              <div className="text-darkBlack font-medium text-sm mb-4">
+              <div className="text-darkBlack font-medium text-lg mb-4">
                 Valg om soldemping
               </div>
               <div className="flex flex-col gap-1.5">
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
-                  <p className="text-secondary text-xs">
+                  <p className="text-secondary text-base">
                     Ønsker soldemping i glass
                   </p>
                 )}
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
-                  <p className="text-darkBlack text-sm">
+                  <p className="text-darkBlack text-lg">
                     {displayValue(
                       roomsData?.Vinduer?.ØnskerSoldempingGlassText
                     )}
@@ -1905,19 +2065,19 @@ export const AllSummury: React.FC<{
               </div>
             </div>
             <div>
-              <div className="text-darkBlack font-medium text-sm mb-4">
+              <div className="text-darkBlack font-medium text-lg mb-4">
                 Valg om screen
               </div>
               <div className="flex flex-col gap-1.5">
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
-                  <p className="text-secondary text-xs">Ønsker screens</p>
+                  <p className="text-secondary text-base">Ønsker screens</p>
                 )}
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
-                  <p className="text-darkBlack text-sm">
+                  <p className="text-darkBlack text-lg">
                     {displayValue(roomsData?.Vinduer?.ØnskerScreensText)}
                   </p>
                 )}
@@ -1925,20 +2085,20 @@ export const AllSummury: React.FC<{
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">
+          <div className="text-darkBlack font-medium text-lg">
             Takvindu Velux
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Vinduer?.TakvinduVelux?.type)}
                 </p>
               )}
@@ -1947,12 +2107,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Utforing farge</p>
+                <p className="text-secondary text-base">Utforing farge</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Vinduer?.TakvinduVeluxUtforingFarge)}
                 </p>
               )}
@@ -1961,14 +2121,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Kommentar til takvindu og eventuelt tilvalg
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Vinduer?.TakvinduVeluxKommentar)}
                 </p>
               )}
@@ -1976,21 +2136,21 @@ export const AllSummury: React.FC<{
           </div>
         </div>
         <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4">
-          <h4 className="text-darkBlack font-bold text-base uppercase">
+        <div className="flex flex-col gap-4 inner-room-block px-8">
+          <h4 className="text-darkBlack font-bold text-xl uppercase">
             Trapp og Luker
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.TrappogLuker?.Trapp?.type)}
                 </p>
               )}
@@ -1999,12 +2159,26 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Type trinn</p>
+                <p className="text-secondary text-base">Beskriv trappemodell</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
+                  {displayValue(roomsData?.TrappogLuker?.Trapp?.colorCode)}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-1.5">
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-secondary text-base">Type trinn</p>
+              )}
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.TrappogLuker?.TypeTrinn)}
                 </p>
               )}
@@ -2013,12 +2187,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Opptrinn</p>
+                <p className="text-secondary text-base">Opptrinn</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.TrappogLuker?.Opptrinn)}
                 </p>
               )}
@@ -2027,12 +2201,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Sidevanger</p>
+                <p className="text-secondary text-base">Sidevanger</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {roomsData?.TrappogLuker?.Sidevanger ?? "-"}
                 </p>
               )}
@@ -2041,12 +2215,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Rekkverk</p>
+                <p className="text-secondary text-base">Rekkverk</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.TrappogLuker?.Rekkverk)}
                 </p>
               )}
@@ -2055,12 +2229,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Håndlist</p>
+                <p className="text-secondary text-base">Håndlist</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.TrappogLuker?.Håndlist)}
                 </p>
               )}
@@ -2069,12 +2243,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Spiler</p>
+                <p className="text-secondary text-base">Spiler</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.TrappogLuker?.Spiler)}
                 </p>
               )}
@@ -2083,12 +2257,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Bodløsning i trapperom</p>
+                <p className="text-secondary text-base">
+                  Bodløsning i trapperom
+                </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.TrappogLuker?.BodløsningTrapperom)}
                 </p>
               )}
@@ -2097,12 +2273,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Montering</p>
+                <p className="text-secondary text-base">Montering</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.TrappogLuker?.Montering)}
                 </p>
               )}
@@ -2111,32 +2287,32 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Måltaking</p>
+                <p className="text-secondary text-base">Måltaking</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.TrappogLuker?.Måltaking)}
                 </p>
               )}
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">
+          <div className="text-darkBlack font-medium text-lg">
             Isolerte inspeksjonsluker
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.TrappogLuker?.IsolerteInspeksjonsluker
                   )}
@@ -2147,12 +2323,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Himling</p>
+                <p className="text-secondary text-base">Himling</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.TrappogLuker?.HimlingText)}
                 </p>
               )}
@@ -2161,12 +2337,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Vegg</p>
+                <p className="text-secondary text-base">Vegg</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.TrappogLuker?.VeggText)}
                 </p>
               )}
@@ -2175,14 +2351,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Kommentar til inspeksjonsluker
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.TrappogLuker?.KommentarInspeksjonsluker
                   )}
@@ -2192,22 +2368,40 @@ export const AllSummury: React.FC<{
           </div>
         </div>
         <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4">
-          <h4 className="text-darkBlack font-bold text-base uppercase">
+        <div className="flex flex-col gap-4 inner-room-block px-8">
+          <h4 className="text-darkBlack font-bold text-xl uppercase">
             Balkong & Terrasse
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Velg ett alternativ</p>
+                <p className="text-secondary text-base">Velg ett alternativ</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.BalkongTerrasse?.Rekkverk?.type)}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-1.5 col-span-3">
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-secondary text-base">
+                  Beskriv type, modell og farge
+                </p>
+              )}
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-darkBlack text-lg">
+                  {displayValue(
+                    roomsData?.BalkongTerrasse?.Rekkverk?.colorCode
+                  )}
                 </p>
               )}
             </div>
@@ -2215,47 +2409,65 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Ønsker megler</p>
+                <p className="text-secondary text-base">Ønsker megler</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.BalkongTerrasse?.ØnskerMeglerText)}
                 </p>
               )}
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">
+          <div className="text-darkBlack font-medium text-lg">
             Velg gulv balkong
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.BalkongTerrasse?.VelgGulvBalkong?.type
                   )}
                 </p>
               )}
             </div>
-          </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">Platting</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Ønsker platting?</p>
+                <p className="text-secondary text-base">
+                  Beskriv type og farge
+                </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
+                  {displayValue(
+                    roomsData?.BalkongTerrasse?.VelgGulvBalkong?.colorCode
+                  )}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="border-t border-[#EBEBEB] w-full"></div>
+          <div className="text-darkBlack font-medium text-lg">Platting</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="flex flex-col gap-1.5">
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-secondary text-base">Ønsker platting?</p>
+              )}
+              {loading ? (
+                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+              ) : (
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.BalkongTerrasse?.ØnskerPlatting)}
                 </p>
               )}
@@ -2264,12 +2476,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Beskrivelse platting</p>
+                <p className="text-secondary text-base">Beskrivelse platting</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.BalkongTerrasse?.BeskrivelsePlatting
                   )}
@@ -2280,12 +2492,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Fotskraperist</p>
+                <p className="text-secondary text-base">Fotskraperist</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.BalkongTerrasse?.Fotskraperist)}
                 </p>
               )}
@@ -2294,14 +2506,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Kommentar til balkong og terrasse
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.BalkongTerrasse?.KommentarTerrasse)}
                 </p>
               )}
@@ -2309,12 +2521,12 @@ export const AllSummury: React.FC<{
           </div>
         </div>
         <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4">
-          <h4 className="text-darkBlack font-bold text-base uppercase">
+        <div className="flex flex-col gap-4 inner-room-block px-8">
+          <h4 className="text-darkBlack font-bold text-xl uppercase">
             Ventilasjon og Sentralstøvsuger
           </h4>
-          <div className="text-darkBlack font-medium text-sm">Ventilasjon</div>
-          <div className={`text-sm flex gap-2 items-center text-black`}>
+          <div className="text-darkBlack font-medium text-lg">Ventilasjon</div>
+          <div className={`text-lg flex gap-2 items-center text-black`}>
             <label className="relative">
               <input
                 type="checkbox"
@@ -2342,18 +2554,18 @@ export const AllSummury: React.FC<{
                 </svg>
               </div>
             </label>
-            Ventilasjon
+            Ikke relevant
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">
+          <div className="text-darkBlack font-medium text-lg">
             Fargeønske utvendig kombirist
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.VentilasjonSentralstøvsuger
                       ?.FargeønskeUtvendigKombirist
@@ -2363,15 +2575,15 @@ export const AllSummury: React.FC<{
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">
+          <div className="text-darkBlack font-medium text-lg">
             Fargeønske innvendig ventiler
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.VentilasjonSentralstøvsuger
                       ?.FargeønskeInnvendigVentiler
@@ -2383,14 +2595,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Kommentar til ventilasjon
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.VentilasjonSentralstøvsuger?.KommentarVentilasjon
                   )}
@@ -2399,15 +2611,15 @@ export const AllSummury: React.FC<{
             </div>
           </div>
           <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-sm">
+          <div className="text-darkBlack font-medium text-lg">
             Sentralstøvsuger
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.VentilasjonSentralstøvsuger?.Sentralstøvsuger
                   )}
@@ -2418,12 +2630,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Antall sugekontakter</p>
+                <p className="text-secondary text-base">Antall sugekontakter</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.VentilasjonSentralstøvsuger?.AntallKontakter
                   )}
@@ -2434,12 +2646,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Sugebrett</p>
+                <p className="text-secondary text-base">Sugebrett</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.VentilasjonSentralstøvsuger?.Sugebrett
                   )}
@@ -2450,14 +2662,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Kommentar til sentralstøvsuger
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.VentilasjonSentralstøvsuger?.Kommentar
                   )}
@@ -2467,16 +2679,16 @@ export const AllSummury: React.FC<{
           </div>
         </div>
         <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4">
-          <h4 className="text-darkBlack font-bold text-base uppercase">
+        <div className="flex flex-col gap-4 inner-room-block px-8">
+          <h4 className="text-darkBlack font-bold text-xl uppercase">
             Brannvern
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Brannvern?.Brannvern)}
                 </p>
               )}
@@ -2485,14 +2697,14 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">
+                <p className="text-secondary text-base">
                   Kommentar til brannvern
                 </p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.Brannvern?.BrannvernKommentar)}
                 </p>
               )}
@@ -2500,16 +2712,16 @@ export const AllSummury: React.FC<{
           </div>
         </div>
         <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4">
-          <h4 className="text-darkBlack font-bold text-base uppercase">
+        <div className="flex flex-col gap-4 inner-room-block px-8">
+          <h4 className="text-darkBlack font-bold text-xl uppercase">
             Tekniske Installasjoner
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1.5">
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(
                     roomsData?.TekniskeInstallasjoner?.TekniskeInstallasjoner
                   )}
@@ -2520,12 +2732,12 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-xs">Punkt (referanse)</p>
+                <p className="text-secondary text-base">Punkt (referanse)</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-darkBlack text-sm">
+                <p className="text-darkBlack text-lg">
                   {displayValue(roomsData?.TekniskeInstallasjoner?.Punkt)}
                 </p>
               )}

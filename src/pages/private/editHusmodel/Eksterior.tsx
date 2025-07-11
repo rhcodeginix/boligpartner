@@ -393,8 +393,9 @@ export const Eksterior: React.FC<{
       const hasSubTabNavn = item?.[activeSubTabData]?.navn?.trim() !== "";
       const hasSubTabProductOptions =
         item?.[activeSubTabData]?.productOptions?.trim() !== "";
+      const hasComment = item?.[activeSubTabData]?.comment?.trim() !== "";
 
-      return hasNavn || hasSubTabNavn || hasSubTabProductOptions;
+      return hasNavn || hasSubTabNavn || hasSubTabProductOptions || hasComment;
     });
 
     return filteredCategories.length > 0 ? filteredCategories : [];
@@ -476,18 +477,15 @@ export const Eksterior: React.FC<{
     };
   }, []);
 
-  const [comment, setComment] = useState("");
-
   useEffect(() => {
-    const subscription = form.watch((values) => {
-      const safeValue =
-        values.hovedkategorinavn?.[activeTabData]?.Kategorinavn?.[
-          activeSubTabData
-        ]?.comment ?? "";
-      setComment(safeValue);
-    });
+    const comment =
+      Category?.[activeTabData]?.Kategorinavn?.[activeSubTabData]?.comment ??
+      "";
 
-    return () => subscription.unsubscribe();
+    form.setValue(
+      `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.comment`,
+      comment
+    );
   }, [activeTabData, activeSubTabData]);
 
   return (
@@ -1076,103 +1074,117 @@ export const Eksterior: React.FC<{
                         <FormField
                           control={form.control}
                           name={`hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.comment`}
-                          render={({ field, fieldState }) => (
-                            <FormItem>
-                              <FormControl>
-                                <div className="relative">
-                                  <Input
-                                    placeholder="Evt kommentar til valg"
-                                    {...field}
-                                    className={`bg-white rounded-[8px] border text-black
+                          render={({ field, fieldState }) => {
+                            return (
+                              <FormItem>
+                                <FormControl>
+                                  <div className="relative">
+                                    <Input
+                                      placeholder="Evt kommentar til valg"
+                                      {...field}
+                                      className={`bg-white rounded-[8px] border text-black
                                                  ${
                                                    fieldState?.error
                                                      ? "border-red"
                                                      : "border-gray1"
                                                  } `}
-                                    type="text"
-                                    value={comment}
-                                    onBlur={async (e: any) => {
-                                      field.onBlur();
+                                      type="text"
+                                      onBlur={async (e: any) => {
+                                        field.onBlur();
 
-                                      const newComment = e.target.value;
-
-                                      try {
-                                        const husmodellDocRef = doc(
-                                          db,
-                                          "housemodell_configure_broker",
-                                          id
-                                        );
-                                        const docSnap = await getDoc(
-                                          husmodellDocRef
-                                        );
-
-                                        if (
-                                          !docSnap.exists() ||
-                                          !kundeId ||
-                                          !pdfId
-                                        )
-                                          return;
-
-                                        const houseData = docSnap.data();
-                                        const kundeList =
-                                          houseData?.KundeInfo || [];
-                                        const targetKundeIndex =
-                                          kundeList.findIndex(
-                                            (k: any) =>
-                                              String(k.uniqueId) ===
-                                              String(kundeId)
-                                          );
-                                        if (targetKundeIndex === -1) return;
-
-                                        const targetKunde =
-                                          kundeList[targetKundeIndex];
-                                        const existingPlantegninger =
-                                          targetKunde?.Plantegninger || [];
-                                        const indexToUpdate =
-                                          existingPlantegninger.findIndex(
-                                            (item: any) =>
-                                              String(item?.pdf_id) ===
-                                              String(pdfId)
-                                          );
-                                        if (indexToUpdate === -1) return;
-
-                                        existingPlantegninger[
-                                          indexToUpdate
-                                        ].rooms[activeTabData].Kategorinavn[
-                                          activeSubTabData
-                                        ].comment = newComment;
-
-                                        const updatedKundeInfo = kundeList.map(
-                                          (kunde: any, idx: number) =>
-                                            idx === targetKundeIndex
-                                              ? {
-                                                  ...kunde,
-                                                  Plantegninger:
-                                                    existingPlantegninger,
-                                                }
-                                              : kunde
-                                        );
-                                        await updateDoc(husmodellDocRef, {
-                                          KundeInfo: updatedKundeInfo,
-                                          updatedAt: new Date().toISOString(),
+                                        setCategory((prev: any[]) => {
+                                          const updated = [...prev];
+                                          if (
+                                            updated[activeTabData]
+                                              ?.Kategorinavn?.[activeSubTabData]
+                                          ) {
+                                            updated[activeTabData].Kategorinavn[
+                                              activeSubTabData
+                                            ].comment = newComment;
+                                          }
+                                          return updated;
                                         });
-                                      } catch (err) {
-                                        console.error("firebase", err);
+
+                                        const newComment = e.target.value;
+
+                                        try {
+                                          const husmodellDocRef = doc(
+                                            db,
+                                            "housemodell_configure_broker",
+                                            id
+                                          );
+                                          const docSnap = await getDoc(
+                                            husmodellDocRef
+                                          );
+
+                                          if (
+                                            !docSnap.exists() ||
+                                            !kundeId ||
+                                            !pdfId
+                                          )
+                                            return;
+
+                                          const houseData = docSnap.data();
+                                          const kundeList =
+                                            houseData?.KundeInfo || [];
+                                          const targetKundeIndex =
+                                            kundeList.findIndex(
+                                              (k: any) =>
+                                                String(k.uniqueId) ===
+                                                String(kundeId)
+                                            );
+                                          if (targetKundeIndex === -1) return;
+
+                                          const targetKunde =
+                                            kundeList[targetKundeIndex];
+                                          const existingPlantegninger =
+                                            targetKunde?.Plantegninger || [];
+                                          const indexToUpdate =
+                                            existingPlantegninger.findIndex(
+                                              (item: any) =>
+                                                String(item?.pdf_id) ===
+                                                String(pdfId)
+                                            );
+                                          if (indexToUpdate === -1) return;
+
+                                          existingPlantegninger[
+                                            indexToUpdate
+                                          ].rooms[activeTabData].Kategorinavn[
+                                            activeSubTabData
+                                          ].comment = newComment;
+
+                                          const updatedKundeInfo =
+                                            kundeList.map(
+                                              (kunde: any, idx: number) =>
+                                                idx === targetKundeIndex
+                                                  ? {
+                                                      ...kunde,
+                                                      Plantegninger:
+                                                        existingPlantegninger,
+                                                    }
+                                                  : kunde
+                                            );
+                                          await updateDoc(husmodellDocRef, {
+                                            KundeInfo: updatedKundeInfo,
+                                            updatedAt: new Date().toISOString(),
+                                          });
+                                        } catch (err) {
+                                          console.error("firebase", err);
+                                        }
+                                      }}
+                                      value={
+                                        form.watch(
+                                          `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.comment`
+                                        ) ?? ""
                                       }
-                                    }}
-                                    onChange={(e: any) =>
-                                      form.setValue(
-                                        `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.comment`,
-                                        e.target.value,
-                                        { shouldValidate: true }
-                                      )
-                                    }
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
+                                      // onChange={(e: any) => field.onChange(e)}
+                                    />
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            );
+                          }}
                         />
                       </div>
                     </div>

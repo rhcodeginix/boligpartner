@@ -487,18 +487,15 @@ export const Eksterior: React.FC<{
     };
   }, []);
 
-  const [comment, setComment] = useState("");
-
   useEffect(() => {
-    const subscription = form.watch((values) => {
-      const safeValue =
-        values.hovedkategorinavn?.[activeTabData]?.Kategorinavn?.[
-          activeSubTabData
-        ]?.comment ?? "";
-      setComment(safeValue);
-    });
+    const comment =
+      Category?.[activeTabData]?.Kategorinavn?.[activeSubTabData]?.comment ??
+      "";
 
-    return () => subscription.unsubscribe();
+    form.setValue(
+      `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.comment`,
+      comment
+    );
   }, [activeTabData, activeSubTabData]);
 
   return (
@@ -1028,11 +1025,28 @@ export const Eksterior: React.FC<{
                                                      : "border-gray1"
                                                  } `}
                                     type="text"
-                                    value={comment}
+                                    value={
+                                      form.watch(
+                                        `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.comment`
+                                      ) ?? ""
+                                    }
                                     onBlur={async (e: any) => {
                                       field.onBlur();
 
                                       const newComment = e.target.value;
+
+                                      setCategory((prev: any[]) => {
+                                        const updated = [...prev];
+                                        if (
+                                          updated[activeTabData]
+                                            ?.Kategorinavn?.[activeSubTabData]
+                                        ) {
+                                          updated[activeTabData].Kategorinavn[
+                                            activeSubTabData
+                                          ].comment = newComment;
+                                        }
+                                        return updated;
+                                      });
 
                                       try {
                                         const husmodellDocRef = doc(

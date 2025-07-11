@@ -117,126 +117,126 @@ export const AddFinalSubmission: React.FC<{
         position: "top-right",
       });
 
-      if (data.exportType === "PDF") {
-        setIsExporting(true);
-
-        const element = previewRef.current as HTMLElement | null;
-        if (!element) throw new Error("Preview element not found");
-
-        const canvas = await html2canvas(element, {
-          scale: 2,
-          useCORS: true,
-        });
-
-        const imgData = canvas.toDataURL("image/jpeg", 1.0);
-        const imgProps = new jsPDF().getImageProperties(imgData);
-
-        const pdf: any = new jsPDF("p", "mm", "a4");
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-
-        const footerHeight = 12;
-        const usableHeight = pdfHeight - footerHeight;
-
-        const imgWidth = pdfWidth;
-        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-
-        let heightLeft = imgHeight;
-        let pageOffset = 0;
-
-        while (heightLeft > 0) {
-          const position = -pageOffset;
-          pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-
-          pdf.setFillColor(255, 255, 255);
-          pdf.rect(0, pdfHeight - footerHeight, pdfWidth, footerHeight, "F");
-
-          pdf.setFontSize(10);
-          pdf.setTextColor(50);
-          pdf.text("", pdfWidth / 2, pdfHeight - 7, { align: "center" });
-
-          heightLeft -= usableHeight;
-          pageOffset += usableHeight;
-
-          if (heightLeft > 0) {
-            pdf.addPage();
-          }
-        }
-
-        const totalPages = pdf.internal.getNumberOfPages();
-        for (let i = 1; i <= totalPages; i++) {
-          pdf.setPage(i);
-          pdf.setFontSize(10);
-          pdf.text(`Page ${i} of ${totalPages}`, pdfWidth / 2, pdfHeight - 5, {
-            align: "center",
-          });
-        }
-
-        pdf.save(`preview-${Date.now()}.pdf`);
-        setIsExporting(false);
-      }
-
       // if (data.exportType === "PDF") {
       //   setIsExporting(true);
-      //   const element = previewRef.current;
+
+      //   const element = previewRef.current as HTMLElement | null;
       //   if (!element) throw new Error("Preview element not found");
+
+      //   const canvas = await html2canvas(element, {
+      //     scale: 2,
+      //     useCORS: true,
+      //   });
+
+      //   const imgData = canvas.toDataURL("image/jpeg", 1.0);
+      //   const imgProps = new jsPDF().getImageProperties(imgData);
 
       //   const pdf: any = new jsPDF("p", "mm", "a4");
       //   const pdfWidth = pdf.internal.pageSize.getWidth();
       //   const pdfHeight = pdf.internal.pageSize.getHeight();
-      //   const marginTop = 10;
-      //   const marginLeft = 0;
-      //   const marginBottom = 15;
-      //   const usableWidth = pdfWidth;
 
-      //   let currentY = marginTop;
+      //   const footerHeight = 12;
+      //   const usableHeight = pdfHeight - footerHeight;
 
-      //   const innerRoomElements = element.querySelectorAll(".inner-room-block");
+      //   const imgWidth = pdfWidth;
+      //   const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
-      //   for (let i = 0; i < innerRoomElements.length; i++) {
-      //     const innerRoomEl: any = innerRoomElements[i];
+      //   let heightLeft = imgHeight;
+      //   let pageOffset = 0;
 
-      //     const roomCanvas = await html2canvas(innerRoomEl, {
-      //       scale: 1,
-      //       useCORS: true,
-      //     });
+      //   while (heightLeft > 0) {
+      //     const position = -pageOffset;
+      //     pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
 
-      //     const roomImgData = roomCanvas.toDataURL("image/jpeg", 0.6);
-      //     const imgProps = pdf.getImageProperties(roomImgData);
-      //     const imgHeight = (imgProps.height * usableWidth) / imgProps.width;
+      //     pdf.setFillColor(255, 255, 255);
+      //     pdf.rect(0, pdfHeight - footerHeight, pdfWidth, footerHeight, "F");
 
-      //     if (currentY + imgHeight > pdfHeight - marginBottom) {
+      //     pdf.setFontSize(10);
+      //     pdf.setTextColor(50);
+      //     pdf.text("", pdfWidth / 2, pdfHeight - 7, { align: "center" });
+
+      //     heightLeft -= usableHeight;
+      //     pageOffset += usableHeight;
+
+      //     if (heightLeft > 0) {
       //       pdf.addPage();
-      //       currentY = marginTop;
       //     }
-
-      //     pdf.addImage(
-      //       roomImgData,
-      //       "JPEG",
-      //       marginLeft,
-      //       currentY,
-      //       usableWidth,
-      //       imgHeight
-      //     );
-
-      //     currentY += imgHeight + 5;
       //   }
 
       //   const totalPages = pdf.internal.getNumberOfPages();
-      //   for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-      //     pdf.setPage(pageNum);
+      //   for (let i = 1; i <= totalPages; i++) {
+      //     pdf.setPage(i);
       //     pdf.setFontSize(10);
-      //     pdf.text(
-      //       `Page ${pageNum} of ${totalPages}`,
-      //       pdfWidth / 2,
-      //       pdfHeight - 5,
-      //       { align: "center" }
-      //     );
+      //     pdf.text(`Page ${i} of ${totalPages}`, pdfWidth / 2, pdfHeight - 5, {
+      //       align: "center",
+      //     });
       //   }
 
       //   pdf.save(`preview-${Date.now()}.pdf`);
       //   setIsExporting(false);
       // }
+
+      if (data.exportType === "PDF") {
+        setIsExporting(true);
+        const element = previewRef.current;
+        if (!element) throw new Error("Preview element not found");
+
+        const pdf: any = new jsPDF("p", "mm", "a4");
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const marginTop = 10;
+        const marginLeft = 0;
+        const marginBottom = 15;
+        const usableWidth = pdfWidth;
+
+        let currentY = marginTop;
+
+        const innerRoomElements = element.querySelectorAll(".inner-room-block");
+
+        for (let i = 0; i < innerRoomElements.length; i++) {
+          const innerRoomEl: any = innerRoomElements[i];
+
+          const roomCanvas = await html2canvas(innerRoomEl, {
+            scale: 2,
+            useCORS: true,
+          });
+
+          const roomImgData = roomCanvas.toDataURL("image/jpeg", 0.6);
+          const imgProps = pdf.getImageProperties(roomImgData);
+          const imgHeight = (imgProps.height * usableWidth) / imgProps.width;
+
+          if (currentY + imgHeight > pdfHeight - marginBottom) {
+            pdf.addPage();
+            currentY = marginTop;
+          }
+
+          pdf.addImage(
+            roomImgData,
+            "JPEG",
+            marginLeft,
+            currentY,
+            usableWidth,
+            imgHeight
+          );
+
+          currentY += imgHeight + 5;
+        }
+
+        const totalPages = pdf.internal.getNumberOfPages();
+        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+          pdf.setPage(pageNum);
+          pdf.setFontSize(10);
+          pdf.text(
+            `Page ${pageNum} of ${totalPages}`,
+            pdfWidth / 2,
+            pdfHeight - 5,
+            { align: "center" }
+          );
+        }
+
+        pdf.save(`preview-${Date.now()}.pdf`);
+        setIsExporting(false);
+      }
 
       if (data.exportType === "PPT") {
         setIsExporting(true);
@@ -384,7 +384,8 @@ export const AddFinalSubmission: React.FC<{
     "PPT",
     // "Excel"
   ];
-  const array = ["BoligPartner Herskapelig", "Abc", "Xyz"];
+
+  const [array, setArray] = useState<string[]>([]);
 
   useEffect(() => {
     if (!id) {
@@ -399,11 +400,44 @@ export const AddFinalSubmission: React.FC<{
             form.setValue(key as any, value);
           }
         });
+      } else if (roomsData) {
+        const serieValue =
+          roomsData?.Prosjektdetaljer?.VelgSerie ?? roomsData?.VelgSerie;
+
+        form.reset({
+          Serie:
+            serieValue && serieValue.trim() !== "" ? serieValue : undefined,
+          Kundenummer: Number(
+            roomsData?.Prosjektdetaljer?.Kundenr ?? roomsData?.Kundenummer
+          ),
+          mobile:
+            roomsData?.Prosjektdetaljer?.TelefonMobile ??
+            roomsData?.mobileNummer ??
+            "",
+          Kundenavn:
+            roomsData?.Prosjektdetaljer?.Tiltakshaver ??
+            roomsData?.Kundenavn ??
+            "",
+        });
+
+        if (
+          roomsData?.Prosjektdetaljer?.TypeProsjekt === "Bolig" ||
+          roomsData?.TypeProsjekt === "Bolig"
+        ) {
+          const finalArray = ["Herskapelig", "Moderne", "Nostalgi", "Funkis"];
+          setArray(finalArray);
+        } else if (
+          roomsData?.Prosjektdetaljer?.TypeProsjekt === "Hytte" ||
+          roomsData?.TypeProsjekt === "Hytte"
+        ) {
+          const finalArray = ["Tur", "V-serie", "Karakter", "Moderne"];
+          setArray(finalArray);
+        }
       }
     };
 
     getData();
-  }, [id]);
+  }, [id, roomsData, form, array.length > 0]);
 
   useEffect(() => {
     const navbar = document.getElementById("navbar");
@@ -472,7 +506,7 @@ export const AddFinalSubmission: React.FC<{
                         fieldState.error ? "text-red" : ""
                       } mb-[6px] text-sm`}
                     >
-                      Mobile:
+                      Mobil
                     </p>
                     <FormControl>
                       <div className="relative flex gap-1.5 items-center">
@@ -527,7 +561,7 @@ export const AddFinalSubmission: React.FC<{
                           </SelectTrigger>
                           <SelectContent className="bg-white">
                             <SelectGroup>
-                              {array?.map((item, index) => {
+                              {array?.map((item: any, index: number) => {
                                 return (
                                   <SelectItem key={index} value={item}>
                                     {item}
@@ -555,12 +589,12 @@ export const AddFinalSubmission: React.FC<{
                         fieldState.error ? "text-red" : "text-black"
                       } mb-[6px] text-sm`}
                     >
-                      Kundenummer*
+                      BP prosjektnummer*
                     </p>
                     <FormControl>
                       <div className="relative">
                         <Input
-                          placeholder="Skriv inn Kundenummer"
+                          placeholder="Skriv inn BP prosjektnummer"
                           {...field}
                           className={`bg-white rounded-[8px] border text-black
                                           ${

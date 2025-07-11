@@ -22,23 +22,145 @@ const formSchema = z.object({
   isSelected: z.boolean().optional(),
 });
 
+// const requiredCategoriesWithProducts = {
+//   Himlling: [
+//     {
+//       Produktnavn: "I henhold til leveransebeskrivelse",
+//       isSelected: true,
+//     },
+//     {
+//       Produktnavn: "Mdf panel",
+//       isSelected: false,
+//       InfoText: "Beskriv type og farge",
+//     },
+//     {
+//       Produktnavn: "Takplate 60x120",
+//       isSelected: false,
+//       InfoText: "Beskriv evt avvik fra standard",
+//     },
+//     { Produktnavn: "Eget valg", isSelected: false },
+//     {
+//       Produktnavn: "Gips",
+//       isSelected: false,
+//       InfoText: "Beskriv evt avvik fra standard gips",
+//     },
+//     {
+//       Produktnavn: "Panel",
+//       isSelected: false,
+//       InfoText: "Beskriv type og farge",
+//     },
+//   ],
+//   Vegger: [
+//     {
+//       Produktnavn: "I henhold til leveransebeskrivelse",
+//       isSelected: true,
+//     },
+//     { Produktnavn: "5 bords kostmald mdf plate", isSelected: false },
+//     {
+//       Produktnavn: "Ubehandlet sponplate",
+//       isSelected: false,
+//       InfoText: "Beskriv evt avvik fra standard",
+//     },
+//     { Produktnavn: "Eget valg", isSelected: false },
+//     {
+//       Produktnavn: "Gips",
+//       isSelected: false,
+//       InfoText: "Beskriv evt avvik fra standard gips",
+//     },
+//     {
+//       Produktnavn: "Mdf panel",
+//       isSelected: false,
+//       InfoText: "Beskriv type og farge",
+//     },
+//     {
+//       Produktnavn: "Panel",
+//       isSelected: false,
+//       InfoText: "Beskriv type og farge",
+//     },
+//     {
+//       Produktnavn: "Annet",
+//       isSelected: false,
+//       InfoText: "Beskriv type og farge",
+//     },
+//   ],
+//   Gulv: [
+//     { Produktnavn: "Lokalleveranse", isSelected: true },
+//     { Produktnavn: "Eikeparkett 3 stavs", isSelected: false },
+//     { Produktnavn: "Eikeparkett 1 stavs", isSelected: false },
+//     { Produktnavn: "Laminat 1 stavs", isSelected: false },
+//     { Produktnavn: "Eget valg", isSelected: false },
+//     {
+//       Produktnavn: "Parkett (leveres av forhandler)",
+//       isSelected: false,
+//       InfoText: "Beskriv type og farge",
+//     },
+//     {
+//       Produktnavn: "Laminat",
+//       isSelected: false,
+//       InfoText: "Beskriv type og farge",
+//     },
+//     {
+//       Produktnavn: "Annet",
+//       isSelected: false,
+//       InfoText: "Beskriv type og farge",
+//     },
+//   ],
+//   Talklist: [
+//     {
+//       Produktnavn: "I henhold til serie",
+//       isSelected: true,
+//     },
+//     {
+//       Produktnavn: "Annen type list",
+//       isSelected: false,
+//       Type: "HelpText",
+//     },
+//     {
+//       Produktnavn: "Listefritt",
+//       isSelected: false,
+//     },
+//   ],
+//   Gerikt: [
+//     {
+//       Produktnavn: "I henhold til serie",
+//       isSelected: true,
+//     },
+//     {
+//       Produktnavn: "Annen type list",
+//       isSelected: false,
+//       Type: "HelpText",
+//     },
+//     {
+//       Produktnavn: "Listefritt",
+//       isSelected: false,
+//     },
+//   ],
+//   Gulvlist: [
+//     {
+//       Produktnavn: "I henhold til serie",
+//       isSelected: true,
+//     },
+//     {
+//       Produktnavn: "Annen type list",
+//       isSelected: false,
+//       Type: "HelpText",
+//     },
+//   ],
+//   // Kommentar: [],
+// };
+
 const requiredCategoriesWithProducts = {
   Himlling: [
     {
-      Produktnavn: "I henhold til leveransebeskrivelse",
-      isSelected: true,
-    },
-    {
       Produktnavn: "Mdf panel",
-      isSelected: false,
+      isSelected: true,
       InfoText: "Beskriv type og farge",
     },
     {
-      Produktnavn: "Takplate 60x120",
+      Produktnavn: "Takplater",
       isSelected: false,
       InfoText: "Beskriv evt avvik fra standard",
     },
-    { Produktnavn: "Eget valg", isSelected: false },
     {
       Produktnavn: "Gips",
       isSelected: false,
@@ -51,24 +173,24 @@ const requiredCategoriesWithProducts = {
     },
   ],
   Vegger: [
-    {
-      Produktnavn: "I henhold til leveransebeskrivelse",
-      isSelected: true,
-    },
-    { Produktnavn: "5 bords kostmald mdf plate", isSelected: false },
+    // {
+    //   Produktnavn: "I henhold til leveransebeskrivelse",
+    //   isSelected: true,
+    // },
+    // { Produktnavn: "5 bords kostmald mdf plate", isSelected: false },
     {
       Produktnavn: "Ubehandlet sponplate",
-      isSelected: false,
+      isSelected: true,
       InfoText: "Beskriv evt avvik fra standard",
     },
-    { Produktnavn: "Eget valg", isSelected: false },
+    // { Produktnavn: "Eget valg", isSelected: false },
     {
       Produktnavn: "Gips",
       isSelected: false,
       InfoText: "Beskriv evt avvik fra standard gips",
     },
     {
-      Produktnavn: "Mdf panel",
+      Produktnavn: "Mdf panelplater",
       isSelected: false,
       InfoText: "Beskriv type og farge",
     },
@@ -84,14 +206,14 @@ const requiredCategoriesWithProducts = {
     },
   ],
   Gulv: [
-    { Produktnavn: "Lokalleveranse", isSelected: true },
-    { Produktnavn: "Eikeparkett 3 stavs", isSelected: false },
-    { Produktnavn: "Eikeparkett 1 stavs", isSelected: false },
-    { Produktnavn: "Laminat 1 stavs", isSelected: false },
-    { Produktnavn: "Eget valg", isSelected: false },
+    // { Produktnavn: "Lokalleveranse", isSelected: true },
+    // { Produktnavn: "Eikeparkett 3 stavs", isSelected: false },
+    // { Produktnavn: "Eikeparkett 1 stavs", isSelected: false },
+    // { Produktnavn: "Laminat 1 stavs", isSelected: false },
+    // { Produktnavn: "Eget valg", isSelected: false },
     {
       Produktnavn: "Parkett (leveres av forhandler)",
-      isSelected: false,
+      isSelected: true,
       InfoText: "Beskriv type og farge",
     },
     {
@@ -243,6 +365,7 @@ export const AddNewCat: React.FC<{
               navn: name,
               productOptions: name === "Kommentar" ? "Text" : "Single Select",
               produkter,
+              comment: "",
             })
           ),
         },
@@ -289,6 +412,7 @@ export const AddNewCat: React.FC<{
                 navn: name,
                 productOptions: name === "Kommentar" ? "Text" : "Multi Select",
                 produkter,
+                comment: "",
               })
             ),
           });
