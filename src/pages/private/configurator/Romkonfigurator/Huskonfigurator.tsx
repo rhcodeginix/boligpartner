@@ -251,6 +251,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
 
   const handleDeleteFloor = async (indexToDelete: number) => {
     setIsSubmitLoading(true);
+    setConfirmDeleteId(null);
 
     const husmodellDocRef = doc(db, "room_configurator", String(id));
 
