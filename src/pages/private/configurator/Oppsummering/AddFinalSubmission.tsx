@@ -727,9 +727,9 @@ export const AddFinalSubmission: React.FC<{
       >
         <div ref={previewRef}>
           <ExportViewData
-            rooms={rooms}
+            // rooms={rooms}
             kundeInfo={form.getValues()}
-            roomsData={roomsData}
+            // roomsData={roomsData}
           />
         </div>
       </div>

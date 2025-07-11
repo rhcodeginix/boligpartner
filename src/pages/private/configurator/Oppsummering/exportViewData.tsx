@@ -1,5 +1,8 @@
+import { useEffect, useState } from "react";
 import Ic_logo from "../../../../assets/images/Ic_logo.svg";
 import { AllSummury } from "./allSummury";
+import { useLocation } from "react-router-dom";
+import { fetchRoomData } from "../../../../lib/utils";
 
 export function formatPhoneNumber(number: any) {
   let cleaned = number.replace(/[^\d+]/g, "");
@@ -13,10 +16,30 @@ export function formatPhoneNumber(number: any) {
 }
 
 export const ExportViewData: React.FC<{
-  rooms: any;
+  // rooms: any;
   kundeInfo: any;
-  roomsData: any;
-}> = ({ rooms, kundeInfo, roomsData }) => {
+  // roomsData: any;
+}> = ({ kundeInfo }) => {
+  const [roomsData, setRoomsData] = useState<any>([]);
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/");
+  const id = pathSegments.length > 2 ? pathSegments[2] : null;
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+    const getData = async () => {
+      const data = await fetchRoomData(id);
+
+      if (data) {
+        setRoomsData(data);
+      }
+      // setLoading(false);
+    };
+
+    getData();
+  }, [id]);
   return (
     <div className="p-8">
       <div className="inner-room-block px-8">
