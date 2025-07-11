@@ -395,6 +395,7 @@ export const HusmodellerTable = () => {
               onClick={() => {
                 setActiveTab(tab as "Bolig" | "Hytte" | "Prosjekt");
                 setSelectedFilter("");
+                setPage(1);
               }}
               className={`px-2 md:px-4 py-2 text-sm font-medium ${
                 activeTab === tab
@@ -424,7 +425,10 @@ export const HusmodellerTable = () => {
               className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm border-b sm:border-b-0 sm:border-r border-gray1 cursor-pointer ${
                 selectedFilter === "" && "bg-white"
               }`}
-              onClick={() => setSelectedFilter("")}
+              onClick={() => {
+                setPage(1);
+                setSelectedFilter("");
+              }}
             >
               Alle
             </div>
@@ -434,7 +438,10 @@ export const HusmodellerTable = () => {
               className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm cursor-pointer ${
                 selectedFilter === "Nostalgi" && "bg-white"
               }`}
-              onClick={() => setSelectedFilter("Nostalgi")}
+              onClick={() => {
+                setPage(1);
+                setSelectedFilter("Nostalgi");
+              }}
             >
               Nostalgi
             </div>
@@ -444,7 +451,10 @@ export const HusmodellerTable = () => {
               className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm cursor-pointer ${
                 selectedFilter === "Karakter" && "bg-white"
               }`}
-              onClick={() => setSelectedFilter("Karakter")}
+              onClick={() => {
+                setPage(1);
+                setSelectedFilter("Karakter");
+              }}
             >
               Karakter
             </div>
@@ -454,7 +464,10 @@ export const HusmodellerTable = () => {
               className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm border-b border-t sm:border-t-0 sm:border-b-0 sm:border-r sm:border-l border-gray1 cursor-pointer ${
                 selectedFilter === "Herskapelig" && "bg-white"
               }`}
-              onClick={() => setSelectedFilter("Herskapelig")}
+              onClick={() => {
+                setPage(1);
+                setSelectedFilter("Herskapelig");
+              }}
             >
               Herskapelig
             </div>
@@ -464,7 +477,10 @@ export const HusmodellerTable = () => {
               className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm border-b border-t sm:border-t-0 sm:border-b-0 sm:border-r sm:border-l border-gray1 cursor-pointer ${
                 selectedFilter === "Tur" && "bg-white"
               }`}
-              onClick={() => setSelectedFilter("Tur")}
+              onClick={() => {
+                setSelectedFilter("Tur");
+                setPage(1);
+              }}
             >
               Tur
             </div>
@@ -474,7 +490,10 @@ export const HusmodellerTable = () => {
               className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm cursor-pointer border-b sm:border-b-0 sm:border-r border-gray1 ${
                 selectedFilter === "Moderne" && "bg-white"
               }`}
-              onClick={() => setSelectedFilter("Moderne")}
+              onClick={() => {
+                setPage(1);
+                setSelectedFilter("Moderne");
+              }}
             >
               Moderne
             </div>
@@ -484,7 +503,10 @@ export const HusmodellerTable = () => {
               className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm cursor-pointer ${
                 selectedFilter === "Funkis" && "bg-white"
               }`}
-              onClick={() => setSelectedFilter("Funkis")}
+              onClick={() => {
+                setPage(1);
+                setSelectedFilter("Funkis");
+              }}
             >
               Funkis
             </div>
@@ -494,7 +516,10 @@ export const HusmodellerTable = () => {
               className={`p-2.5 md:py-3 md:px-4 text-black2 font-medium text-[13px] sm:text-sm cursor-pointer ${
                 selectedFilter === "V-serie" && "bg-white"
               }`}
-              onClick={() => setSelectedFilter("V-serie")}
+              onClick={() => {
+                setPage(1);
+                setSelectedFilter("V-serie");
+              }}
             >
               V-serie
             </div>
