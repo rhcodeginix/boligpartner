@@ -16,6 +16,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import Modal from "../../../../components/common/modal";
 import Ic_mintomt from "../../../../assets/images/Ic_mintomt.svg";
 import { RoomTable } from "./RoomTable";
+import { Spinner } from "../../../../components/Spinner";
 
 export const AllRoomkonfigurator: React.FC = () => {
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ export const AllRoomkonfigurator: React.FC = () => {
   const handleImageLoad = (index: number) => {
     setImageLoaded((prev) => ({ ...prev, [index]: true }));
   };
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editedFloorName, setEditedFloorName] = useState<string>("");
@@ -63,12 +65,14 @@ export const AllRoomkonfigurator: React.FC = () => {
   );
   const [id, setId] = useState();
   const handleDeleteFloor = async () => {
+    setIsSubmitLoading(true);
+    setConfirmDeleteIndex(null);
+
     const husmodellDocRef = doc(db, "room_configurator", String(id));
 
     try {
       await deleteDoc(husmodellDocRef);
 
-      setConfirmDeleteIndex(null);
       fetchRoomConfiguratorData();
       toast.success("Romkonfiguratoren er slettet!", {
         position: "top-right",
@@ -78,6 +82,8 @@ export const AllRoomkonfigurator: React.FC = () => {
       toast.error("Failed to delete room configurator", {
         position: "top-right",
       });
+    } finally {
+      setIsSubmitLoading(false);
     }
   };
   const handleConfirmPopup = () => {
@@ -90,6 +96,8 @@ export const AllRoomkonfigurator: React.FC = () => {
 
   return (
     <>
+      {isSubmitLoading && <Spinner />}
+
       <div className="py-4 px-8 flex justify-end gap-4">
         <Button
           text={isGridView ? "Bytt til listevisning" : "Bytt til gridvisning"}

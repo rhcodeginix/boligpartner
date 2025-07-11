@@ -805,6 +805,9 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                 text="Opprett"
                 className="bg-purple text-white"
                 onClick={async () => {
+                  setShowConfiguratorModal(false);
+                  setIsPlacingOrder(true);
+
                   if (!pendingPayload) return;
                   const newId = uuidv4();
                   const docRef = doc(db, "room_configurator", String(newId));
