@@ -1055,44 +1055,8 @@ export const AllSummury: React.FC<{
           </div>
         </div>
         <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4 inner-room-block px-8">
-          <h4 className="text-darkBlack font-bold text-xl uppercase">
-            Oppbygging innervegg
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Innervegger?.Innervegger?.type)}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Beskriv hvilke vegger dette gjelder
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Innervegger?.Innervegger?.colorCode)}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4">
             {rooms &&
               rooms.length > 0 &&
               rooms.map((room: any, roomIndex: number) => (
@@ -1102,7 +1066,55 @@ export const AllSummury: React.FC<{
                       room.rooms.length > 0 &&
                       room.rooms.map((innerRoom: any, index: number) => {
                         return (
-                          <div key={index} className="">
+                          <div key={index} className="inner-room-block px-8">
+                            {index === 0 && roomIndex === 0 && (
+                              <>
+                                <h4 className="text-darkBlack font-bold text-xl uppercase">
+                                  Oppbygging innervegg
+                                </h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                  <div className="flex flex-col gap-1.5">
+                                    {loading ? (
+                                      <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                                    ) : (
+                                      <p className="text-secondary text-base">
+                                        Velg ett alternativ
+                                      </p>
+                                    )}
+                                    {loading ? (
+                                      <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                                    ) : (
+                                      <p className="text-darkBlack text-lg">
+                                        {displayValue(
+                                          roomsData?.Innervegger?.Innervegger
+                                            ?.type
+                                        )}
+                                      </p>
+                                    )}
+                                  </div>
+                                  <div className="flex flex-col gap-1.5">
+                                    {loading ? (
+                                      <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                                    ) : (
+                                      <p className="text-secondary text-base">
+                                        Beskriv hvilke vegger dette gjelder
+                                      </p>
+                                    )}
+                                    {loading ? (
+                                      <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                                    ) : (
+                                      <p className="text-darkBlack text-lg">
+                                        {displayValue(
+                                          roomsData?.Innervegger?.Innervegger
+                                            ?.colorCode
+                                        )}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="border-t border-[#EBEBEB] w-full my-4"></div>
+                              </>
+                            )}
                             {index === 0 && (
                               <h3 className="mb-4 text-darkBlack text-lg font-medium">
                                 {room?.title}
@@ -1139,8 +1151,19 @@ export const AllSummury: React.FC<{
                                           return (
                                             <div
                                               key={prodIndex}
-                                              className="flex flex-col"
+                                              className="flex gap-2 items-center"
                                             >
+                                              {/* {prod?.Hovedbilde?.[0] ? (
+                                                <div className="w-[100px]">
+                                                  <img
+                                                    src={`${prod?.Hovedbilde?.[0]}`}
+                                                    alt="floor"
+                                                    className="w-[100px] h-[76px] border border-[#EFF1F5] rounded-[4px]"
+                                                  />
+                                                </div>
+                                              ) : (
+                                                <div className="w-[100px] h-[76px] bg-[#EFF1F5] rounded-[4px]"></div>
+                                              )} */}
                                               <div>
                                                 <h4 className="text-lg font-medium text-black mb-0.5">
                                                   {prod.categoryName}
