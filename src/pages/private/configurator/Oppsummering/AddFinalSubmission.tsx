@@ -238,6 +238,148 @@ export const AddFinalSubmission: React.FC<{
         setIsExporting(false);
       }
 
+      // if (data.exportType === "PDF") {
+      //   setIsExporting(true);
+      //   const element = previewRef.current;
+      //   if (!element) throw new Error("Preview element not found");
+
+      //   // Wait for all images (including Firebase Storage) to load
+      //   const images = element.querySelectorAll("img");
+      //   await Promise.all(
+      //     Array.from(images).map((img) => {
+      //       if (img.src.startsWith("https://firebasestorage.googleapis.com")) {
+      //         img.crossOrigin = "anonymous";
+      //       }
+      //       return img.complete
+      //         ? Promise.resolve()
+      //         : new Promise((resolve) => {
+      //             img.onload = img.onerror = resolve;
+      //           });
+      //     })
+      //   );
+
+      //   const pdf: any = new jsPDF("p", "mm", "a4");
+      //   const pdfWidth = pdf.internal.pageSize.getWidth();
+      //   const pdfHeight = pdf.internal.pageSize.getHeight();
+      //   const marginTop = 10;
+      //   const marginLeft = 0;
+      //   const marginBottom = 15;
+      //   const usableWidth = pdfWidth;
+
+      //   let currentY = marginTop;
+
+      //   const innerRoomElements = element.querySelectorAll(".inner-room-block");
+
+      //   for (let i = 0; i < innerRoomElements.length; i++) {
+      //     const innerRoomEl: any = innerRoomElements[i];
+
+      //     // Render the entire block to canvas
+      //     const roomCanvas = await html2canvas(innerRoomEl, {
+      //       scale: 2,
+      //       useCORS: true,
+      //     });
+      //     const roomImgData = roomCanvas.toDataURL("image/jpeg", 0.6);
+      //     const imgProps = pdf.getImageProperties(roomImgData);
+      //     const imgHeight = (imgProps.height * usableWidth) / imgProps.width;
+
+      //     if (currentY + imgHeight > pdfHeight - marginBottom) {
+      //       pdf.addPage();
+      //       currentY = marginTop;
+      //     }
+
+      //     pdf.addImage(
+      //       roomImgData,
+      //       "JPEG",
+      //       marginLeft,
+      //       currentY,
+      //       usableWidth,
+      //       imgHeight
+      //     );
+      //     currentY += imgHeight + 5;
+
+      //     // ✅ Now explicitly handle Firebase image inside, safely
+      //     try {
+      //       const imageElement = innerRoomEl.querySelector("img");
+      //       if (
+      //         imageElement &&
+      //         imageElement.src.startsWith(
+      //           "https://firebasestorage.googleapis.com"
+      //         )
+      //       ) {
+      //         const image = new Image();
+      //         image.crossOrigin = "anonymous";
+      //         image.src = imageElement.src;
+
+      //         await new Promise((resolve: any) => {
+      //           image.onload = resolve;
+      //           image.onerror = () => {
+      //             console.warn(
+      //               "Failed to load Firebase image (will skip):",
+      //               imageElement.src
+      //             );
+      //             resolve();
+      //           };
+      //         });
+
+      //         // Only attempt if we have valid dimensions
+      //         if (image.width && image.height) {
+      //           const tempCanvas = document.createElement("canvas");
+      //           tempCanvas.width = image.width;
+      //           tempCanvas.height = image.height;
+      //           const ctx = tempCanvas.getContext("2d");
+      //           ctx?.drawImage(image, 0, 0);
+
+      //           const imgDataURL = tempCanvas.toDataURL("image/jpeg", 0.8);
+      //           const imgManualProps = pdf.getImageProperties(imgDataURL);
+      //           const imgManualHeight =
+      //             (imgManualProps.height * usableWidth) / imgManualProps.width;
+
+      //           if (currentY + imgManualHeight > pdfHeight - marginBottom) {
+      //             pdf.addPage();
+      //             currentY = marginTop;
+      //           }
+
+      //           pdf.addImage(
+      //             imgDataURL,
+      //             "JPEG",
+      //             marginLeft,
+      //             currentY,
+      //             usableWidth,
+      //             imgManualHeight
+      //           );
+      //           currentY += imgManualHeight + 5;
+      //         } else {
+      //           console.warn(
+      //             "Firebase image loaded but has invalid dimensions, skipping:",
+      //             imageElement.src
+      //           );
+      //         }
+      //       }
+      //     } catch (err) {
+      //       console.error(
+      //         "Error adding Firebase image to PDF (will skip):",
+      //         err
+      //       );
+      //     }
+      //   }
+
+      //   // ✅ Add page numbers
+      //   const totalPages = pdf.internal.getNumberOfPages();
+      //   for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+      //     pdf.setPage(pageNum);
+      //     pdf.setFontSize(10);
+      //     pdf.text(
+      //       `Page ${pageNum} of ${totalPages}`,
+      //       pdfWidth / 2,
+      //       pdfHeight - 5,
+      //       { align: "center" }
+      //     );
+      //   }
+
+      //   pdf.save(`preview-${Date.now()}.pdf`);
+      //   setIsExporting(false);
+      // }
+
       if (data.exportType === "PPT") {
         setIsExporting(true);
         const exportToPpt = async () => {

@@ -1162,7 +1162,16 @@ export const AllSummury: React.FC<{
                                                   />
                                                 </div>
                                               ) : (
-                                                <div className="w-[100px] h-[76px] bg-[#EFF1F5] rounded-[4px]"></div>
+                                                // <div className="w-[100px] h-[76px] bg-[#EFF1F5] rounded-[4px]"></div>
+                                                <div className="w-[100px]">
+                                                  <img
+                                                    src={
+                                                      "https://firebasestorage.googleapis.com/v0/b/l-plot.firebasestorage.app/o/images%2F1750687902123_Boligpartner%20(1).png?alt=media&token=42303718-f3a6-4b4d-a1c6-2b948e5df40a"
+                                                    }
+                                                    alt="floor"
+                                                    className="w-[100px] h-[76px] border border-[#EFF1F5] rounded-[4px]"
+                                                  />
+                                                </div>
                                               )} */}
                                               <div>
                                                 <h4 className="text-lg font-medium text-black mb-0.5">
