@@ -964,7 +964,7 @@ export const OppsummeringData: React.FC<{
                     </svg>
                   </div>
                 </label>
-                Portåpner
+                Heises på tak
               </div>
             </div>
             <div className="border-t border-[#EBEBEB] w-full"></div>
