@@ -51,7 +51,7 @@ export const ExportView: React.FC<{
                                 </p>
                                 <p className="text-darkBlack">
                                   <span className="font-semibold">
-                                    Kundenummer:
+                                    BP prosjektnummer:
                                   </span>{" "}
                                   {kundeInfo?.Kundenummer}
                                 </p>

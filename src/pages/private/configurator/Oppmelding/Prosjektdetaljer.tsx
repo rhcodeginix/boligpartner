@@ -42,7 +42,7 @@ import { Spinner } from "../../../../components/Spinner";
 
 const formSchema = z
   .object({
-    Kundenr: z.number({ required_error: "Kundenr er påkrevd." }),
+    Kundenr: z.number({ required_error: "BP prosjektnummer er påkrevd." }),
     Tiltakshaver: z.string({ required_error: "Tiltakshaver er påkrevd." }),
     Byggeadresse: z.string({ required_error: "Byggeadresse er påkrevd." }),
     Postnr: z.string({ required_error: "Postnr er påkrevd." }),
@@ -384,12 +384,12 @@ export const Prosjektdetaljer = forwardRef(
                               fieldState.error ? "text-red" : "text-black"
                             } mb-[6px] text-sm`}
                           >
-                            Kundenr*
+                            BP prosjektnummer*
                           </p>
                           <FormControl>
                             <div className="relative">
                               <Input
-                                placeholder="Skriv inn Kundenr"
+                                placeholder="Skriv inn BP prosjektnummer"
                                 {...field}
                                 className={`bg-white rounded-[8px] border text-black
                                           ${

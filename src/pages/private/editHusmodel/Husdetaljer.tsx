@@ -58,7 +58,7 @@ const formSchema = z.object({
     .email({ message: "Vennligst skriv inn en gyldig e-postadresse." })
     .min(1, { message: "E-posten må være på minst 2 tegn." }),
   Kundenummer: z.string().min(1, {
-    message: "Kundenummer må bestå av minst 2 tegn.",
+    message: "BP prosjektnummer må bestå av minst 2 tegn.",
   }),
   Postnr: z.string().optional(),
   Poststed: z.string().optional(),
@@ -445,12 +445,12 @@ export const Husdetaljer: React.FC<{
                             fieldState.error ? "text-red" : "text-black"
                           } mb-[6px] text-sm font-medium`}
                         >
-                          Kundenummer
+                          BP prosjektnummer
                         </p>
                         <FormControl>
                           <div className="relative">
                             <Input
-                              placeholder="Skriv inn Kundenummer"
+                              placeholder="Skriv inn BP prosjektnummer"
                               {...field}
                               className={`bg-white rounded-[8px] border text-black
                                           ${

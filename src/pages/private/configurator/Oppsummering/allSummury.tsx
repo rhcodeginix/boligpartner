@@ -54,7 +54,7 @@ export const AllSummury: React.FC<{
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
               ) : (
-                <p className="text-secondary text-base">Kundenr</p>
+                <p className="text-secondary text-base">BP prosjektnummer</p>
               )}
               {loading ? (
                 <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>

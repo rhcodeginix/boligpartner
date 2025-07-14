@@ -53,7 +53,7 @@ export const ExportViewData: React.FC<{
               {kundeInfo?.Kundenavn}
             </p>
             <p className="text-darkBlack">
-              <span className="font-semibold">Kundenummer:</span>{" "}
+              <span className="font-semibold">BP prosjektnummer:</span>{" "}
               {kundeInfo?.Kundenummer}
             </p>
             {kundeInfo?.Serie && (

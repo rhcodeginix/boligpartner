@@ -61,7 +61,7 @@ const formSchema = z.object({
   Serie: z.string({
     required_error: "Serie must må spesifiseres.",
   }),
-  Kundenummer: z.number({ required_error: "Kundenummer er påkrevd." }),
+  Kundenummer: z.number({ required_error: "BP prosjektnummer er påkrevd." }),
   Husmodell: z.string({
     required_error: "Husmodell må spesifiseres.",
   }),

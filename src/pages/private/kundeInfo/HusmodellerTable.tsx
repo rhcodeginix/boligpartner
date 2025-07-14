@@ -155,7 +155,7 @@ export const HusmodellerTable = () => {
       // },
       {
         accessorKey: "Kundenummer",
-        header: "Kundenummer",
+        header: "BP prosjektnummer",
         cell: ({ row }) => (
           <p className="text-sm font-medium text-black w-max">
             {row.original.Kundenummer}

@@ -61,7 +61,7 @@ export const OppsummeringData: React.FC<{
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
-                  <p className="text-secondary text-xs">Kundenr</p>
+                  <p className="text-secondary text-xs">BP prosjektnummer</p>
                 )}
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
