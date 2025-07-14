@@ -116,7 +116,7 @@ export const Husmodeller = () => {
 
   return (
     <>
-      <div className="px-4 md:px-6 py-5 md:py-8 desktop:p-8 flex gap-3 items-center justify-between bg-lightPurple">
+      <div className="px-4 md:px-6 py-5 md:py-8 desktop:p-8 flex flex-col sm:flex-row gap-3 sm:items-center justify-between bg-lightPurple">
         <div>
           <h1 className="text-darkBlack font-medium text-2xl md:text-[28px] desktop:text-[32px] mb-2">
             Romskjema
@@ -140,7 +140,7 @@ export const Husmodeller = () => {
 
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)} isOpen={true}>
-          <div className="relative bg-white rounded-[12px] p-5 w-full sm:w-[90vw] max-w-[500px]">
+          <div className="relative bg-white rounded-[12px] p-4 sm:p-5 w-full sm:w-[90vw] max-w-[500px]">
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-3 right-3"
@@ -179,85 +179,6 @@ export const Husmodeller = () => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="relative w-full"
               >
-                {form.watch("TypeProsjekt") !== "Prosjekt" && (
-                  <>
-                    {currentTab === "models" && (
-                      <FormField
-                        control={form.control}
-                        name={`options`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                {houseModels
-                                  .filter(
-                                    (item: any) =>
-                                      item?.tag?.toLowerCase() ===
-                                      (form.watch("TypeProsjekt") &&
-                                        form
-                                          .watch("TypeProsjekt")
-                                          .toLowerCase())
-                                  )
-                                  .map((option: any, index: number) => {
-                                    const loaded = imageLoaded[index];
-                                    return (
-                                      <div
-                                        key={index}
-                                        className="relative cursor-pointer rounded-lg"
-                                        onClick={() => {
-                                          form.setValue("options", option.id);
-                                          form.setValue(
-                                            "VelgSerie",
-                                            option.husmodell_name
-                                          );
-                                          form.clearErrors("options");
-                                          form.clearErrors("VelgSerie");
-                                        }}
-                                      >
-                                        <div className="w-full h-[160px] mb-2.5 relative">
-                                          {!loaded && (
-                                            <div className="w-full h-full rounded-lg custom-shimmer"></div>
-                                          )}
-                                          {option?.photo && (
-                                            <img
-                                              src={option?.photo}
-                                              alt="house"
-                                              className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
-                                                loaded
-                                                  ? "opacity-100"
-                                                  : "opacity-0"
-                                              }`}
-                                              onLoad={() =>
-                                                handleImageLoad(index)
-                                              }
-                                              onError={() =>
-                                                handleImageLoad(index)
-                                              }
-                                              loading="lazy"
-                                            />
-                                          )}
-                                        </div>
-                                        <p className="mt-2">
-                                          {option?.husmodell_name}
-                                        </p>
-                                        {field.value === option.id && (
-                                          <div className="bg-white absolute top-2 right-2 h-7 w-7 rounded-full flex items-center justify-center">
-                                            <Check className="w-5 h-5 text-primary" />
-                                          </div>
-                                        )}
-                                      </div>
-                                    );
-                                  })}
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
-                  </>
-                )}
-
                 {currentTab === "type" && (
                   <FormField
                     control={form.control}
@@ -352,6 +273,86 @@ export const Husmodeller = () => {
                     )}
                   />
                 )}
+
+                {form.watch("TypeProsjekt") !== "Prosjekt" && (
+                  <>
+                    {currentTab === "models" && (
+                      <FormField
+                        control={form.control}
+                        name={`options`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <div className="grid grid-cols-2 gap-3">
+                                {houseModels
+                                  .filter(
+                                    (item: any) =>
+                                      item?.tag?.toLowerCase() ===
+                                      (form.watch("TypeProsjekt") &&
+                                        form
+                                          .watch("TypeProsjekt")
+                                          .toLowerCase())
+                                  )
+                                  .map((option: any, index: number) => {
+                                    const loaded = imageLoaded[index];
+                                    return (
+                                      <div
+                                        key={index}
+                                        className="relative cursor-pointer rounded-lg"
+                                        onClick={() => {
+                                          form.setValue("options", option.id);
+                                          form.setValue(
+                                            "VelgSerie",
+                                            option.husmodell_name
+                                          );
+                                          form.clearErrors("options");
+                                          form.clearErrors("VelgSerie");
+                                        }}
+                                      >
+                                        <div className="w-full h-[160px] mb-2.5 relative">
+                                          {!loaded && (
+                                            <div className="w-full h-full rounded-lg custom-shimmer"></div>
+                                          )}
+                                          {option?.photo && (
+                                            <img
+                                              src={option?.photo}
+                                              alt="house"
+                                              className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
+                                                loaded
+                                                  ? "opacity-100"
+                                                  : "opacity-0"
+                                              }`}
+                                              onLoad={() =>
+                                                handleImageLoad(index)
+                                              }
+                                              onError={() =>
+                                                handleImageLoad(index)
+                                              }
+                                              loading="lazy"
+                                            />
+                                          )}
+                                        </div>
+                                        <p className="mt-2">
+                                          {option?.husmodell_name}
+                                        </p>
+                                        {field.value === option.id && (
+                                          <div className="bg-white absolute top-2 right-2 h-7 w-7 rounded-full flex items-center justify-center">
+                                            <Check className="w-5 h-5 text-primary" />
+                                          </div>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                  </>
+                )}
+
                 <div className="flex mt-4 justify-end w-full gap-5 items-center left-0">
                   <div
                     onClick={() => {

@@ -187,7 +187,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .drawer.open {
   right: 0; /* Slide in from the right */
 }
-
+@media only screen and (max-width: 575px) {
+  .drawer {
+    right: -100%;
+    width: 100%;
+  }
+}
 /* Overlay background to darken the rest of the screen */
 .overlay {
   position: fixed;

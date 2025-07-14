@@ -255,14 +255,6 @@ export const Customization: React.FC<{
   ]);
   const [editSubCatIndex, setEditSubCatIndex] = useState<number | null>(null);
 
-  const handleToggleSubCategoryPopup = () => {
-    if (AddSubCategory) {
-      setAddSubCategory(false);
-    } else {
-      setAddSubCategory(true);
-    }
-  };
-
   const hovedkategorinavn = (() => {
     const categories =
       form.getValues("hovedkategorinavn")?.[activeTabData]?.Kategorinavn || [];
@@ -655,12 +647,12 @@ export const Customization: React.FC<{
       </Form>
 
       <Drawer isOpen={AddSubCategory} onClose={handleCloseSubCategoryDrawer}>
-        <h4 className="text-darkBlack font-medium text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-6">
+        <h4 className="text-darkBlack font-medium text-lg md:text-xl lg:text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-4 md:p-6">
           {editSubCatIndex !== null
             ? "Rediger underkategori"
             : "Legg til ny underkategori"}
           <X
-            onClick={handleCloseSubCategoryDrawer}
+            onClick={() => setAddSubCategory(false)}
             className="text-primary cursor-pointer"
           />
         </h4>
@@ -683,10 +675,10 @@ export const Customization: React.FC<{
         )}
       </Drawer>
       <Drawer isOpen={isProductDrawerOpen} onClose={handleproductDrawer}>
-        <h4 className="text-darkBlack font-medium text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-6">
+        <h4 className="text-darkBlack font-medium text-lg md:text-xl lg:text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-4 md:p-6">
           Legg til nye gulvfliser
           <X
-            onClick={handleToggleSubCategoryPopup}
+            onClick={() => setIsProductDrawerOpen(false)}
             className="text-primary cursor-pointer"
           />
         </h4>
@@ -711,10 +703,10 @@ export const Customization: React.FC<{
         isOpen={isEditProductDrawerOpen}
         onClose={handleEditproductDrawer}
       >
-        <h4 className="text-darkBlack font-medium text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-6">
+        <h4 className="text-darkBlack font-medium text-lg md:text-xl lg:text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-4 md:p-6">
           Legg til nye gulvfliser
           <X
-            onClick={handleEditproductDrawer}
+            onClick={() => setIsEditProductDrawerOpen(false)}
             className="text-primary cursor-pointer"
           />
         </h4>

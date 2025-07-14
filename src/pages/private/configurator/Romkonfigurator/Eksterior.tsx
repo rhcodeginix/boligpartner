@@ -505,26 +505,26 @@ export const Eksterior: React.FC<{
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div>
-            <div className="p-4">
+            <div className="pb-3 md:pb-4">
               <div
-                className="flex items-center gap-2.5 mb-2.5 cursor-pointer"
+                className="flex items-center gap-2 md:gap-2.5 mb-2.5 cursor-pointer"
                 onClick={() => {
                   setActiveTab(3);
                 }}
               >
-                <ArrowLeft className="text-purple" />
+                <ArrowLeft className="text-purple w-5 h-5 md:w-6 md:h-6" />
                 <span className="text-purple text-sm font-medium">
                   Tilbake til plantegning
                 </span>
               </div>
               <div className="flex items-center justify-between gap-2">
-                <h4 className="text-darkBlack font-semibold text-xl">
+                <h4 className="text-darkBlack font-semibold text-base md:text-lg lg:text-xl">
                   Legg til konfigurasjon for {labelName}
                 </h4>
               </div>
             </div>
             <div className="border-t border-gray2"></div>
-            <div className="p-4">
+            <div className="py-3 md:py-5">
               <div className="flex items-center gap-6 h-[48px] mb-8 border border-[#EFF1F5] rounded-lg bg-[#F9F9FB] p-2">
                 {hovedkategorinavn?.length > 0 && (
                   <div className="flex items-center gap-4 overflow-x-auto overflowXAuto">
@@ -581,29 +581,29 @@ export const Eksterior: React.FC<{
                 )}
 
                 {/* <div
-                  className="text-purple font-semibold text-sm flex items-center gap-1 cursor-pointer h-full whitespace-nowrap"
+                  className="text-purple font-semibold text-xs sm:text-sm flex items-center gap-1 cursor-pointer h-full whitespace-nowrap"
                   onClick={() => setAddSubCategory(true)}
                 >
-                  <Plus />
+                  <Plus className="w-4 h-4 md:w-6 md:h-6" />
                   Legg til produkt
                 </div> */}
               </div>
               {hovedkategorinavn.length > 0 && (
                 <>
                   <div className="flex items-center gap-3 justify-between mb-5">
-                    <h4 className="text-darkBlack text-base font-semibold">
+                    <h4 className="text-darkBlack text-sm md:text-base font-semibold">
                       {title}
                     </h4>
                     {/* {form.watch(
                       `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
                     ) !== "Text" && (
                       <div
-                        className="text-purple border-2 border-purple rounded-[40px] py-2 px-4 font-semibold text-base flex items-center gap-1 cursor-pointer h-full"
+                        className="text-purple border-2 border-purple rounded-[40px] py-2 px-3 md:px-4 font-semibold text-sm md:text-base flex items-center gap-1 cursor-pointer h-full"
                         onClick={() => {
                           setIsProductDrawerOpen(true);
                         }}
                       >
-                        <Plus />
+                        <Plus className="w-5 h-5 md:w-6 md:h-6" />
                         Legge til {title}
                       </div>
                     )} */}
@@ -710,7 +710,7 @@ export const Eksterior: React.FC<{
                       </div>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2 gap-2 items-start">
+                    <div className="flex flex-col sm:grid grid-cols-2 gap-2 sm:items-start">
                       {produkter?.map((product, index) => {
                         const isSelected = product?.isSelected;
 
@@ -809,7 +809,7 @@ export const Eksterior: React.FC<{
                                 )}
                                 <div className="w-full">
                                   <div className="flex items-center gap-2 justify-between">
-                                    <h4 className="text-darkBlack text-sm">
+                                    <h4 className="text-darkBlack text-sm break-all">
                                       {product?.Produktnavn}
                                     </h4>
                                     {product?.InfoText && (
@@ -1118,12 +1118,12 @@ export const Eksterior: React.FC<{
       </Form>
 
       <Drawer isOpen={AddSubCategory} onClose={handleToggleSubCategoryPopup}>
-        <h4 className="text-darkBlack font-medium text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-6">
+        <h4 className="text-darkBlack font-medium text-lg md:text-xl lg:text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-4 md:p-6">
           {editSubCatIndex !== null
             ? "Rediger underkategori"
             : "Legg til ny underkategori"}
           <X
-            onClick={handleToggleSubCategoryPopup}
+            onClick={() => setAddSubCategory(false)}
             className="text-primary cursor-pointer"
           />
         </h4>
@@ -1144,10 +1144,10 @@ export const Eksterior: React.FC<{
         />
       </Drawer>
       <Drawer isOpen={isProductDrawerOpen} onClose={handleproductDrawer}>
-        <h4 className="text-darkBlack font-medium text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-6">
+        <h4 className="text-darkBlack font-medium text-lg md:text-xl lg:text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-4 md:p-6">
           Legg til nye gulvfliser
           <X
-            onClick={handleToggleSubCategoryPopup}
+            onClick={() => setIsProductDrawerOpen(false)}
             className="text-primary cursor-pointer"
           />
         </h4>
@@ -1167,10 +1167,10 @@ export const Eksterior: React.FC<{
         />
       </Drawer>
       <Drawer isOpen={isView} onClose={handleproductViewDrawer}>
-        <h4 className="text-darkBlack font-semibold text-2xl flex items-center gap-2 justify-between p-6">
+        <h4 className="text-darkBlack font-medium text-lg md:text-xl lg:text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-4 md:p-6">
           Informasjon om {ViewSubCat?.Produktnavn}
           <X
-            onClick={handleproductViewDrawer}
+            onClick={() => setIsView(false)}
             className="text-primary cursor-pointer"
           />
         </h4>
@@ -1183,7 +1183,7 @@ export const Eksterior: React.FC<{
           setEditProductIndex(null);
         }}
       >
-        <h4 className="text-darkBlack font-semibold text-2xl flex items-center gap-2 justify-between p-6">
+        <h4 className="text-darkBlack font-medium text-lg md:text-xl lg:text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-4 md:p-6">
           Rediger produkt
           <X
             onClick={() => {

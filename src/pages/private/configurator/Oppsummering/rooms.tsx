@@ -232,10 +232,10 @@ export const Rooms: React.FC<{
       </div>
 
       <Drawer isOpen={FinalSubmission} onClose={handleFinalSubmissionPopup}>
-        <h4 className="text-darkBlack font-medium text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-6">
+        <h4 className="text-darkBlack font-medium text-lg md:text-xl lg:text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-4 md:p-6">
           Fullfør innsending av tilak
           <X
-            onClick={handleFinalSubmissionPopup}
+            onClick={() => setFinalSubmission(false)}
             className="text-primary cursor-pointer"
           />
         </h4>
