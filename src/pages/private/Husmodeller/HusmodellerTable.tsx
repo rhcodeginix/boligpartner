@@ -128,7 +128,7 @@ export const HusmodellerTable = () => {
         return item.KundeInfo.map((kunde: any) => ({
           ...kunde,
           photo: item.photo || null,
-          husmodell_name: item?.husmodell_name || null,
+          husmodell_name: kunde?.VelgSerie || item?.husmodell_name || null,
           parentId: item.id,
           createDataBy: item?.createDataBy || null,
           tag: item?.tag || null,

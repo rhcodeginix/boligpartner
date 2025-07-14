@@ -89,19 +89,19 @@ export const AddFinalSubmission: React.FC<{
     setIsSubmitLoading(true);
 
     try {
-      const husmodellDocRef = doc(db, "room_configurator", String(id));
+      const roomDocRef = doc(db, "room_configurator", String(id));
 
       const formatDate = (date: Date) => {
         return date
           .toLocaleString("sv-SE", { timeZone: "UTC" })
           .replace(",", "");
       };
-      const husmodellSnap = await getDoc(husmodellDocRef);
+      const roomSnap = await getDoc(roomDocRef);
 
-      if (!husmodellSnap.exists()) {
+      if (!roomSnap.exists()) {
         throw new Error("Document does not exist!");
       }
-      const existingData = husmodellSnap.data();
+      const existingData = roomSnap.data();
 
       const filteredData = removeUndefinedOrNull(data);
       const mergedData = {
@@ -109,9 +109,44 @@ export const AddFinalSubmission: React.FC<{
         FinalSubmission: filteredData,
         id: id,
         updatedAt: formatDate(new Date()),
+        VelgSerie: data.Serie,
+        Prosjektdetaljer: {
+          ...existingData.Prosjektdetaljer,
+          VelgSerie: data.Serie,
+        },
       };
 
-      await updateDoc(husmodellDocRef, mergedData);
+      if (roomsData?.houseId && roomsData?.kundeId) {
+        const husmodellDocRef = doc(
+          db,
+          "housemodell_configure_broker",
+          String(roomsData?.houseId)
+        );
+        const docSnap = await getDoc(husmodellDocRef);
+        if (!docSnap.exists()) {
+          throw new Error("Document does not exist!");
+        }
+        const existingDocData = docSnap.data();
+
+        const existingKundeInfo = existingDocData.KundeInfo || [];
+
+        const updatedKundeInfo = existingKundeInfo.map((kunde: any) => {
+          if (kunde.uniqueId === roomsData?.kundeId) {
+            return {
+              ...kunde,
+              VelgSerie: data.Serie,
+            };
+          }
+          return kunde;
+        });
+
+        await updateDoc(husmodellDocRef, {
+          KundeInfo: updatedKundeInfo,
+          updatedAt: new Date().toISOString(),
+        });
+      }
+      await updateDoc(roomDocRef, mergedData);
+
       onClose();
       toast.success("Lagret", {
         position: "top-right",

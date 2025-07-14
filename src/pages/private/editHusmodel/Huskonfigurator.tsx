@@ -822,12 +822,16 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                     await updateDoc(docRef, {
                       ...pendingPayload,
                       name: newConfiguratorName.trim(),
+                      houseId: id,
+                      kundeId: kundeId,
                     });
                   } else {
                     await setDoc(docRef, {
                       ...pendingPayload,
                       name: newConfiguratorName.trim(),
                       createdAt: formatDate(new Date()),
+                      houseId: id,
+                      kundeId: kundeId,
                     });
                   }
 
@@ -869,6 +873,13 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                   setShowConfiguratorModal(false);
                   setNewConfiguratorName("");
                   navigate(`/Room-Configurator/${newId}`);
+                  const currIndex = 0;
+                  const currVerticalIndex = 1;
+                  localStorage.setItem("currIndexBolig", currIndex.toString());
+                  localStorage.setItem(
+                    "currVerticalIndex",
+                    currVerticalIndex.toString()
+                  );
                   setIsPlacingOrder(false);
                 }}
               />
