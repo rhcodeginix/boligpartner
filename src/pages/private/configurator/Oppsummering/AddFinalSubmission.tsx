@@ -535,17 +535,20 @@ export const AddFinalSubmission: React.FC<{
     }
 
     if (
-      roomsData?.Prosjektdetaljer?.TypeProsjekt === "Bolig" ||
+      roomsData?.Prosjektdetaljer?.TypeProsjekt === "Bolig" ??
       roomsData?.TypeProsjekt === "Bolig"
     ) {
       const finalArray = ["Herskapelig", "Moderne", "Nostalgi", "Funkis"];
       setArray(finalArray);
     } else if (
-      roomsData?.Prosjektdetaljer?.TypeProsjekt === "Hytte" ||
+      roomsData?.Prosjektdetaljer?.TypeProsjekt === "Hytte" ??
       roomsData?.TypeProsjekt === "Hytte"
     ) {
       const finalArray = ["Tur", "V-serie", "Karakter", "Moderne"];
       setArray(finalArray);
+    } else {
+      form.resetField("Serie");
+      form.setValue("Serie", "");
     }
     const getData = async () => {
       const data = await fetchRoomData(id);
@@ -554,6 +557,14 @@ export const AddFinalSubmission: React.FC<{
         Object.entries(data?.FinalSubmission).forEach(([key, value]) => {
           if (value !== undefined && value !== null) {
             form.setValue(key as any, value);
+          }
+          if (key === "Serie" && value === "") {
+            const serieValue =
+              roomsData?.Prosjektdetaljer?.VelgSerie ?? roomsData?.VelgSerie;
+            form.setValue(
+              key,
+              serieValue && serieValue.trim() !== "" ? serieValue : undefined
+            );
           }
         });
       } else if (roomsData) {
@@ -670,56 +681,59 @@ export const AddFinalSubmission: React.FC<{
                 )}
               />
             </div>
-            <div>
-              <FormField
-                control={form.control}
-                name="Serie"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <p
-                      className={`${
-                        fieldState.error ? "text-red" : "text-black"
-                      } mb-[6px] text-sm`}
-                    >
-                      Serie:
-                    </p>
-                    <FormControl>
-                      <div className="relative">
-                        <Select
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                          }}
-                          value={field.value}
-                        >
-                          <SelectTrigger
-                            className={`bg-white rounded-[8px] border text-black
+            {(roomsData?.Prosjektdetaljer?.TypeProsjekt !== "Prosjekt" ??
+              roomsData?.TypeProsjekt !== "Prosjekt") && (
+              <div>
+                <FormField
+                  control={form.control}
+                  name="Serie"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <p
+                        className={`${
+                          fieldState.error ? "text-red" : "text-black"
+                        } mb-[6px] text-sm`}
+                      >
+                        Serie:
+                      </p>
+                      <FormControl>
+                        <div className="relative">
+                          <Select
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                            }}
+                            value={field.value}
+                          >
+                            <SelectTrigger
+                              className={`bg-white rounded-[8px] border text-black
                               ${
                                 fieldState?.error
                                   ? "border-red"
                                   : "border-gray1"
                               } `}
-                          >
-                            <SelectValue placeholder="Velg" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-white">
-                            <SelectGroup>
-                              {array?.map((item: any, index: number) => {
-                                return (
-                                  <SelectItem key={index} value={item}>
-                                    {item}
-                                  </SelectItem>
-                                );
-                              })}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                            >
+                              <SelectValue placeholder="Velg" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white">
+                              <SelectGroup>
+                                {array?.map((item: any, index: number) => {
+                                  return (
+                                    <SelectItem key={index} value={item}>
+                                      {item}
+                                    </SelectItem>
+                                  );
+                                })}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
             <div>
               <FormField
                 control={form.control}
