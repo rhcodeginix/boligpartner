@@ -367,7 +367,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           Her melder du opp huset til produksjon til BoligPartner.
         </p>
       </div>
-      <div className="px-4 md:px-6 desktop:px-8 my-12">
+      <div className="px-4 md:px-6 desktop:px-8 my-8 md:my-12">
         <VerticalWizard
           steps={wizardSteps}
           currentStep={currentStep}

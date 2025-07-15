@@ -126,12 +126,12 @@ export const GulvBjelkelagHimling = forwardRef(
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
-              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4] uppercase">
+              <div className="text-darkBlack font-semibold text-base md:text-lg p-3 md:p-5 border-b border-[#B9C0D4]">
                 Gulv OG bjelkelag
               </div>
-              <div className="p-4 md:p-5">
-                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5 items-center">
-                  <h4 className="text-darkBlack font-semibold col-span-3">
+              <div className="p-3 md:p-5">
+                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5 md:items-center">
+                  <h4 className="text-darkBlack font-semibold col-span-3 text-sm md:text-base">
                     Bjelkelag mellom etasjer
                   </h4>
                   <div className="col-span-3">
@@ -254,7 +254,7 @@ export const GulvBjelkelagHimling = forwardRef(
                     />
                   </div>
                   <div className="my-1 border-t border-[#B9C0D4] col-span-3"></div>
-                  <div className="col-span-3 text-darkBlack font-medium text-base">
+                  <div className="col-span-3 text-darkBlack font-medium text-sm md:text-base">
                     Loft
                   </div>
                   <div className="col-span-3">

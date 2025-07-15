@@ -131,11 +131,11 @@ export const Innervegger = forwardRef(
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
-              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4] uppercase">
+            <div className="text-darkBlack font-semibold text-base md:text-lg p-3 md:p-5 border-b border-[#B9C0D4]">
                 Oppbygging innervegg
               </div>
-              <div className="p-4 md:p-5">
-                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5 items-center">
+              <div className="p-3 md:p-5">
+                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5 md:items-center">
                   <div className="col-span-3">
                     <FormField
                       control={form.control}
@@ -207,7 +207,7 @@ export const Innervegger = forwardRef(
                     />
                   </div>
                   <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
-                  <h4 className="uppercase text-darkBlack font-semibold col-span-3">
+                  <h4 className="uppercase text-darkBlack font-semibold col-span-3 text-sm md:text-base">
                     ROMSKJEMA:
                   </h4>
 
@@ -219,7 +219,7 @@ export const Innervegger = forwardRef(
                             return (
                               <div
                                 key={index}
-                                className={`cursor-pointer w-max py-2 px-3 rounded-lg ${
+                                className={`cursor-pointer w-max text-sm md:text-base py-2 px-3 rounded-lg ${
                                   activeTab === room?.title
                                     ? "bg-white text-purple font-semibold"
                                     : "text-black"
@@ -239,21 +239,21 @@ export const Innervegger = forwardRef(
                         )}
                     </div>
                     <div className="border border-[#DCDFEA] rounded-lg">
-                      <h4 className="text-darkBlack font-semibold text-xl p-5 border-b border-[#DCDFEA]">
+                      <h4 className="text-darkBlack font-semibold text-base md:text-lg lg:text-xl p-3 md:p-5 border-b border-[#DCDFEA]">
                         Her følger oppsummering av {activeTab}
                       </h4>
-                      <div className="p-5">
+                      <div className="p-3 md:p-5">
                         {room && (
-                          <div className="flex flex-col gap-4">
+                          <div className="flex flex-col gap-3 md:gap-4">
                             {room.rooms && room.rooms.length > 0
                               ? room.rooms.map(
                                   (innerRoom: any, index: number) => {
                                     return (
                                       <div
                                         key={index}
-                                        className="flex flex-col gap-4 bg-gray3 p-4 rounded-lg"
+                                        className="flex flex-col gap-3 md:gap-4 bg-gray3 p-3 md:p-4 rounded-lg"
                                       >
-                                        <div className="text-black font-semibold text-lg">
+                                        <div className="text-black font-semibold text-base md:text-lg">
                                           {innerRoom?.name_no ||
                                             innerRoom?.name}
                                         </div>

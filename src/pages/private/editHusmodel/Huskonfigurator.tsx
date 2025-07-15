@@ -401,7 +401,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
       {isSubmitLoading && <Spinner />}
 
       <div className="px-4 md:px-6 py-5 md:py-6 desktop:p-8">
-        <h3 className="text-darkBlack text-2xl font-semibold mb-2">
+        <h3 className="text-darkBlack text-lg md:text-xl lg:text-2xl font-semibold mb-2">
           Last opp plantegningen din
         </h3>
         <p className="text-secondary text-sm md:text-base desktop:text-lg">
@@ -410,7 +410,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
       </div>
       <div className="px-4 md:px-6 py-5 md:py-6 desktop:p-8 mb-[100px]">
         <div
-          className="relative p-2 rounded-lg md:w-max"
+          className="relative p-2 rounded-lg w-max"
           style={{
             boxShadow: "0px 2px 4px -2px #1018280F, 0px 4px 8px -2px #1018281A",
           }}
@@ -425,14 +425,14 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
             <img src={Ic_upload_blue_img} alt="upload" />
             <div className="flex items-center justify-center flex-col gap-3">
               <div className="flex items-center gap-2 md:gap-3">
-                <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[32px] md:h-[36px] py-2 px-2 md:px-4 text-sm md:text-base">
+                <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[36px] py-2 px-3 md:px-4 text-sm md:text-base">
                   Bla gjennom
                 </span>
-                <p className="text-gray text-xs md:text-sm text-center truncate w-full">
+                <p className="text-gray text-xs sm:text-sm text-center truncate w-full">
                   Slipp filen her for å laste den opp
                 </p>
               </div>
-              <p className="text-gray text-xs md:text-sm truncate w-full text-center">
+              <p className="text-gray text-xs sm:text-sm truncate text-center">
                 Filformater: Kun JPEG, JPG, PNG, PDF maks 2 MB
               </p>
             </div>

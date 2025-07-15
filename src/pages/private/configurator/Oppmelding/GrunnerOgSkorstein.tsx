@@ -130,12 +130,12 @@ export const GrunnerOgSkorstein = forwardRef(
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
-              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4] uppercase">
+              <div className="text-darkBlack font-semibold text-base md:text-lg p-3 md:p-5 border-b border-[#B9C0D4]">
                 Grunnmur og pipe
               </div>
-              <div className="p-4 md:p-5">
-                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5 items-center">
-                  <div className="col-span-3 flex gap-4 md:gap-5">
+              <div className="p-3 md:p-5">
+                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5 md:items-center">
+                  <div className="col-span-3 flex flex-col md:flex-row gap-4 md:gap-5">
                     <div>
                       <FormField
                         control={form.control}
@@ -278,7 +278,7 @@ export const GrunnerOgSkorstein = forwardRef(
                     </div>
                   )}
                   <div className="border-t border-[#B9C0D4] col-span-3 my-1"></div>
-                  <h4 className="uppercase text-darkBlack font-semibold col-span-3">
+                  <h4 className="uppercase text-darkBlack font-semibold col-span-3 text-sm md:text-base">
                     PIPE OG ILDSTED
                   </h4>
                   <div>

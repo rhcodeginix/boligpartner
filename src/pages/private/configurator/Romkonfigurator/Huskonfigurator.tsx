@@ -331,7 +331,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
     <>
       {isSubmitLoading && <Spinner />}
 
-      <div className="bg-lightPurple px-8 py-3">
+      <div className="bg-lightPurple px-4 md:px-6 lg:px-8 py-3">
         <h3 className="text-darkBlack font-medium text-xl md:text-[24px] lg:text-[28px] desktop:text-[2rem] desktop:leading-[44.8px] mb-2">
           Oppmelding
         </h3>
@@ -346,18 +346,18 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           igangsette oppmeldingen»”
         </p>
       </div>
-      <div className="px-8 py-6">
-        <h3 className="text-darkBlack text-2xl font-semibold mb-2">
+      <div className="px-4 md:px-6 lg:px-8 py-6">
+        <h3 className="text-darkBlack text-lg md:text-xl lg:text-2xl font-semibold mb-2">
           Prosjektets plantegning
         </h3>
-        <p className="text-secondary text-lg">
+        <p className="text-secondary text-sm md:text-base desktop:text-lg">
           Her laster du opp plantegninger for hver etasje, og ved å trykke på
           “Neste” vil AI trekke ut alle rommene fra de opplastede
           plantegningene.
         </p>
       </div>
 
-      <div className="px-8 pb-[100px]">
+      <div className="px-4 md:px-6 lg:px-8 pb-[100px]">
         <div
           className="relative p-2 rounded-lg w-max"
           style={{
@@ -365,7 +365,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           }}
         >
           <div
-            className="border border-gray2 border-dashed rounded-lg px-3 flex-col items-center justify-center laptop:px-[42px] py-4 flex gap-6 cursor-pointer w-full"
+            className="border border-gray2 border-dashed rounded-lg px-2 md:px-3 flex-col items-center justify-center laptop:px-[42px] py-2 md:py-4 flex gap-3 md:gap-6 cursor-pointer w-full"
             onClick={handleClick}
             onDrop={handleDrop}
             onDragStart={handleDragOver}
@@ -373,15 +373,15 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           >
             <img src={Ic_upload_blue_img} alt="upload" />
             <div className="flex items-center justify-center flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[36px] py-2 px-4">
+              <div className="flex items-center gap-2 md:gap-3">
+                <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[36px] py-2 px-3 md:px-4 text-sm md:text-base">
                   Bla gjennom
                 </span>
-                <p className="text-gray text-sm text-center truncate w-full">
+                <p className="text-gray text-xs sm:text-sm text-center truncate w-full">
                   Slipp filen her for å laste den opp
                 </p>
               </div>
-              <p className="text-gray text-sm truncate w-full text-center">
+              <p className="text-gray text-xs sm:text-sm truncate text-center">
                 Filformater: Kun JPEG, JPG, PNG, PDF maks 2 MB
               </p>
             </div>
@@ -395,52 +395,50 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           </div>
         </div>
 
-        <div className="mt-8 flex justify-end">
+        <div className="mt-6 md:mt-8 flex justify-end">
           <Button
             text={isGridView ? "Bytt til listevisning" : "Bytt til gridvisning"}
-            className="border border-gray2 text-black text-base rounded-[40px] h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
+            className="border border-gray2 text-black text-sm md:text-base rounded-[40px] h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
             onClick={() => setIsGridView(!isGridView)}
           />
         </div>
         {isGridView ? (
-          <div className="grid grid-cols-3 gap-6 w-full mt-8">
-            {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6 w-full mt-6 md:mt-8">
+        {loading ? (
               <>
-                {Array.from({ length: 3 }, (_, i) => i + 1).map(
-                  (item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="relative shadow-shadow2 p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4"
-                      >
-                        <div className="flex gap-1.5 md:gap-2 items-center justify-between">
+                {Array.from({ length: 3 }, (_, i) => i + 1).map((_, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="relative shadow-shadow2 p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4"
+                    >
+                      <div className="flex gap-1.5 md:gap-2 items-center justify-between">
+                        <div
+                          className="w-[80px] h-[20px] rounded-lg custom-shimmer"
+                          style={{ borderRadius: "8px" }}
+                        ></div>
+                        <div className="flex items-center gap-2 md:gap-3">
                           <div
                             className="w-[80px] h-[20px] rounded-lg custom-shimmer"
                             style={{ borderRadius: "8px" }}
                           ></div>
-                          <div className="flex items-center gap-2 md:gap-3">
-                            <div
-                              className="w-[80px] h-[20px] rounded-lg custom-shimmer"
-                              style={{ borderRadius: "8px" }}
-                            ></div>
 
-                            <div
-                              className="w-[80px] h-[20px] rounded-lg custom-shimmer"
-                              style={{ borderRadius: "8px" }}
-                            ></div>
-                          </div>
-                        </div>
-
-                        <div className="w-full h-[200px] relative">
                           <div
-                            className="w-ull h-full rounded-lg custom-shimmer"
+                            className="w-[80px] h-[20px] rounded-lg custom-shimmer"
                             style={{ borderRadius: "8px" }}
                           ></div>
                         </div>
                       </div>
-                    );
-                  }
-                )}
+
+                      <div className="w-full h-[200px] relative">
+                        <div
+                          className="w-ull h-full rounded-lg custom-shimmer"
+                          style={{ borderRadius: "8px" }}
+                        ></div>
+                      </div>
+                    </div>
+                  );
+                })}
               </>
             ) : (
               <>

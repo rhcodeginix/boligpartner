@@ -98,15 +98,15 @@ export const AllRoomkonfigurator: React.FC = () => {
     <>
       {isSubmitLoading && <Spinner />}
 
-      <div className="py-4 px-4 md:px-6 lg:px-8 flex flex-col sm:flex-row justify-end gap-4">
+      <div className="py-4 px-4 md:px-6 lg:px-8 flex flex-col sm:flex-row justify-end gap-3 md:gap-4">
         <Button
           text={isGridView ? "Bytt til listevisning" : "Bytt til gridvisning"}
-          className="border border-gray2 text-black text-base rounded-[40px] h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
+          className="border border-gray2 text-black text-base rounded-[40px] h-[44px] md:h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
           onClick={() => setIsGridView(!isGridView)}
         />
         <Button
           text="Legg til ny romkonfigurator"
-          className="border border-purple bg-purple text-white text-base rounded-[40px] h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
+          className="border border-purple bg-purple text-white text-base rounded-[40px] h-[44px] md:h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
           onClick={() => {
             // setActiveTab(1);
             navigate("/Room-Configurator");
