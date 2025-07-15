@@ -203,7 +203,7 @@ export const ExportViewData: React.FC<{
           )}
           {roomsData?.createDataBy && (
             <p style={{ color: "#101828", fontSize: "20px" }}>
-              <span style={{ fontWeight: 600 }}>Office:</span>{" "}
+              <span style={{ fontWeight: 600 }}>Kontor:</span>{" "}
               {offices?.data?.name}
             </p>
           )}
