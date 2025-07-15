@@ -61,7 +61,7 @@ export const ExportViewData: React.FC<{
   };
 
   useEffect(() => {
-    if (roomsData) {
+    if (roomsData?.createDataBy?.office) {
       fetchOfficeData();
     }
   }, [roomsData]);
