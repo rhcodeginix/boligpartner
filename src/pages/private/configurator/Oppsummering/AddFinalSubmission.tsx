@@ -27,7 +27,7 @@ import { useLocation } from "react-router-dom";
 import { removeUndefinedOrNull } from "../Oppmelding/Yttervegger";
 import { toast } from "react-hot-toast";
 import { useEffect, useRef, useState } from "react";
-import jsPDF from "jspdf";
+// import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import PptxGenJS from "pptxgenjs";
 import * as XLSX from "xlsx";
@@ -211,66 +211,213 @@ export const AddFinalSubmission: React.FC<{
       //   setIsExporting(false);
       // }
 
+      // if (data.exportType === "PDF") {
+      //   setIsExporting(true);
+      //   const element = previewRef.current;
+      //   if (!element) throw new Error("Preview element not found");
+
+      //   const pdf: any = new jsPDF("p", "mm", "a4");
+      //   const pdfWidth = pdf.internal.pageSize.getWidth();
+      //   const pdfHeight = pdf.internal.pageSize.getHeight();
+      //   const marginTop = 10;
+      //   const marginLeft = 0;
+      //   const marginBottom = 15;
+      //   const usableWidth = pdfWidth;
+
+      //   let currentY = marginTop;
+
+      //   const innerRoomElements = element.querySelectorAll(".inner-room-block");
+
+      //   for (let i = 0; i < innerRoomElements.length; i++) {
+      //     const innerRoomEl: any = innerRoomElements[i];
+
+      //     const roomCanvas = await html2canvas(innerRoomEl, {
+      //       scale: 2,
+      //       useCORS: true,
+      //     });
+
+      //     const roomImgData = roomCanvas.toDataURL("image/jpeg", 0.6);
+      //     const imgProps = pdf.getImageProperties(roomImgData);
+      //     const imgHeight = (imgProps.height * usableWidth) / imgProps.width;
+
+      //     if (currentY + imgHeight > pdfHeight - marginBottom) {
+      //       pdf.addPage();
+      //       currentY = marginTop;
+      //     }
+
+      //     pdf.addImage(
+      //       roomImgData,
+      //       "JPEG",
+      //       marginLeft,
+      //       currentY,
+      //       usableWidth,
+      //       imgHeight
+      //     );
+
+      //     currentY += imgHeight + 5;
+      //   }
+
+      //   const totalPages = pdf.internal.getNumberOfPages();
+      //   for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+      //     pdf.setPage(pageNum);
+      //     pdf.setFontSize(10);
+      //     pdf.text(
+      //       `Page ${pageNum} of ${totalPages}`,
+      //       pdfWidth / 2,
+      //       pdfHeight - 5,
+      //       { align: "center" }
+      //     );
+      //   }
+
+      //   pdf.save(`preview-${Date.now()}.pdf`);
+      //   setIsExporting(false);
+      // }
+
       if (data.exportType === "PDF") {
-        setIsExporting(true);
-        const element = previewRef.current;
-        if (!element) throw new Error("Preview element not found");
+        const element = previewRef.current as HTMLElement | null;
+        if (!element) return;
 
-        const pdf: any = new jsPDF("p", "mm", "a4");
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        const marginTop = 10;
-        const marginLeft = 0;
-        const marginBottom = 15;
-        const usableWidth = pdfWidth;
+        const htmlDocument = `
+          <html>
+            <head>
+              <meta charset="UTF-8" />
+              <title>Export</title>
+              <style>
+              body {
+                font-family: "Inter", sans-serif !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-sizing: border-box;
+                list-style: none;
+              }
+              p {
+                margin: 0 !important;
+              }
+              
+              .upperCaseHeading {
+                color: #101828;
+                font-weight: 700;
+                font-size: 28px;
+                text-transform: uppercase;
+              }  
+              .sr-only {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                padding: 0;
+                margin: -1px;
+                overflow: hidden;
+                clip: rect(0, 0, 0, 0);
+                white-space: nowrap;
+                border: 0;
+              }
+            
+              .checkbox-box {
+                width: 1.25rem; /* 20px */
+                height: 1.25rem;
+                border: 2px solid #444CE7;
+                border-radius: 0.125rem; /* rounded-sm */
+              }
+            
+              .checkmark {
+                pointer-events: none;
+                position: absolute;
+                left: 0.125rem; /* 2px */
+                top: 0.125rem;
+                display: none;
+              }
+            
+              .checkmark-icon {
+                width: 1rem; /* 16px */
+                height: 1rem;
+                color: #444CE7;
+              }
+            
+              input:checked + .checkbox-box + .checkmark {
+                display: block;
+              }
+              .horizontal-divider {
+                width: 100%;
+                border-top: 1px solid #EBEBEB;
+              }           
+              .custom-grid {
+                display: grid;
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+                gap: 1rem;
+              }
+      
+              @media (min-width: 640px) {
+                .custom-grid {
+                  grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+              }
+      
+              @media (min-width: 768px) {
+                .custom-grid {
+                  grid-template-columns: repeat(3, minmax(0, 1fr));
+                }
+              }
+            </style>
+            </head>
+            <body>
+              ${element.outerHTML}
+            </body>
+          </html>
+        `;
 
-        let currentY = marginTop;
+        const htmlFile = new File([htmlDocument], "document.html", {
+          type: "text/html",
+        });
 
-        const innerRoomElements = element.querySelectorAll(".inner-room-block");
+        const formData = new FormData();
+        formData.append("File", htmlFile);
+        formData.append("FileName", "exported.pdf");
 
-        for (let i = 0; i < innerRoomElements.length; i++) {
-          const innerRoomEl: any = innerRoomElements[i];
+        try {
+          const response = await fetch(
+            "https://v2.convertapi.com/convert/html/to/pdf",
+            {
+              method: "POST",
+              headers: {
+                Authorization: "Bearer 7UNegFuNoAP66m9xpkbC4emhp5edf2p9",
+              },
+              body: formData,
+            }
+          );
 
-          const roomCanvas = await html2canvas(innerRoomEl, {
-            scale: 2,
-            useCORS: true,
-          });
-
-          const roomImgData = roomCanvas.toDataURL("image/jpeg", 0.6);
-          const imgProps = pdf.getImageProperties(roomImgData);
-          const imgHeight = (imgProps.height * usableWidth) / imgProps.width;
-
-          if (currentY + imgHeight > pdfHeight - marginBottom) {
-            pdf.addPage();
-            currentY = marginTop;
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error("ConvertAPI returned an error:", errorText);
+            throw new Error(
+              `HTTP error! status: ${response.status} - ${errorText}`
+            );
           }
 
-          pdf.addImage(
-            roomImgData,
-            "JPEG",
-            marginLeft,
-            currentY,
-            usableWidth,
-            imgHeight
-          );
+          const json = await response.json();
 
-          currentY += imgHeight + 5;
+          if (json.Files && json.Files[0]) {
+            const file = json.Files[0];
+            const base64 = file.FileData;
+            const fileName = file.FileName || `preview-${Date.now()}.pdf`;
+
+            const byteCharacters = atob(base64);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+              byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: "application/pdf" });
+
+            const link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        } catch (error) {
+          console.error("Error converting HTML to PDF:", error);
         }
-
-        const totalPages = pdf.internal.getNumberOfPages();
-        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-          pdf.setPage(pageNum);
-          pdf.setFontSize(10);
-          pdf.text(
-            `Page ${pageNum} of ${totalPages}`,
-            pdfWidth / 2,
-            pdfHeight - 5,
-            { align: "center" }
-          );
-        }
-
-        pdf.save(`preview-${Date.now()}.pdf`);
-        setIsExporting(false);
       }
 
       // if (data.exportType === "PDF") {

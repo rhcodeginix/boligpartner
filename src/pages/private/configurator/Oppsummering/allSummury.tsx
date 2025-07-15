@@ -30,890 +30,738 @@ export const AllSummury: React.FC<{
 
   return (
     <>
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-4 inner-room-block px-8">
-          <h4 className="text-darkBlack font-bold text-xl uppercase">
-            PROSJEKTDETALJER
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Type prosjekt</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Prosjektdetaljer?.TypeProsjekt)}
-                </p>
-              )}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 24,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          <h4 className="upperCaseHeading">PROSJEKTDETALJER</h4>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Type prosjekt
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Prosjektdetaljer?.TypeProsjekt)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">BP prosjektnummer</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Prosjektdetaljer?.Kundenr)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                BP prosjektnummer
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Prosjektdetaljer?.Kundenr)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Tiltakshaver</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Prosjektdetaljer?.Tiltakshaver)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Tiltakshaver</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Prosjektdetaljer?.Tiltakshaver)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Byggeadresse</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Prosjektdetaljer?.Byggeadresse)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Byggeadresse</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Prosjektdetaljer?.Byggeadresse)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Postnr</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Prosjektdetaljer?.Postnr)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Postnr</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Prosjektdetaljer?.Postnr)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Poststed</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Prosjektdetaljer?.Poststed)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Poststed</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Prosjektdetaljer?.Poststed)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Kommune</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Prosjektdetaljer?.Kommune)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Kommune</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Prosjektdetaljer?.Kommune)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Tlf. Mobil</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {(roomsData?.Prosjektdetaljer?.TelefonMobile &&
-                    formatPhoneNumber(
-                      roomsData?.Prosjektdetaljer?.TelefonMobile
-                    )) ??
-                    "-"}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Tlf. Mobil</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {(roomsData?.Prosjektdetaljer?.TelefonMobile &&
+                  formatPhoneNumber(
+                    roomsData?.Prosjektdetaljer?.TelefonMobile
+                  )) ??
+                  "-"}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Har kunden godkjent finansiering?
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Prosjektdetaljer?.Finansiering)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Har kunden godkjent finansiering?
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Prosjektdetaljer?.Finansiering)}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
             Serie og leveransebeskrivelse
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg serie</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Prosjektdetaljer?.VelgSerie)}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Velg serie</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Prosjektdetaljer?.VelgSerie)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Dato BoligPartner leveransebeskrivelse
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {(roomsData?.Prosjektdetaljer
-                    ?.DatoBoligPartnerLeveransebeskrivelse &&
-                    formatDate(
-                      roomsData?.Prosjektdetaljer
-                        ?.DatoBoligPartnerLeveransebeskrivelse
-                    )) ??
-                    "-"}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Dato BoligPartner leveransebeskrivelse
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {(roomsData?.Prosjektdetaljer
+                  ?.DatoBoligPartnerLeveransebeskrivelse &&
+                  formatDate(
+                    roomsData?.Prosjektdetaljer
+                      ?.DatoBoligPartnerLeveransebeskrivelse
+                  )) ??
+                  "-"}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
             Prosjekteringsunderlag
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Tegn.nummer</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Prosjektdetaljer?.TegnNummer)}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Tegn.nummer</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Prosjektdetaljer?.TegnNummer)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Signert 1:100 tegning datert
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {(roomsData?.Prosjektdetaljer?.SignertDato &&
-                    formatDate(roomsData?.Prosjektdetaljer?.SignertDato)) ??
-                    "-"}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Signert 1:100 tegning datert
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {(roomsData?.Prosjektdetaljer?.SignertDato &&
+                  formatDate(roomsData?.Prosjektdetaljer?.SignertDato)) ??
+                  "-"}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Gjeldende 1:50 tegning datert
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {(roomsData?.Prosjektdetaljer?.GjeldendeDato &&
-                    formatDate(roomsData?.Prosjektdetaljer?.GjeldendeDato)) ??
-                    "-"}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Gjeldende 1:50 tegning datert
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {(roomsData?.Prosjektdetaljer?.GjeldendeDato &&
+                  formatDate(roomsData?.Prosjektdetaljer?.GjeldendeDato)) ??
+                  "-"}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Situasjonsplan (dato)
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {(roomsData?.Prosjektdetaljer?.Situasjonsplan &&
-                    formatDate(roomsData?.Prosjektdetaljer?.Situasjonsplan)) ??
-                    "-"}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Situasjonsplan (dato)
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {(roomsData?.Prosjektdetaljer?.Situasjonsplan &&
+                  formatDate(roomsData?.Prosjektdetaljer?.Situasjonsplan)) ??
+                  "-"}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Kalkyledato</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {(roomsData?.Prosjektdetaljer?.Kalkyledato &&
-                    formatDate(roomsData?.Prosjektdetaljer?.Kalkyledato)) ??
-                    "-"}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Kalkyledato</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {(roomsData?.Prosjektdetaljer?.Kalkyledato &&
+                  formatDate(roomsData?.Prosjektdetaljer?.Kalkyledato)) ??
+                  "-"}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Type kalkyle</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Prosjektdetaljer?.TypeKalkyle)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Type kalkyle</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Prosjektdetaljer?.TypeKalkyle)}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
             Leveransedetaljer
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Ønsket leveranseuke for første utkjøring
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Prosjektdetaljer
-                      ?.ØnsketLeveranseukeForFørsteKtkjøring
-                  )}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Ønsket leveranseuke for første utkjøring
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Prosjektdetaljer
+                    ?.ØnsketLeveranseukeForFørsteKtkjøring
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Takstoler leveres uke
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Prosjektdetaljer?.TakstolerLeveresUke
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Takstoler leveres uke
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Prosjektdetaljer?.TakstolerLeveresUke)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Vinduer leveres uke</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Prosjektdetaljer?.VinduerLeveresUke)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Vinduer leveres uke
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Prosjektdetaljer?.VinduerLeveresUke)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Vedlegg til kontrakt datert
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {(roomsData?.Prosjektdetaljer?.VedleggTilKontraktDatert &&
-                    formatDate(
-                      roomsData?.Prosjektdetaljer?.VedleggTilKontraktDatert
-                    )) ??
-                    "-"}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Vedlegg til kontrakt datert
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {(roomsData?.Prosjektdetaljer?.VedleggTilKontraktDatert &&
+                  formatDate(
+                    roomsData?.Prosjektdetaljer?.VedleggTilKontraktDatert
+                  )) ??
+                  "-"}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Bestillingsoversikt datert
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {(roomsData?.Prosjektdetaljer?.BestillingsoversiktDatert &&
-                    formatDate(
-                      roomsData?.Prosjektdetaljer?.BestillingsoversiktDatert
-                    )) ??
-                    "-"}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Bestillingsoversikt datert
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {(roomsData?.Prosjektdetaljer?.BestillingsoversiktDatert &&
+                  formatDate(
+                    roomsData?.Prosjektdetaljer?.BestillingsoversiktDatert
+                  )) ??
+                  "-"}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Kommentar til prosjekt- og leveransedetaljer
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Prosjektdetaljer
-                      ?.KommentarProsjektLeveransedetaljer
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til prosjekt- og leveransedetaljer
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Prosjektdetaljer
+                    ?.KommentarProsjektLeveransedetaljer
+                )}
+              </p>
             </div>
           </div>
         </div>
-        <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4 inner-room-block px-8">
-          <h4 className="text-darkBlack font-bold text-xl uppercase">
-            Grunnmur og pipe
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Type grunn og fundament
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.GrunnerOgSkorstein?.TypeGrunnFundament
-                  )}
-                </p>
-              )}
+        <div className="horizontal-divider"></div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          <h4 className="upperCaseHeading">Grunnmur og pipe</h4>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Type grunn og fundament
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.GrunnerOgSkorstein?.TypeGrunnFundament
+                )}
+              </p>
             </div>
             {roomsData?.GrunnerOgSkorstein?.TypeGrunnFundament ===
               "Sokkel/kjeller" && (
-              <div className="flex flex-col gap-1.5">
-                {loading ? (
-                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-                ) : (
-                  <p className="text-secondary text-base">Type grunnmur</p>
-                )}
-                {loading ? (
-                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-                ) : (
-                  <p className="text-darkBlack text-lg">
-                    {displayValue(roomsData?.GrunnerOgSkorstein?.TypeGrunnmur)}
-                  </p>
-                )}
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+              >
+                <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                  Type grunnmur
+                </p>
+
+                <p style={{ fontSize: "24px", color: "#101828" }}>
+                  {displayValue(roomsData?.GrunnerOgSkorstein?.TypeGrunnmur)}
+                </p>
               </div>
             )}
             {roomsData?.GrunnerOgSkorstein?.TypeGrunnmur === "Termomur" && (
-              <div className="flex flex-col gap-1.5">
-                {loading ? (
-                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-                ) : (
-                  <p className="text-secondary text-base">
-                    Detaljnummer for Termomur
-                  </p>
-                )}
-                {loading ? (
-                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-                ) : (
-                  <p className="text-darkBlack text-lg">
-                    {displayValue(roomsData?.GrunnerOgSkorstein?.detaljnummer)}
-                  </p>
-                )}
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+              >
+                <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                  Detaljnummer for Termomur
+                </p>
+
+                <p style={{ fontSize: "24px", color: "#101828" }}>
+                  {displayValue(roomsData?.GrunnerOgSkorstein?.detaljnummer)}
+                </p>
               </div>
             )}
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
             Pipe og Ildsted
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Skorstein type</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.GrunnerOgSkorstein?.SkorsteinType)}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Skorstein type
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.GrunnerOgSkorstein?.SkorsteinType)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Skorstein Enkel/Dobbel
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.GrunnerOgSkorstein?.SkorsteinEnkelDobbel
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Skorstein Enkel/Dobbel
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.GrunnerOgSkorstein?.SkorsteinEnkelDobbel
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Skorstein Leveres av</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.GrunnerOgSkorstein?.SkorsteinLeveresAv
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Skorstein Leveres av
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.GrunnerOgSkorstein?.SkorsteinLeveresAv
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Ildsted Type</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.GrunnerOgSkorstein?.SkorsteinType)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Ildsted Type</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.GrunnerOgSkorstein?.SkorsteinType)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Ildsted leveres av</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.GrunnerOgSkorstein?.IldstedLeveresAv
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Ildsted leveres av
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.GrunnerOgSkorstein?.IldstedLeveresAv)}
+              </p>
             </div>
           </div>
         </div>
-        <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4 inner-room-block px-8">
-          <h4 className="text-darkBlack font-bold text-xl uppercase">
-            Gulv OG bjelkelag
-          </h4>
-          <div className="text-darkBlack font-medium text-lg">
+        <div className="horizontal-divider"></div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          <h4 className="upperCaseHeading">Gulv OG bjelkelag</h4>
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
             Bjelkelag mellom etasjer
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.GulvBjelkelagHimling?.BjelkelagMellomEtasjer
-                  )}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.GulvBjelkelagHimling?.BjelkelagMellomEtasjer
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Kommentar til etasjeskiller
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.GulvBjelkelagHimling?.KommentarEtasjeskiller
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til etasjeskiller
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.GulvBjelkelagHimling?.KommentarEtasjeskiller
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Bjelkelag forsterkes for påstøp i følgende rom
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.GulvBjelkelagHimling?.BjelkelagForsterkesFølgende
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Bjelkelag forsterkes for påstøp i følgende rom
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.GulvBjelkelagHimling?.BjelkelagForsterkesFølgende
+                )}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">Loft</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.GulvBjelkelagHimling?.Loft)}
-                </p>
-              )}
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+            Loft
+          </div>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.GulvBjelkelagHimling?.Loft)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Kommentar til loft</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.GulvBjelkelagHimling?.KommentarLoft)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til loft
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.GulvBjelkelagHimling?.KommentarLoft)}
+              </p>
             </div>
           </div>
         </div>
-        <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4 inner-room-block px-8">
-          <div className="flex flex-col gap-1">
-            <h4 className="text-darkBlack font-bold text-xl uppercase">
-              Yttervegger
-            </h4>
-            <p className="text-secondary text-base">
+        <div className="horizontal-divider"></div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            <h4 className="upperCaseHeading">Yttervegger</h4>
+            <p style={{ fontSize: "20px", color: "#5d6b98" }}>
               Oppbygging på yttervegg leveres med standard 198+48mm
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Kledningstype</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Yttervegger?.kledningstype)}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kledningstype
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Yttervegger?.kledningstype)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Skriv type</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Yttervegger?.kledningstypeText)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Skriv type</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Yttervegger?.kledningstypeText)}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">Overflater</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Yttervegger?.Overflater?.type)}
-                </p>
-              )}
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+            Overflater
+          </div>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Yttervegger?.Overflater?.type)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Beskriv eventuelle leveransedetaljer til overflater
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Yttervegger?.Overflater?.colorCode)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Beskriv eventuelle leveransedetaljer til overflater
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Yttervegger?.Overflater?.colorCode)}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">Garasje</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5 col-span-4">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Beskriv eventuelle leveransedetaljer på kledningstype og farge
-                  som avviker fra husleveransen
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Yttervegger?.Garasje)}
-                </p>
-              )}
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+            Garasje
+          </div>
+          <div className="custom-grid">
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "6px",
+                gridColumn: "span 4 / span 4",
+              }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Beskriv eventuelle leveransedetaljer på kledningstype og farge
+                som avviker fra husleveransen
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Yttervegger?.Garasje)}
+              </p>
             </div>
           </div>
         </div>
-        <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4 inner-room-block px-8">
-          <h4 className="text-darkBlack font-bold text-xl uppercase">
-            Tak og taktekking
-          </h4>
-          <div className="text-darkBlack font-medium text-lg">Undertak</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TakogTaktekkingTakogTaktekking?.Undertak
-                  )}
-                </p>
-              )}
+        <div className="horizontal-divider"></div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          <h4 className="upperCaseHeading">Tak og taktekking</h4>
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+            Undertak
+          </div>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TakogTaktekkingTakogTaktekking?.Undertak
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Kommentar til undertak
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TakogTaktekkingTakogTaktekking?.KommentarUndertak
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til undertak
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TakogTaktekkingTakogTaktekking?.KommentarUndertak
+                )}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">Taktekking</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TakogTaktekkingTakogTaktekking?.Taktekking?.type
-                  )}
-                </p>
-              )}
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+            Taktekking
+          </div>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TakogTaktekkingTakogTaktekking?.Taktekking?.type
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Beskriv type og farge
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TakogTaktekkingTakogTaktekking?.Taktekking
-                      ?.colorCode
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Beskriv type og farge
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TakogTaktekkingTakogTaktekking?.Taktekking
+                    ?.colorCode
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Takstein type</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinType
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Takstein type
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinType
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Takstein kode</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinKode
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Takstein kode
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinKode
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Takstein farge</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinFarge
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Takstein farge
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinFarge
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Takstein struktur</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinStruktur
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Takstein struktur
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinStruktur
+                )}
+              </p>
             </div>
-            <div className={`text-lg flex gap-2 items-center text-black`}>
-              <label className="relative">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                fontSize: "24px",
+                color: "#30374f",
+              }}
+            >
+              <label style={{ position: "relative" }}>
                 <input
                   type="checkbox"
                   id="TakogTaktekkingTakogTaktekking?.HeisesPåTak"
@@ -924,10 +772,10 @@ export const AllSummury: React.FC<{
                   readOnly
                   className="peer sr-only"
                 />
-                <div className="w-5 h-5 border-2 border-[#444CE7] rounded-sm"></div>
-                <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
+                <div className="checkbox-box"></div>
+                <div className="checkmark">
                   <svg
-                    className="w-4 h-4 text-[#444CE7]"
+                    className="checkmark-icon"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="3"
@@ -944,184 +792,216 @@ export const AllSummury: React.FC<{
               Heises på tak
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">Tak Annet</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Snøfangere</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TakogTaktekkingTakogTaktekking?.Snøfangere
-                  )}
-                </p>
-              )}
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+            Tak Annet
+          </div>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Snøfangere</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TakogTaktekkingTakogTaktekking?.Snøfangere
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Snøfangere farge</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TakogTaktekkingTakogTaktekking?.SnøfangereFarge
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Snøfangere farge
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TakogTaktekkingTakogTaktekking?.SnøfangereFarge
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Snøfangerkroker i grad
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TakogTaktekkingTakogTaktekking
-                      ?.SnøfangerkrokerIGrad
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Snøfangerkroker i grad
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TakogTaktekkingTakogTaktekking
+                    ?.SnøfangerkrokerIGrad
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Gradrenner/beslag farge
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TakogTaktekkingTakogTaktekking
-                      ?.GradrennerBeslagFarge
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Gradrenner/beslag farge
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TakogTaktekkingTakogTaktekking
+                    ?.GradrennerBeslagFarge
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Feieplatå</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TakogTaktekkingTakogTaktekking?.Feieplatå
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Feieplatå</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TakogTaktekkingTakogTaktekking?.Feieplatå
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Avløpslufter</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TakogTaktekkingTakogTaktekking?.Avløpslufter
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Avløpslufter</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TakogTaktekkingTakogTaktekking?.Avløpslufter
+                )}
+              </p>
             </div>
-            <div className="text-secondary text-base col-span-4">
+            <div
+              style={{
+                gridColumn: "span 4 / span 4",
+                fontSize: "20px",
+                color: "#5d6b98",
+              }}
+            >
               Ved innvendige nedløp må dette leveres av lokal rørlegger
             </div>
           </div>
         </div>
-        <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-4">
+        <div className="horizontal-divider"></div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          >
             {rooms &&
               rooms.length > 0 &&
               rooms.map((room: any, roomIndex: number) => (
                 <div key={roomIndex}>
-                  <div className="flex flex-col gap-4">
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "16px",
+                    }}
+                  >
                     {room.rooms &&
                       room.rooms.length > 0 &&
                       room.rooms.map((innerRoom: any, index: number) => {
                         return (
-                          <div key={index} className="inner-room-block px-8">
+                          <div key={index} className="inner-room-block">
                             {index === 0 && roomIndex === 0 && (
                               <>
-                                <h4 className="text-darkBlack font-bold text-xl uppercase">
+                                <h4 className="upperCaseHeading">
                                   Oppbygging innervegg
                                 </h4>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                  <div className="flex flex-col gap-1.5">
-                                    {loading ? (
-                                      <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-                                    ) : (
-                                      <p className="text-secondary text-base">
-                                        Velg ett alternativ
-                                      </p>
-                                    )}
-                                    {loading ? (
-                                      <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-                                    ) : (
-                                      <p className="text-darkBlack text-lg">
-                                        {displayValue(
-                                          roomsData?.Innervegger?.Innervegger
-                                            ?.type
-                                        )}
-                                      </p>
-                                    )}
+                                <div className="custom-grid">
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      gap: "6px",
+                                    }}
+                                  >
+                                    <p
+                                      style={{
+                                        fontSize: "20px",
+                                        color: "#5d6b98",
+                                      }}
+                                    >
+                                      Velg ett alternativ
+                                    </p>
+
+                                    <p
+                                      style={{
+                                        fontSize: "24px",
+                                        color: "#101828",
+                                      }}
+                                    >
+                                      {displayValue(
+                                        roomsData?.Innervegger?.Innervegger
+                                          ?.type
+                                      )}
+                                    </p>
                                   </div>
-                                  <div className="flex flex-col gap-1.5">
-                                    {loading ? (
-                                      <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-                                    ) : (
-                                      <p className="text-secondary text-base">
-                                        Beskriv hvilke vegger dette gjelder
-                                      </p>
-                                    )}
-                                    {loading ? (
-                                      <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-                                    ) : (
-                                      <p className="text-darkBlack text-lg">
-                                        {displayValue(
-                                          roomsData?.Innervegger?.Innervegger
-                                            ?.colorCode
-                                        )}
-                                      </p>
-                                    )}
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      gap: "6px",
+                                    }}
+                                  >
+                                    <p
+                                      style={{
+                                        fontSize: "20px",
+                                        color: "#5d6b98",
+                                      }}
+                                    >
+                                      Beskriv hvilke vegger dette gjelder
+                                    </p>
+
+                                    <p
+                                      style={{
+                                        fontSize: "24px",
+                                        color: "#101828",
+                                      }}
+                                    >
+                                      {displayValue(
+                                        roomsData?.Innervegger?.Innervegger
+                                          ?.colorCode
+                                      )}
+                                    </p>
                                   </div>
                                 </div>
-                                <div className="border-t border-[#EBEBEB] w-full my-4"></div>
+                                <div
+                                  className="horizontal-divider"
+                                  style={{ margin: "16px 0" }}
+                                ></div>
                               </>
                             )}
                             {index === 0 && (
-                              <h3 className="mb-4 text-darkBlack text-lg font-medium">
+                              <h3
+                                style={{
+                                  color: "#101828",
+                                  fontSize: "24px",
+                                  fontWeight: 500,
+                                }}
+                              >
                                 {room?.title}
                               </h3>
                             )}
-                            <div className="flex flex-col gap-3 bg-gray3 p-4 rounded-lg">
-                              <div className="text-black font-semibold text-lg">
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "12px",
+                                background: "#f9f9fb",
+                                padding: "16px",
+                                borderRadius: "8px",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  color: "#30374f",
+                                  fontSize: "24px",
+                                  fontWeight: 500,
+                                }}
+                              >
                                 {innerRoom?.name_no || innerRoom?.name}
                               </div>
                               {innerRoom?.Kategorinavn &&
@@ -1145,13 +1025,17 @@ export const AllSummury: React.FC<{
                                   });
 
                                   return (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 lg:gap-4">
+                                    <div className="custom-grid">
                                       {allSelectedProducts.map(
                                         (prod: any, prodIndex: number) => {
                                           return (
                                             <div
                                               key={prodIndex}
-                                              className="flex gap-2 items-center"
+                                              style={{
+                                                display: "flex",
+                                                gap: "8px",
+                                                alignItems: "center",
+                                              }}
                                             >
                                               {/* {prod?.Hovedbilde?.[0] ? (
                                                 <div className="w-[100px]">
@@ -1174,18 +1058,40 @@ export const AllSummury: React.FC<{
                                                 </div>
                                               )} */}
                                               <div>
-                                                <h4 className="text-lg font-medium text-black mb-0.5">
+                                                <div
+                                                  style={{
+                                                    color: "#30374f",
+                                                    fontSize: "24px",
+                                                    fontWeight: 500,
+                                                    marginBottom: "2px",
+                                                  }}
+                                                >
                                                   {prod.categoryName}
-                                                </h4>
-                                                <h3 className="text-secondary">
+                                                </div>
+                                                <div
+                                                  style={{
+                                                    color: "#5d6b98",
+                                                    fontSize: "20px",
+                                                  }}
+                                                >
                                                   {prod?.Produktnavn}{" "}
                                                   {prod?.customText && (
-                                                    <span className="text-darkBlack">
+                                                    <span
+                                                      style={{
+                                                        color: "#101828",
+                                                      }}
+                                                    >
                                                       ({prod?.customText})
                                                     </span>
                                                   )}
-                                                </h3>
-                                                <div className="text-darkBlack mt-0.5 text-base">
+                                                </div>
+                                                <div
+                                                  style={{
+                                                    color: "#101828",
+                                                    fontSize: "20px",
+                                                    marginTop: "2px",
+                                                  }}
+                                                >
                                                   {prod.comment}
                                                 </div>
                                               </div>
@@ -1205,657 +1111,539 @@ export const AllSummury: React.FC<{
               ))}
           </div>
         </div>
-        <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4 inner-room-block px-8">
-          <h4 className="text-darkBlack font-bold text-xl uppercase">DØRER</h4>
-          <div className="text-darkBlack font-medium text-lg">Inngangsdør</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.Inngangsdør?.type)}
-                </p>
-              )}
+        <div className="horizontal-divider"></div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          <h4 className="upperCaseHeading">DØRER</h4>
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+            Inngangsdør
+          </div>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.Inngangsdør?.type)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Skriv kode</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.Inngangsdør?.colorCode)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Skriv kode</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.Inngangsdør?.colorCode)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Dør</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.Inngangsdør?.dør)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Dør</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.Inngangsdør?.dør)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Dørfarge</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.Inngangsdør?.Dørfarge)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Dørfarge</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.Inngangsdør?.Dørfarge)}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">Andre valg</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Utforing farge</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.UtforingFarge)}
-                </p>
-              )}
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+            Andre valg
+          </div>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Utforing farge
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.UtforingFarge)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Slagretning tofløyet dør
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.SlagretningTofløyetDør)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Slagretning tofløyet dør
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.SlagretningTofløyetDør)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Sikkerhetslås type</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.SikkerhetslåsType)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Sikkerhetslås type
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.SikkerhetslåsType)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Tilleggslås type</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.TilleggslåsType)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Tilleggslås type
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.TilleggslåsType)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Kommentar til inngangsdør
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.KommentarInngangsdør)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til inngangsdør
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.KommentarInngangsdør)}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="flex flex-col gap-1">
-            <div className="text-darkBlack font-medium text-lg">Boddør</div>
-            <div className="text-darkBlack text-base">Ikke relevant</div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.Boddør?.type)}
-                </p>
-              )}
+          <div className="horizontal-divider"></div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            <div
+              style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}
+            >
+              Boddør
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Skriv fargekode</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.Boddør?.colorCode)}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Likelås med hoveddør</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.LikelåsMedHoveddør)}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Kommentar til boddør</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.KommentarBoddør)}
-                </p>
-              )}
+            <div style={{ color: "#101828", fontSize: "20px" }}>
+              Ikke relevant
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="flex flex-col gap-1">
-            <div className="text-darkBlack font-medium text-lg">
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.Boddør?.type)}
+              </p>
+            </div>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Skriv fargekode
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.Boddør?.colorCode)}
+              </p>
+            </div>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Likelås med hoveddør
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.LikelåsMedHoveddør)}
+              </p>
+            </div>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til boddør
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.KommentarBoddør)}
+              </p>
+            </div>
+          </div>
+          <div className="horizontal-divider"></div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            <div
+              style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}
+            >
               Balkong/Terrassedør
             </div>
-            <div className="text-darkBlack text-base">
+            <div style={{ color: "#101828", fontSize: "20px" }}>
               Standard hvitmalt utvendig/innvendig
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.BalkongTerrassedør?.BalkongTerrassedør
-                      ?.type
-                  )}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.BalkongTerrassedør?.BalkongTerrassedør?.type
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Dørfarge</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.BalkongTerrassedør?.BalkongTerrassedør
-                      ?.colorCode
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Dørfarge</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.BalkongTerrassedør?.BalkongTerrassedør
+                    ?.colorCode
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Utforing farge</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.BalkongTerrassedør?.UtforingFarge
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Utforing farge
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.BalkongTerrassedør?.UtforingFarge
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Slagretning tofløyet dør/skyveretning
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.BalkongTerrassedør?.SlagretningTofløyetDør
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Slagretning tofløyet dør/skyveretning
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.BalkongTerrassedør?.SlagretningTofløyetDør
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Med terskelforing</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.BalkongTerrassedør?.MedTerskelforing
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Med terskelforing
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.BalkongTerrassedør?.MedTerskelforing
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Likelås med hoveddør</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.BalkongTerrassedør?.LikelåsMedHoveddør
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Likelås med hoveddør
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.BalkongTerrassedør?.LikelåsMedHoveddør
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Utvendig/innvendig sylinder
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.BalkongTerrassedør
-                      ?.UtvendigInnvendigSylinder
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Utvendig/innvendig sylinder
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.BalkongTerrassedør
+                    ?.UtvendigInnvendigSylinder
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Kommentar til balkongdør
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.BalkongTerrassedør?.KommentarBalkongdør
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til balkongdør
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.BalkongTerrassedør?.KommentarBalkongdør
+                )}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
             Innvendige Dører
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.InnvendigeDører?.InnvendigeDører?.type
-                  )}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.InnvendigeDører?.InnvendigeDører?.type
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Dørfarge</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.InnvendigeDører?.InnvendigeDører
-                      ?.colorCode
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Dørfarge</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.InnvendigeDører?.InnvendigeDører?.colorCode
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Glassdør</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.InnvendigeDører?.Glassdør)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Glassdør</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.InnvendigeDører?.Glassdør)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Skyvedør med glass</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.InnvendigeDører?.SkyvedørMedGlass
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Skyvedør med glass
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.InnvendigeDører?.SkyvedørMedGlass
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Skyvedørskarm separat ordre
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {(roomsData?.Dører?.InnvendigeDører
-                    ?.SkyvedørskarmSeparatOrdre &&
-                    formatDate(
-                      roomsData?.Dører?.InnvendigeDører
-                        ?.SkyvedørskarmSeparatOrdre
-                    )) ??
-                    "-"}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Skyvedørskarm separat ordre
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {(roomsData?.Dører?.InnvendigeDører
+                  ?.SkyvedørskarmSeparatOrdre &&
+                  formatDate(
+                    roomsData?.Dører?.InnvendigeDører?.SkyvedørskarmSeparatOrdre
+                  )) ??
+                  "-"}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Utforing farge</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.InnvendigeDører?.UtforingFarge
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Utforing farge
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.InnvendigeDører?.UtforingFarge)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Slagretning tofløyet dør
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.InnvendigeDører?.SlagretningTofløyetDør
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Slagretning tofløyet dør
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.InnvendigeDører?.SlagretningTofløyetDør
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Dempelister</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.InnvendigeDører?.Dempelister)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Dempelister</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.InnvendigeDører?.Dempelister)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Terskeltype</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {roomsData?.Dører?.InnvendigeDører?.Terskeltype &&
-                  roomsData?.Dører?.InnvendigeDører?.Terskeltype.length > 0
-                    ? roomsData?.Dører?.InnvendigeDører?.Terskeltype.join(", ")
-                    : "-"}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Terskeltype</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {roomsData?.Dører?.InnvendigeDører?.Terskeltype &&
+                roomsData?.Dører?.InnvendigeDører?.Terskeltype.length > 0
+                  ? roomsData?.Dører?.InnvendigeDører?.Terskeltype.join(", ")
+                  : "-"}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Kommentar til terskeltype
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.InnvendigeDører?.TerskeltypeText
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til terskeltype
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.InnvendigeDører?.TerskeltypeText
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Hengsler</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.InnvendigeDører?.Hengsler)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Hengsler</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.InnvendigeDører?.Hengsler)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Spor for belegg</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.InnvendigeDører?.SporBelegg)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Spor for belegg
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.InnvendigeDører?.SporBelegg)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Kommentar til innvendige dører
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.InnvendigeDører
-                      ?.KommentarTilInnvendigeDører
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til innvendige dører
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.InnvendigeDører?.KommentarTilInnvendigeDører
+                )}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">Dørvridere</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.Dørvridere?.type)}
-                </p>
-              )}
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+            Dørvridere
+          </div>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.Dørvridere?.type)}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
             Dører i kjellerrom
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.DørerKjellerrom?.type)}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.DørerKjellerrom?.type)}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">Garasjeport</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.Garasjeport?.Garasjeport?.type
-                  )}
-                </p>
-              )}
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+            Garasjeport
+          </div>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.Garasjeport?.Garasjeport?.type)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5 col-span-3">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Beskriv her</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.Garasjeport?.Garasjeport?.colorCode
-                  )}
-                </p>
-              )}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "6px",
+                gridColumn: "span 3 / span 3",
+              }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Beskriv her</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.Garasjeport?.Garasjeport?.colorCode
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Bredde x høyde</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Dører?.Garasjeport?.BreddeXhøyde)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Bredde x høyde
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.Garasjeport?.BreddeXhøyde)}
+              </p>
             </div>
-            <div className={`text-lg flex gap-2 items-center text-black`}>
-              <label className="relative">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                fontSize: "24px",
+                color: "#30374f",
+              }}
+            >
+              <label style={{ position: "relative" }}>
                 <input
                   type="checkbox"
                   id="Garasjeport.Portåpner"
@@ -1863,10 +1651,10 @@ export const AllSummury: React.FC<{
                   readOnly
                   className="peer sr-only"
                 />
-                <div className="w-5 h-5 border-2 border-[#444CE7] rounded-sm"></div>
-                <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
+                <div className="checkbox-box"></div>
+                <div className="checkmark">
                   <svg
-                    className="w-4 h-4 text-[#444CE7]"
+                    className="checkmark-icon"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="3"
@@ -1882,106 +1670,97 @@ export const AllSummury: React.FC<{
               </label>
               Portåpner
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Micro-sender antall</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.Garasjeport?.MicroSenderAntall
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Micro-sender antall
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.Garasjeport?.MicroSenderAntall)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Fargekode på garasjeport
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.Dører?.Garasjeport?.FargekodePåGarasjeport
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Fargekode på garasjeport
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.Garasjeport?.FargekodePåGarasjeport
+                )}
+              </p>
             </div>
           </div>
         </div>
-        <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4 inner-room-block px-8">
-          <h4 className="text-darkBlack font-bold text-xl uppercase">
-            Vinduer
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Vinduer?.Vinduer?.type)}
-                </p>
-              )}
+        <div className="horizontal-divider"></div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          <h4 className="upperCaseHeading">Vinduer</h4>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Vinduer?.Vinduer?.type)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Skriv fargekode</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Vinduer?.Vinduer?.colorCode)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Skriv fargekode
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Vinduer?.Vinduer?.colorCode)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Alubeslått utvendig</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Vinduer?.AlubeslåttUtvendigText)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Alubeslått utvendig
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Vinduer?.AlubeslåttUtvendigText)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Utforing farge</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Vinduer?.UtforingFarge)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Utforing farge
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Vinduer?.UtforingFarge)}
+              </p>
             </div>
-            <div className={`text-lg flex gap-2 items-center text-black`}>
-              <label className="relative">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                fontSize: "24px",
+                color: "#30374f",
+              }}
+            >
+              <label style={{ position: "relative" }}>
                 <input
                   type="checkbox"
                   id="Vinduer.VinduerNedTilGulv"
@@ -1989,10 +1768,10 @@ export const AllSummury: React.FC<{
                   readOnly
                   className="peer sr-only"
                 />
-                <div className="w-5 h-5 border-2 border-[#444CE7] rounded-sm"></div>
-                <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
+                <div className="checkbox-box"></div>
+                <div className="checkmark">
                   <svg
-                    className="w-4 h-4 text-[#444CE7]"
+                    className="checkmark-icon"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="3"
@@ -2008,8 +1787,16 @@ export const AllSummury: React.FC<{
               </label>
               Vinduer ned til gulv
             </div>
-            <div className={`text-lg flex gap-2 items-center text-black`}>
-              <label className="relative">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                fontSize: "24px",
+                color: "#30374f",
+              }}
+            >
+              <label style={{ position: "relative" }}>
                 <input
                   type="checkbox"
                   id="Vinduer.HeltreUutforingPpristillegg"
@@ -2019,10 +1806,10 @@ export const AllSummury: React.FC<{
                   readOnly
                   className="peer sr-only"
                 />
-                <div className="w-5 h-5 border-2 border-[#444CE7] rounded-sm"></div>
-                <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
+                <div className="checkbox-box"></div>
+                <div className="checkmark">
                   <svg
-                    className="w-4 h-4 text-[#444CE7]"
+                    className="checkmark-icon"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="3"
@@ -2038,528 +1825,445 @@ export const AllSummury: React.FC<{
               </label>
               Heltre utforing (pristillegg)
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Foringer separat ordre
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {(roomsData?.Vinduer?.ForingerSeparatOrdre &&
-                    formatDate(roomsData?.Vinduer?.ForingerSeparatOrdre)) ??
-                    "-"}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Foringer separat ordre
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {(roomsData?.Vinduer?.ForingerSeparatOrdre &&
+                  formatDate(roomsData?.Vinduer?.ForingerSeparatOrdre)) ??
+                  "-"}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Kommentar til vindu</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Vinduer?.KommentarVindu)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til vindu
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Vinduer?.KommentarVindu)}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
+          <div className="horizontal-divider"></div>
+
           <div className="flex gap-8">
             <div>
-              <div className="text-darkBlack font-medium text-lg mb-4">
+              <div
+                style={{
+                  color: "#101828",
+                  marginBottom: "16px",
+                  fontSize: "24px",
+                  fontWeight: 500,
+                }}
+              >
                 Valg om soldemping
               </div>
-              <div className="flex flex-col gap-1.5">
-                {loading ? (
-                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-                ) : (
-                  <p className="text-secondary text-base">
-                    Ønsker soldemping i glass
-                  </p>
-                )}
-                {loading ? (
-                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-                ) : (
-                  <p className="text-darkBlack text-lg">
-                    {displayValue(
-                      roomsData?.Vinduer?.ØnskerSoldempingGlassText
-                    )}
-                  </p>
-                )}
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+              >
+                <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                  Ønsker soldemping i glass
+                </p>
+
+                <p style={{ fontSize: "24px", color: "#101828" }}>
+                  {displayValue(roomsData?.Vinduer?.ØnskerSoldempingGlassText)}
+                </p>
               </div>
             </div>
             <div>
-              <div className="text-darkBlack font-medium text-lg mb-4">
+              <div
+                style={{
+                  color: "#101828",
+                  marginBottom: "16px",
+                  fontSize: "24px",
+                  fontWeight: 500,
+                }}
+              >
                 Valg om screen
               </div>
-              <div className="flex flex-col gap-1.5">
-                {loading ? (
-                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-                ) : (
-                  <p className="text-secondary text-base">Ønsker screens</p>
-                )}
-                {loading ? (
-                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-                ) : (
-                  <p className="text-darkBlack text-lg">
-                    {displayValue(roomsData?.Vinduer?.ØnskerScreensText)}
-                  </p>
-                )}
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+              >
+                <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                  Ønsker screens
+                </p>
+
+                <p style={{ fontSize: "24px", color: "#101828" }}>
+                  {displayValue(roomsData?.Vinduer?.ØnskerScreensText)}
+                </p>
               </div>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
             Takvindu Velux
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Vinduer?.TakvinduVelux?.type)}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Vinduer?.TakvinduVelux?.type)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Utforing farge</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Vinduer?.TakvinduVeluxUtforingFarge)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Utforing farge
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Vinduer?.TakvinduVeluxUtforingFarge)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Kommentar til takvindu og eventuelt tilvalg
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Vinduer?.TakvinduVeluxKommentar)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til takvindu og eventuelt tilvalg
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Vinduer?.TakvinduVeluxKommentar)}
+              </p>
             </div>
           </div>
         </div>
-        <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4 inner-room-block px-8">
-          <h4 className="text-darkBlack font-bold text-xl uppercase">
-            Trapp og Luker
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.TrappogLuker?.Trapp?.type)}
-                </p>
-              )}
+        <div className="horizontal-divider"></div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          <h4 className="upperCaseHeading">Trapp og Luker</h4>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.TrappogLuker?.Trapp?.type)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Beskriv trappemodell</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.TrappogLuker?.Trapp?.colorCode)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Beskriv trappemodell
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.TrappogLuker?.Trapp?.colorCode)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Type trinn</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.TrappogLuker?.TypeTrinn)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Type trinn</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.TrappogLuker?.TypeTrinn)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Opptrinn</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.TrappogLuker?.Opptrinn)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Opptrinn</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.TrappogLuker?.Opptrinn)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Sidevanger</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {roomsData?.TrappogLuker?.Sidevanger ?? "-"}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Sidevanger</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {roomsData?.TrappogLuker?.Sidevanger ?? "-"}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Rekkverk</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.TrappogLuker?.Rekkverk)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Rekkverk</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.TrappogLuker?.Rekkverk)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Håndlist</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.TrappogLuker?.Håndlist)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Håndlist</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.TrappogLuker?.Håndlist)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Spiler</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.TrappogLuker?.Spiler)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Spiler</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.TrappogLuker?.Spiler)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Bodløsning i trapperom
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.TrappogLuker?.BodløsningTrapperom)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Bodløsning i trapperom
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.TrappogLuker?.BodløsningTrapperom)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Montering</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.TrappogLuker?.Montering)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Montering</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.TrappogLuker?.Montering)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Måltaking</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.TrappogLuker?.Måltaking)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Måltaking</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.TrappogLuker?.Måltaking)}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
             Isolerte inspeksjonsluker
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TrappogLuker?.IsolerteInspeksjonsluker
-                  )}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TrappogLuker?.IsolerteInspeksjonsluker
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Himling</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.TrappogLuker?.HimlingText)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Himling</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.TrappogLuker?.HimlingText)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Vegg</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.TrappogLuker?.VeggText)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Vegg</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.TrappogLuker?.VeggText)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Kommentar til inspeksjonsluker
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TrappogLuker?.KommentarInspeksjonsluker
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til inspeksjonsluker
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TrappogLuker?.KommentarInspeksjonsluker
+                )}
+              </p>
             </div>
           </div>
         </div>
-        <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4 inner-room-block px-8">
-          <h4 className="text-darkBlack font-bold text-xl uppercase">
-            Balkong & Terrasse
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Velg ett alternativ</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.BalkongTerrasse?.Rekkverk?.type)}
-                </p>
-              )}
+        <div className="horizontal-divider"></div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          <h4 className="upperCaseHeading">Balkong & Terrasse</h4>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Velg ett alternativ
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.BalkongTerrasse?.Rekkverk?.type)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5 col-span-3">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Beskriv type, modell og farge
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.BalkongTerrasse?.Rekkverk?.colorCode
-                  )}
-                </p>
-              )}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "6px",
+                gridColumn: "span 3 / span 3",
+              }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Beskriv type, modell og farge
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.BalkongTerrasse?.Rekkverk?.colorCode)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Ønsker megler</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.BalkongTerrasse?.ØnskerMeglerText)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Ønsker megler
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.BalkongTerrasse?.ØnskerMeglerText)}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
             Velg gulv balkong
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.BalkongTerrasse?.VelgGulvBalkong?.type
-                  )}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.BalkongTerrasse?.VelgGulvBalkong?.type
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Beskriv type og farge
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.BalkongTerrasse?.VelgGulvBalkong?.colorCode
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Beskriv type og farge
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.BalkongTerrasse?.VelgGulvBalkong?.colorCode
+                )}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">Platting</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Ønsker platting?</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.BalkongTerrasse?.ØnskerPlatting)}
-                </p>
-              )}
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+            Platting
+          </div>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Ønsker platting?
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.BalkongTerrasse?.ØnskerPlatting)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Beskrivelse platting</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.BalkongTerrasse?.BeskrivelsePlatting
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Beskrivelse platting
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.BalkongTerrasse?.BeskrivelsePlatting)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Fotskraperist</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.BalkongTerrasse?.Fotskraperist)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Fotskraperist
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.BalkongTerrasse?.Fotskraperist)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Kommentar til balkong og terrasse
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.BalkongTerrasse?.KommentarTerrasse)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til balkong og terrasse
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.BalkongTerrasse?.KommentarTerrasse)}
+              </p>
             </div>
           </div>
         </div>
-        <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4 inner-room-block px-8">
-          <h4 className="text-darkBlack font-bold text-xl uppercase">
-            Ventilasjon og Sentralstøvsuger
-          </h4>
-          <div className="text-darkBlack font-medium text-lg">Ventilasjon</div>
-          <div className={`text-lg flex gap-2 items-center text-black`}>
-            <label className="relative">
+        <div className="horizontal-divider"></div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          <h4 className="upperCaseHeading">Ventilasjon og Sentralstøvsuger</h4>
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+            Ventilasjon
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              fontSize: "24px",
+              color: "#30374f",
+            }}
+          >
+            <label style={{ position: "relative" }}>
               <input
                 type="checkbox"
                 id="VentilasjonSentralstøvsuger?.Ventilasjon"
@@ -2569,10 +2273,10 @@ export const AllSummury: React.FC<{
                 readOnly
                 className="peer sr-only"
               />
-              <div className="w-5 h-5 border-2 border-[#444CE7] rounded-sm"></div>
-              <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
+              <div className="checkbox-box"></div>
+              <div className="checkmark">
                 <svg
-                  className="w-4 h-4 text-[#444CE7]"
+                  className="checkmark-icon"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="3"
@@ -2588,191 +2292,168 @@ export const AllSummury: React.FC<{
             </label>
             Ikke relevant
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
             Fargeønske utvendig kombirist
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.VentilasjonSentralstøvsuger
-                      ?.FargeønskeUtvendigKombirist
-                  )}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.VentilasjonSentralstøvsuger
+                    ?.FargeønskeUtvendigKombirist
+                )}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
             Fargeønske innvendig ventiler
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.VentilasjonSentralstøvsuger
-                      ?.FargeønskeInnvendigVentiler
-                  )}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.VentilasjonSentralstøvsuger
+                    ?.FargeønskeInnvendigVentiler
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Kommentar til ventilasjon
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.VentilasjonSentralstøvsuger?.KommentarVentilasjon
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til ventilasjon
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.VentilasjonSentralstøvsuger?.KommentarVentilasjon
+                )}
+              </p>
             </div>
           </div>
-          <div className="border-t border-[#EBEBEB] w-full"></div>
-          <div className="text-darkBlack font-medium text-lg">
+          <div className="horizontal-divider"></div>
+
+          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
             Sentralstøvsuger
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.VentilasjonSentralstøvsuger?.Sentralstøvsuger
-                  )}
-                </p>
-              )}
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.VentilasjonSentralstøvsuger?.Sentralstøvsuger
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Antall sugekontakter</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.VentilasjonSentralstøvsuger?.AntallKontakter
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Antall sugekontakter
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.VentilasjonSentralstøvsuger?.AntallKontakter
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Sugebrett</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.VentilasjonSentralstøvsuger?.Sugebrett
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Sugebrett</p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.VentilasjonSentralstøvsuger?.Sugebrett
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Kommentar til sentralstøvsuger
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.VentilasjonSentralstøvsuger?.Kommentar
-                  )}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til sentralstøvsuger
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.VentilasjonSentralstøvsuger?.Kommentar
+                )}
+              </p>
             </div>
           </div>
         </div>
-        <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4 inner-room-block px-8">
-          <h4 className="text-darkBlack font-bold text-xl uppercase">
-            Brannvern
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Brannvern?.Brannvern)}
-                </p>
-              )}
+        <div className="horizontal-divider"></div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          <h4 className="upperCaseHeading">Brannvern</h4>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Brannvern?.Brannvern)}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">
-                  Kommentar til brannvern
-                </p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.Brannvern?.BrannvernKommentar)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til brannvern
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Brannvern?.BrannvernKommentar)}
+              </p>
             </div>
           </div>
         </div>
-        <div className="border-t border-[#EBEBEB] w-full"></div>
-        <div className="flex flex-col gap-4 inner-room-block px-8">
-          <h4 className="text-darkBlack font-bold text-xl uppercase">
-            Tekniske Installasjoner
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(
-                    roomsData?.TekniskeInstallasjoner?.TekniskeInstallasjoner
-                  )}
-                </p>
-              )}
+        <div className="horizontal-divider"></div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          <h4 className="upperCaseHeading">Tekniske Installasjoner</h4>
+          <div className="custom-grid">
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.TekniskeInstallasjoner?.TekniskeInstallasjoner
+                )}
+              </p>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-secondary text-base">Punkt (referanse)</p>
-              )}
-              {loading ? (
-                <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
-              ) : (
-                <p className="text-darkBlack text-lg">
-                  {displayValue(roomsData?.TekniskeInstallasjoner?.Punkt)}
-                </p>
-              )}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Punkt (referanse)
+              </p>
+
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.TekniskeInstallasjoner?.Punkt)}
+              </p>
             </div>
           </div>
         </div>

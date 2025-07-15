@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Ic_logo from "../../../../assets/images/Ic_logo.svg";
+// import Ic_logo from "../../../../assets/images/Ic_logo.svg";
 import { AllSummury } from "./allSummury";
 import { useLocation } from "react-router-dom";
 import { fetchRoomData } from "../../../../lib/utils";
@@ -38,42 +38,110 @@ export const ExportViewData: React.FC<{
     getData();
   }, [id]);
   return (
-    <div className="p-8">
-      <div className="inner-room-block px-8">
-        <div className="mb-5 flex items-center justify-between">
-          <h4 className="text-darkBlack font-semibold text-xl">
+    // <div className="p-8">
+    //   <div className="inner-room-block">
+    //     <div className="mb-5 flex items-center justify-between">
+    //       <h4 className="text-darkBlack font-semibold text-xl">
+    //         Her følger oppsummering
+    //       </h4>
+    //       {/* <img src={Ic_logo} alt="logo" className="w-[200px] lg:w-auto" /> */}
+    //     </div>
+    //     <div className="mb-5 flex items-center gap-2 justify-between">
+    //       <div className="flex flex-col gap-2">
+    //         <p className="text-darkBlack">
+    //           <span className="font-semibold">Kundenavn:</span>{" "}
+    //           {kundeInfo?.Kundenavn}
+    //         </p>
+    //         <p className="text-darkBlack">
+    //           <span className="font-semibold">BP prosjektnummer:</span>{" "}
+    //           {kundeInfo?.Kundenummer}
+    //         </p>
+    //         {kundeInfo?.Serie && (
+    //           <p className="text-darkBlack">
+    //             <span className="font-semibold">Serie:</span> {kundeInfo?.Serie}
+    //           </p>
+    //         )}
+    //         <p className="text-darkBlack">
+    //           <span className="font-semibold">Mobile:</span>{" "}
+    //           {kundeInfo?.mobile
+    //             ? formatPhoneNumber(kundeInfo?.mobile)
+    //             : kundeInfo?.mobileNummer &&
+    //               formatPhoneNumber(kundeInfo?.mobileNummer)}
+    //         </p>
+    //       </div>
+    //       {/* <img
+    //         src={roomsData?.image}
+    //         alt="room"
+    //         className="w-[120px] h-[120px]"
+    //       /> */}
+    //     </div>
+    //   </div>
+    //   <AllSummury roomsData={roomsData} />
+    // </div>
+    <div>
+      <div>
+        <div
+          style={{
+            marginBottom: "1.25rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <h4
+            style={{
+              color: "#101828",
+              fontWeight: 600,
+              fontSize: "28px",
+            }}
+          >
             Her følger oppsummering
           </h4>
-          <img src={Ic_logo} alt="logo" className="w-[200px] lg:w-auto" />
+          {/* <img src={Ic_logo} alt="logo" style={{ width: "200px" }} /> */}
         </div>
-        <div className="mb-5 flex items-center gap-2 justify-between">
-          <div className="flex flex-col gap-2">
-            <p className="text-darkBlack">
-              <span className="font-semibold">Kundenavn:</span>{" "}
+        <div
+          style={{
+            marginBottom: "1.25rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "0.5rem",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.5rem",
+            }}
+          >
+            <p style={{ color: "#101828", fontSize: "20px" }}>
+              <span style={{ fontWeight: 600 }}>Kundenavn:</span>{" "}
               {kundeInfo?.Kundenavn}
             </p>
-            <p className="text-darkBlack">
-              <span className="font-semibold">BP prosjektnummer:</span>{" "}
+            <p style={{ color: "#101828", fontSize: "20px" }}>
+              <span style={{ fontWeight: 600 }}>BP prosjektnummer:</span>{" "}
               {kundeInfo?.Kundenummer}
             </p>
             {kundeInfo?.Serie && (
-              <p className="text-darkBlack">
-                <span className="font-semibold">Serie:</span> {kundeInfo?.Serie}
+              <p style={{ color: "#101828", fontSize: "20px" }}>
+                <span style={{ fontWeight: 600 }}>Serie:</span>{" "}
+                {kundeInfo?.Serie}
               </p>
             )}
-            <p className="text-darkBlack">
-              <span className="font-semibold">Mobile:</span>{" "}
+            <p style={{ color: "#101828", fontSize: "20px" }}>
+              <span style={{ fontWeight: 600 }}>Mobile:</span>{" "}
               {kundeInfo?.mobile
                 ? formatPhoneNumber(kundeInfo?.mobile)
                 : kundeInfo?.mobileNummer &&
                   formatPhoneNumber(kundeInfo?.mobileNummer)}
             </p>
           </div>
-          <img
-            src={roomsData?.image}
-            alt="room"
-            className="w-[120px] h-[120px]"
-          />
+          {/* <img
+          src={roomsData?.image}
+          alt="room"
+          style={{ width: "120px", height: "120px" }}
+        /> */}
         </div>
       </div>
       <AllSummury roomsData={roomsData} />
