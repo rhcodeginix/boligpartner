@@ -185,6 +185,7 @@ export const ExportViewData: React.FC<{
             }
             alt="logo"
             // style={{ width: "200px" }}
+            style={{ marginBottom: "10px" }}
           />
           {roomsData?.createDataBy && (
             <p style={{ color: "#101828", fontSize: "20px" }}>
