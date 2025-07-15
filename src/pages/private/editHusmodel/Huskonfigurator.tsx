@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Ic_upload_blue_img from "../../../assets/images/Ic_upload_blue_img.svg";
 import { useLocation, useNavigate } from "react-router-dom";
-import { fetchHusmodellData } from "../../../lib/utils";
+import { fetchAdminDataByEmail, fetchHusmodellData } from "../../../lib/utils";
 import Button from "../../../components/common/button";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../config/firebaseConfig";
@@ -395,6 +395,18 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     roomsData.some((room: any) => !room.configurator)
       ? true
       : false;
+
+  const [createData, setCreateData] = useState<any>(null);
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        setCreateData(data);
+      }
+    };
+
+    getData();
+  }, []);
 
   return (
     <>
@@ -824,6 +836,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                       name: newConfiguratorName.trim(),
                       houseId: id,
                       kundeId: kundeId,
+                      createDataBy: createData,
                     });
                   } else {
                     await setDoc(docRef, {
@@ -832,6 +845,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                       createdAt: formatDate(new Date()),
                       houseId: id,
                       kundeId: kundeId,
+                      createDataBy: createData,
                     });
                   }
 
