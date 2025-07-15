@@ -274,6 +274,7 @@ export const AddFinalSubmission: React.FC<{
       // }
 
       if (data.exportType === "PDF") {
+        setIsExporting(true);
         const element = previewRef.current as HTMLElement | null;
         if (!element) return;
 
@@ -322,20 +323,16 @@ export const AddFinalSubmission: React.FC<{
               .checkmark {
                 pointer-events: none;
                 position: absolute;
-                left: 0.125rem; /* 2px */
-                top: 0.125rem;
-                display: none;
+                left: 4px; /* 2px */
+                top: 4px;
               }
             
               .checkmark-icon {
-                width: 1rem; /* 16px */
+                width: 1rem;
                 height: 1rem;
                 color: #444CE7;
               }
             
-              input:checked + .checkbox-box + .checkmark {
-                display: block;
-              }
               .horizontal-divider {
                 width: 100%;
                 border-top: 1px solid #EBEBEB;
@@ -398,7 +395,7 @@ export const AddFinalSubmission: React.FC<{
           if (json.Files && json.Files[0]) {
             const file = json.Files[0];
             const base64 = file.FileData;
-            const fileName = file.FileName || `preview-${Date.now()}.pdf`;
+            const fileName = roomsData?.Kundenavn;
 
             const byteCharacters = atob(base64);
             const byteNumbers = new Array(byteCharacters.length);
@@ -414,9 +411,12 @@ export const AddFinalSubmission: React.FC<{
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            setIsExporting(false);
           }
         } catch (error) {
           console.error("Error converting HTML to PDF:", error);
+        } finally {
+          setIsExporting(false);
         }
       }
 

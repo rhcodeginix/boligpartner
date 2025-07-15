@@ -773,7 +773,15 @@ export const AllSummury: React.FC<{
                   className="peer sr-only"
                 />
                 <div className="checkbox-box"></div>
-                <div className="checkmark">
+                <div
+                  className="checkmark"
+                  style={{
+                    display: roomsData?.TakogTaktekkingTakogTaktekking
+                      ?.HeisesPåTak
+                      ? "block"
+                      : "none",
+                  }}
+                >
                   <svg
                     className="checkmark-icon"
                     fill="none"
@@ -1652,7 +1660,14 @@ export const AllSummury: React.FC<{
                   className="peer sr-only"
                 />
                 <div className="checkbox-box"></div>
-                <div className="checkmark">
+                <div
+                  className="checkmark"
+                  style={{
+                    display: roomsData?.Dører?.Garasjeport?.Portåpner
+                      ? "block"
+                      : "none",
+                  }}
+                >
                   <svg
                     className="checkmark-icon"
                     fill="none"
@@ -1769,7 +1784,14 @@ export const AllSummury: React.FC<{
                   className="peer sr-only"
                 />
                 <div className="checkbox-box"></div>
-                <div className="checkmark">
+                <div
+                  className="checkmark"
+                  style={{
+                    display: roomsData?.Vinduer?.VinduerNedTilGulv
+                      ? "block"
+                      : "none",
+                  }}
+                >
                   <svg
                     className="checkmark-icon"
                     fill="none"
@@ -1807,7 +1829,14 @@ export const AllSummury: React.FC<{
                   className="peer sr-only"
                 />
                 <div className="checkbox-box"></div>
-                <div className="checkmark">
+                <div
+                  className="checkmark"
+                  style={{
+                    display: roomsData?.Vinduer?.HeltreUutforingPpristillegg
+                      ? "block"
+                      : "none",
+                  }}
+                >
                   <svg
                     className="checkmark-icon"
                     fill="none"
@@ -2274,7 +2303,14 @@ export const AllSummury: React.FC<{
                 className="peer sr-only"
               />
               <div className="checkbox-box"></div>
-              <div className="checkmark">
+              <div
+                className="checkmark"
+                style={{
+                  display: roomsData?.VentilasjonSentralstøvsuger?.Ventilasjon
+                    ? "block"
+                    : "none",
+                }}
+              >
                 <svg
                   className="checkmark-icon"
                   fill="none"
