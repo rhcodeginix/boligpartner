@@ -43,7 +43,7 @@ export const ExportViewData: React.FC<{
   const [offices, setOffices] = useState<any>(null);
   const fetchOfficeData = async () => {
     try {
-      if (id) {
+      if (roomsData?.createDataBy?.office) {
         const husmodellDocRef = doc(
           db,
           "office",
