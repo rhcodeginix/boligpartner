@@ -447,31 +447,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             </div>
           </div>
           <div className="flex lg:flex-col p-3 md:p-4 pb-0 rounded-lg gap-3 h-full lg:max-h-[calc(100%-90px)] overflow-y-auto overFlowAutoY sticky top-[80px]">
-            {/* {loading ? (
-              <>
-                {Array.from({ length: 10 }, (_, i) => i + 1).map(
-                  (item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className={`bg-white cursor-pointer rounded-lg flex items-center justify-between gap-1 px-3 border border-gray2`}
-                      >
-                        <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold">
-                          <div className="w-5 h-5 rounded-full custom-shimmer"></div>
-                          <div className="w-[135px] h-[20px] rounded-lg custom-shimmer"></div>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <div className="w-5 h-5 rounded-lg custom-shimmer"></div>
-
-                          <div className="w-5 h-5 rounded-lg custom-shimmer"></div>
-                        </div>
-                      </div>
-                    );
-                  }
-                )}
-              </>
-            ) : (
-              <> */}
             {Category.length > 0
               ? Category.map((tab: any, index: number) => (
                   <div
@@ -583,8 +558,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                   </div>
                 ))
               : "No data found!"}
-            {/* </>
-            )} */}
           </div>
         </div>
 
