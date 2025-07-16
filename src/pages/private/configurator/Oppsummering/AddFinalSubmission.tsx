@@ -154,65 +154,6 @@ export const AddFinalSubmission: React.FC<{
 
       // if (data.exportType === "PDF") {
       //   setIsExporting(true);
-
-      //   const element = previewRef.current as HTMLElement | null;
-      //   if (!element) throw new Error("Preview element not found");
-
-      //   const canvas = await html2canvas(element, {
-      //     scale: 2,
-      //     useCORS: true,
-      //   });
-
-      //   const imgData = canvas.toDataURL("image/jpeg", 1.0);
-      //   const imgProps = new jsPDF().getImageProperties(imgData);
-
-      //   const pdf: any = new jsPDF("p", "mm", "a4");
-      //   const pdfWidth = pdf.internal.pageSize.getWidth();
-      //   const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      //   const footerHeight = 12;
-      //   const usableHeight = pdfHeight - footerHeight;
-
-      //   const imgWidth = pdfWidth;
-      //   const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-
-      //   let heightLeft = imgHeight;
-      //   let pageOffset = 0;
-
-      //   while (heightLeft > 0) {
-      //     const position = -pageOffset;
-      //     pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-
-      //     pdf.setFillColor(255, 255, 255);
-      //     pdf.rect(0, pdfHeight - footerHeight, pdfWidth, footerHeight, "F");
-
-      //     pdf.setFontSize(10);
-      //     pdf.setTextColor(50);
-      //     pdf.text("", pdfWidth / 2, pdfHeight - 7, { align: "center" });
-
-      //     heightLeft -= usableHeight;
-      //     pageOffset += usableHeight;
-
-      //     if (heightLeft > 0) {
-      //       pdf.addPage();
-      //     }
-      //   }
-
-      //   const totalPages = pdf.internal.getNumberOfPages();
-      //   for (let i = 1; i <= totalPages; i++) {
-      //     pdf.setPage(i);
-      //     pdf.setFontSize(10);
-      //     pdf.text(`Page ${i} of ${totalPages}`, pdfWidth / 2, pdfHeight - 5, {
-      //       align: "center",
-      //     });
-      //   }
-
-      //   pdf.save(`preview-${Date.now()}.pdf`);
-      //   setIsExporting(false);
-      // }
-
-      // if (data.exportType === "PDF") {
-      //   setIsExporting(true);
       //   const element = previewRef.current;
       //   if (!element) throw new Error("Preview element not found");
 
