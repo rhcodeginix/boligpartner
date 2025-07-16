@@ -11,7 +11,11 @@ import {
 import Button from "../../../../components/common/button";
 import { Input } from "../../../../components/ui/input";
 import { parsePhoneNumber } from "react-phone-number-input";
-import { fetchRoomData, phoneNumberValidations } from "../../../../lib/utils";
+import {
+  fetchAdminDataByEmail,
+  fetchRoomData,
+  phoneNumberValidations,
+} from "../../../../lib/utils";
 import { InputMobile } from "../../../../components/ui/inputMobile";
 import {
   Select,
@@ -21,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../components/ui/select";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { useLocation } from "react-router-dom";
 import { removeUndefinedOrNull } from "../Oppmelding/Yttervegger";
@@ -34,6 +38,7 @@ import { saveAs } from "file-saver";
 import Modal from "../../../../components/common/modal";
 import { Spinner } from "../../../../components/Spinner";
 import { ExportViewData } from "./exportViewData";
+import { v4 as uuidv4 } from "uuid";
 
 const formSchema = z.object({
   Kundenavn: z.string({
@@ -83,7 +88,17 @@ export const AddFinalSubmission: React.FC<{
   const [isExporting, setIsExporting] = useState(false);
 
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+  const [createData, setCreateData] = useState<any>(null);
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        setCreateData(data);
+      }
+    };
 
+    getData();
+  }, []);
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsSubmitLoading(true);
 
@@ -427,6 +442,29 @@ export const AddFinalSubmission: React.FC<{
         };
         exportToExcel();
       }
+
+      const uniqueId = uuidv4();
+
+      const boligconfiguratorDocRef = doc(
+        db,
+        "boligconfigurator_count",
+        String(uniqueId)
+      );
+
+      const boligconfiguratorSnap = await getDoc(boligconfiguratorDocRef);
+
+      if (!boligconfiguratorSnap.exists()) {
+        const initialData = {
+          id: uniqueId,
+          type: data?.exportType,
+          timeStamp: new Date().toISOString(),
+          created_by: createData?.id,
+          document_id: roomsData?.kundeId ? roomsData?.kundeId : id,
+        };
+
+        await setDoc(boligconfiguratorDocRef, initialData);
+      }
+
       setIsExporting(false);
     } catch (error) {
       console.error("error:", error);

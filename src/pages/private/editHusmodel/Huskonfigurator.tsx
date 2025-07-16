@@ -122,6 +122,19 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     });
   }
 
+  const [createData, setCreateData] = useState<any>(null);
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+
+      if (data) {
+        setCreateData(data);
+      }
+    };
+
+    getData();
+  }, []);
+
   const handleFileUpload = async (files: FileList) => {
     if (!files.length) return;
 
@@ -140,6 +153,29 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           mode: "cors",
         }
       );
+
+      const uniqueId = uuidv4();
+
+      const boligconfiguratorDocRef = doc(
+        db,
+        "boligconfigurator_count",
+        String(uniqueId)
+      );
+
+      const boligconfiguratorSnap = await getDoc(boligconfiguratorDocRef);
+
+      if (!boligconfiguratorSnap.exists()) {
+        const initialData = {
+          id: uniqueId,
+          type: "AI",
+          timeStamp: new Date().toISOString(),
+          status: !response.ok ? "fail" : "pass",
+          created_by: createData?.id,
+          document_id: kundeId,
+        };
+
+        await setDoc(boligconfiguratorDocRef, initialData);
+      }
 
       if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
 
@@ -395,18 +431,6 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
         ? true
         : false
       : true;
-
-  const [createData, setCreateData] = useState<any>(null);
-  useEffect(() => {
-    const getData = async () => {
-      const data = await fetchAdminDataByEmail();
-      if (data) {
-        setCreateData(data);
-      }
-    };
-
-    getData();
-  }, []);
 
   return (
     <>

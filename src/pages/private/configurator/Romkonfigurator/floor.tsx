@@ -100,7 +100,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           toast.success(PDFdata.message, {
             position: "top-right",
           });
-          setActiveTab(2);
+          setActiveTab(3);
         }
       } catch (error) {
         console.error("Upload error:", error);

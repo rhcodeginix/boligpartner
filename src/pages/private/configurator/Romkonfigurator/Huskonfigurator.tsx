@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Ic_upload_blue_img from "../../../../assets/images/Ic_upload_blue_img.svg";
 import { useLocation, useNavigate } from "react-router-dom";
-import { fetchRoomData } from "../../../../lib/utils";
+import { fetchAdminDataByEmail, fetchRoomData } from "../../../../lib/utils";
 import Button from "../../../../components/common/button";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../../config/firebaseConfig";
@@ -54,6 +54,19 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
   const [roomsData, setRoomsData] = useState<any>([]);
   const navigate = useNavigate();
 
+  const [createData, setCreateData] = useState<any>(null);
+  const [kundeId, setKundeId] = useState<any>(null);
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        setCreateData(data);
+      }
+    };
+
+    getData();
+  }, []);
+
   const [isGridView, setIsGridView] = useState(true);
 
   useEffect(() => {
@@ -63,6 +76,9 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
     }
     const getData = async () => {
       const data = await fetchRoomData(id);
+      if (data && data?.kundeId) {
+        setKundeId(data?.kundeId);
+      }
 
       if (data && data?.Plantegninger) {
         setRoomsData(data?.Plantegninger);
@@ -142,6 +158,29 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
         }
       );
       setFileUploadLoading(true);
+
+      const uniqueId = uuidv4();
+
+      const boligconfiguratorDocRef = doc(
+        db,
+        "boligconfigurator_count",
+        String(uniqueId)
+      );
+
+      const boligconfiguratorSnap = await getDoc(boligconfiguratorDocRef);
+
+      if (!boligconfiguratorSnap.exists()) {
+        const initialData = {
+          id: uniqueId,
+          type: "AI",
+          timeStamp: new Date().toISOString(),
+          status: !response.ok ? "fail" : "pass",
+          created_by: createData?.id,
+          document_id: kundeId ? kundeId : id,
+        };
+
+        await setDoc(boligconfiguratorDocRef, initialData);
+      }
 
       if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
       setFileUploadLoading(true);
@@ -403,8 +442,8 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           />
         </div>
         {isGridView ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6 w-full mt-6 md:mt-8">
-        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6 w-full mt-6 md:mt-8">
+            {loading ? (
               <>
                 {Array.from({ length: 3 }, (_, i) => i + 1).map((_, index) => {
                   return (
