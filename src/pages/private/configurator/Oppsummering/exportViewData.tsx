@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import Ic_logo from "../../../../assets/images/Ic_logo.svg";
 import { AllSummury } from "./allSummury";
 import { useLocation } from "react-router-dom";
 import { fetchRoomData } from "../../../../lib/utils";
@@ -67,46 +66,6 @@ export const ExportViewData: React.FC<{
   }, [roomsData]);
 
   return (
-    // <div className="p-8">
-    //   <div className="inner-room-block">
-    //     <div className="mb-5 flex items-center justify-between">
-    //       <h4 className="text-darkBlack font-semibold text-xl">
-    //         Her følger oppsummering
-    //       </h4>
-    //       {/* <img src={Ic_logo} alt="logo" className="w-[200px] lg:w-auto" /> */}
-    //     </div>
-    //     <div className="mb-5 flex items-center gap-2 justify-between">
-    //       <div className="flex flex-col gap-2">
-    //         <p className="text-darkBlack">
-    //           <span className="font-semibold">Kundenavn:</span>{" "}
-    //           {kundeInfo?.Kundenavn}
-    //         </p>
-    //         <p className="text-darkBlack">
-    //           <span className="font-semibold">BP prosjektnummer:</span>{" "}
-    //           {kundeInfo?.Kundenummer}
-    //         </p>
-    //         {kundeInfo?.Serie && (
-    //           <p className="text-darkBlack">
-    //             <span className="font-semibold">Serie:</span> {kundeInfo?.Serie}
-    //           </p>
-    //         )}
-    //         <p className="text-darkBlack">
-    //           <span className="font-semibold">Mobile:</span>{" "}
-    //           {kundeInfo?.mobile
-    //             ? formatPhoneNumber(kundeInfo?.mobile)
-    //             : kundeInfo?.mobileNummer &&
-    //               formatPhoneNumber(kundeInfo?.mobileNummer)}
-    //         </p>
-    //       </div>
-    //       {/* <img
-    //         src={roomsData?.image}
-    //         alt="room"
-    //         className="w-[120px] h-[120px]"
-    //       /> */}
-    //     </div>
-    //   </div>
-    //   <AllSummury roomsData={roomsData} />
-    // </div>
     <div>
       <div
         style={{
@@ -129,7 +88,6 @@ export const ExportViewData: React.FC<{
           </h4>
           <div
             style={{
-              // marginBottom: "1.25rem",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
@@ -184,7 +142,6 @@ export const ExportViewData: React.FC<{
               "https://firebasestorage.googleapis.com/v0/b/l-plot.firebasestorage.app/o/images%2F1752575284585_Frame%201686570139.png?alt=media&token=a4a3f0bc-3144-4e62-997e-483f4a957839"
             }
             alt="logo"
-            // style={{ width: "200px" }}
             style={{ marginBottom: "10px" }}
           />
           {roomsData?.createDataBy && (

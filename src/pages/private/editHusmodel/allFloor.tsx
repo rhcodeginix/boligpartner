@@ -203,7 +203,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             Type: "HelpText",
           },
         ],
-        // Kommentar: [],
+        
       };
 
       const updatedPlantegninger = (targetKunde?.Plantegninger || []).map(
@@ -368,8 +368,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           }),
         });
       }
-
-      // setLoading(false);
     };
 
     getData();

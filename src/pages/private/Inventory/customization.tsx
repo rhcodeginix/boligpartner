@@ -150,7 +150,6 @@ export const Customization: React.FC<{
         },
         { merge: true }
       );
-      // -----
 
       const validKategorinavn: any = Kategorinavn.filter(
         (cat: any) =>

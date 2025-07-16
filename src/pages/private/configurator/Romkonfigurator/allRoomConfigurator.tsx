@@ -107,10 +107,7 @@ export const AllRoomkonfigurator: React.FC = () => {
         <Button
           text="Legg til ny romkonfigurator"
           className="border border-purple bg-purple text-white text-base rounded-[40px] h-[44px] md:h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
-          onClick={() => {
-            // setActiveTab(1);
-            navigate("/Room-Configurator");
-          }}
+          onClick={() => navigate("/Room-Configurator")}
         />
       </div>
       {isGridView ? (
@@ -164,7 +161,6 @@ export const AllRoomkonfigurator: React.FC = () => {
                       key={index}
                       className="relative shadow-shadow2 cursor-pointer p-4 rounded-lg flex flex-col justify-between gap-4"
                       onClick={() => {
-                        // setActiveTab(1);
                         navigate(`/Room-Configurator/${item?.id}`);
                         const currIndex = 0;
                         const currVerticalIndex = 1;

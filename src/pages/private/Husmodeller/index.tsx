@@ -17,11 +17,6 @@ import {
   FormMessage,
 } from "../../../components/ui/form";
 
-// const formSchema = z.object({
-//   options: z.string({ required_error: "Obligatorisk" }),
-//   TypeProsjekt: z.string({ required_error: "Type prosjekt er påkrevd." }),
-//   VelgSerie: z.string({ required_error: "VelgSerie er påkrevd." }),
-// });
 const formSchema = z
   .object({
     TypeProsjekt: z.string({ required_error: "Type prosjekt er påkrevd." }),

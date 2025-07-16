@@ -60,7 +60,7 @@ const requiredCategoriesWithProducts = {
     },
     { Produktnavn: "Eget valg", isSelected: false },
   ],
-  // Kommentar: [],
+  
 };
 
 export const AddNewCat: React.FC<{

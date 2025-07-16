@@ -114,7 +114,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           },
           { Produktnavn: "Eget valg", isSelected: false },
         ],
-        // Kommentar: [],
+        
       };
 
       const updatedPlantegninger = (data?.Plantegninger || []).map(

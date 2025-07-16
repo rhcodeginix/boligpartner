@@ -46,17 +46,11 @@ const requiredCategoriesWithProducts = {
     },
   ],
   Vegger: [
-    // {
-    //   Produktnavn: "I henhold til leveransebeskrivelse",
-    //   isSelected: true,
-    // },
-    // { Produktnavn: "5 bords kostmald mdf plate", isSelected: false },
     {
       Produktnavn: "Ubehandlet sponplate",
       isSelected: true,
       InfoText: "Beskriv evt avvik fra standard",
     },
-    // { Produktnavn: "Eget valg", isSelected: false },
     {
       Produktnavn: "Gips",
       isSelected: false,
@@ -79,11 +73,6 @@ const requiredCategoriesWithProducts = {
     },
   ],
   Gulv: [
-    // { Produktnavn: "Lokalleveranse", isSelected: true },
-    // { Produktnavn: "Eikeparkett 3 stavs", isSelected: false },
-    // { Produktnavn: "Eikeparkett 1 stavs", isSelected: false },
-    // { Produktnavn: "Laminat 1 stavs", isSelected: false },
-    // { Produktnavn: "Eget valg", isSelected: false },
     {
       Produktnavn: "Parkett (leveres av forhandler)",
       isSelected: true,
@@ -141,7 +130,6 @@ const requiredCategoriesWithProducts = {
       Type: "HelpText",
     },
   ],
-  // Kommentar: [],
 };
 
 export const AddNewCat: React.FC<{

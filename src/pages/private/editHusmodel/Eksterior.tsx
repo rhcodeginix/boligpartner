@@ -287,7 +287,6 @@ export const Eksterior: React.FC<{
       });
 
       toast.success("Lagret", { position: "top-right" });
-      // navigate(`/Husmodell`);
       setActiveTab(1);
     } catch (error) {
       console.error("Failed to update plantegning:", error);
@@ -1172,7 +1171,6 @@ export const Eksterior: React.FC<{
                                           `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.comment`
                                         ) ?? ""
                                       }
-                                      // onChange={(e: any) => field.onChange(e)}
                                     />
                                   </div>
                                 </FormControl>
