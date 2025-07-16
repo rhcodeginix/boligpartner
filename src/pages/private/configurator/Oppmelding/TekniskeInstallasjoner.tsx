@@ -86,7 +86,6 @@ export const TekniskeInstallasjoner = forwardRef(
           position: "top-right",
         });
         handleNext();
-        // localStorage.setItem("currVerticalIndex", String(14));
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {
