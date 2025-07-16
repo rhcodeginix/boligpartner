@@ -376,7 +376,7 @@ export const AddFinalSubmission: React.FC<{
             {
               method: "POST",
               headers: {
-                Authorization: "Bearer 7UNegFuNoAP66m9xpkbC4emhp5edf2p9",
+                Authorization: `Bearer ${process.env.REACT_APP_HTML_TO_PDF}`,
               },
               body: formData,
             }

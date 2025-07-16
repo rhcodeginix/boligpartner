@@ -987,7 +987,7 @@ export const AllSummury: React.FC<{
                                 style={{
                                   color: "#101828",
                                   fontSize: "24px",
-                                  fontWeight: 500,
+                                  fontWeight: 600,
                                 }}
                               >
                                 {room?.title}
@@ -1007,7 +1007,7 @@ export const AllSummury: React.FC<{
                                 style={{
                                   color: "#30374f",
                                   fontSize: "24px",
-                                  fontWeight: 500,
+                                  fontWeight: 600,
                                 }}
                               >
                                 {innerRoom?.name_no || innerRoom?.name}
