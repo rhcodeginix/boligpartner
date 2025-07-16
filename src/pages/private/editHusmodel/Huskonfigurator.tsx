@@ -390,11 +390,11 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   }, [showConfiguratorModal, pendingPayload]);
 
   const isDisable =
-    roomsData &&
-    roomsData.length > 0 &&
-    roomsData.some((room: any) => !room.configurator)
-      ? true
-      : false;
+    roomsData && roomsData.length > 0
+      ? roomsData.some((room: any) => !room.configurator)
+        ? true
+        : false
+      : true;
 
   const [createData, setCreateData] = useState<any>(null);
   useEffect(() => {
