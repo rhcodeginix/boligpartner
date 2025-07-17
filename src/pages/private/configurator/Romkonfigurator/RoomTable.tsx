@@ -120,19 +120,19 @@ export const RoomTable = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      const finalData: any = IsAdmin
-        ? data
-        : (
-            await Promise.all(
-              data.map(async (item: any) => {
-                const userData = await getData(item?.createDataBy?.email);
+      // const finalData: any = IsAdmin
+      //   ? data
+      //   : (
+      //       await Promise.all(
+      //         data.map(async (item: any) => {
+      //           const userData = await getData(item?.createDataBy?.email);
 
-                return userData?.office === office ? item : null;
-              })
-            )
-          ).filter((item) => item !== null);
+      //           return userData?.office === office ? item : null;
+      //         })
+      //       )
+      //     ).filter((item) => item !== null);
 
-      setRoomConfigurator(finalData);
+      setRoomConfigurator(data);
     } catch (error) {
       console.error("Error fetching husmodell data:", error);
     } finally {

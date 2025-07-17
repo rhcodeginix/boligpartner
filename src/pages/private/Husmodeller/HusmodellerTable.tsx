@@ -133,24 +133,29 @@ export const HusmodellerTable = () => {
       );
       const querySnapshot = await getDocs(q);
 
-      const data: any[] = querySnapshot.docs.map((doc) => ({
+      const data: any = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
 
-      const finalData: any = IsAdmin
-        ? data
-        : (
-            await Promise.all(
-              data.map(async (item: any) => {
-                const userData = await getData(item?.createDataBy?.email);
+      let finalData: any = [];
 
-                return userData?.office === office ? item : null;
-              })
-            )
-          ).filter((item) => item !== null);
+      // if (IsAdmin) {
+      //   finalData = data;
+      // } else {
+      //   const filteredData = await Promise.all(
+      //     data.map(async (item: any) => {
+      //       const email = item?.createDataBy?.email;
+      //       if (!email) return null;
 
-      setHouseModels(finalData);
+      //       const userData = await getData(email);
+      //       return userData?.office === office ? item : null;
+      //     })
+      //   );
+      //   finalData = filteredData.filter((item) => item !== null);
+      // }
+
+      setHouseModels(data);
     } catch (error) {
       console.error("Error fetching husmodell data:", error);
     } finally {
