@@ -459,7 +459,7 @@ export const AddFinalSubmission: React.FC<{
           type: data?.exportType,
           timeStamp: new Date().toISOString(),
           created_by: createData?.id,
-          document_id: roomsData?.kundeId ? roomsData?.kundeId : id,
+          document_id: id,
         };
 
         await setDoc(boligconfiguratorDocRef, initialData);
