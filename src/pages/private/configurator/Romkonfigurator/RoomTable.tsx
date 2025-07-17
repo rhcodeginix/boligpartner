@@ -27,9 +27,10 @@ import {
   orderBy,
   query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
-import { formatDateTime } from "../../../../lib/utils";
+import { fetchAdminDataByEmail, formatDateTime } from "../../../../lib/utils";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Modal from "../../../../components/common/modal";
@@ -43,6 +44,40 @@ export const RoomTable = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState(null);
+
+  const [IsAdmin, setIsAdmin] = useState<any>(false);
+  const [office, setOfice] = useState<any>(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+      if (data) {
+        if (data?.office) {
+          setOfice(data?.office);
+        }
+        if (data?.is_admin) {
+          setIsAdmin(data?.is_admin);
+        }
+      }
+    };
+
+    getData();
+  }, []);
+
+  const getData = async (email: string) => {
+    try {
+      if (email) {
+        const q = query(collection(db, "admin"), where("email", "==", email));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          return querySnapshot.docs[0].data();
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching admin data:", error);
+    }
+  };
 
   const handleDelete = async () => {
     const husmodellDocRef = doc(db, "room_configurator", String(id));
@@ -85,7 +120,19 @@ export const RoomTable = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      setRoomConfigurator(data);
+      const finalData: any = IsAdmin
+        ? data
+        : (
+            await Promise.all(
+              data.map(async (item: any) => {
+                const userData = await getData(item?.createDataBy?.email);
+
+                return userData?.office === office ? item : null;
+              })
+            )
+          ).filter((item) => item !== null);
+
+      setRoomConfigurator(finalData);
     } catch (error) {
       console.error("Error fetching husmodell data:", error);
     } finally {
@@ -95,7 +142,7 @@ export const RoomTable = () => {
 
   useEffect(() => {
     fetchRoomConfiguratorData();
-  }, []);
+  }, [office, IsAdmin]);
 
   const filteredData = useMemo(() => {
     return RoomConfigurator.filter((model: any) =>

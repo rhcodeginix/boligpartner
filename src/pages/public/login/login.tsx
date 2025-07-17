@@ -56,8 +56,9 @@ export const Login = () => {
       } else {
         const adminData = adminSnap.data();
         if (
-          adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71" ||
-          adminData?.is_admin === true
+          adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71"
+          //  ||
+          // adminData?.is_admin === true
         ) {
           toast.error("Please login with Bolig Partner user.", {
             position: "top-right",
