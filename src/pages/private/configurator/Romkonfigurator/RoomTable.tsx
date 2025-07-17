@@ -129,6 +129,74 @@ export const RoomTable = () => {
         ),
       },
       {
+        accessorKey: "Kundenavn",
+        header: "Kundenavn",
+        cell: ({ row }) => (
+          <div className="flex gap-2 items-center justify-between">
+            <p className="text-sm font-medium text-black w-max">
+              {row.original?.Kundenavn ??
+                row.original?.Prosjektdetaljer?.Tiltakshaver ??
+                "-"}
+            </p>
+          </div>
+        ),
+      },
+      {
+        accessorKey: "Anleggsadresse",
+        header: "Anleggsadresse",
+        cell: ({ row }) => (
+          <p className="text-sm font-medium text-black w-max">
+            {row.original?.Anleggsadresse ??
+              row.original?.Prosjektdetaljer?.Byggeadresse ??
+              "-"}
+          </p>
+        ),
+      },
+      {
+        accessorKey: "Kundenummer",
+        header: "BP prosjektnummer",
+        cell: ({ row }) => (
+          <p className="text-sm font-medium text-black w-max">
+            {row.original?.Kundenummer ??
+              row.original?.Prosjektdetaljer?.Kundenr ??
+              "-"}
+          </p>
+        ),
+      },
+      {
+        accessorKey: "Boligkonsulent",
+        header: "Boligkonsulent",
+        cell: ({ row }) => (
+          <p className="text-sm font-medium text-black w-max">
+            {row.original?.createDataBy?.name ?? "-"}
+          </p>
+        ),
+      },
+      {
+        accessorKey: "Serienavn",
+        header: "Serienavn",
+        cell: ({ row }) => (
+          <div className="flex gap-2 items-center justify-between">
+            <p className="text-sm font-medium text-black w-max">
+              {row.original?.husmodell_name ??
+                row.original?.Prosjektdetaljer?.VelgSerie ??
+                "-"}
+            </p>
+          </div>
+        ),
+      },
+      {
+        accessorKey: "TypeProsjekt",
+        header: "TypeProsjekt",
+        cell: ({ row }) => (
+          <p className="text-sm font-medium text-black w-max">
+            {row.original?.TypeProsjekt ??
+              row.original?.Prosjektdetaljer?.TypeProsjekt ??
+              "-"}
+          </p>
+        ),
+      },
+      {
         accessorKey: "sisteoppdatertav",
         header: "Siste oppdatert av",
         cell: ({ row }) => (
