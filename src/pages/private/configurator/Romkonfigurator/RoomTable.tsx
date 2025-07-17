@@ -45,7 +45,7 @@ export const RoomTable = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState(null);
 
-  const [IsAdmin, setIsAdmin] = useState<any>(false);
+  const [IsAdmin, setIsAdmin] = useState<any>(null);
   const [office, setOfice] = useState<any>(null);
 
   useEffect(() => {
@@ -55,9 +55,7 @@ export const RoomTable = () => {
         if (data?.office) {
           setOfice(data?.office);
         }
-        if (data?.is_admin) {
-          setIsAdmin(data?.is_admin);
-        }
+        setIsAdmin(data?.is_admin ?? false);
       }
     };
 
@@ -120,19 +118,19 @@ export const RoomTable = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      // const finalData: any = IsAdmin
-      //   ? data
-      //   : (
-      //       await Promise.all(
-      //         data.map(async (item: any) => {
-      //           const userData = await getData(item?.createDataBy?.email);
+      const finalData: any = IsAdmin
+        ? data
+        : (
+            await Promise.all(
+              data.map(async (item: any) => {
+                const userData = await getData(item?.createDataBy?.email);
 
-      //           return userData?.office === office ? item : null;
-      //         })
-      //       )
-      //     ).filter((item) => item !== null);
+                return userData?.office === office ? item : null;
+              })
+            )
+          ).filter((item) => item !== null);
 
-      setRoomConfigurator(data);
+      setRoomConfigurator(finalData);
     } catch (error) {
       console.error("Error fetching husmodell data:", error);
     } finally {
@@ -141,7 +139,9 @@ export const RoomTable = () => {
   };
 
   useEffect(() => {
-    fetchRoomConfiguratorData();
+    if (IsAdmin !== null || office !== null) {
+      fetchRoomConfiguratorData();
+    }
   }, [office, IsAdmin]);
 
   const filteredData = useMemo(() => {

@@ -26,7 +26,7 @@ export const AllRoomkonfigurator: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGridView, setIsGridView] = useState(true);
 
-  const [IsAdmin, setIsAdmin] = useState<any>(false);
+  const [IsAdmin, setIsAdmin] = useState<any>(null);
   const [office, setOfice] = useState<any>(null);
 
   useEffect(() => {
@@ -36,9 +36,7 @@ export const AllRoomkonfigurator: React.FC = () => {
         if (data?.office) {
           setOfice(data?.office);
         }
-        if (data?.is_admin) {
-          setIsAdmin(data?.is_admin);
-        }
+        setIsAdmin(data?.is_admin ?? false);
       }
     };
 
@@ -74,20 +72,20 @@ export const AllRoomkonfigurator: React.FC = () => {
         ...doc.data(),
       }));
 
-      // const finalData: any =
-      //   IsAdmin === true
-      //     ? data
-      //     : (
-      //         await Promise.all(
-      //           data.map(async (item: any) => {
-      //             const userData = await getData(item?.createDataBy?.email);
+      const finalData: any =
+        IsAdmin === true
+          ? data
+          : (
+              await Promise.all(
+                data.map(async (item: any) => {
+                  const userData = await getData(item?.createDataBy?.email);
 
-      //             return userData?.office === office ? item : null;
-      //           })
-      //         )
-      //       ).filter((item) => item !== null);
+                  return userData?.office === office ? item : null;
+                })
+              )
+            ).filter((item) => item !== null);
 
-      setRoomConfigurator(data);
+      setRoomConfigurator(finalData);
     } catch (error) {
       console.error("Error fetching husmodell data:", error);
     } finally {
@@ -96,7 +94,9 @@ export const AllRoomkonfigurator: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchRoomConfiguratorData();
+    if (IsAdmin !== null || office !== null) {
+      fetchRoomConfiguratorData();
+    }
   }, [isGridView, office, IsAdmin]);
 
   const [imageLoaded, setImageLoaded] = useState<{ [key: number]: boolean }>(

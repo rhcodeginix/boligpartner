@@ -50,7 +50,7 @@ export const HusmodellerTable = () => {
   const [id, setId] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState<string>("");
 
-  const [IsAdmin, setIsAdmin] = useState<any>(false);
+  const [IsAdmin, setIsAdmin] = useState<any>(null);
   const [office, setOfice] = useState<any>(null);
 
   useEffect(() => {
@@ -60,9 +60,7 @@ export const HusmodellerTable = () => {
         if (data?.office) {
           setOfice(data?.office);
         }
-        if (data?.is_admin) {
-          setIsAdmin(data?.is_admin);
-        }
+        setIsAdmin(data?.is_admin ?? false);
       }
     };
 
@@ -140,22 +138,22 @@ export const HusmodellerTable = () => {
 
       let finalData: any = [];
 
-      // if (IsAdmin) {
-      //   finalData = data;
-      // } else {
-      //   const filteredData = await Promise.all(
-      //     data.map(async (item: any) => {
-      //       const email = item?.createDataBy?.email;
-      //       if (!email) return null;
+      if (IsAdmin) {
+        finalData = data;
+      } else {
+        const filteredData = await Promise.all(
+          data.map(async (item: any) => {
+            const email = item?.createDataBy?.email;
+            if (!email) return null;
 
-      //       const userData = await getData(email);
-      //       return userData?.office === office ? item : null;
-      //     })
-      //   );
-      //   finalData = filteredData.filter((item) => item !== null);
-      // }
+            const userData = await getData(email);
+            return userData?.office === office ? item : null;
+          })
+        );
+        finalData = filteredData.filter((item) => item !== null);
+      }
 
-      setHouseModels(data);
+      setHouseModels(finalData);
     } catch (error) {
       console.error("Error fetching husmodell data:", error);
     } finally {
@@ -164,7 +162,9 @@ export const HusmodellerTable = () => {
   };
 
   useEffect(() => {
-    fetchHusmodellData();
+    if (IsAdmin !== null || office !== null) {
+      fetchHusmodellData();
+    }
   }, [office, IsAdmin]);
   const confirmDelete = (id: string) => {
     setSelectedId(id);
