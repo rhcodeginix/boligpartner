@@ -359,6 +359,13 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
       updatedAt: formatDate(new Date()),
       id: newId,
       name: newConfiguratorName.trim(),
+      createDataBy: {
+        email: createData?.email,
+        photo: createData?.photo,
+        name: createData?.f_name
+          ? `${createData?.f_name} ${createData?.l_name}`
+          : createData?.name,
+      },
     });
 
     navigate(`/Room-Configurator/${newId}`);
