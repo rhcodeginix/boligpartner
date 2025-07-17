@@ -120,18 +120,19 @@ export const VentilasjonSentralstøvsuger = forwardRef(
     }, [roomsData]);
     return (
       <>
-        {" "}
         {isSubmitLoading && <Spinner />}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
-              <div className="text-darkBlack font-semibold text-lg p-5 border-b border-[#B9C0D4] uppercase">
+              <div className="text-darkBlack font-semibold text-base md:text-lg p-3 md:p-5 border-b border-[#B9C0D4]">
                 Ventilasjon og Sentralstøvsuger
               </div>
-              <div className="p-4 md:p-5">
-                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5 items-center">
+              <div className="p-3 md:p-5">
+                <div className="flex flex-col md:grid md:grid-cols-2 desktop:grid-cols-3 gap-4 md:gap-5 md:items-center">
                   <div className="col-span-3">
-                    <p className={`$text-black font-medium mb-4`}>
+                    <p
+                      className={`text-black font-medium mb-4 text-sm md:text-base`}
+                    >
                       Ventilasjon
                     </p>
                     <FormField
@@ -163,7 +164,9 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                       name={`FargeønskeUtvendigKombirist`}
                       render={({ field, fieldState }) => (
                         <FormItem>
-                          <p className={`mb-4 text-black font-medium`}>
+                          <p
+                            className={`mb-4 text-black font-medium text-sm md:text-base`}
+                          >
                             Fargeønske utvendig kombirist
                           </p>
                           <FormControl>
@@ -212,7 +215,9 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                       name={`FargeønskeInnvendigVentiler`}
                       render={({ field, fieldState }) => (
                         <FormItem>
-                          <p className={`mb-4 text-black font-medium`}>
+                          <p
+                            className={`mb-4 text-black font-medium text-sm md:text-base`}
+                          >
                             Fargeønske innvendig ventiler
                           </p>
                           <FormControl>
@@ -295,7 +300,9 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                       name={`Sentralstøvsuger`}
                       render={({ field, fieldState }) => (
                         <FormItem>
-                          <p className={`$text-black font-medium mb-4`}>
+                          <p
+                            className={`text-black font-medium mb-4 text-sm md:text-base`}
+                          >
                             Sentralstøvsuger
                           </p>
                           <FormControl>

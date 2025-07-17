@@ -570,7 +570,7 @@ export const AddFinalSubmission: React.FC<{
           onSubmit={form.handleSubmit(onSubmit)}
           className="relative w-full"
         >
-          <div className="p-6 grid grid-cols-2 gap-4">
+          <div className="p-4 md:p-6 flex flex-col sm:grid grid-cols-2 gap-4">
             <div>
               <FormField
                 control={form.control}
