@@ -37,7 +37,7 @@ export const OppsummeringData: React.FC<{
             Oppsummering
           </div>
         </div>
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4 md:gap-6">
           <div className="flex flex-col gap-4">
             <h4 className="text-darkBlack font-bold text-base uppercase">
               PROSJEKTDETALJER
@@ -1117,7 +1117,7 @@ export const OppsummeringData: React.FC<{
               </div>
             </div>
             <div className="border-t border-[#EBEBEB] w-full"></div>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4 md:gap-6">
               {rooms &&
                 rooms.length > 0 &&
                 rooms.map((room: any, roomIndex: number) => (
@@ -1133,7 +1133,7 @@ export const OppsummeringData: React.FC<{
                                   {room?.title}
                                 </h3>
                               )}
-                              <div className="flex flex-col gap-3 bg-gray3 p-4 rounded-lg">
+                              <div className="flex flex-col gap-3 bg-gray3 p-3 md:p-4 rounded-lg">
                                 <div className="text-black font-semibold text-sm">
                                   {innerRoom?.name_no || innerRoom?.name}
                                 </div>
@@ -1820,7 +1820,7 @@ export const OppsummeringData: React.FC<{
             <div className="text-darkBlack font-medium text-sm">
               Garasjeport
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="flex flex-col md:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               <div className="flex flex-col gap-1.5">
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
@@ -1871,10 +1871,10 @@ export const OppsummeringData: React.FC<{
                     readOnly
                     className="peer sr-only"
                   />
-                  <div className="w-5 h-5 border-2 border-[#444CE7] rounded-sm"></div>
+                  <div className="w-4 md:w-5 h-4 md:h-5 border-2 border-[#444CE7] rounded-sm"></div>
                   <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
                     <svg
-                      className="w-4 h-4 text-[#444CE7]"
+                      className="w-3 md:w-4 h-3 md:h-4 text-[#444CE7]"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="3"
@@ -1997,10 +1997,10 @@ export const OppsummeringData: React.FC<{
                     readOnly
                     className="peer sr-only"
                   />
-                  <div className="w-5 h-5 border-2 border-[#444CE7] rounded-sm"></div>
+                  <div className="w-4 md:w-5 h-4 md:h-5 border-2 border-[#444CE7] rounded-sm"></div>
                   <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
                     <svg
-                      className="w-4 h-4 text-[#444CE7]"
+                      className="w-3 md:w-4 h-3 md:h-4 text-[#444CE7]"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="3"
@@ -2027,10 +2027,10 @@ export const OppsummeringData: React.FC<{
                     readOnly
                     className="peer sr-only"
                   />
-                  <div className="w-5 h-5 border-2 border-[#444CE7] rounded-sm"></div>
+                  <div className="w-4 md:w-5 h-4 md:h-5 border-2 border-[#444CE7] rounded-sm"></div>
                   <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
                     <svg
-                      className="w-4 h-4 text-[#444CE7]"
+                      className="w-3 md:w-4 h-3 md:h-4 text-[#444CE7]"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="3"
@@ -2583,10 +2583,10 @@ export const OppsummeringData: React.FC<{
                   readOnly
                   className="peer sr-only"
                 />
-                <div className="w-5 h-5 border-2 border-[#444CE7] rounded-sm"></div>
+                <div className="w-4 md:w-5 h-4 md:h-5 border-2 border-[#444CE7] rounded-sm"></div>
                 <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
                   <svg
-                    className="w-4 h-4 text-[#444CE7]"
+                    className="w-3 md:w-4 h-3 md:h-4 text-[#444CE7]"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="3"
