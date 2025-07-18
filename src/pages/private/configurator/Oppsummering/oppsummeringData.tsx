@@ -1820,7 +1820,7 @@ export const OppsummeringData: React.FC<{
             <div className="text-darkBlack font-medium text-sm">
               Garasjeport
             </div>
-            <div className="flex flex-col md:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="flex flex-col sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               <div className="flex flex-col gap-1.5">
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
