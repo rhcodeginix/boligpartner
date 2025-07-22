@@ -122,16 +122,6 @@ export const Navbar: React.FC = () => {
           >
             Oppmelding
           </Link>
-          {/* <Link
-            to={"/Inventory"}
-            className={`text-base font-medium py-2 px-3 rounded-[6px] ${
-              currentPath === "/Inventory"
-                ? "bg-lightPurple text-primary"
-                : "text-black"
-            }`}
-          >
-            Romkonfigurator
-          </Link> */}
         </div>
         <div className="flex items-center gap-2 md:gap-3 relative">
           <div
@@ -219,16 +209,6 @@ export const Navbar: React.FC = () => {
             >
               Oppmelding
             </Link>
-            {/* <Link
-            to={"/Inventory"}
-            className={`text-base font-medium py-2 px-3 rounded-[6px] ${
-              currentPath === "/Inventory"
-                ? "bg-lightPurple text-primary"
-                : "text-black"
-            }`}
-          >
-            Romkonfigurator
-          </Link> */}
           </div>
         </div>
       </div>

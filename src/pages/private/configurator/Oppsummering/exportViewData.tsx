@@ -123,11 +123,6 @@ export const ExportViewData: React.FC<{
                     formatPhoneNumber(kundeInfo?.mobileNummer)}
               </p>
             </div>
-            {/* <img
-          src={roomsData?.image}
-          alt="room"
-          style={{ width: "120px", height: "120px" }}
-        /> */}
           </div>
         </div>
         <div
