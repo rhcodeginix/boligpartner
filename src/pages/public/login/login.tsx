@@ -302,8 +302,7 @@ export const Login = () => {
           setSelectedType("");
           if (selectedType === "boligpartner") {
             localStorage.setItem("Iplot_admin_bolig", data.email);
-          }
-          if (selectedType === "lead") {
+          } else if (selectedType === "lead") {
             localStorage.setItem("Iplot_admin", data.email);
           }
 
