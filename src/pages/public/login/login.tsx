@@ -309,7 +309,10 @@ export const Login = () => {
 //           if (selectedType === "boligpartner") {
 //             navigate("/Husmodell");
 //           } else if (selectedType === "lead") {
-//             window.location.href = "https://admin.mintomt.no/bank-leads";
+//             const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(
+//               data.email
+//             )}`;
+//             window.location.href = url;
 //           }
 //         }
 //       }
