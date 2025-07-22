@@ -1,215 +1,3 @@
-// import { useForm } from "react-hook-form";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import {
-//   Form,
-//   FormControl,
-//   FormField,
-//   FormItem,
-//   FormMessage,
-// } from "../../../components/ui/form";
-// import { Input } from "../../../components/ui/input";
-// import { z } from "zod";
-// import Ic_logo from "../../../assets/images/Ic_logo.svg";
-// import toast from "react-hot-toast";
-// import { useNavigate } from "react-router-dom";
-// import Button from "../../../components/common/button";
-// import { doc, getDoc, updateDoc } from "firebase/firestore";
-// import { db } from "../../../config/firebaseConfig";
-// import bcrypt from "bcryptjs";
-// import { fetchAdminDataByEmail } from "../../../lib/utils";
-
-// export const Login = () => {
-//   const navigate = useNavigate();
-
-//   const formSchema = z.object({
-//     email: z
-//       .string()
-//       .email({ message: "Vennligst skriv inn en gyldig e-postadresse." })
-//       .min(1, { message: "E-postadresse er påkrevd." }),
-
-//     password: z
-//       .string()
-//       .min(8, { message: "Passordet må være minst 8 tegn langt." })
-//       .regex(/[A-Z]/, {
-//         message: "Passordet må inneholde minst én stor bokstav.",
-//       })
-//       .regex(/[a-z]/, {
-//         message: "Passordet må inneholde minst én liten bokstav.",
-//       })
-//       .regex(/[0-9]/, { message: "Passordet må inneholde minst ett tall." })
-//       .regex(/[@$!%*?&]/, {
-//         message: "Passordet må inneholde minst ett spesialtegn.",
-//       }),
-//   });
-
-//   const form = useForm<z.infer<typeof formSchema>>({
-//     resolver: zodResolver(formSchema),
-//   });
-
-//   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-//     try {
-//       const adminDocRef = doc(db, "admin", data.email);
-//       const adminSnap = await getDoc(adminDocRef);
-
-//       if (!adminSnap.exists()) {
-//         toast.error("Admin not exist", { position: "top-right" });
-//       } else {
-//         const adminData = adminSnap.data();
-//         if (
-//           adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71"
-//           //  ||
-//           // adminData?.is_admin === true
-//         ) {
-//           toast.error("Please login with Bolig Partner user.", {
-//             position: "top-right",
-//           });
-//           return;
-//         }
-
-//         const storedPassword = adminData?.password;
-
-//         if (!storedPassword) {
-//           if (data.password) {
-//             const hashedPassword = bcrypt.hashSync(data.password, 10);
-//             await updateDoc(adminDocRef, { password: hashedPassword });
-
-//             toast.success("Login successfully", {
-//               position: "top-right",
-//             });
-//             localStorage.setItem("Iplot_admin_bolig", data.email);
-//             const loginUserData = await fetchAdminDataByEmail();
-//             if (loginUserData) {
-//               navigate("/Husmodell");
-//             }
-//           }
-//         } else {
-//           const isPasswordCorrect = bcrypt.compareSync(
-//             data.password,
-//             storedPassword
-//           );
-//           if (isPasswordCorrect) {
-//             toast.success("Login successfully", { position: "top-right" });
-//             localStorage.setItem("Iplot_admin_bolig", data.email);
-//             const loginUserData = await fetchAdminDataByEmail();
-//             if (loginUserData) {
-//               navigate("/Husmodell");
-//             }
-//           } else {
-//             toast.error("Incorrect password", { position: "top-right" });
-//           }
-//         }
-//       }
-//     } catch (error) {
-//       console.error("Error during sign-in", error);
-//     }
-//   };
-
-//   return (
-//     <>
-//       <div className="flex items-center justify-center h-screen">
-//         <div className="relative w-full max-w-[490px]">
-//           <div
-//             className="mx-4 bg-white p-7 w-full"
-//             style={{
-//               boxShadow:
-//                 "0px 8px 8px -4px #10182808, 0px 20px 24px -4px #10182814",
-//             }}
-//           >
-//             <div className="flex justify-center mb-10">
-//               <img src={Ic_logo} alt="logo" />
-//             </div>
-//             <Form {...form}>
-//               <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
-//                 <div className="grid grid-cols-1 gap-6">
-//                   <div>
-//                     <FormField
-//                       control={form.control}
-//                       name="email"
-//                       render={({ field, fieldState }) => (
-//                         <FormItem>
-//                           <p
-//                             className={`${
-//                               fieldState.error ? "text-red" : "text-black"
-//                             } mb-[6px] text-sm font-medium`}
-//                           >
-//                             E-post
-//                           </p>
-//                           <FormControl>
-//                             <div className="relative">
-//                               <Input
-//                                 placeholder="Skriv inn E-post"
-//                                 {...field}
-//                                 className={`bg-white rounded-[8px] border text-black
-//                                           ${
-//                                             fieldState?.error
-//                                               ? "border-red"
-//                                               : "border-gray1"
-//                                           } `}
-//                                 type="text"
-//                               />
-//                             </div>
-//                           </FormControl>
-//                           <FormMessage />
-//                         </FormItem>
-//                       )}
-//                     />
-//                   </div>
-//                   <div>
-//                     <FormField
-//                       control={form.control}
-//                       name="password"
-//                       render={({ field, fieldState }) => (
-//                         <FormItem>
-//                           <p
-//                             className={`${
-//                               fieldState.error ? "text-red" : "text-black"
-//                             } mb-[6px] text-sm font-medium`}
-//                           >
-//                             Passord
-//                           </p>
-//                           <FormControl>
-//                             <div className="relative">
-//                               <Input
-//                                 placeholder="Skriv inn Passord"
-//                                 {...field}
-//                                 className={`bg-white rounded-[8px] border text-black
-//                                           ${
-//                                             fieldState?.error
-//                                               ? "border-red"
-//                                               : "border-gray1"
-//                                           } `}
-//                                 type="password"
-//                               />
-//                             </div>
-//                           </FormControl>
-//                           <FormMessage />
-//                         </FormItem>
-//                       )}
-//                     />
-//                   </div>
-//                 </div>
-//                 <div className="flex justify-end w-full gap-5 items-center p-4">
-//                   <div onClick={() => form.reset()}>
-//                     <Button
-//                       text="Avbryt"
-//                       className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
-//                     />
-//                   </div>
-//                   <Button
-//                     text="Lagre"
-//                     className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
-//                     type="submit"
-//                   />
-//                 </div>
-//               </form>
-//             </Form>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -228,23 +16,10 @@ import Button from "../../../components/common/button";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import bcrypt from "bcryptjs";
-import { useState } from "react";
-import Modal from "../../../components/common/modal";
-import { X } from "lucide-react";
+import { fetchAdminDataByEmail } from "../../../lib/utils";
 
 export const Login = () => {
   const navigate = useNavigate();
-  const [selectedType, setSelectedType] = useState<string>("");
-  const [error, setError] = useState<boolean>(false);
-  const [ModalOpen, setModalOpen] = useState(false);
-
-  const handleModalOpen = () => {
-    if (ModalOpen) {
-      setModalOpen(false);
-    } else {
-      setModalOpen(true);
-    }
-  };
 
   const formSchema = z.object({
     email: z
@@ -281,7 +56,6 @@ export const Login = () => {
       } else {
         const adminData = adminSnap.data();
         if (
-          selectedType === "boligpartner" &&
           adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71"
           //  ||
           // adminData?.is_admin === true
@@ -292,42 +66,41 @@ export const Login = () => {
           return;
         }
 
-        if (data.password) {
-          const hashedPassword = bcrypt.hashSync(data.password, 10);
-          await updateDoc(adminDocRef, { password: hashedPassword });
+        const storedPassword = adminData?.password;
 
-          toast.success("Login successfully", {
-            position: "top-right",
-          });
-          setSelectedType("");
-          if (selectedType === "boligpartner") {
+        if (!storedPassword) {
+          if (data.password) {
+            const hashedPassword = bcrypt.hashSync(data.password, 10);
+            await updateDoc(adminDocRef, { password: hashedPassword });
+
+            toast.success("Login successfully", {
+              position: "top-right",
+            });
             localStorage.setItem("Iplot_admin_bolig", data.email);
-          } else if (selectedType === "lead") {
-            localStorage.setItem("Iplot_admin", data.email);
+            const loginUserData = await fetchAdminDataByEmail();
+            if (loginUserData) {
+              navigate("/Husmodell");
+            }
           }
-
-          if (selectedType === "boligpartner") {
-            navigate("/Husmodell");
-          } else if (selectedType === "lead") {
-            window.location.href = "https://admin.mintomt.no/bank-leads";
+        } else {
+          const isPasswordCorrect = bcrypt.compareSync(
+            data.password,
+            storedPassword
+          );
+          if (isPasswordCorrect) {
+            toast.success("Login successfully", { position: "top-right" });
+            localStorage.setItem("Iplot_admin_bolig", data.email);
+            const loginUserData = await fetchAdminDataByEmail();
+            if (loginUserData) {
+              navigate("/Husmodell");
+            }
+          } else {
+            toast.error("Incorrect password", { position: "top-right" });
           }
         }
       }
     } catch (error) {
       console.error("Error during sign-in", error);
-    }
-  };
-
-  const handleMainSubmit = async (e: any) => {
-    const isValid = await form.trigger();
-
-    if (!isValid) return;
-
-    if (!selectedType) {
-      setModalOpen(true);
-    } else {
-      const formData = form.getValues();
-      onSubmit(formData);
     }
   };
 
@@ -346,10 +119,7 @@ export const Login = () => {
               <img src={Ic_logo} alt="logo" />
             </div>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(handleMainSubmit)}
-                className="relative"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
                 <div className="grid grid-cols-1 gap-6">
                   <div>
                     <FormField
@@ -436,77 +206,307 @@ export const Login = () => {
           </div>
         </div>
       </div>
-      {ModalOpen && (
-        <Modal onClose={handleModalOpen} isOpen={true} outSideClick={true}>
-          <div className="p-4 md:p-6 bg-white rounded-lg shadow-lg relative h-auto max-h-[90vh] overflow-y-auto w-[320px]">
-            <X
-              className="text-primary absolute top-2.5 right-2.5 w-5 h-5 cursor-pointer"
-              onClick={() => setModalOpen(false)}
-            />
-            <h2 className="text-lg font-semibold mb-4">Velg én</h2>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (!selectedType) {
-                  setError(true);
-                  return;
-                }
-                form.handleSubmit(onSubmit)();
-                setModalOpen(false);
-              }}
-              className="relative"
-            >
-              <div className="flex flex-col gap-3 mb-6">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="userType"
-                    value="lead"
-                    checked={selectedType === "lead"}
-                    onChange={(e) => {
-                      setSelectedType(e.target.value);
-                      setError(false);
-                    }}
-                    className="w-4 h-4 accent-purple"
-                  />
-                  Bankledelse
-                </label>
-
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="userType"
-                    value="boligpartner"
-                    checked={selectedType === "boligpartner"}
-                    onChange={(e) => {
-                      setSelectedType(e.target.value);
-                      setError(false);
-                    }}
-                    className="w-4 h-4 accent-purple"
-                  />
-                  Boligpartner
-                </label>
-
-                {error && <p className="text-red text-sm">Påkrevd</p>}
-              </div>
-
-              <div className="flex justify-end gap-4">
-                <Button
-                  text="Avbryt"
-                  className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
-                  onClick={() => setModalOpen(false)}
-                />
-                <Button
-                  text="Lagre"
-                  className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
-                  type="submit"
-                />
-              </div>
-            </form>
-          </div>
-        </Modal>
-      )}
     </>
   );
 };
+
+// import { useForm } from "react-hook-form";
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import {
+//   Form,
+//   FormControl,
+//   FormField,
+//   FormItem,
+//   FormMessage,
+// } from "../../../components/ui/form";
+// import { Input } from "../../../components/ui/input";
+// import { z } from "zod";
+// import Ic_logo from "../../../assets/images/Ic_logo.svg";
+// import toast from "react-hot-toast";
+// import { useNavigate } from "react-router-dom";
+// import Button from "../../../components/common/button";
+// import { doc, getDoc, updateDoc } from "firebase/firestore";
+// import { db } from "../../../config/firebaseConfig";
+// import bcrypt from "bcryptjs";
+// import { useState } from "react";
+// import Modal from "../../../components/common/modal";
+// import { X } from "lucide-react";
+
+// export const Login = () => {
+//   const navigate = useNavigate();
+//   const [selectedType, setSelectedType] = useState<string>("");
+//   const [error, setError] = useState<boolean>(false);
+//   const [ModalOpen, setModalOpen] = useState(false);
+
+//   const handleModalOpen = () => {
+//     if (ModalOpen) {
+//       setModalOpen(false);
+//     } else {
+//       setModalOpen(true);
+//     }
+//   };
+
+//   const formSchema = z.object({
+//     email: z
+//       .string()
+//       .email({ message: "Vennligst skriv inn en gyldig e-postadresse." })
+//       .min(1, { message: "E-postadresse er påkrevd." }),
+
+//     password: z
+//       .string()
+//       .min(8, { message: "Passordet må være minst 8 tegn langt." })
+//       .regex(/[A-Z]/, {
+//         message: "Passordet må inneholde minst én stor bokstav.",
+//       })
+//       .regex(/[a-z]/, {
+//         message: "Passordet må inneholde minst én liten bokstav.",
+//       })
+//       .regex(/[0-9]/, { message: "Passordet må inneholde minst ett tall." })
+//       .regex(/[@$!%*?&]/, {
+//         message: "Passordet må inneholde minst ett spesialtegn.",
+//       }),
+//   });
+
+//   const form = useForm<z.infer<typeof formSchema>>({
+//     resolver: zodResolver(formSchema),
+//   });
+
+//   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+//     try {
+//       const adminDocRef = doc(db, "admin", data.email);
+//       const adminSnap = await getDoc(adminDocRef);
+
+//       if (!adminSnap.exists()) {
+//         toast.error("Admin not exist", { position: "top-right" });
+//       } else {
+//         const adminData = adminSnap.data();
+//         if (
+//           selectedType === "boligpartner" &&
+//           adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71"
+//           //  ||
+//           // adminData?.is_admin === true
+//         ) {
+//           toast.error("Please login with Bolig Partner user.", {
+//             position: "top-right",
+//           });
+//           return;
+//         }
+
+//         if (data.password) {
+//           const hashedPassword = bcrypt.hashSync(data.password, 10);
+//           await updateDoc(adminDocRef, { password: hashedPassword });
+
+//           toast.success("Login successfully", {
+//             position: "top-right",
+//           });
+//           setSelectedType("");
+//           if (selectedType === "boligpartner") {
+//             localStorage.setItem("Iplot_admin_bolig", data.email);
+//           } else if (selectedType === "lead") {
+//             localStorage.setItem("Iplot_admin", data.email);
+//           }
+
+//           if (selectedType === "boligpartner") {
+//             navigate("/Husmodell");
+//           } else if (selectedType === "lead") {
+//             window.location.href = "https://admin.mintomt.no/bank-leads";
+//           }
+//         }
+//       }
+//     } catch (error) {
+//       console.error("Error during sign-in", error);
+//     }
+//   };
+
+//   const handleMainSubmit = async (e: any) => {
+//     const isValid = await form.trigger();
+
+//     if (!isValid) return;
+
+//     if (!selectedType) {
+//       setModalOpen(true);
+//     } else {
+//       const formData = form.getValues();
+//       onSubmit(formData);
+//     }
+//   };
+
+//   return (
+//     <>
+//       <div className="flex items-center justify-center h-screen">
+//         <div className="relative w-full max-w-[490px]">
+//           <div
+//             className="mx-4 bg-white p-7 w-full"
+//             style={{
+//               boxShadow:
+//                 "0px 8px 8px -4px #10182808, 0px 20px 24px -4px #10182814",
+//             }}
+//           >
+//             <div className="flex justify-center mb-10">
+//               <img src={Ic_logo} alt="logo" />
+//             </div>
+//             <Form {...form}>
+//               <form
+//                 onSubmit={form.handleSubmit(handleMainSubmit)}
+//                 className="relative"
+//               >
+//                 <div className="grid grid-cols-1 gap-6">
+//                   <div>
+//                     <FormField
+//                       control={form.control}
+//                       name="email"
+//                       render={({ field, fieldState }) => (
+//                         <FormItem>
+//                           <p
+//                             className={`${
+//                               fieldState.error ? "text-red" : "text-black"
+//                             } mb-[6px] text-sm font-medium`}
+//                           >
+//                             E-post
+//                           </p>
+//                           <FormControl>
+//                             <div className="relative">
+//                               <Input
+//                                 placeholder="Skriv inn E-post"
+//                                 {...field}
+//                                 className={`bg-white rounded-[8px] border text-black
+//                                           ${
+//                                             fieldState?.error
+//                                               ? "border-red"
+//                                               : "border-gray1"
+//                                           } `}
+//                                 type="text"
+//                               />
+//                             </div>
+//                           </FormControl>
+//                           <FormMessage />
+//                         </FormItem>
+//                       )}
+//                     />
+//                   </div>
+//                   <div>
+//                     <FormField
+//                       control={form.control}
+//                       name="password"
+//                       render={({ field, fieldState }) => (
+//                         <FormItem>
+//                           <p
+//                             className={`${
+//                               fieldState.error ? "text-red" : "text-black"
+//                             } mb-[6px] text-sm font-medium`}
+//                           >
+//                             Passord
+//                           </p>
+//                           <FormControl>
+//                             <div className="relative">
+//                               <Input
+//                                 placeholder="Skriv inn Passord"
+//                                 {...field}
+//                                 className={`bg-white rounded-[8px] border text-black
+//                                           ${
+//                                             fieldState?.error
+//                                               ? "border-red"
+//                                               : "border-gray1"
+//                                           } `}
+//                                 type="password"
+//                               />
+//                             </div>
+//                           </FormControl>
+//                           <FormMessage />
+//                         </FormItem>
+//                       )}
+//                     />
+//                   </div>
+//                 </div>
+//                 <div className="flex justify-end w-full gap-5 items-center p-4">
+//                   <div onClick={() => form.reset()}>
+//                     <Button
+//                       text="Avbryt"
+//                       className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+//                     />
+//                   </div>
+//                   <Button
+//                     text="Lagre"
+//                     className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+//                     type="submit"
+//                   />
+//                 </div>
+//               </form>
+//             </Form>
+//           </div>
+//         </div>
+//       </div>
+//       {ModalOpen && (
+//         <Modal onClose={handleModalOpen} isOpen={true} outSideClick={true}>
+//           <div className="p-4 md:p-6 bg-white rounded-lg shadow-lg relative h-auto max-h-[90vh] overflow-y-auto w-[320px]">
+//             <X
+//               className="text-primary absolute top-2.5 right-2.5 w-5 h-5 cursor-pointer"
+//               onClick={() => setModalOpen(false)}
+//             />
+//             <h2 className="text-lg font-semibold mb-4">Velg én</h2>
+
+//             <form
+//               onSubmit={(e) => {
+//                 e.preventDefault();
+//                 if (!selectedType) {
+//                   setError(true);
+//                   return;
+//                 }
+//                 form.handleSubmit(onSubmit)();
+//                 setModalOpen(false);
+//               }}
+//               className="relative"
+//             >
+//               <div className="flex flex-col gap-3 mb-6">
+//                 <label className="flex items-center gap-2">
+//                   <input
+//                     type="radio"
+//                     name="userType"
+//                     value="lead"
+//                     checked={selectedType === "lead"}
+//                     onChange={(e) => {
+//                       setSelectedType(e.target.value);
+//                       setError(false);
+//                     }}
+//                     className="w-4 h-4 accent-purple"
+//                   />
+//                   Bankledelse
+//                 </label>
+
+//                 <label className="flex items-center gap-2">
+//                   <input
+//                     type="radio"
+//                     name="userType"
+//                     value="boligpartner"
+//                     checked={selectedType === "boligpartner"}
+//                     onChange={(e) => {
+//                       setSelectedType(e.target.value);
+//                       setError(false);
+//                     }}
+//                     className="w-4 h-4 accent-purple"
+//                   />
+//                   Boligpartner
+//                 </label>
+
+//                 {error && <p className="text-red text-sm">Påkrevd</p>}
+//               </div>
+
+//               <div className="flex justify-end gap-4">
+//                 <Button
+//                   text="Avbryt"
+//                   className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+//                   onClick={() => setModalOpen(false)}
+//                 />
+//                 <Button
+//                   text="Lagre"
+//                   className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+//                   type="submit"
+//                 />
+//               </div>
+//             </form>
+//           </div>
+//         </Modal>
+//       )}
+//     </>
+//   );
+// };
