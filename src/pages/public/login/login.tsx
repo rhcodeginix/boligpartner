@@ -230,7 +230,7 @@ import { db } from "../../../config/firebaseConfig";
 import bcrypt from "bcryptjs";
 import { useState } from "react";
 import Modal from "../../../components/common/modal";
-import { X } from "lucide-react";
+import { Landmark, Home, X } from "lucide-react";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -441,12 +441,14 @@ export const Login = () => {
       </div>
       {ModalOpen && (
         <Modal onClose={handleModalOpen} isOpen={true} outSideClick={true}>
-          <div className="p-4 md:p-6 bg-white rounded-lg shadow-lg relative h-auto max-h-[90vh] overflow-y-auto w-[320px]">
+          <div className="p-4 md:p-6 bg-white rounded-lg shadow-lg relative h-auto max-h-[90vh] overflow-y-auto w-[355px] sm:w-[390px]">
             <X
               className="text-primary absolute top-2.5 right-2.5 w-5 h-5 cursor-pointer"
               onClick={() => setModalOpen(false)}
             />
-            <h2 className="text-lg font-semibold mb-4">Velg én</h2>
+            <h2 className="text-lg font-semibold mb-4">
+              Velg type tjeneste du vil bruke
+            </h2>
 
             <form
               onSubmit={(e) => {
@@ -461,35 +463,54 @@ export const Login = () => {
               className="relative"
             >
               <div className="flex flex-col gap-3 mb-6">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="userType"
-                    value="lead"
-                    checked={selectedType === "lead"}
-                    onChange={(e) => {
-                      setSelectedType(e.target.value);
-                      setError(false);
-                    }}
-                    className="w-4 h-4 accent-purple"
-                  />
-                  Bankledelse
-                </label>
-
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="userType"
-                    value="boligpartner"
-                    checked={selectedType === "boligpartner"}
-                    onChange={(e) => {
-                      setSelectedType(e.target.value);
-                      setError(false);
-                    }}
-                    className="w-4 h-4 accent-purple"
-                  />
-                  Boligpartner
-                </label>
+                <div className="flex flex-wrap gap-2 lg:gap-4 items-center">
+                  {[
+                    {
+                      label: "Tips til bank",
+                      value: "lead",
+                      icon: (
+                        <Landmark
+                          className={`${
+                            selectedType === "lead"
+                              ? "text-[#444CE7]"
+                              : "text-[#5D6B98]"
+                          }`}
+                        />
+                      ),
+                    },
+                    {
+                      label: "Boligkonfigurator",
+                      value: "boligpartner",
+                      icon: (
+                        <Home
+                          className={`${
+                            selectedType === "boligpartner"
+                              ? "text-[#444CE7]"
+                              : "text-[#5D6B98]"
+                          }`}
+                        />
+                      ),
+                    },
+                  ].map((item, index) => (
+                    <div
+                      key={index}
+                      onClick={() => {
+                        setSelectedType(item.value);
+                        setError(false);
+                      }}
+                      className={`flex items-center gap-2 border-2 rounded-lg py-2 px-3 cursor-pointer ${
+                        selectedType === item.value
+                          ? "border-[#444CE7]"
+                          : "border-[#EFF1F5]"
+                      }`}
+                    >
+                      {item.icon}
+                      <div className="text-darkBlack text-sm text-center">
+                        {item.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
 
                 {error && <p className="text-red text-sm">Påkrevd</p>}
               </div>
