@@ -172,11 +172,11 @@ export const HusmodellerTable = () => {
   };
 
   const filteredData = useMemo(() => {
-    return houseModels.flatMap((item: any) => {
+    const allKunder = houseModels.flatMap((item: any) => {
       if (
         item?.KundeInfo &&
-        item?.KundeInfo.length > 0 &&
-        Array.isArray(item.KundeInfo)
+        Array.isArray(item.KundeInfo) &&
+        item.KundeInfo.length > 0
       ) {
         return item.KundeInfo.map((kunde: any) => ({
           ...kunde,
@@ -192,21 +192,30 @@ export const HusmodellerTable = () => {
             kunde?.Plantegninger.some((room: any) => !room.configurator)
               ? false
               : true,
-        })).filter((kunde: any) => {
-          const matchesSearch =
-            !searchTerm ||
-            kunde.Kundenavn?.toLowerCase().includes(searchTerm.toLowerCase());
-          const matchesFilter =
-            !selectedFilter ||
-            selectedFilter === "" ||
-            kunde.husmodell_name === selectedFilter;
-          const matchesTypeProsjekt =
-            !activeTab || kunde.tag.toLowerCase() === activeTab.toLowerCase();
-
-          return matchesSearch && matchesFilter && matchesTypeProsjekt;
-        });
+          updatedAt: kunde.updatedAt || item.updatedAt || null,
+        }));
       }
       return [];
+    });
+
+    const filtered = allKunder.filter((kunde: any) => {
+      const matchesSearch =
+        !searchTerm ||
+        kunde.Kundenavn?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter =
+        !selectedFilter ||
+        selectedFilter === "" ||
+        kunde.husmodell_name === selectedFilter;
+      const matchesTypeProsjekt =
+        !activeTab || kunde.tag?.toLowerCase() === activeTab.toLowerCase();
+
+      return matchesSearch && matchesFilter && matchesTypeProsjekt;
+    });
+
+    return filtered.sort((a, b) => {
+      const dateA = new Date(a.updatedAt).getTime();
+      const dateB = new Date(b.updatedAt).getTime();
+      return dateB - dateA;
     });
   }, [houseModels, searchTerm, selectedFilter, activeTab]);
 
@@ -284,7 +293,7 @@ export const HusmodellerTable = () => {
       },
       {
         accessorKey: "sisteoppdatertav",
-        header: "Siste oppdatert av",
+        header: "Sist oppdatert",
         cell: ({ row }) => (
           <p className="text-sm font-medium text-black w-max">
             {formatDateTime(row.original?.updatedAt)}

@@ -146,7 +146,7 @@ export const HusmodellerTable = () => {
       },
       {
         accessorKey: "sisteoppdatertav",
-        header: "Siste oppdatert av",
+        header: "Sist oppdatert",
         cell: ({ row }) => (
           <div className="flex items-start gap-3">
             <p className="text-sm font-medium text-black w-max">
