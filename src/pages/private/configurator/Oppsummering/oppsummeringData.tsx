@@ -2803,7 +2803,7 @@ export const OppsummeringData: React.FC<{
           onClick={() => navigate("/Bolig-configurator")}
         />
         <Button
-          text="Send til oppmelding"
+          text="Generer PDF"
           className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
           onClick={() => setFinalSubmission(true)}
         />
@@ -2811,7 +2811,7 @@ export const OppsummeringData: React.FC<{
 
       <Drawer isOpen={FinalSubmission} onClose={handleFinalSubmissionPopup}>
         <h4 className="text-darkBlack font-medium text-lg md:text-xl lg:text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-4 md:p-6">
-          Fullfør innsending av tilak
+        Generer PDF
           <X
             onClick={() => setFinalSubmission(false)}
             className="text-primary cursor-pointer"

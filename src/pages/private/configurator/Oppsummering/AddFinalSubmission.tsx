@@ -27,7 +27,7 @@ import {
 } from "../../../../components/ui/select";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { removeUndefinedOrNull } from "../Oppmelding/Yttervegger";
 import { toast } from "react-hot-toast";
 import { useEffect, useRef, useState } from "react";
@@ -81,6 +81,7 @@ export const AddFinalSubmission: React.FC<{
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const previewRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -466,6 +467,7 @@ export const AddFinalSubmission: React.FC<{
       }
 
       setIsExporting(false);
+      navigate("/Bolig-configurator");
     } catch (error) {
       console.error("error:", error);
       toast.error("Something went wrong!", {
@@ -820,7 +822,7 @@ export const AddFinalSubmission: React.FC<{
               />
             </div>
             <Button
-              text="Neste"
+              text="Generer"
               className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-12 py-2 flex items-center gap-2"
               type="submit"
             />

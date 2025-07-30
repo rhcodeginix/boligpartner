@@ -84,7 +84,7 @@ export const ExportViewData: React.FC<{
               marginBottom: "10px",
             }}
           >
-            Her følger oppsummering
+            Skjema for oppmelding
           </h4>
           <div
             style={{
@@ -159,6 +159,16 @@ export const ExportViewData: React.FC<{
               {offices?.data?.name}
             </p>
           )}
+          <p style={{ color: "#101828", fontSize: "20px" }}>
+            <span style={{ fontWeight: 600 }}>Dato og klokkeslett:</span>{" "}
+            {new Date().toLocaleString("nb-NO", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
         </div>
       </div>
 
