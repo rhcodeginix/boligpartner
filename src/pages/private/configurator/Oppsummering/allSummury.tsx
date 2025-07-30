@@ -633,6 +633,8 @@ export const AllSummury: React.FC<{
             display: "flex",
             flexDirection: "column",
             gap: "16px",
+            background: "#f9f9fb",
+            padding: "0 16px 16px 16px",
           }}
         >
           <h4 className="upperCaseHeading">Tak og taktekking</h4>

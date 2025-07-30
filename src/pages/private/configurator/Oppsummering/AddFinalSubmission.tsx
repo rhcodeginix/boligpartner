@@ -31,10 +31,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { removeUndefinedOrNull } from "../Oppmelding/Yttervegger";
 import { toast } from "react-hot-toast";
 import { useEffect, useRef, useState } from "react";
-import html2canvas from "html2canvas";
-import PptxGenJS from "pptxgenjs";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
+// import html2canvas from "html2canvas";
+// import PptxGenJS from "pptxgenjs";
+// import * as XLSX from "xlsx";
+// import { saveAs } from "file-saver";
 import Modal from "../../../../components/common/modal";
 import { Spinner } from "../../../../components/Spinner";
 import { ExportViewData } from "./exportViewData";
@@ -167,7 +167,7 @@ export const AddFinalSubmission: React.FC<{
         position: "top-right",
       });
 
-      if (data.exportType === "PDF") {
+      // if (data.exportType === "PDF") {
         setIsExporting(true);
         const element = previewRef.current as HTMLElement | null;
         if (!element) return;
@@ -312,137 +312,137 @@ export const AddFinalSubmission: React.FC<{
         } finally {
           setIsExporting(false);
         }
-      }
+      // }
 
-      if (data.exportType === "PPT") {
-        setIsExporting(true);
-        const exportToPpt = async () => {
-          const element = previewRef.current;
-          if (!element) return;
+      // if (data.exportType === "PPT") {
+      //   setIsExporting(true);
+      //   const exportToPpt = async () => {
+      //     const element = previewRef.current;
+      //     if (!element) return;
 
-          const fullCanvas = await html2canvas(element, {
-            scale: 1,
-            useCORS: true,
-          });
+      //     const fullCanvas = await html2canvas(element, {
+      //       scale: 1,
+      //       useCORS: true,
+      //     });
 
-          const slideWidthInches = 10;
-          const slideHeightInches = 5.625;
-          const paddingInches = 0.2;
-          const usableWidthInches = slideWidthInches - 2 * paddingInches;
-          const usableHeightInches = slideHeightInches - 2 * paddingInches;
-          const DPI = 96;
+      //     const slideWidthInches = 10;
+      //     const slideHeightInches = 5.625;
+      //     const paddingInches = 0.2;
+      //     const usableWidthInches = slideWidthInches - 2 * paddingInches;
+      //     const usableHeightInches = slideHeightInches - 2 * paddingInches;
+      //     const DPI = 96;
 
-          const totalHeightPx = fullCanvas.height;
-          const totalWidthPx = fullCanvas.width;
-          const sliceHeightPx = usableHeightInches * DPI;
+      //     const totalHeightPx = fullCanvas.height;
+      //     const totalWidthPx = fullCanvas.width;
+      //     const sliceHeightPx = usableHeightInches * DPI;
 
-          const pptx = new PptxGenJS();
-          let offsetY = 0;
+      //     const pptx = new PptxGenJS();
+      //     let offsetY = 0;
 
-          while (offsetY < totalHeightPx) {
-            const sliceCanvas = document.createElement("canvas");
-            sliceCanvas.width = totalWidthPx;
-            const currentSliceHeight = Math.min(
-              sliceHeightPx,
-              totalHeightPx - offsetY
-            );
-            sliceCanvas.height = currentSliceHeight;
+      //     while (offsetY < totalHeightPx) {
+      //       const sliceCanvas = document.createElement("canvas");
+      //       sliceCanvas.width = totalWidthPx;
+      //       const currentSliceHeight = Math.min(
+      //         sliceHeightPx,
+      //         totalHeightPx - offsetY
+      //       );
+      //       sliceCanvas.height = currentSliceHeight;
 
-            const ctx = sliceCanvas.getContext("2d");
-            if (ctx) {
-              ctx.drawImage(
-                fullCanvas,
-                0,
-                offsetY,
-                totalWidthPx,
-                currentSliceHeight,
-                0,
-                0,
-                totalWidthPx,
-                currentSliceHeight
-              );
-            }
+      //       const ctx = sliceCanvas.getContext("2d");
+      //       if (ctx) {
+      //         ctx.drawImage(
+      //           fullCanvas,
+      //           0,
+      //           offsetY,
+      //           totalWidthPx,
+      //           currentSliceHeight,
+      //           0,
+      //           0,
+      //           totalWidthPx,
+      //           currentSliceHeight
+      //         );
+      //       }
 
-            const imgData = sliceCanvas.toDataURL("image/png");
+      //       const imgData = sliceCanvas.toDataURL("image/png");
 
-            const imageWidthInches = totalWidthPx / DPI;
-            const imageHeightInches = currentSliceHeight / DPI;
+      //       const imageWidthInches = totalWidthPx / DPI;
+      //       const imageHeightInches = currentSliceHeight / DPI;
 
-            let scaledWidth = usableWidthInches;
-            let scaledHeight =
-              imageHeightInches * (scaledWidth / imageWidthInches);
+      //       let scaledWidth = usableWidthInches;
+      //       let scaledHeight =
+      //         imageHeightInches * (scaledWidth / imageWidthInches);
 
-            if (scaledHeight > usableHeightInches) {
-              scaledHeight = usableHeightInches;
-              scaledWidth =
-                imageWidthInches * (scaledHeight / imageHeightInches);
-            }
+      //       if (scaledHeight > usableHeightInches) {
+      //         scaledHeight = usableHeightInches;
+      //         scaledWidth =
+      //           imageWidthInches * (scaledHeight / imageHeightInches);
+      //       }
 
-            const slide = pptx.addSlide();
-            slide.addImage({
-              data: imgData,
-              x: paddingInches + (usableWidthInches - scaledWidth) / 2,
-              y: paddingInches + (usableHeightInches - scaledHeight) / 2,
-              w: scaledWidth,
-              h: scaledHeight,
-            });
+      //       const slide = pptx.addSlide();
+      //       slide.addImage({
+      //         data: imgData,
+      //         x: paddingInches + (usableWidthInches - scaledWidth) / 2,
+      //         y: paddingInches + (usableHeightInches - scaledHeight) / 2,
+      //         w: scaledWidth,
+      //         h: scaledHeight,
+      //       });
 
-            offsetY += currentSliceHeight;
-          }
+      //       offsetY += currentSliceHeight;
+      //     }
 
-          pptx.writeFile({ fileName: `export-${Date.now()}.pptx` });
-        };
-        exportToPpt();
-      }
+      //     pptx.writeFile({ fileName: `export-${Date.now()}.pptx` });
+      //   };
+      //   exportToPpt();
+      // }
 
-      if (data.exportType === "Excel") {
-        setIsExporting(true);
-        const exportToExcel = () => {
-          const rows: any[] = [];
+      // if (data.exportType === "Excel") {
+      //   setIsExporting(true);
+      //   const exportToExcel = () => {
+      //     const rows: any[] = [];
 
-          rooms.forEach((room: any) => {
-            room.rooms?.forEach((innerRoom: any) => {
-              innerRoom.Kategorinavn?.forEach((kat: any) => {
-                if (kat.productOptions === "Text") return;
+      //     rooms.forEach((room: any) => {
+      //       room.rooms?.forEach((innerRoom: any) => {
+      //         innerRoom.Kategorinavn?.forEach((kat: any) => {
+      //           if (kat.productOptions === "Text") return;
 
-                kat.produkter?.forEach((prod: any) => {
-                  if (!prod?.isSelected) return;
+      //           kat.produkter?.forEach((prod: any) => {
+      //             if (!prod?.isSelected) return;
 
-                  rows.push({
-                    RoomTitle: room?.title,
-                    RoomName: innerRoom?.name_no || innerRoom?.name,
-                    Category: kat?.navn,
-                    Product: prod?.Produktnavn,
-                    Price: prod?.IncludingOffer
-                      ? "Standard"
-                      : prod?.pris || "-",
-                    DeliveredBy: prod?.delieverBy || "Boligpartner",
-                  });
-                });
-              });
-            });
-          });
+      //             rows.push({
+      //               RoomTitle: room?.title,
+      //               RoomName: innerRoom?.name_no || innerRoom?.name,
+      //               Category: kat?.navn,
+      //               Product: prod?.Produktnavn,
+      //               Price: prod?.IncludingOffer
+      //                 ? "Standard"
+      //                 : prod?.pris || "-",
+      //               DeliveredBy: prod?.delieverBy || "Boligpartner",
+      //             });
+      //           });
+      //         });
+      //       });
+      //     });
 
-          const worksheet = XLSX.utils.json_to_sheet(rows);
-          const workbook = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(
-            workbook,
-            worksheet,
-            "Customisation Summary"
-          );
+      //     const worksheet = XLSX.utils.json_to_sheet(rows);
+      //     const workbook = XLSX.utils.book_new();
+      //     XLSX.utils.book_append_sheet(
+      //       workbook,
+      //       worksheet,
+      //       "Customisation Summary"
+      //     );
 
-          const excelBuffer = XLSX.write(workbook, {
-            bookType: "xlsx",
-            type: "array",
-          });
-          const blob = new Blob([excelBuffer], {
-            type: "application/octet-stream",
-          });
+      //     const excelBuffer = XLSX.write(workbook, {
+      //       bookType: "xlsx",
+      //       type: "array",
+      //     });
+      //     const blob = new Blob([excelBuffer], {
+      //       type: "application/octet-stream",
+      //     });
 
-          saveAs(blob, `customisation-summary-${Date.now()}.xlsx`);
-        };
-        exportToExcel();
-      }
+      //     saveAs(blob, `customisation-summary-${Date.now()}.xlsx`);
+      //   };
+      //   exportToExcel();
+      // }
 
       const uniqueId = uuidv4();
 
@@ -467,7 +467,7 @@ export const AddFinalSubmission: React.FC<{
       }
 
       setIsExporting(false);
-      navigate("/Bolig-configurator");
+      // navigate("/Bolig-configurator");
     } catch (error) {
       console.error("error:", error);
       toast.error("Something went wrong!", {
@@ -479,11 +479,11 @@ export const AddFinalSubmission: React.FC<{
     }
   };
 
-  const exportType = [
-    "PDF",
-    "PPT",
-    // "Excel"
-  ];
+  // const exportType = [
+  //   "PDF",
+  //   "PPT",
+  //   // "Excel"
+  // ];
 
   const [array, setArray] = useState<string[]>([]);
 
@@ -761,7 +761,7 @@ export const AddFinalSubmission: React.FC<{
                 )}
               />
             </div>
-            <div>
+            {/* <div>
               <FormField
                 control={form.control}
                 name={`exportType`}
@@ -805,7 +805,7 @@ export const AddFinalSubmission: React.FC<{
                   </FormItem>
                 )}
               />
-            </div>
+            </div> */}
           </div>
           <div
             className="flex fixed bottom-0 justify-end w-full gap-5 items-center left-0 px-8 py-4"
