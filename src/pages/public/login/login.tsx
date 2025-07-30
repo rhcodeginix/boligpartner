@@ -241,6 +241,7 @@ export const Login = () => {
   const handleModalOpen = () => {
     if (ModalOpen) {
       setModalOpen(false);
+      setSelectedType("");
     } else {
       setModalOpen(true);
     }
@@ -271,7 +272,7 @@ export const Login = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: z.infer<typeof formSchema>, type: string) => {
     try {
       const adminDocRef = doc(db, "admin", data.email);
       const adminSnap = await getDoc(adminDocRef);
@@ -279,18 +280,19 @@ export const Login = () => {
       if (!adminSnap.exists()) {
         toast.error("Admin not exist", { position: "top-right" });
       } else {
-        const adminData = adminSnap.data();
-        if (
-          selectedType === "boligpartner" &&
-          adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71"
-          //  ||
-          // adminData?.is_admin === true
-        ) {
-          toast.error("Please login with Bolig Partner user.", {
-            position: "top-right",
-          });
-          return;
-        }
+        // const adminData = adminSnap.data();
+
+        // if (
+        //   type === "lead" &&
+        //   adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71"
+        //   //  ||
+        //   // adminData?.is_admin === true
+        // ) {
+        //   toast.error("Please login with Bolig Partner user.", {
+        //     position: "top-right",
+        //   });
+        //   return;
+        // }
 
         if (data.password) {
           const hashedPassword = bcrypt.hashSync(data.password, 10);
@@ -299,21 +301,21 @@ export const Login = () => {
           toast.success("Login successfully", {
             position: "top-right",
           });
-          setSelectedType("");
-          if (selectedType === "boligpartner") {
+          if (type === "boligpartner") {
             localStorage.setItem("Iplot_admin_bolig", data.email);
-          } else if (selectedType === "lead") {
+          } else if (type === "lead") {
             localStorage.setItem("Iplot_admin", data.email);
           }
 
-          if (selectedType === "boligpartner") {
+          if (type === "boligpartner") {
             navigate("/Husmodell");
-          } else if (selectedType === "lead") {
+          } else if (type === "lead") {
             const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(
               data.email
             )}`;
             window.location.href = url;
           }
+          setSelectedType("");
         }
       }
     } catch (error) {
@@ -321,7 +323,55 @@ export const Login = () => {
     }
   };
 
-  const handleMainSubmit = async (e: any) => {
+  const handleMainSubmit = async (data: any) => {
+    const adminDocRef = doc(db, "admin", data.email);
+    const adminSnap = await getDoc(adminDocRef);
+
+    if (!adminSnap.exists()) {
+      toast.error("User not exist", { position: "top-right" });
+    } else {
+      const adminData = adminSnap.data();
+      if (adminData && adminData?.role === "Bankansvarlig") {
+        setSelectedType("boligpartner");
+        form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
+        return;
+      } else if (adminData && adminData?.role === "Agent") {
+        if (adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71") {
+          if (adminData?.is_bank && adminData?.is_boligkonfigurator) {
+            const isValid = await form.trigger();
+
+            if (!isValid) return;
+
+            if (!selectedType) {
+              setModalOpen(true);
+            } else {
+              const formData = form.getValues();
+              onSubmit(formData, selectedType);
+            }
+          } else if (adminData?.is_boligkonfigurator) {
+            setSelectedType("boligpartner");
+            form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
+          } else if (adminData?.is_bank) {
+            setSelectedType("lead");
+            form.handleSubmit((data) => onSubmit(data, "lead"))();
+          } else {
+            setSelectedType("boligpartner");
+            form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
+          }
+        } else {
+          toast.error("Please login with Bolig Partner user.", {
+            position: "top-right",
+          });
+        }
+
+        return;
+      } else {
+        toast.error("Please login with Bolig Partner user.", {
+          position: "top-right",
+        });
+        return;
+      }
+    }
     const isValid = await form.trigger();
 
     if (!isValid) return;
@@ -330,7 +380,7 @@ export const Login = () => {
       setModalOpen(true);
     } else {
       const formData = form.getValues();
-      onSubmit(formData);
+      onSubmit(formData, selectedType);
     }
   };
 
@@ -457,7 +507,9 @@ export const Login = () => {
                   setError(true);
                   return;
                 }
-                form.handleSubmit(onSubmit)();
+                // form.handleSubmit(onSubmit)();
+                form.handleSubmit((data) => onSubmit(data, selectedType))();
+
                 setModalOpen(false);
               }}
               className="relative"

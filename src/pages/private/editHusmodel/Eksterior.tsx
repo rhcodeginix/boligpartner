@@ -12,7 +12,7 @@ import {
 } from "../../../components/ui/form";
 import Button from "../../../components/common/button";
 import Ic_x_circle from "../../../assets/images/Ic_x_circle.svg";
-import { ArrowLeft, Info, Pencil, Plus, X } from "lucide-react";
+import { ArrowLeft, Info, Pencil, X } from "lucide-react";
 import { AddNewSubCat } from "./AddNewSubCat";
 import { useLocation, useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -569,13 +569,13 @@ export const Eksterior: React.FC<{
                   </div>
                 )}
 
-                <div
+                {/* <div
                   className="text-purple font-semibold text-xs sm:text-sm flex items-center gap-1 cursor-pointer h-full whitespace-nowrap"
                   onClick={() => setAddSubCategory(true)}
                 >
                   <Plus className="w-4 h-4 md:w-6 md:h-6" />
                   Legg til produkt
-                </div>
+                </div> */}
               </div>
               {hovedkategorinavn.length > 0 && (
                 <>
@@ -583,7 +583,7 @@ export const Eksterior: React.FC<{
                     <h4 className="text-darkBlack text-sm md:text-base font-semibold">
                       {title}
                     </h4>
-                    {form.watch(
+                    {/* {form.watch(
                       `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
                     ) !== "Text" && (
                       <div
@@ -595,7 +595,7 @@ export const Eksterior: React.FC<{
                         <Plus className="w-5 h-5 md:w-6 md:h-6" />
                         Legge til {title}
                       </div>
-                    )}
+                    )} */}
                     {/* <div
                   className={`flex items-center gap-1 font-medium ${
                     produkter.length === 1
