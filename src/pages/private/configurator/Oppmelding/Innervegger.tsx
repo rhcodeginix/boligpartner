@@ -293,10 +293,10 @@ export const Innervegger = forwardRef(
                                                         className="flex flex-col"
                                                       >
                                                         <div>
-                                                          <h4 className="text-sm font-medium text-black mb-1">
+                                                          <h4 className="text-sm font-medium text-secondary mb-1">
                                                             {prod.categoryName}
                                                           </h4>
-                                                          <h3 className="text-secondary">
+                                                          <h3 className="text-darkBlack">
                                                             {prod?.Produktnavn}{" "}
                                                             {prod?.customText && (
                                                               <span className="text-darkBlack">

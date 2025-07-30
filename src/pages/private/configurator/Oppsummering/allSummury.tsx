@@ -1068,7 +1068,7 @@ export const AllSummury: React.FC<{
                                               <div>
                                                 <div
                                                   style={{
-                                                    color: "#30374f",
+                                                    color: "#5d6b98",
                                                     fontSize: "24px",
                                                     fontWeight: 500,
                                                     marginBottom: "2px",
@@ -1078,7 +1078,7 @@ export const AllSummury: React.FC<{
                                                 </div>
                                                 <div
                                                   style={{
-                                                    color: "#5d6b98",
+                                                    color: "#101828",
                                                     fontSize: "20px",
                                                   }}
                                                 >
