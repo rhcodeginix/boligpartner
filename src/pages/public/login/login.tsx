@@ -336,7 +336,7 @@ export const Login = () => {
         form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
         return;
       } else if (adminData && adminData?.role === "Agent") {
-        if (adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71") {
+        if (adminData?.supplier === "9f523136-72ca-4bde-88e5-de175bc2fc71") {
           if (adminData?.is_bank && adminData?.is_boligkonfigurator) {
             const isValid = await form.trigger();
 

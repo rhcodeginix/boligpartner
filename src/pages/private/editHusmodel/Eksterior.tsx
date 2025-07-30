@@ -1212,7 +1212,7 @@ export const Eksterior: React.FC<{
             />
             {FloorData?.configurator !== true && (
               <Button
-                text="Bekreft konfigurasjon"
+                text="Bekreft plan"
                 className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2"
                 type="button"
                 onClick={async () => {
