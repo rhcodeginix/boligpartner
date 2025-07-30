@@ -42,7 +42,7 @@ import { Spinner } from "../../../../components/Spinner";
 
 const formSchema = z
   .object({
-    Kundenr: z.number({ required_error: "BP prosjektnummer er påkrevd." }),
+    Kundenr: z.string({ required_error: "BP prosjektnummer er påkrevd." }),
     Tiltakshaver: z.string({ required_error: "Tiltakshaver er påkrevd." }),
     Byggeadresse: z.string({ required_error: "Byggeadresse er påkrevd." }),
     Postnr: z.string({ required_error: "Postnr er påkrevd." }),
@@ -238,7 +238,7 @@ export const Prosjektdetaljer = forwardRef(
               }
             });
           } else {
-            form.setValue("Kundenr", Number(data?.Kundenummer));
+            form.setValue("Kundenr", data?.Kundenummer);
             form.setValue("VelgSerie", data?.HouseType ?? "");
             form.setValue("Byggeadresse", data?.Anleggsadresse ?? "");
             form.setValue("Poststed", data?.Poststed ?? "");
@@ -397,10 +397,7 @@ export const Prosjektdetaljer = forwardRef(
                                               ? "border-red"
                                               : "border-gray1"
                                           } `}
-                                type="number"
-                                onChange={(e: any) =>
-                                  field.onChange(Number(e.target.value) || "")
-                                }
+                                type="text"
                               />
                             </div>
                           </FormControl>

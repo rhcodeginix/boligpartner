@@ -436,14 +436,14 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     <>
       {isSubmitLoading && <Spinner />}
 
-      <div className="px-4 md:px-6 py-5 md:py-6 desktop:p-8">
+      {/* <div className="px-4 md:px-6 py-5 md:py-6 desktop:p-8">
         <h3 className="text-darkBlack text-lg md:text-xl lg:text-2xl font-semibold mb-2">
           Last opp plantegningen din
         </h3>
         <p className="text-secondary text-sm md:text-base desktop:text-lg">
           Velg plan for konfigurering
         </p>
-      </div>
+      </div> */}
       <div className="px-4 md:px-6 py-5 md:py-6 desktop:p-8 mb-[100px]">
         <div
           className="relative p-2 rounded-lg w-max"

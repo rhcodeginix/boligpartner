@@ -595,7 +595,7 @@ export const OppsummeringData: React.FC<{
           <div className="border-t border-[#EBEBEB] w-full"></div>
           <div className="flex flex-col gap-4">
             <h4 className="text-darkBlack font-bold text-base uppercase">
-              Gulv OG bjelkelag
+              Gulv og bjelkelag
             </h4>
             <div className="text-darkBlack font-medium text-sm">
               Bjelkelag mellom etasjer
