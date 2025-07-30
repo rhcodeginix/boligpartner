@@ -135,6 +135,7 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                     >
                       Ventilasjon
                     </p>
+
                     <FormField
                       control={form.control}
                       name="Ventilasjon"
@@ -157,6 +158,11 @@ export const VentilasjonSentralstøvsuger = forwardRef(
                         </FormItem>
                       )}
                     />
+                    <p className="italic text-secondary text-xs md:text-sm mt-1">
+                      "Ventilasjon" leveres ihht prosjekteringsunderlaget.
+                      Eventuelle avvik må registreres i kommentarfeltet for
+                      ventilasjon under.
+                    </p>
                   </div>
                   <div className="col-span-3">
                     <FormField
