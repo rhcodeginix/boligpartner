@@ -4,7 +4,6 @@ import { Floor } from "./floor";
 import { AllFloor } from "./allFloor";
 
 export const Romkonfigurator: React.FC<{ Prev: any; Next: any }> = ({
-  // Prev,
   Next,
 }) => {
   const [activeTab, setActiveTab] = useState(1);
