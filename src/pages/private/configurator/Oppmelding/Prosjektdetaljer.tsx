@@ -238,7 +238,7 @@ export const Prosjektdetaljer = forwardRef(
               }
             });
           } else {
-            form.setValue("Kundenr", data?.Kundenummer);
+            form.setValue("Kundenr", String(data?.Kundenummer));
             form.setValue("VelgSerie", data?.HouseType ?? "");
             form.setValue("Byggeadresse", data?.Anleggsadresse ?? "");
             form.setValue("Poststed", data?.Poststed ?? "");

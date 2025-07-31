@@ -24,7 +24,7 @@ export const AllRoomkonfigurator: React.FC = () => {
   const navigate = useNavigate();
   const [RoomConfigurator, setRoomConfigurator] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isGridView, setIsGridView] = useState(true);
+  const [isGridView, setIsGridView] = useState(false);
 
   const [IsAdmin, setIsAdmin] = useState<any>(null);
   const [office, setOfice] = useState<any>(null);
@@ -154,11 +154,11 @@ export const AllRoomkonfigurator: React.FC = () => {
           className="border border-gray2 text-black text-base rounded-[40px] h-[44px] md:h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
           onClick={() => setIsGridView(!isGridView)}
         />
-        <Button
+        {/* <Button
           text="Legg til ny romkonfigurator"
           className="border border-purple bg-purple text-white text-base rounded-[40px] h-[44px] md:h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
           onClick={() => navigate("/Room-Configurator")}
-        />
+        /> */}
       </div>
       {isGridView ? (
         <div className="p-4 md:p-6 lg:p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 desktop:grid-cols-4 gap-x-6 gap-y-[40px]">
