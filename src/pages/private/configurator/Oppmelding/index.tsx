@@ -88,21 +88,6 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
         />
       ),
     },
-    // {
-    //   id: 2,
-    //   title: "Leveransedetaljer",
-    //   content: (
-    //     <Leveransedetaljer
-    //       ref={(ref: any): void => {
-    //         formRefs.current[2] = ref;
-    //       }}
-    //       handleNext={handleNext}
-    //       handlePrevious={handlePrevious}
-    //       roomsData={roomsData}
-    //       setRoomsData={setRoomsData}
-    //     />
-    //   ),
-    // },
     {
       id: 2,
       title: "Grunnmur og pipe",
@@ -165,7 +150,6 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
     {
       id: 6,
-      // title: "Innervegger",
       title: "Romskjema",
       content: (
         <Innervegger
@@ -209,21 +193,6 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
         />
       ),
     },
-    // {
-    //   id: 9,
-    //   title: "Kjøkken, Garderobe, Bad",
-    //   content: (
-    //     <KjøkkenGarderobeBad
-    //       handleNext={handleNext}
-    //       handlePrevious={handlePrevious}
-    //       ref={(ref: any): void => {
-    //         formRefs.current[9] = ref;
-    //       }}
-    //       roomsData={roomsData}
-    //       setRoomsData={setRoomsData}
-    //     />
-    //   ),
-    // },
     {
       id: 9,
       title: "Trapp og Luker",
@@ -254,21 +223,6 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
         />
       ),
     },
-    // {
-    //   id: 11,
-    //   title: "Listverk og Belistning",
-    //   content: (
-    //     <ListverkogBelistning
-    //       handleNext={handleNext}
-    //       handlePrevious={handlePrevious}
-    //       ref={(ref: any): void => {
-    //         formRefs.current[11] = ref;
-    //       }}
-    //       roomsData={roomsData}
-    //       setRoomsData={setRoomsData}
-    //     />
-    //   ),
-    // },
     {
       id: 11,
       title: "Ventilasjon og Sentralstøvsuger",
@@ -314,36 +268,6 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
         />
       ),
     },
-    // {
-    //   id: 14,
-    //   title: "Sluttføring og Dokumentasjon",
-    //   content: (
-    //     <SluttføringDokumentasjon
-    //       handlePrevious={handlePrevious}
-    //       Next={Next}
-    //       ref={(ref: any): void => {
-    //         formRefs.current[14] = ref;
-    //       }}
-    //       roomsData={roomsData}
-    //       setRoomsData={setRoomsData}
-    //     />
-    //   ),
-    // },
-    // {
-    //   id: 17,
-    //   title: "Takrenner/beslag",
-    //   content: (
-    //     <TakrennerBeslag
-    //       handlePrevious={handlePrevious}
-    //       Next={Next}
-    //       ref={(ref: any): void => {
-    //         formRefs.current[17] = ref;
-    //       }}
-    //       roomsData={roomsData}
-    //       setRoomsData={setRoomsData}
-    //     />
-    //   ),
-    // },
   ];
 
   const wizardInvalidSteps = [
