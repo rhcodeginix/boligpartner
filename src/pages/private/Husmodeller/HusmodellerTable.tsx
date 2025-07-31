@@ -223,6 +223,54 @@ export const HusmodellerTable = () => {
   const [selectedData, setSelectedData] = useState<any>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const exportToPDF = async () => {
+      if (!isExporting || !selectedData) return;
+
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        const element = previewRef.current;
+        if (!element) throw new Error("Preview element not found");
+
+        const canvas = await html2canvas(element, {
+          scale: 2,
+          useCORS: true,
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = pdfWidth;
+        const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        let position = 0;
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+
+        if (imgHeight > pdfHeight) {
+          while (position + imgHeight > pdfHeight) {
+            position -= pdfHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+          }
+        }
+
+        pdf.save(
+          `lead-${selectedData?.Kundenavn || "kunde"}-${Date.now()}.pdf`
+        );
+      } catch (err) {
+        console.error("Failed to generate PDF:", err);
+        toast.error("Kunne ikke laste ned PDF.");
+      } finally {
+        setIsExporting(false);
+        setSelectedData(null);
+      }
+    };
+
+    exportToPDF();
+  }, [isExporting, selectedData]);
+
   const columns = useMemo<ColumnDef<any>[]>(() => {
     const baseColumns: ColumnDef<any>[] = [
       {
@@ -315,67 +363,8 @@ export const HusmodellerTable = () => {
                   onClick={async (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-
-                    try {
-                      setSelectedData(row.original);
-                      setIsExporting(true);
-
-                      await new Promise((resolve) => setTimeout(resolve, 500));
-
-                      const element = previewRef.current;
-                      if (!element)
-                        throw new Error("Preview element not found");
-
-                      const canvas = await html2canvas(element, {
-                        scale: 2,
-                        useCORS: true,
-                      });
-
-                      const imgData = canvas.toDataURL("image/png");
-                      const pdf = new jsPDF("p", "mm", "a4");
-                      const pdfWidth = pdf.internal.pageSize.getWidth();
-                      const pdfHeight = pdf.internal.pageSize.getHeight();
-                      const imgWidth = pdfWidth;
-                      const imgHeight =
-                        (canvas.height * pdfWidth) / canvas.width;
-
-                      let position = 0;
-                      pdf.addImage(
-                        imgData,
-                        "PNG",
-                        0,
-                        position,
-                        imgWidth,
-                        imgHeight
-                      );
-
-                      if (imgHeight > pdfHeight) {
-                        while (position + imgHeight > pdfHeight) {
-                          position -= pdfHeight;
-                          pdf.addPage();
-                          pdf.addImage(
-                            imgData,
-                            "PNG",
-                            0,
-                            position,
-                            imgWidth,
-                            imgHeight
-                          );
-                        }
-                      }
-
-                      pdf.save(
-                        `lead-${
-                          row.original?.Kundenavn || "kunde"
-                        }-${Date.now()}.pdf`
-                      );
-                    } catch (err) {
-                      console.error("Failed to generate PDF:", err);
-                      toast.error("Kunne ikke laste ned PDF.");
-                    } finally {
-                      setIsExporting(false);
-                      setSelectedData(null);
-                    }
+                    setSelectedData(row.original);
+                    setIsExporting(true);
                   }}
                 />
               )}

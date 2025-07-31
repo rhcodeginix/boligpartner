@@ -346,6 +346,99 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     // },
   ];
 
+  // const wizardInvalidSteps = [
+  //   {
+  //     id: 1,
+  //     title: "Prosjekt- og leveransedetaljer",
+  //     valueName: "Prosjektdetaljer",
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Grunnmur og pipe",
+  //     valueName: "GrunnerOgSkorstein",
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "Gulv og bjelkelag",
+  //     valueName: "GulvBjelkelagHimling",
+  //   },
+  //   {
+  //     id: 4,
+  //     title: "Yttervegger",
+  //     valueName: "Yttervegger",
+  //   },
+  //   {
+  //     id: 5,
+  //     title: "Tak og taktekking",
+  //     valueName: "TakogTaktekkingTakogTaktekking",
+  //   },
+  //   {
+  //     id: 6,
+  //     title: "Romskjema",
+  //     valueName: "Innervegger",
+  //   },
+  //   {
+  //     id: 7,
+  //     title: "Dører",
+  //     valueName: "Dører",
+  //   },
+  //   {
+  //     id: 8,
+  //     title: "Vinduer",
+  //     valueName: "Vinduer",
+  //   },
+  //   {
+  //     id: 9,
+  //     title: "Trapp og Luker",
+  //     valueName: "TrappogLuker",
+  //   },
+  //   {
+  //     id: 10,
+  //     title: "Balkong & Terrasse",
+  //     valueName: "BalkongTerrasse",
+  //   },
+  //   {
+  //     id: 11,
+  //     title: "Ventilasjon og Sentralstøvsuger",
+  //     valueName: "VentilasjonSentralstøvsuger",
+  //   },
+  //   {
+  //     id: 12,
+  //     title: "Brannvern",
+  //     valueName: "Brannvern",
+  //   },
+  //   {
+  //     id: 13,
+  //     title: "Tekniske Installasjoner",
+  //     valueName: "TekniskeInstallasjoner",
+  //   },
+  // ];
+
+  // useEffect(() => {
+  //   if (roomsData) {
+  //     let firstInvalidStepId: number | null = null;
+
+  //     for (const step of wizardInvalidSteps) {
+  //       const value = roomsData?.[step.valueName];
+  //       const isEmpty =
+  //         !value ||
+  //         (typeof value === "object" && Object.keys(value).length === 0);
+
+  //       if (isEmpty) {
+  //         firstInvalidStepId = step.id;
+  //         break;
+  //       }
+  //     }
+
+  //     if (firstInvalidStepId !== null) {
+  //       setCurrentStep(firstInvalidStepId);
+  //     } else {
+  //       const lastStepId = wizardInvalidSteps[wizardInvalidSteps.length - 1].id;
+  //       setCurrentStep(lastStepId);
+  //     }
+  //   }
+  // }, [roomsData]);
+
   return (
     <>
       <div className="bg-lightPurple px-4 md:px-6 desktop:px-8 py-3">
