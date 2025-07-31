@@ -541,7 +541,7 @@ export const Eksterior: React.FC<{
                         <img
                           src={Ic_x_circle}
                           alt="close"
-                          onClick={(e) => {
+                          onClick={async (e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             const updatedCategories = hovedkategorinavn.filter(
@@ -562,6 +562,70 @@ export const Eksterior: React.FC<{
                               updatedCategories,
                               { shouldValidate: true }
                             );
+
+                            try {
+                              const husmodellDocRef = doc(
+                                db,
+                                "housemodell_configure_broker",
+                                id
+                              );
+                              const docSnap = await getDoc(husmodellDocRef);
+
+                              if (!docSnap.exists() || !kundeId || !pdfId)
+                                return;
+
+                              const houseData = docSnap.data();
+                              const kundeList = houseData?.KundeInfo || [];
+                              const targetKundeIndex = kundeList.findIndex(
+                                (k: any) =>
+                                  String(k.uniqueId) === String(kundeId)
+                              );
+                              if (targetKundeIndex === -1) return;
+
+                              const targetKunde = kundeList[targetKundeIndex];
+                              const plantegninger =
+                                targetKunde?.Plantegninger || [];
+                              const plantegningIndex = plantegninger.findIndex(
+                                (p: any) => String(p?.pdf_id) === String(pdfId)
+                              );
+                              if (plantegningIndex === -1) return;
+
+                              if (
+                                Array.isArray(
+                                  plantegninger[plantegningIndex].rooms?.[
+                                    activeTabData
+                                  ]?.Kategorinavn
+                                )
+                              ) {
+                                plantegninger[plantegningIndex].rooms[
+                                  activeTabData
+                                ].Kategorinavn = plantegninger[
+                                  plantegningIndex
+                                ].rooms[activeTabData].Kategorinavn.filter(
+                                  (_: any, i: number) => i !== index
+                                );
+                              }
+
+                              const updatedKundeInfo = kundeList.map(
+                                (kunde: any, idx: number) =>
+                                  idx === targetKundeIndex
+                                    ? {
+                                        ...kunde,
+                                        Plantegninger: plantegninger,
+                                      }
+                                    : kunde
+                              );
+
+                              await updateDoc(husmodellDocRef, {
+                                KundeInfo: updatedKundeInfo,
+                                updatedAt: new Date().toISOString(),
+                              });
+                            } catch (err) {
+                              console.error(
+                                "Error removing subcategory from Firestore:",
+                                err
+                              );
+                            }
                           }}
                         />
                       </div>
@@ -1197,11 +1261,11 @@ export const Eksterior: React.FC<{
                 });
               }}
             />
-            <Button
+            {/* <Button
               text="Lukk og lagre"
               className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2"
               type="submit"
-            />
+            /> */}
             {FloorData?.configurator !== true && (
               <Button
                 text="Bekreft plan"

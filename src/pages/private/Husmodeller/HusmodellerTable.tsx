@@ -36,8 +36,6 @@ import toast from "react-hot-toast";
 import Modal from "../../../components/common/modal";
 import Button from "../../../components/common/button";
 import { ExportView } from "../configurator/Oppsummering/exportView";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 
 export const HusmodellerTable = () => {
   const [page, setPage] = useState(1);
@@ -228,37 +226,149 @@ export const HusmodellerTable = () => {
       if (!isExporting || !selectedData) return;
 
       try {
-        await new Promise((resolve) => setTimeout(resolve, 300));
+        const element = previewRef.current as HTMLElement | null;
+        if (!element) return;
 
-        const element = previewRef.current;
-        if (!element) throw new Error("Preview element not found");
+        const htmlDocument = `
+          <html>
+            <head>
+              <meta charset="UTF-8" />
+              <title>Export</title>
+              <style>
+              body {
+                font-family: "Inter", sans-serif !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-sizing: border-box;
+                list-style: none;
+              }
+              p {
+                margin: 0 !important;
+              }
+              
+              .upperCaseHeading {
+                color: #101828;
+                font-weight: 700;
+                font-size: 28px;
+                text-transform: uppercase;
+              }  
+              .sr-only {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                padding: 0;
+                margin: -1px;
+                overflow: hidden;
+                clip: rect(0, 0, 0, 0);
+                white-space: nowrap;
+                border: 0;
+              }
+            
+              .checkbox-box {
+                width: 1.25rem; /* 20px */
+                height: 1.25rem;
+                border: 2px solid #444CE7;
+                border-radius: 0.125rem; /* rounded-sm */
+              }
+            
+              .checkmark {
+                pointer-events: none;
+                position: absolute;
+                left: 4px; /* 2px */
+                top: 4px;
+              }
+            
+              .checkmark-icon {
+                width: 1rem;
+                height: 1rem;
+                color: #444CE7;
+              }
+            
+              .horizontal-divider {
+                width: 100%;
+                border-top: 1px solid #EBEBEB;
+              }           
+              .custom-grid {
+                display: grid;
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+                gap: 1rem;
+              }
+      
+              @media (min-width: 640px) {
+                .custom-grid {
+                  grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+              }
+      
+              @media (min-width: 768px) {
+                .custom-grid {
+                  grid-template-columns: repeat(3, minmax(0, 1fr));
+                }
+              }
+            </style>
+            </head>
+            <body>
+              ${element.outerHTML}
+            </body>
+          </html>
+        `;
 
-        const canvas = await html2canvas(element, {
-          scale: 2,
-          useCORS: true,
+        const htmlFile = new File([htmlDocument], "document.html", {
+          type: "text/html",
         });
 
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "mm", "a4");
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        const imgWidth = pdfWidth;
-        const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+        const formData = new FormData();
+        formData.append("File", htmlFile);
+        formData.append("FileName", "exported.pdf");
 
-        let position = 0;
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        try {
+          const response = await fetch(
+            "https://v2.convertapi.com/convert/html/to/pdf",
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${process.env.REACT_APP_HTML_TO_PDF}`,
+              },
+              body: formData,
+            }
+          );
 
-        if (imgHeight > pdfHeight) {
-          while (position + imgHeight > pdfHeight) {
-            position -= pdfHeight;
-            pdf.addPage();
-            pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error("ConvertAPI returned an error:", errorText);
+            throw new Error(
+              `HTTP error! status: ${response.status} - ${errorText}`
+            );
           }
-        }
 
-        pdf.save(
-          `lead-${selectedData?.Kundenavn || "kunde"}-${Date.now()}.pdf`
-        );
+          const json = await response.json();
+
+          if (json.Files && json.Files[0]) {
+            const file = json.Files[0];
+            const base64 = file.FileData;
+            const fileName = selectedData?.Kundenavn;
+
+            const byteCharacters = atob(base64);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+              byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: "application/pdf" });
+
+            const link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setIsExporting(false);
+          }
+        } catch (error) {
+          console.error("Error converting HTML to PDF:", error);
+        } finally {
+          setIsExporting(false);
+        }
       } catch (err) {
         console.error("Failed to generate PDF:", err);
         toast.error("Kunne ikke laste ned PDF.");

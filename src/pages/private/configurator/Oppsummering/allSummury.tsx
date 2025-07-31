@@ -995,6 +995,17 @@ export const AllSummury: React.FC<{
                                 {room?.title}
                               </h3>
                             )}
+                            {index === 0 && (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <img src={`${room?.image}`} alt="floor" />
+                              </div>
+                            )}
                             <div
                               style={{
                                 display: "flex",
@@ -1039,71 +1050,42 @@ export const AllSummury: React.FC<{
                                       {allSelectedProducts.map(
                                         (prod: any, prodIndex: number) => {
                                           return (
-                                            <div
-                                              key={prodIndex}
-                                              style={{
-                                                display: "flex",
-                                                gap: "8px",
-                                                alignItems: "center",
-                                              }}
-                                            >
-                                              {/* {prod?.Hovedbilde?.[0] ? (
-                                                <div className="w-[100px]">
-                                                  <img
-                                                    src={`${prod?.Hovedbilde?.[0]}`}
-                                                    alt="floor"
-                                                    className="w-[100px] h-[76px] border border-[#EFF1F5] rounded-[4px]"
-                                                  />
-                                                </div>
-                                              ) : (
-                                                // <div className="w-[100px] h-[76px] bg-[#EFF1F5] rounded-[4px]"></div>
-                                                <div className="w-[100px]">
-                                                  <img
-                                                    src={
-                                                      "https://firebasestorage.googleapis.com/v0/b/l-plot.firebasestorage.app/o/images%2F1750687902123_Boligpartner%20(1).png?alt=media&token=42303718-f3a6-4b4d-a1c6-2b948e5df40a"
-                                                    }
-                                                    alt="floor"
-                                                    className="w-[100px] h-[76px] border border-[#EFF1F5] rounded-[4px]"
-                                                  />
-                                                </div>
-                                              )} */}
-                                              <div>
-                                                <div
-                                                  style={{
-                                                    color: "#5d6b98",
-                                                    fontSize: "24px",
-                                                    fontWeight: 500,
-                                                    marginBottom: "2px",
-                                                  }}
-                                                >
-                                                  {prod.categoryName}
-                                                </div>
-                                                <div
-                                                  style={{
-                                                    color: "#101828",
-                                                    fontSize: "20px",
-                                                  }}
-                                                >
-                                                  {prod?.Produktnavn}{" "}
-                                                  {prod?.customText && (
-                                                    <span
-                                                      style={{
-                                                        color: "#101828",
-                                                      }}
-                                                    >
-                                                      ({prod?.customText})
-                                                    </span>
-                                                  )}
-                                                </div>
-                                                <div
-                                                  style={{
-                                                    color: "#101828",
-                                                    fontSize: "20px",
-                                                    marginTop: "2px",
-                                                  }}
-                                                >
-                                                  {prod.comment}
-                                                </div>
+                                            <div key={prodIndex}>
+                                              <div
+                                                style={{
+                                                  color: "#5d6b98",
+                                                  fontSize: "24px",
+                                                  fontWeight: 500,
+                                                  marginBottom: "2px",
+                                                }}
+                                              >
+                                                {prod.categoryName}
+                                              </div>
+                                              <div
+                                                style={{
+                                                  color: "#101828",
+                                                  fontSize: "20px",
+                                                }}
+                                              >
+                                                {prod?.Produktnavn}{" "}
+                                                {prod?.customText && (
+                                                  <span
+                                                    style={{
+                                                      color: "#101828",
+                                                    }}
+                                                  >
+                                                    ({prod?.customText})
+                                                  </span>
+                                                )}
+                                              </div>
+                                              <div
+                                                style={{
+                                                  color: "#101828",
+                                                  fontSize: "20px",
+                                                  marginTop: "2px",
+                                                }}
+                                              >
+                                                {prod.comment}
                                               </div>
                                             </div>
                                           );

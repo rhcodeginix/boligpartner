@@ -552,7 +552,7 @@ export const Eksterior: React.FC<{
                         <img
                           src={Ic_x_circle}
                           alt="close"
-                          onClick={(e) => {
+                          onClick={async (e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             const updatedCategories = hovedkategorinavn.filter(
@@ -573,6 +573,53 @@ export const Eksterior: React.FC<{
                               updatedCategories,
                               { shouldValidate: true }
                             );
+
+                            try {
+                              const husmodellDocRef = doc(
+                                db,
+                                "room_configurator",
+                                id
+                              );
+                              const docSnap = await getDoc(husmodellDocRef);
+
+                              if (!docSnap.exists() || !pdfId) return;
+
+                              const houseData = docSnap.data();
+                              const plantegninger =
+                                houseData?.Plantegninger || [];
+
+                              const plantegningIndex = plantegninger.findIndex(
+                                (item: any) =>
+                                  String(item?.pdf_id) === String(pdfId)
+                              );
+                              if (plantegningIndex === -1) return;
+
+                              const rooms =
+                                plantegninger[plantegningIndex]?.rooms || [];
+
+                              if (
+                                rooms[activeTabData]?.Kategorinavn &&
+                                Array.isArray(rooms[activeTabData].Kategorinavn)
+                              ) {
+                                rooms[activeTabData].Kategorinavn = rooms[
+                                  activeTabData
+                                ].Kategorinavn.filter(
+                                  (_: any, i: number) => i !== index
+                                );
+                              }
+
+                              plantegninger[plantegningIndex].rooms = rooms;
+
+                              await updateDoc(husmodellDocRef, {
+                                Plantegninger: plantegninger,
+                                updatedAt: new Date().toISOString(),
+                              });
+                            } catch (err) {
+                              console.error(
+                                "Failed to delete subcategory from Firebase:",
+                                err
+                              );
+                            }
                           }}
                         />
                       </div>

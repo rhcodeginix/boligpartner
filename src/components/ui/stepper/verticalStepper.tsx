@@ -61,7 +61,7 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
   return (
     <div className={`${className}`}>
       <div className="flex flex-col desktop:flex-row gap-6">
-        <div className="w-full desktop:w-80 bg-[#F9F9FB] border border-[#EFF1F5] rounded-lg p-5 h-full max-h-[200px] desktop:max-h-[500px] overflow-y-auto overFlowAutoY sticky top-[74px] lg:top-[90px] z-50">
+        <div className="w-full desktop:w-80 bg-[#F9F9FB] border border-[#EFF1F5] rounded-lg p-5 h-full max-h-[200px] desktop:max-h-[calc(100vh-300px)] overflow-y-auto overFlowAutoY sticky top-[74px] lg:top-[90px] z-50">
           <div className="space-y-5 md:space-y-6">
             {steps.map((step, index) => (
               <div
