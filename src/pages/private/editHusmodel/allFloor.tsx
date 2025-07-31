@@ -203,7 +203,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             Type: "HelpText",
           },
         ],
-        
       };
 
       const updatedPlantegninger = (targetKunde?.Plantegninger || []).map(
@@ -383,13 +382,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             Husmodeller
           </Link>
           <ChevronRight className="text-[#5D6B98] w-4 h-4" />
-          {/* <Link
-            to={`/se-series/${id}`}
-            className="text-primary text-sm font-medium"
-          >
-            Kundeopplysninger
-          </Link>
-          <ChevronRight className="text-[#5D6B98] w-4 h-4" /> */}
           <div
             onClick={() => {
               setActiveTab(1);

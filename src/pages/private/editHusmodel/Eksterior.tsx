@@ -595,21 +595,21 @@ export const Eksterior: React.FC<{
                         <Plus className="w-5 h-5 md:w-6 md:h-6" />
                         Legge til {title}
                       </div>
-                    )} */}
-                    {/* <div
-                  className={`flex items-center gap-1 font-medium ${
-                    produkter.length === 1
-                      ? "text-gray cursor-not-allowed text-opacity-55"
-                      : "text-purple cursor-pointer"
-                  }`}
-                  onClick={() => {
-                    if (produkter.length > 1) {
-                      removeProduct(index);
-                    }
-                  }}
-                >
-                  <X /> Slett produkt
-                </div> */}
+                    )}
+                    <div
+                      className={`flex items-center gap-1 font-medium ${
+                        produkter.length === 1
+                          ? "text-gray cursor-not-allowed text-opacity-55"
+                          : "text-purple cursor-pointer"
+                      }`}
+                      onClick={() => {
+                        if (produkter.length > 1) {
+                          removeProduct(index);
+                        }
+                      }}
+                    >
+                      <X /> Slett produkt
+                    </div> */}
                   </div>
                   {form.watch(
                     `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
@@ -901,14 +901,7 @@ export const Eksterior: React.FC<{
                                         </span>
                                       </div>
                                     )}
-                                    {/* {[
-                                  "Himlling",
-                                  "Vegger",
-                                  "Gulv",
-                                  "Lister",
-                                ].includes(title) ? (
-                                  ""
-                                ) : ( */}
+
                                     <div className="flex items-center justify-between gap-2">
                                       <span className="text-sm font-medium text-darkBlack">
                                         {product?.IncludingOffer ? (
@@ -924,16 +917,15 @@ export const Eksterior: React.FC<{
                                       </span>
 
                                       {/* <span
-                                  className="text-purple font-medium text-sm cursor-pointer"
-                                  onClick={() => {
-                                    handleproductViewDrawer();
-                                    setViewSubCat(product);
-                                  }}
-                                >
-                                  View Details
-                                </span> */}
+                                        className="text-purple font-medium text-sm cursor-pointer"
+                                        onClick={() => {
+                                          handleproductViewDrawer();
+                                          setViewSubCat(product);
+                                        }}
+                                      >
+                                        View Details
+                                      </span> */}
                                     </div>
-                                    {/* )} */}
                                   </div>
                                 </div>
                               </div>
