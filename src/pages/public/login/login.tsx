@@ -21,14 +21,11 @@ import Button from "../../../components/common/button";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import bcrypt from "bcryptjs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Modal from "../../../components/common/modal";
 import { Landmark, Home, X } from "lucide-react";
 import { useMsal } from "@azure/msal-react";
-import {
-  InteractionRequiredAuthError,
-  RedirectRequest,
-} from "@azure/msal-browser";
+import { RedirectRequest } from "@azure/msal-browser";
 
 const loginRequest: RedirectRequest = {
   scopes: ["user.read"],
@@ -172,34 +169,11 @@ export const Login = () => {
     }
   };
 
-  const { instance, accounts } = useMsal();
+  const { instance } = useMsal();
 
   const handleLogin = () => {
     instance.loginRedirect(loginRequest);
   };
-  useEffect(() => {
-    const fetchToken = async () => {
-      if (accounts.length === 0) return;
-
-      try {
-        const response = await instance.acquireTokenSilent({
-          ...loginRequest,
-          account: accounts[0],
-        });
-
-        const accessToken = response.accessToken;
-        console.log("Access token:", accessToken);
-      } catch (error) {
-        if (error instanceof InteractionRequiredAuthError) {
-          instance.acquireTokenRedirect(loginRequest);
-        } else {
-          console.error("Token acquisition error:", error);
-        }
-      }
-    };
-
-    fetchToken();
-  }, [accounts, instance]);
 
   return (
     <>

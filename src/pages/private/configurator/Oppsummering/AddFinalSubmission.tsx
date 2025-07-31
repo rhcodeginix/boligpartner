@@ -492,22 +492,19 @@ export const AddFinalSubmission: React.FC<{
       return;
     }
 
-    if (
-      roomsData?.Prosjektdetaljer?.TypeProsjekt === "Bolig" ||
-      roomsData?.TypeProsjekt === "Bolig"
-    ) {
-      const finalArray = ["Herskapelig", "Moderne", "Nostalgi", "Funkis"];
-      setArray(finalArray);
-    } else if (
-      roomsData?.Prosjektdetaljer?.TypeProsjekt === "Hytte" ||
-      roomsData?.TypeProsjekt === "Hytte"
-    ) {
-      const finalArray = ["Tur", "V-serie", "Karakter", "Moderne"];
-      setArray(finalArray);
+    const typeProsjekt =
+      roomsData?.Prosjektdetaljer?.TypeProsjekt || roomsData?.TypeProsjekt;
+
+    if (typeProsjekt === "Bolig") {
+      setArray(["Herskapelig", "Moderne", "Nostalgi", "Funkis"]);
+    } else if (typeProsjekt === "Hytte") {
+      setArray(["Tur", "V-serie", "Karakter", "Moderne"]);
     } else {
       form.resetField("Serie");
       form.setValue("Serie", "");
+      setArray([]);
     }
+
     const getData = async () => {
       const data = await fetchRoomData(id);
 
@@ -515,6 +512,9 @@ export const AddFinalSubmission: React.FC<{
         Object.entries(data?.FinalSubmission).forEach(([key, value]) => {
           if (value !== undefined && value !== null) {
             form.setValue(key as any, value);
+            if (key === "Kundenummer") {
+              form.setValue("Kundenummer", String(value));
+            }
           }
           if (key === "Serie" && value === "") {
             const serieValue =

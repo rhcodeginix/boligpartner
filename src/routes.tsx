@@ -9,7 +9,7 @@ import {
   KundeInfo,
 } from "./pages";
 import { AuthLayout } from "./layouts/AuthLayout";
-import { Login } from "./pages/public";
+import { Login, MicrosoftCallBack } from "./pages/public";
 
 export const routes = createBrowserRouter([
   {
@@ -19,7 +19,10 @@ export const routes = createBrowserRouter([
   {
     path: "/",
     element: <AuthLayout />,
-    children: [{ path: "login", element: <Login /> }],
+    children: [
+      { path: "login", element: <Login /> },
+      { path: "auth/callback", element: <MicrosoftCallBack /> },
+    ],
   },
   {
     path: "/",
