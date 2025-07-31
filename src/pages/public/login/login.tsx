@@ -14,15 +14,25 @@ import {
 import { Input } from "../../../components/ui/input";
 import { z } from "zod";
 import Ic_logo from "../../../assets/images/Ic_logo.svg";
+import Microsoft_logo from "../../../assets/images/Microsoft_logo.svg";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/common/button";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import bcrypt from "bcryptjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../../components/common/modal";
 import { Landmark, Home, X } from "lucide-react";
+import { useMsal } from "@azure/msal-react";
+import {
+  InteractionRequiredAuthError,
+  RedirectRequest,
+} from "@azure/msal-browser";
+
+const loginRequest: RedirectRequest = {
+  scopes: ["user.read"],
+};
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -162,6 +172,35 @@ export const Login = () => {
     }
   };
 
+  const { instance, accounts } = useMsal();
+
+  const handleLogin = () => {
+    instance.loginRedirect(loginRequest);
+  };
+  useEffect(() => {
+    const fetchToken = async () => {
+      if (accounts.length === 0) return;
+
+      try {
+        const response = await instance.acquireTokenSilent({
+          ...loginRequest,
+          account: accounts[0],
+        });
+
+        const accessToken = response.accessToken;
+        console.log("Access token:", accessToken);
+      } catch (error) {
+        if (error instanceof InteractionRequiredAuthError) {
+          instance.acquireTokenRedirect(loginRequest);
+        } else {
+          console.error("Token acquisition error:", error);
+        }
+      }
+    };
+
+    fetchToken();
+  }, [accounts, instance]);
+
   return (
     <>
       <div className="flex items-center justify-center h-screen">
@@ -264,6 +303,16 @@ export const Login = () => {
                 </div>
               </form>
             </Form>
+            <div
+              onClick={handleLogin}
+              className="text-black border border-[#DCDFEA] rounded-[8px] py-[10px] px-4 mt-4 md:mt-6 flex gap-2 justify-center items-center cursor-pointer text-sm md:text-base"
+              style={{
+                boxShadow: "0px 1px 2px 0px #1018280D",
+              }}
+            >
+              <img src={Microsoft_logo} alt="microsoft" />
+              Logg inn med Microsoft
+            </div>
           </div>
         </div>
       </div>

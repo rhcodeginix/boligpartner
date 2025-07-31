@@ -4,6 +4,11 @@ import { RouterProvider } from "react-router-dom";
 import { routes } from "./routes";
 import "./App.css";
 import { useEffect } from "react";
+import { PublicClientApplication } from "@azure/msal-browser";
+import { msalConfig } from "./lib/msalConfig";
+import { MsalProvider } from "@azure/msal-react";
+
+const msalInstance = new PublicClientApplication(msalConfig);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,15 +46,17 @@ export const App = () => {
     return () => document.removeEventListener("keydown", handleTab);
   }, []);
   return (
-    <QueryClientProvider client={queryClient}>
-      <Toaster
-        toastOptions={{
-          style: {
-            zIndex: 999999999,
-          },
-        }}
-      />
-      <RouterProvider router={routes} />
-    </QueryClientProvider>
+    <MsalProvider instance={msalInstance}>
+      <QueryClientProvider client={queryClient}>
+        <Toaster
+          toastOptions={{
+            style: {
+              zIndex: 999999999,
+            },
+          }}
+        />
+        <RouterProvider router={routes} />
+      </QueryClientProvider>
+    </MsalProvider>
   );
 };
