@@ -65,7 +65,7 @@ const formSchema = z.object({
   Serie: z.string({
     required_error: "Serie must må spesifiseres.",
   }),
-  Kundenummer: z.number({ required_error: "BP prosjektnummer er påkrevd." }),
+  Kundenummer: z.string({ required_error: "BP prosjektnummer er påkrevd." }),
   Husmodell: z.string({
     required_error: "Husmodell må spesifiseres.",
   }),
@@ -168,11 +168,11 @@ export const AddFinalSubmission: React.FC<{
       });
 
       // if (data.exportType === "PDF") {
-        setIsExporting(true);
-        const element = previewRef.current as HTMLElement | null;
-        if (!element) return;
+      setIsExporting(true);
+      const element = previewRef.current as HTMLElement | null;
+      if (!element) return;
 
-        const htmlDocument = `
+      const htmlDocument = `
           <html>
             <head>
               <meta charset="UTF-8" />
@@ -256,62 +256,62 @@ export const AddFinalSubmission: React.FC<{
           </html>
         `;
 
-        const htmlFile = new File([htmlDocument], "document.html", {
-          type: "text/html",
-        });
+      const htmlFile = new File([htmlDocument], "document.html", {
+        type: "text/html",
+      });
 
-        const formData = new FormData();
-        formData.append("File", htmlFile);
-        formData.append("FileName", "exported.pdf");
+      const formData = new FormData();
+      formData.append("File", htmlFile);
+      formData.append("FileName", "exported.pdf");
 
-        try {
-          const response = await fetch(
-            "https://v2.convertapi.com/convert/html/to/pdf",
-            {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${process.env.REACT_APP_HTML_TO_PDF}`,
-              },
-              body: formData,
-            }
+      try {
+        const response = await fetch(
+          "https://v2.convertapi.com/convert/html/to/pdf",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${process.env.REACT_APP_HTML_TO_PDF}`,
+            },
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("ConvertAPI returned an error:", errorText);
+          throw new Error(
+            `HTTP error! status: ${response.status} - ${errorText}`
           );
+        }
 
-          if (!response.ok) {
-            const errorText = await response.text();
-            console.error("ConvertAPI returned an error:", errorText);
-            throw new Error(
-              `HTTP error! status: ${response.status} - ${errorText}`
-            );
+        const json = await response.json();
+
+        if (json.Files && json.Files[0]) {
+          const file = json.Files[0];
+          const base64 = file.FileData;
+          const fileName = roomsData?.Kundenavn;
+
+          const byteCharacters = atob(base64);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
           }
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: "application/pdf" });
 
-          const json = await response.json();
-
-          if (json.Files && json.Files[0]) {
-            const file = json.Files[0];
-            const base64 = file.FileData;
-            const fileName = roomsData?.Kundenavn;
-
-            const byteCharacters = atob(base64);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-              byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: "application/pdf" });
-
-            const link = document.createElement("a");
-            link.href = window.URL.createObjectURL(blob);
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            setIsExporting(false);
-          }
-        } catch (error) {
-          console.error("Error converting HTML to PDF:", error);
-        } finally {
+          const link = document.createElement("a");
+          link.href = window.URL.createObjectURL(blob);
+          link.download = fileName;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
           setIsExporting(false);
         }
+      } catch (error) {
+        console.error("Error converting HTML to PDF:", error);
+      } finally {
+        setIsExporting(false);
+      }
       // }
 
       // if (data.exportType === "PPT") {
@@ -493,13 +493,13 @@ export const AddFinalSubmission: React.FC<{
     }
 
     if (
-      roomsData?.Prosjektdetaljer?.TypeProsjekt === "Bolig" ??
+      roomsData?.Prosjektdetaljer?.TypeProsjekt === "Bolig" ||
       roomsData?.TypeProsjekt === "Bolig"
     ) {
       const finalArray = ["Herskapelig", "Moderne", "Nostalgi", "Funkis"];
       setArray(finalArray);
     } else if (
-      roomsData?.Prosjektdetaljer?.TypeProsjekt === "Hytte" ??
+      roomsData?.Prosjektdetaljer?.TypeProsjekt === "Hytte" ||
       roomsData?.TypeProsjekt === "Hytte"
     ) {
       const finalArray = ["Tur", "V-serie", "Karakter", "Moderne"];
@@ -532,7 +532,7 @@ export const AddFinalSubmission: React.FC<{
         form.reset({
           Serie:
             serieValue && serieValue.trim() !== "" ? serieValue : undefined,
-          Kundenummer: Number(
+          Kundenummer: String(
             roomsData?.Prosjektdetaljer?.Kundenr ?? roomsData?.Kundenummer
           ),
           mobile:
@@ -716,10 +716,7 @@ export const AddFinalSubmission: React.FC<{
                                               ? "border-red"
                                               : "border-gray1"
                                           } `}
-                          type="number"
-                          onChange={(e: any) =>
-                            field.onChange(Number(e.target.value) || "")
-                          }
+                          type="text"
                         />
                       </div>
                     </FormControl>
