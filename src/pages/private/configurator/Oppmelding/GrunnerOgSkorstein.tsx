@@ -27,6 +27,7 @@ const formSchema = z.object({
   IldstedLeveresAv: z.string().optional(),
   TypeGrunnmur: z.string().optional(),
   detaljnummer: z.string().optional(),
+  TypeGrunnmurText: z.string().optional(),
 });
 
 export const GrunnerOgSkorstein = forwardRef(
@@ -107,7 +108,11 @@ export const GrunnerOgSkorstein = forwardRef(
       "Plate på mark (detaljnr 216-100)",
       "Sokkel/kjeller",
     ];
-    const TypeGrunnmur = ["Plasstøpt betong (detaljnr 231-310)", "Termomur"];
+    const TypeGrunnmur = [
+      "Plasstøpt betong (detaljnr 231-310)",
+      "Termomur",
+      "Annet",
+    ];
 
     useEffect(() => {
       if (roomsData && roomsData?.GrunnerOgSkorstein) {
@@ -211,6 +216,10 @@ export const GrunnerOgSkorstein = forwardRef(
                                       className="relative flex items-center gap-2 cursor-pointer"
                                       onClick={() => {
                                         form.setValue("TypeGrunnmur", option);
+                                        form.setValue("TypeGrunnmurText", "");
+                                        form.setValue("detaljnummer", "");
+                                        form.resetField("detaljnummer");
+                                        form.resetField("TypeGrunnmurText");
                                       }}
                                     >
                                       <input
@@ -225,6 +234,10 @@ export const GrunnerOgSkorstein = forwardRef(
                                             `TypeGrunnmur`,
                                             e.target.value
                                           );
+                                          form.setValue("TypeGrunnmurText", "");
+                                          form.setValue("detaljnummer", "");
+                                          form.resetField("detaljnummer");
+                                          form.resetField("TypeGrunnmurText");
                                         }}
                                         checked={field.value === option}
                                       />
@@ -260,6 +273,34 @@ export const GrunnerOgSkorstein = forwardRef(
                               <div className="relative">
                                 <Input
                                   placeholder="Skriv detaljnummer"
+                                  {...field}
+                                  className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                  type="text"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+                  {TypeGrunnmurValue === "Annet" && (
+                    <div>
+                      <FormField
+                        control={form.control}
+                        name="TypeGrunnmurText"
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  placeholder="Skriv her"
                                   {...field}
                                   className={`bg-white rounded-[8px] border text-black
                                           ${
