@@ -523,6 +523,7 @@ export const AddFinalSubmission: React.FC<{
               key,
               serieValue && serieValue.trim() !== "" ? serieValue : undefined
             );
+            form.setValue("exportType", "PDF");
           }
         });
       } else if (roomsData) {
@@ -544,6 +545,7 @@ export const AddFinalSubmission: React.FC<{
             roomsData?.Kundenavn ??
             "",
         });
+        form.setValue("exportType", "PDF");
       }
     };
 
