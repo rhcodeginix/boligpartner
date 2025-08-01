@@ -1,5 +1,3 @@
-// import { Configuration } from "@azure/msal-browser";
-
 export const msalConfig: any = {
   auth: {
     clientId: `${process.env.REACT_APP_MICROSOFT_CLIENT_ID}`,
