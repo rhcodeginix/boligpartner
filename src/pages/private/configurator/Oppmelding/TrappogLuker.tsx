@@ -56,11 +56,13 @@ export const TrappogLuker = forwardRef(
       handlePrevious,
       roomsData,
       setRoomsData,
+      setValidInitialSteps,
     }: {
       handleNext: () => void;
       handlePrevious: () => void;
       roomsData: any;
       setRoomsData: any;
+      setValidInitialSteps: any;
     },
     ref
   ) => {
@@ -112,6 +114,12 @@ export const TrappogLuker = forwardRef(
         });
         handleNext();
         localStorage.setItem("currVerticalIndex", String(10));
+        setValidInitialSteps((prev: number[]) => {
+          if (!prev.includes(9)) {
+            return [...prev, 9];
+          }
+          return prev;
+        });
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {
@@ -151,7 +159,7 @@ export const TrappogLuker = forwardRef(
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
-            <div className="text-darkBlack font-semibold text-base md:text-lg p-3 md:p-5 border-b border-[#B9C0D4]">
+              <div className="text-darkBlack font-semibold text-base md:text-lg p-3 md:p-5 border-b border-[#B9C0D4]">
                 Trapp og Luker
               </div>
               <div className="p-3 md:p-5">

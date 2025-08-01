@@ -62,12 +62,12 @@ export const Yttervegger = forwardRef(
       handleNext,
       handlePrevious,
       roomsData,
-      setRoomsData,
+      setRoomsData,setValidInitialSteps
     }: {
       handleNext: () => void;
       handlePrevious: () => void;
       roomsData: any;
-      setRoomsData: any;
+      setRoomsData: any;setValidInitialSteps:any
     },
     ref
   ) => {
@@ -121,6 +121,12 @@ export const Yttervegger = forwardRef(
         });
         handleNext();
         localStorage.setItem("currVerticalIndex", String(5));
+        setValidInitialSteps((prev: number[]) => {
+          if (!prev.includes(4)) {
+            return [...prev, 4];
+          }
+          return prev;
+        });
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {

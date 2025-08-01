@@ -47,11 +47,13 @@ export const TakogTaktekking = forwardRef(
       handlePrevious,
       roomsData,
       setRoomsData,
+      setValidInitialSteps,
     }: {
       handleNext: () => void;
       handlePrevious: () => void;
       roomsData: any;
       setRoomsData: any;
+      setValidInitialSteps: any;
     },
     ref
   ) => {
@@ -104,6 +106,12 @@ export const TakogTaktekking = forwardRef(
         });
         handleNext();
         localStorage.setItem("currVerticalIndex", String(6));
+        setValidInitialSteps((prev: number[]) => {
+          if (!prev.includes(5)) {
+            return [...prev, 5];
+          }
+          return prev;
+        });
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {

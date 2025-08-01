@@ -399,7 +399,6 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     setImageLoaded((prev) => ({ ...prev, [index]: true }));
   };
 
-  // -----
   const [showConfiguratorModal, setShowConfiguratorModal] = useState(false);
   const [newConfiguratorName, setNewConfiguratorName] = useState("");
   const [pendingPayload, setPendingPayload] = useState<any>(null);
@@ -445,43 +444,6 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
         </p>
       </div> */}
       <div className="px-4 md:px-6 py-5 md:py-6 desktop:p-8 mb-[100px]">
-        <div
-          className="relative p-2 rounded-lg w-max"
-          style={{
-            boxShadow: "0px 2px 4px -2px #1018280F, 0px 4px 8px -2px #1018281A",
-          }}
-        >
-          <div
-            className="border border-gray2 border-dashed rounded-lg px-2 md:px-3 flex-col items-center justify-center laptop:px-[42px] py-2 md:py-4 flex gap-3 md:gap-6 cursor-pointer w-full"
-            onClick={handleClick}
-            onDrop={handleDrop}
-            onDragStart={handleDragOver}
-            onDragOver={(e) => e.preventDefault()}
-          >
-            <img src={Ic_upload_blue_img} alt="upload" />
-            <div className="flex items-center justify-center flex-col gap-3">
-              <div className="flex items-center gap-2 md:gap-3">
-                <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[36px] py-2 px-3 md:px-4 text-sm md:text-base">
-                  Bla gjennom
-                </span>
-                <p className="text-gray text-xs sm:text-sm text-center truncate w-full">
-                  Slipp filen her for å laste den opp
-                </p>
-              </div>
-              <p className="text-gray text-xs sm:text-sm truncate text-center">
-                Filformater: Kun JPEG, JPG, PNG, PDF maks 2 MB
-              </p>
-            </div>
-            <input
-              type="file"
-              ref={fileInputRef}
-              className="hidden"
-              accept=".pdf,image/*"
-              onChange={handleFileChange}
-            />
-          </div>
-        </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6 w-full mt-6 md:mt-8">
           {loading ? (
             <>
@@ -692,6 +654,37 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                 : "No Data Found!"}
             </>
           )}
+          <div className="relative p-2 rounded-lg w-full shadow-shadow2">
+            <div
+              className="border border-gray2 border-dashed rounded-lg px-2 md:px-3 flex-col items-center justify-center laptop:px-[42px] py-2 md:py-4 flex gap-3 md:gap-6 cursor-pointer w-full h-full"
+              onClick={handleClick}
+              onDrop={handleDrop}
+              onDragStart={handleDragOver}
+              onDragOver={(e) => e.preventDefault()}
+            >
+              <img src={Ic_upload_blue_img} alt="upload" />
+              <div className="flex items-center justify-center flex-col gap-3">
+                <div className="flex items-center gap-2 md:gap-3">
+                  <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[36px] py-2 px-3 md:px-4 text-sm md:text-base">
+                    Bla gjennom
+                  </span>
+                  <p className="text-gray text-xs sm:text-sm text-center truncate w-full">
+                    Slipp filen her for å laste den opp
+                  </p>
+                </div>
+                <p className="text-gray text-xs sm:text-sm truncate text-center">
+                  Filformater: Kun JPEG, JPG, PNG, PDF maks 2 MB
+                </p>
+              </div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept=".pdf,image/*"
+                onChange={handleFileChange}
+              />
+            </div>
+          </div>
         </div>
       </div>
 

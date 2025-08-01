@@ -37,11 +37,13 @@ export const VentilasjonSentralstøvsuger = forwardRef(
       handlePrevious,
       roomsData,
       setRoomsData,
+      setValidInitialSteps,
     }: {
       handleNext: () => void;
       handlePrevious: () => void;
       roomsData: any;
       setRoomsData: any;
+      setValidInitialSteps: any;
     },
     ref
   ) => {
@@ -93,6 +95,12 @@ export const VentilasjonSentralstøvsuger = forwardRef(
         });
         handleNext();
         localStorage.setItem("currVerticalIndex", String(12));
+        setValidInitialSteps((prev: number[]) => {
+          if (!prev.includes(11)) {
+            return [...prev, 11];
+          }
+          return prev;
+        });
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {

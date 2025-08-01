@@ -15,6 +15,7 @@ interface VerticalWizardProps {
   invalidSteps: any;
   formRefs: React.MutableRefObject<Record<number, any>>;
   setInvalidSteps: any;
+  validInitialSteps: any;
 }
 
 const VerticalWizard: React.FC<VerticalWizardProps> = ({
@@ -25,8 +26,14 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
   invalidSteps,
   formRefs,
   setInvalidSteps,
+  validInitialSteps,
 }) => {
   const handleStepClick = async (stepId: number) => {
+    if (validInitialSteps?.includes(stepId)) {
+      setCurrentStep(stepId);
+      return;
+    }
+
     const currentStepForm = formRefs.current[currentStep];
     const isValid = await currentStepForm?.validateForm?.();
 
@@ -77,28 +84,76 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
 
                 <div
                   onClick={() => handleStepClick(step.id)}
-                  className={`flex items-start space-x-4 rounded-lg transition-all  relative z-40
-                  ${
-                    step.id < currentStep ||
-                    step.id === currentStep ||
-                    step.id === currentStep + 1
+                  // className={`flex items-start space-x-4 rounded-lg transition-all  relative z-40
+                  // ${
+                  //   step.id < currentStep ||
+                  //   step.id === currentStep ||
+                  //   step.id === currentStep + 1
+                  //     ? "cursor-pointer"
+                  //     : "cursor-default opacity-50"
+                  // }`}
+                  className={`flex items-start space-x-4 rounded-lg transition-all relative z-40 ${
+                    validInitialSteps.includes(step.id) ||
+                    step.id <= currentStep + 1
                       ? "cursor-pointer"
                       : "cursor-default opacity-50"
                   }`}
                 >
                   <div
+                    // className={`w-6 h-6 flex items-center text-xs rounded-full justify-center ${
+                    //   currentStep === step.id
+                    //     ? "bg-primary text-white"
+                    //     : currentStep > step.id
+                    //     ? invalidSteps.includes(step.id)
+                    //       ? "bg-[#ECE9FE] text-darkBlack"
+                    //       : "bg-[#099250]"
+                    //     : "bg-[#ECE9FE] text-darkBlack"
+                    // } `}
                     className={`w-6 h-6 flex items-center text-xs rounded-full justify-center ${
                       currentStep === step.id
                         ? "bg-primary text-white"
-                        : currentStep > step.id
-                        ? invalidSteps.includes(step.id)
-                          ? "bg-[#ECE9FE] text-darkBlack"
-                          : "bg-[#099250]"
+                        : Array.isArray(validInitialSteps) &&
+                          validInitialSteps.length === 0
+                        ? currentStep > step.id &&
+                          !invalidSteps.includes(step.id)
+                          ? "bg-[#099250]"
+                          : "bg-[#ECE9FE] text-darkBlack"
+                        : validInitialSteps.includes(step.id)
+                        ? "bg-[#099250]"
+                        : currentStep > step.id &&
+                          !invalidSteps.includes(step.id)
+                        ? "bg-[#099250]"
                         : "bg-[#ECE9FE] text-darkBlack"
-                    } `}
+                    }`}
+                    // className={`w-6 h-6 flex items-center text-xs rounded-full justify-center ${
+                    //   validInitialSteps.includes(step.id)
+                    //     ? "bg-[#099250]"
+                    //     : currentStep === step.id
+                    //     ? "bg-primary text-white"
+                    //     : currentStep > step.id &&
+                    //       !invalidSteps.includes(step.id)
+                    //     ? "bg-[#099250]"
+                    //     : "bg-[#ECE9FE] text-darkBlack"
+                    // }`}
                   >
-                    {currentStep > step.id &&
+                    {/* {currentStep > step.id &&
                     !invalidSteps.includes(step.id) ? (
+                      <img src={Ic_Check_white} alt="Completed" />
+                    ) : (
+                      step.id
+                    )} */}
+                    {Array.isArray(validInitialSteps) &&
+                    validInitialSteps.length === 0 ? (
+                      currentStep > step.id &&
+                      !invalidSteps.includes(step.id) ? (
+                        <img src={Ic_Check_white} alt="Completed" />
+                      ) : (
+                        step.id
+                      )
+                    ) : validInitialSteps.includes(step.id) ? (
+                      <img src={Ic_Check_white} alt="Completed" />
+                    ) : currentStep > step.id &&
+                      !invalidSteps.includes(step.id) ? (
                       <img src={Ic_Check_white} alt="Completed" />
                     ) : (
                       step.id

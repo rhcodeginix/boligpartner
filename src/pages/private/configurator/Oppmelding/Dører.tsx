@@ -122,11 +122,13 @@ export const Dører = forwardRef(
       handlePrevious,
       setRoomsData,
       roomsData,
+      setValidInitialSteps,
     }: {
       handleNext: () => void;
       handlePrevious: () => void;
       setRoomsData: any;
       roomsData: any;
+      setValidInitialSteps: any;
     },
     ref
   ) => {
@@ -178,6 +180,12 @@ export const Dører = forwardRef(
         });
         handleNext();
         localStorage.setItem("currVerticalIndex", String(8));
+        setValidInitialSteps((prev: number[]) => {
+          if (!prev.includes(7)) {
+            return [...prev, 7];
+          }
+          return prev;
+        });
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {

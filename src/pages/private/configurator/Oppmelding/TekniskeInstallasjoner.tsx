@@ -30,11 +30,13 @@ export const TekniskeInstallasjoner = forwardRef(
       handlePrevious,
       roomsData,
       setRoomsData,
+      setValidInitialSteps,
     }: {
       handleNext: () => void;
       handlePrevious: () => void;
       roomsData: any;
       setRoomsData: any;
+      setValidInitialSteps: any;
     },
     ref
   ) => {
@@ -85,6 +87,12 @@ export const TekniskeInstallasjoner = forwardRef(
         toast.success("Lagret", {
           position: "top-right",
         });
+        setValidInitialSteps((prev: number[]) => {
+          if (!prev.includes(13)) {
+            return [...prev, 13];
+          }
+          return prev;
+        });
         handleNext();
       } catch (error) {
         console.error("error:", error);
@@ -126,7 +134,9 @@ export const TekniskeInstallasjoner = forwardRef(
                       name={`TekniskeInstallasjoner`}
                       render={({ field, fieldState }) => (
                         <FormItem>
-                          <p className={`mb-4 text-black font-medium text-sm md:text-base`}>
+                          <p
+                            className={`mb-4 text-black font-medium text-sm md:text-base`}
+                          >
                             Velg ett alternativ
                           </p>
                           <FormControl>

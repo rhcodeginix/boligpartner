@@ -22,6 +22,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
 }) => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [invalidSteps, setInvalidSteps] = useState<number[]>([]);
+  const [validInitialSteps, setValidInitialSteps] = useState<number[]>([]);
 
   const handleNext = async () => {
     const currentStepComponent = wizardSteps[currentStep - 1]?.content;
@@ -85,6 +86,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           handleNext={handleNext}
           Prev={Prev}
           setRoomsData={setRoomsData}
+          setValidInitialSteps={setValidInitialSteps}
         />
       ),
     },
@@ -100,6 +102,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           roomsData={roomsData}
           setRoomsData={setRoomsData}
+          setValidInitialSteps={setValidInitialSteps}
         />
       ),
     },
@@ -115,6 +118,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           roomsData={roomsData}
           setRoomsData={setRoomsData}
+          setValidInitialSteps={setValidInitialSteps}
         />
       ),
     },
@@ -130,6 +134,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           roomsData={roomsData}
           setRoomsData={setRoomsData}
+          setValidInitialSteps={setValidInitialSteps}
         />
       ),
     },
@@ -145,6 +150,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           roomsData={roomsData}
           setRoomsData={setRoomsData}
+          setValidInitialSteps={setValidInitialSteps}
         />
       ),
     },
@@ -160,6 +166,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           roomsData={roomsData}
           setRoomsData={setRoomsData}
+          setValidInitialSteps={setValidInitialSteps}
         />
       ),
     },
@@ -175,6 +182,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           setRoomsData={setRoomsData}
           roomsData={roomsData}
+          setValidInitialSteps={setValidInitialSteps}
         />
       ),
     },
@@ -190,6 +198,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           roomsData={roomsData}
           setRoomsData={setRoomsData}
+          setValidInitialSteps={setValidInitialSteps}
         />
       ),
     },
@@ -205,6 +214,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           roomsData={roomsData}
           setRoomsData={setRoomsData}
+          setValidInitialSteps={setValidInitialSteps}
         />
       ),
     },
@@ -220,6 +230,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           roomsData={roomsData}
           setRoomsData={setRoomsData}
+          setValidInitialSteps={setValidInitialSteps}
         />
       ),
     },
@@ -235,6 +246,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           roomsData={roomsData}
           setRoomsData={setRoomsData}
+          setValidInitialSteps={setValidInitialSteps}
         />
       ),
     },
@@ -250,6 +262,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           roomsData={roomsData}
           setRoomsData={setRoomsData}
+          setValidInitialSteps={setValidInitialSteps}
         />
       ),
     },
@@ -265,6 +278,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           }}
           roomsData={roomsData}
           setRoomsData={setRoomsData}
+          setValidInitialSteps={setValidInitialSteps}
         />
       ),
     },
@@ -338,11 +352,39 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
   ];
 
+  // useEffect(() => {
+  //   if (roomsData) {
+  //     let firstInvalidStepId: number | null = null;
+
+  //     for (const step of wizardInvalidSteps) {
+  //       const value = roomsData?.[step.valueName];
+  //       const isEmpty =
+  //         !value ||
+  //         (typeof value === "object" && Object.keys(value).length === 0);
+
+  //       if (isEmpty) {
+  //         firstInvalidStepId = step.id;
+  //         break;
+  //       }
+  //     }
+
+  //     if (firstInvalidStepId !== null) {
+  //       setCurrentStep(firstInvalidStepId);
+  //     } else {
+  //       const lastStepId = wizardInvalidSteps[wizardInvalidSteps.length - 1].id;
+  //       setCurrentStep(lastStepId);
+  //     }
+  //   }
+  // }, [roomsData]);
+
   useEffect(() => {
     if (roomsData) {
       let firstInvalidStepId: number | null = null;
 
-      for (const step of wizardInvalidSteps) {
+      const firstTenSteps = wizardInvalidSteps.filter((step) => step.id);
+      const validSteps: number[] = [];
+
+      for (const step of firstTenSteps) {
         const value = roomsData?.[step.valueName];
         const isEmpty =
           !value ||
@@ -351,12 +393,15 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
         if (isEmpty) {
           firstInvalidStepId = step.id;
           break;
+        } else {
+          validSteps.push(step.id);
         }
       }
 
       if (firstInvalidStepId !== null) {
         setCurrentStep(firstInvalidStepId);
       } else {
+        setValidInitialSteps(validSteps);
         const lastStepId = wizardInvalidSteps[wizardInvalidSteps.length - 1].id;
         setCurrentStep(lastStepId);
       }
@@ -381,6 +426,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
           invalidSteps={invalidSteps}
           formRefs={formRefs}
           setInvalidSteps={setInvalidSteps}
+          validInitialSteps={validInitialSteps}
         />
       </div>
     </>

@@ -37,11 +37,13 @@ export const GrunnerOgSkorstein = forwardRef(
       handlePrevious,
       roomsData,
       setRoomsData,
+      setValidInitialSteps,
     }: {
       handleNext: () => void;
       handlePrevious: () => void;
       roomsData: any;
       setRoomsData: any;
+      setValidInitialSteps: any;
     },
     ref
   ) => {
@@ -93,6 +95,12 @@ export const GrunnerOgSkorstein = forwardRef(
         });
         handleNext();
         localStorage.setItem("currVerticalIndex", String(3));
+        setValidInitialSteps((prev: number[]) => {
+          if (!prev.includes(2)) {
+            return [...prev, 2];
+          }
+          return prev;
+        });
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {

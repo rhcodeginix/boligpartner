@@ -54,11 +54,13 @@ export const Vinduer = forwardRef(
       handlePrevious,
       roomsData,
       setRoomsData,
+      setValidInitialSteps,
     }: {
       handleNext: () => void;
       handlePrevious: () => void;
       roomsData: any;
       setRoomsData: any;
+      setValidInitialSteps: any;
     },
     ref
   ) => {
@@ -110,6 +112,12 @@ export const Vinduer = forwardRef(
         });
         handleNext();
         localStorage.setItem("currVerticalIndex", String(9));
+        setValidInitialSteps((prev: number[]) => {
+          if (!prev.includes(8)) {
+            return [...prev, 8];
+          }
+          return prev;
+        });
       } catch (error) {
         console.error("error:", error);
         toast.error("Something went wrong!", {
@@ -146,7 +154,7 @@ export const Vinduer = forwardRef(
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
-            <div className="text-darkBlack font-semibold text-base md:text-lg p-3 md:p-5 border-b border-[#B9C0D4]">
+              <div className="text-darkBlack font-semibold text-base md:text-lg p-3 md:p-5 border-b border-[#B9C0D4]">
                 Vinduer
               </div>
               <div className="p-3 md:p-5">

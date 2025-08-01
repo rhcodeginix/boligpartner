@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import Stepper from "../../../components/ui/stepper";
-import { Romkonfigurator } from "./Romkonfigurator";
+// import { Romkonfigurator } from "./Romkonfigurator";
 import { Oppsummering } from "./Oppsummering";
 import { Oppmelding } from "./Oppmelding";
+import { Romskjema } from "./Romkonfigurator/Romskjema";
 
 export const BoligConfiuratorStepper = () => {
   const [currIndex, setCurrIndex] = useState<number | null>(null);
@@ -35,7 +36,8 @@ export const BoligConfiuratorStepper = () => {
   const steps = [
     {
       name: "Romkonfigurator",
-      component: <Romkonfigurator Prev={handlePrevious} Next={handleNext} />,
+      component: <Romskjema Next={handleNext} />,
+      // component: <Romkonfigurator Prev={handlePrevious} Next={handleNext} />,
     },
     {
       name: "Oppmelding av tiltak",
