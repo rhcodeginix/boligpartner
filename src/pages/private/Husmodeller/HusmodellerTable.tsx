@@ -463,21 +463,20 @@ export const HusmodellerTable = () => {
         header: "Action",
         cell: ({ row }) => (
           <div className="flex items-center justify-end gap-3">
-            {row.original?.Plantegninger &&
-              row.original?.Plantegninger?.length > 0 &&
-              row.original?.Plantegninger?.filter(
-                (p: any) => p?.rooms && p.rooms.length > 0
-              ) && (
-                <Download
-                  className="h-5 w-5 text-primary cursor-pointer"
-                  onClick={async (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setSelectedData(row.original);
-                    setIsExporting(true);
-                  }}
-                />
-              )}
+            {row.original?.Plantegninger?.filter(
+              (p: any) => p?.rooms && p.rooms.length > 0
+            ).length > 0 && (
+              <Download
+                className="h-5 w-5 text-primary cursor-pointer"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setSelectedData(row.original);
+                  setIsExporting(true);
+                }}
+              />
+            )}
+
             <Pencil
               className="h-5 w-5 text-primary cursor-pointer"
               onClick={() =>

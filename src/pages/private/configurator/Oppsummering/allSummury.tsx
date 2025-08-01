@@ -1003,7 +1003,13 @@ export const AllSummury: React.FC<{
                                   alignItems: "center",
                                 }}
                               >
-                                <img src={`${room?.image}`} alt="floor" />
+                                <img
+                                  src={`${room?.image}`}
+                                  alt="floor"
+                                  style={{
+                                    width: "1000px",
+                                  }}
+                                />
                               </div>
                             )}
                             <div
