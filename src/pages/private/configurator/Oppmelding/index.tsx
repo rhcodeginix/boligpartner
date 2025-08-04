@@ -14,7 +14,7 @@ import { VentilasjonSentralstøvsuger } from "./VentilasjonSentralstøvsuger";
 import { Brannvern } from "./Brannvern";
 import { TekniskeInstallasjoner } from "./TekniskeInstallasjoner";
 import { useLocation } from "react-router-dom";
-import { fetchRoomData } from "../../../../lib/utils";
+import { fetchHusmodellData } from "../../../../lib/utils";
 
 export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
   Next,
@@ -56,23 +56,27 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const kundeId = pathSegments.length > 3 ? pathSegments[3] : null;
 
   const [roomsData, setRoomsData] = useState<any>([]);
 
   useEffect(() => {
-    if (!id) {
+    if (!id || !kundeId) {
       return;
     }
     const getData = async () => {
-      const data = await fetchRoomData(id);
+      const data = await fetchHusmodellData(id);
 
-      if (data) {
-        setRoomsData(data);
+      if (data && data.KundeInfo) {
+        const finalData = data.KundeInfo.find(
+          (item: any) => item.uniqueId === kundeId
+        );
+        setRoomsData(finalData);
       }
     };
 
     getData();
-  }, [id]);
+  }, [id, kundeId]);
 
   const wizardSteps = [
     {
@@ -351,6 +355,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
       valueName: "TekniskeInstallasjoner",
     },
   ];
+  console.log(roomsData);
 
   // useEffect(() => {
   //   if (roomsData) {

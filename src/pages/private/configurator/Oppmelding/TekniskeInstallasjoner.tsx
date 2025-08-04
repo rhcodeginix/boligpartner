@@ -13,7 +13,7 @@ import { Input } from "../../../../components/ui/input";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { removeUndefinedOrNull } from "./Yttervegger";
 import { Spinner } from "../../../../components/Spinner";
@@ -43,6 +43,7 @@ export const TekniskeInstallasjoner = forwardRef(
     const location = useLocation();
     const pathSegments = location.pathname.split("/");
     const id = pathSegments.length > 2 ? pathSegments[2] : null;
+    const kundeId = pathSegments.length > 3 ? pathSegments[3] : null;
 
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -60,7 +61,7 @@ export const TekniskeInstallasjoner = forwardRef(
       setIsSubmitLoading(true);
 
       try {
-        const husmodellDocRef = doc(db, "room_configurator", String(id));
+        const husmodellDocRef = doc(db, "housemodell_configure_broker", String(id));
 
         const formatDate = (date: Date) => {
           return date
@@ -72,18 +73,30 @@ export const TekniskeInstallasjoner = forwardRef(
         if (!husmodellSnap.exists()) {
           throw new Error("Document does not exist!");
         }
-        const existingData = husmodellSnap.data();
+        let existingData = husmodellSnap.exists() ? husmodellSnap.data() : {};
 
         const filteredData = removeUndefinedOrNull(data);
-        const mergedData = {
-          ...existingData,
-          TekniskeInstallasjoner: filteredData,
-          id: id,
-          updatedAt: formatDate(new Date()),
-        };
-        setRoomsData(mergedData);
 
-        await updateDoc(husmodellDocRef, mergedData);
+        let updatedKundeInfo = (existingData.KundeInfo || []).map(
+          (kunde: any) => {
+            if (kunde.uniqueId === kundeId) {
+              return {
+                ...kunde,
+                TekniskeInstallasjoner: filteredData,
+                updatedAt: formatDate(new Date()),
+              };
+            }
+            return kunde;
+          }
+        );
+
+        const updatePayload: any = {
+          ...existingData,
+          KundeInfo: updatedKundeInfo,
+        };
+
+        setRoomsData(updatePayload);
+        await setDoc(husmodellDocRef, updatePayload);
         toast.success("Lagret", {
           position: "top-right",
         });

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../../../components/common/button";
-import { fetchRoomData } from "../../../../lib/utils";
+import { fetchHusmodellData } from "../../../../lib/utils";
 import { Spinner } from "../../../../components/Spinner";
 
 export const Romskjema: React.FC<{ Next: any }> = ({ Next }) => {
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const kundeId = pathSegments.length > 3 ? pathSegments[3] : null;
 
   const navigate = useNavigate();
 
@@ -15,21 +16,24 @@ export const Romskjema: React.FC<{ Next: any }> = ({ Next }) => {
   const [roomsData, setRoomsData] = useState<any>([]);
 
   useEffect(() => {
-    if (!id) {
+    if (!id || !kundeId) {
       setLoading(false);
       return;
     }
     const getData = async () => {
-      const data = await fetchRoomData(id);
+      const data = await fetchHusmodellData(id);
 
-      if (data) {
-        setRoomsData(data);
+      if (data && data.KundeInfo) {
+        const finalData = data.KundeInfo.find(
+          (item: any) => item.uniqueId === kundeId
+        );
+        setRoomsData(finalData);
       }
       setLoading(false);
     };
 
     getData();
-  }, [id]);
+  }, [id, kundeId]);
 
   const [activeTab, setActiveTab] = useState("");
   const room =
@@ -145,7 +149,12 @@ export const Romskjema: React.FC<{ Next: any }> = ({ Next }) => {
                                         return (
                                           <div
                                             key={prodIndex}
-                                            className="flex flex-col"
+                                            className="flex flex-col cursor-pointer"
+                                            onClick={() =>
+                                              navigate(
+                                                `/se-series/${id}/edit-husmodell/${kundeId}?pdf_id=${room?.pdf_id}&activeTab=3&activeSubTab=${index}`
+                                              )
+                                            }
                                           >
                                             <div>
                                               <h4 className="text-sm font-medium text-secondary mb-1">

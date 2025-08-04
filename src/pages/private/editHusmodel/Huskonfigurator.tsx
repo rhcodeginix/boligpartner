@@ -52,6 +52,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   const [roomsData, setRoomsData] = useState<any>([]);
   const navigate = useNavigate();
   const [FileUploadLoading, setFileUploadLoading] = useState(false);
+  const [IsPlaceOrder, setIsPlaceOrder] = useState(false);
 
   useEffect(() => {
     if (!id) {
@@ -66,6 +67,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           (item: any) => item.uniqueId === kundeId
         );
         setRoomsData(finalData?.Plantegninger);
+        setIsPlaceOrder(finalData?.placeOrder ?? false);
       }
       setLoading(false);
     };
@@ -414,6 +416,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   }, [id]);
 
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+
   useEffect(() => {
     if (showConfiguratorModal) {
       setNewConfiguratorName(
@@ -444,7 +447,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
         </p>
       </div> */}
       <div className="px-4 md:px-6 py-5 md:py-6 desktop:p-8 mb-[100px]">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6 w-full mt-6 md:mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 desktop:grid-cols-3 gap-4 lg:gap-6 w-full mt-6 md:mt-8">
           {loading ? (
             <>
               {Array.from({ length: 3 }, (_, i) => i + 1).map((item, index) => {
@@ -483,175 +486,175 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
             </>
           ) : (
             <>
-              {roomsData && roomsData.length > 0
-                ? roomsData.map((item: any, index: number) => {
-                    const isEditing = editIndex === index;
-                    const loaded = imageLoaded[index];
+              {roomsData &&
+                roomsData.length > 0 &&
+                roomsData.map((item: any, index: number) => {
+                  const isEditing = editIndex === index;
+                  const loaded = imageLoaded[index];
 
-                    return (
-                      <div
-                        key={index}
-                        className="relative shadow-shadow2 p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4 justify-between"
-                      >
-                        <div className="flex gap-1.5 md:gap-2 items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            {isEditing ? (
-                              <input
-                                type="text"
-                                value={editedFloorName}
-                                onChange={(e) =>
-                                  setEditedFloorName(e.target.value)
+                  return (
+                    <div
+                      key={index}
+                      className="relative shadow-shadow2 p-3 md:p-4 rounded-lg flex flex-col gap-3 md:gap-4 justify-between"
+                    >
+                      <div className="flex gap-1.5 md:gap-2 items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              value={editedFloorName}
+                              onChange={(e) =>
+                                setEditedFloorName(e.target.value)
+                              }
+                              className="border border-gray1 rounded px-2 py-1 w-full"
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                          ) : (
+                            <span className="text-darkBlack font-medium truncate">
+                              {item?.title || `Floor ${index + 1}`}
+                            </span>
+                          )}
+                          {item.configurator === true && (
+                            <CircleCheckBig className="text-darkGreen" />
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 md:gap-3">
+                          {isEditing ? (
+                            <button
+                              className="bg-purple text-white px-2 md:px-3 py-2 rounded text-sm self-end"
+                              disabled={updatingIndex === index}
+                              onClick={async (e) => {
+                                setUpdatingIndex(index);
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                const updatedRooms = [...roomsData];
+                                updatedRooms[index] = {
+                                  ...updatedRooms[index],
+                                  title: editedFloorName,
+                                };
+
+                                setRoomsData(updatedRooms);
+
+                                const husmodellDocRef = doc(
+                                  db,
+                                  "housemodell_configure_broker",
+                                  String(id)
+                                );
+                                const docSnap = await getDoc(husmodellDocRef);
+
+                                if (docSnap.exists()) {
+                                  const docData = docSnap.data();
+                                  const existingKundeInfo =
+                                    docData.KundeInfo || [];
+
+                                  const updatedKundeInfo =
+                                    existingKundeInfo.map((kunde: any) => {
+                                      if (kunde.uniqueId === kundeId) {
+                                        return {
+                                          ...kunde,
+                                          Plantegninger: updatedRooms,
+                                        };
+                                      }
+                                      return kunde;
+                                    });
+
+                                  await updateDoc(husmodellDocRef, {
+                                    KundeInfo: updatedKundeInfo,
+                                    updatedAt: new Date().toISOString(),
+                                  });
+
+                                  toast.success("Navn oppdatert!", {
+                                    position: "top-right",
+                                  });
                                 }
-                                className="border border-gray1 rounded px-2 py-1 w-full"
-                                onClick={(e) => e.stopPropagation()}
-                              />
-                            ) : (
-                              <span className="text-darkBlack font-medium truncate">
-                                {item?.title || `Floor ${index + 1}`}
-                              </span>
-                            )}
-                            {item.configurator === true && (
-                              <CircleCheckBig className="text-darkGreen" />
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2 md:gap-3">
-                            {isEditing ? (
-                              <button
-                                className="bg-purple text-white px-2 md:px-3 py-2 rounded text-sm self-end"
-                                disabled={updatingIndex === index}
-                                onClick={async (e) => {
-                                  setUpdatingIndex(index);
-                                  e.preventDefault();
-                                  e.stopPropagation();
-
-                                  const updatedRooms = [...roomsData];
-                                  updatedRooms[index] = {
-                                    ...updatedRooms[index],
-                                    title: editedFloorName,
-                                  };
-
-                                  setRoomsData(updatedRooms);
-
-                                  const husmodellDocRef = doc(
-                                    db,
-                                    "housemodell_configure_broker",
-                                    String(id)
-                                  );
-                                  const docSnap = await getDoc(husmodellDocRef);
-
-                                  if (docSnap.exists()) {
-                                    const docData = docSnap.data();
-                                    const existingKundeInfo =
-                                      docData.KundeInfo || [];
-
-                                    const updatedKundeInfo =
-                                      existingKundeInfo.map((kunde: any) => {
-                                        if (kunde.uniqueId === kundeId) {
-                                          return {
-                                            ...kunde,
-                                            Plantegninger: updatedRooms,
-                                          };
-                                        }
-                                        return kunde;
-                                      });
-
-                                    await updateDoc(husmodellDocRef, {
-                                      KundeInfo: updatedKundeInfo,
-                                      updatedAt: new Date().toISOString(),
-                                    });
-
-                                    toast.success("Navn oppdatert!", {
-                                      position: "top-right",
-                                    });
-                                  }
-                                  setUpdatingIndex(null);
-                                  setEditIndex(null);
-                                }}
-                              >
-                                {updatingIndex === index ? (
-                                  <svg
-                                    className="animate-spin h-4 w-4 text-white"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <circle
-                                      className="opacity-25"
-                                      cx="12"
-                                      cy="12"
-                                      r="10"
-                                      stroke="currentColor"
-                                      strokeWidth="4"
-                                    ></circle>
-                                    <path
-                                      className="opacity-75"
-                                      fill="currentColor"
-                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                                    ></path>
-                                  </svg>
-                                ) : (
-                                  "Oppdater"
-                                )}
-                              </button>
-                            ) : (
-                              <Pencil
-                                className="w-5 h-5 text-purple cursor-pointer"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  setEditIndex(index);
-                                  setEditedFloorName(
-                                    item?.title || `Floor ${index + 1}`
-                                  );
-                                }}
-                              />
-                            )}
-
-                            <Trash2
-                              className="w-5 h-5 text-red cursor-pointer"
+                                setUpdatingIndex(null);
+                                setEditIndex(null);
+                              }}
+                            >
+                              {updatingIndex === index ? (
+                                <svg
+                                  className="animate-spin h-4 w-4 text-white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                  ></circle>
+                                  <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                  ></path>
+                                </svg>
+                              ) : (
+                                "Oppdater"
+                              )}
+                            </button>
+                          ) : (
+                            <Pencil
+                              className="w-5 h-5 text-purple cursor-pointer"
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                setConfirmDeleteIndex(index);
+                                setEditIndex(index);
+                                setEditedFloorName(
+                                  item?.title || `Floor ${index + 1}`
+                                );
                               }}
                             />
-                          </div>
-                        </div>
-                        <div className="w-full h-[200px] relative">
-                          {!loaded && (
-                            <div className="w-full h-full rounded-lg custom-shimmer"></div>
                           )}
-                          {item?.image && (
-                            <img
-                              src={item?.image}
-                              alt="floor"
-                              className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
-                                loaded ? "opacity-100" : "opacity-0"
-                              }`}
-                              onLoad={() => handleImageLoad(index)}
-                              onError={() => handleImageLoad(index)}
-                              loading="lazy"
-                            />
-                          )}
-                        </div>
-                        <Button
-                          text="Konfigurer plan"
-                          className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2`}
-                          type="button"
-                          onClick={() => {
-                            if (item?.rooms) {
-                              setActiveTab(3);
-                            } else {
-                              setActiveTab(2);
-                            }
 
-                            navigate(`?pdf_id=${item?.pdf_id}`);
-                          }}
-                        />
+                          <Trash2
+                            className="w-5 h-5 text-red cursor-pointer"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setConfirmDeleteIndex(index);
+                            }}
+                          />
+                        </div>
                       </div>
-                    );
-                  })
-                : "No Data Found!"}
+                      <div className="w-full h-[200px] relative">
+                        {!loaded && (
+                          <div className="w-full h-full rounded-lg custom-shimmer"></div>
+                        )}
+                        {item?.image && (
+                          <img
+                            src={item?.image}
+                            alt="floor"
+                            className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
+                              loaded ? "opacity-100" : "opacity-0"
+                            }`}
+                            onLoad={() => handleImageLoad(index)}
+                            onError={() => handleImageLoad(index)}
+                            loading="lazy"
+                          />
+                        )}
+                      </div>
+                      <Button
+                        text="Konfigurer plan"
+                        className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2`}
+                        type="button"
+                        onClick={() => {
+                          if (item?.rooms) {
+                            setActiveTab(3);
+                          } else {
+                            setActiveTab(2);
+                          }
+
+                          navigate(`?pdf_id=${item?.pdf_id}`);
+                        }}
+                      />
+                    </div>
+                  );
+                })}
             </>
           )}
           <div className="relative p-2 rounded-lg w-full shadow-shadow2">
@@ -664,15 +667,15 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
             >
               <img src={Ic_upload_blue_img} alt="upload" />
               <div className="flex items-center justify-center flex-col gap-3">
-                <div className="flex items-center gap-2 md:gap-3">
-                  <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[36px] py-2 px-3 md:px-4 text-sm md:text-base">
+                <div className="flex items-center gap-2 lg:gap-3">
+                  <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[36px] py-2 px-3 md:px-4 text-sm lg:text-base">
                     Bla gjennom
                   </span>
-                  <p className="text-gray text-xs sm:text-sm text-center truncate w-full">
+                  <p className="text-gray text-xs lg:text-sm text-center truncate w-full">
                     Slipp filen her for å laste den opp
                   </p>
                 </div>
-                <p className="text-gray text-xs sm:text-sm truncate text-center">
+                <p className="text-gray text-xs lg:text-sm truncate text-center">
                   Filformater: Kun JPEG, JPG, PNG, PDF maks 2 MB
                 </p>
               </div>
@@ -700,51 +703,40 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           type="button"
           onClick={() => navigate("/Husmodell")}
         />
-        <Button
-          text="Overfør til oppmelding"
-          className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 ${
-            isDisable ? "cursor-not-allowed opacity-50" : ""
-          }`}
-          type="button"
-          onClick={async () => {
-            if (isDisable === true) return;
-            if (!id || !kundeId) return;
-            setIsPlacingOrder(true);
-            const formatDate = (date: Date) =>
-              date
-                .toLocaleString("sv-SE", { timeZone: "UTC" })
-                .replace(",", "");
+        {!IsPlaceOrder && (
+          <Button
+            text="Overfør til oppmelding"
+            className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 ${
+              isDisable ? "cursor-not-allowed opacity-50" : ""
+            }`}
+            type="button"
+            onClick={async () => {
+              if (isDisable === true) return;
+              if (!id || !kundeId) return;
+              setIsPlacingOrder(true);
+              const formatDate = (date: Date) =>
+                date
+                  .toLocaleString("sv-SE", { timeZone: "UTC" })
+                  .replace(",", "");
 
-            try {
-              const houseData: any = await fetchHusmodellData(id);
-              const kundeList = houseData?.KundeInfo || [];
+              try {
+                const houseData: any = await fetchHusmodellData(id);
+                const kundeList = houseData?.KundeInfo || [];
 
-              const targetKundeIndex = kundeList.findIndex(
-                (k: any) => String(k.uniqueId) === String(kundeId)
-              );
-              if (targetKundeIndex === -1) return;
+                const targetKundeIndex = kundeList.findIndex(
+                  (k: any) => String(k.uniqueId) === String(kundeId)
+                );
+                if (targetKundeIndex === -1) return;
 
-              const refetched = await fetchHusmodellData(id);
-              const targetKunde = refetched?.KundeInfo?.find(
-                (kunde: any) => String(kunde.uniqueId) === String(kundeId)
-              );
+                const refetched = await fetchHusmodellData(id);
+                const targetKunde = refetched?.KundeInfo?.find(
+                  (kunde: any) => String(kunde.uniqueId) === String(kundeId)
+                );
 
-              const newId = uuidv4();
+                const newId = id;
 
-              const docRef = doc(db, "room_configurator", newId);
-              const docSnap = await getDoc(docRef);
+                const docRef = doc(db, "housemodell_configure_broker", newId);
 
-              if (docSnap.exists()) {
-                const existingData = docSnap.data();
-
-                if (!existingData?.name) {
-                  setPendingPayload(existingData);
-                  setShowConfiguratorModal(true);
-                  return;
-                }
-
-                await updateDoc(docRef, existingData);
-              } else {
                 if (!newConfiguratorName.trim()) {
                   setPendingPayload({
                     ...targetKunde,
@@ -759,20 +751,20 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                   createdAt: formatDate(new Date()),
                   name: newConfiguratorName.trim(),
                 });
-              }
 
-              toast.success("Bestillingen er lagt inn!", {
-                position: "top-right",
-              });
-              navigate(`/Room-Configurator/${newId}`);
-            } catch (err) {
-              console.error("Error saving data:", err);
-              toast.error("Noe gikk galt", { position: "top-right" });
-            } finally {
-              setIsPlacingOrder(false);
-            }
-          }}
-        />
+                toast.success("Bestillingen er lagt inn!", {
+                  position: "top-right",
+                });
+                navigate(`/Room-Configurator/${newId}`);
+              } catch (err) {
+                console.error("Error saving data:", err);
+                toast.error("Noe gikk galt", { position: "top-right" });
+              } finally {
+                setIsPlacingOrder(false);
+              }
+            }}
+          />
+        )}
       </div>
 
       {confirmDeleteIndex !== null && (
@@ -811,6 +803,8 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
               className="text-primary absolute top-2.5 right-2.5 w-5 h-5 cursor-pointer"
               onClick={() => {
                 setShowConfiguratorModal(false);
+                setNewConfiguratorName("");
+                setPendingPayload(null);
               }}
             />
             <h2 className="text-lg font-bold mb-4">
@@ -830,6 +824,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                 onClick={() => {
                   setNewConfiguratorName("");
                   setShowConfiguratorModal(false);
+                  setPendingPayload(null);
                 }}
               />
               <Button
@@ -840,62 +835,44 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                   setIsPlacingOrder(true);
 
                   if (!pendingPayload) return;
-                  const newId = uuidv4();
-                  const docRef = doc(db, "room_configurator", String(newId));
+                  const newId = id;
+                  const docRef = doc(
+                    db,
+                    "housemodell_configure_broker",
+                    String(newId)
+                  );
                   const docSnap = await getDoc(docRef);
                   const formatDate = (date: Date) =>
                     date
                       .toLocaleString("sv-SE", { timeZone: "UTC" })
                       .replace(",", "");
-                  if (docSnap.exists()) {
-                    await updateDoc(docRef, {
-                      ...pendingPayload,
-                      name: newConfiguratorName.trim(),
-                      houseId: id,
-                      kundeId: kundeId,
-                      createDataBy: createData,
-                    });
-                  } else {
-                    await setDoc(docRef, {
-                      ...pendingPayload,
-                      name: newConfiguratorName.trim(),
-                      createdAt: formatDate(new Date()),
-                      houseId: id,
-                      kundeId: kundeId,
-                      createDataBy: createData,
-                    });
-                  }
 
-                  const houseDocRef = doc(
-                    db,
-                    "housemodell_configure_broker",
-                    String(id)
+                  let existingData = docSnap.exists() ? docSnap.data() : {};
+
+                  let updatedKundeInfo = (existingData.KundeInfo || []).map(
+                    (kunde: any) => {
+                      if (kunde.uniqueId === kundeId) {
+                        return {
+                          ...kunde,
+                          placeOrder: true,
+                        };
+                      }
+                      return kunde;
+                    }
                   );
 
-                  const houseDocSnap = await getDoc(houseDocRef);
+                  const updatePayload: any = {
+                    ...existingData,
+                    KundeInfo: updatedKundeInfo,
+                    name: newConfiguratorName.trim(),
+                    createDataBy: createData,
+                  };
 
-                  if (houseDocSnap.exists()) {
-                    const houseData = houseDocSnap.data();
-                    const existingKundeInfo = houseData.KundeInfo || [];
-
-                    const updatedKundeInfo = existingKundeInfo.map(
-                      (kunde: any) => {
-                        // if (kunde.uniqueId === kundeId) {
-                        //   return {
-                        //     ...kunde,
-                        //     Plantegninger: [],
-                        //   };
-                        // }
-                        return kunde;
-                      }
-                    );
-
-                    await updateDoc(houseDocRef, {
-                      KundeInfo: updatedKundeInfo,
-                      updatedAt: formatDate(new Date()),
-                      placeOrder: true,
-                    });
+                  if (!docSnap.exists()) {
+                    updatePayload.createdAt = formatDate(new Date());
                   }
+
+                  await setDoc(docRef, updatePayload);
 
                   toast.success("Bestillingen er lagt inn!", {
                     position: "top-right",

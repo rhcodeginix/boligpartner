@@ -13,7 +13,7 @@ import { z } from "zod";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { Spinner } from "../../../../components/Spinner";
 
@@ -62,18 +62,21 @@ export const Yttervegger = forwardRef(
       handleNext,
       handlePrevious,
       roomsData,
-      setRoomsData,setValidInitialSteps
+      setRoomsData,
+      setValidInitialSteps,
     }: {
       handleNext: () => void;
       handlePrevious: () => void;
       roomsData: any;
-      setRoomsData: any;setValidInitialSteps:any
+      setRoomsData: any;
+      setValidInitialSteps: any;
     },
     ref
   ) => {
     const location = useLocation();
     const pathSegments = location.pathname.split("/");
     const id = pathSegments.length > 2 ? pathSegments[2] : null;
+    const kundeId = pathSegments.length > 3 ? pathSegments[3] : null;
 
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -91,7 +94,11 @@ export const Yttervegger = forwardRef(
       setIsSubmitLoading(true);
 
       try {
-        const husmodellDocRef = doc(db, "room_configurator", String(id));
+        const husmodellDocRef = doc(
+          db,
+          "housemodell_configure_broker",
+          String(id)
+        );
 
         const formatDate = (date: Date) => {
           return date
@@ -103,19 +110,30 @@ export const Yttervegger = forwardRef(
         if (!husmodellSnap.exists()) {
           throw new Error("Document does not exist!");
         }
-        const existingData = husmodellSnap.data();
+        let existingData = husmodellSnap.exists() ? husmodellSnap.data() : {};
 
         const filteredData = removeUndefinedOrNull(data);
 
-        const mergedData = {
-          ...existingData,
-          Yttervegger: filteredData,
-          id: id,
-          updatedAt: formatDate(new Date()),
-        };
-        setRoomsData(mergedData);
+        let updatedKundeInfo = (existingData.KundeInfo || []).map(
+          (kunde: any) => {
+            if (kunde.uniqueId === kundeId) {
+              return {
+                ...kunde,
+                Yttervegger: filteredData,
+                updatedAt: formatDate(new Date()),
+              };
+            }
+            return kunde;
+          }
+        );
 
-        await updateDoc(husmodellDocRef, mergedData);
+        const updatePayload: any = {
+          ...existingData,
+          KundeInfo: updatedKundeInfo,
+        };
+
+        setRoomsData(updatePayload);
+        await setDoc(husmodellDocRef, updatePayload);
         toast.success("Lagret", {
           position: "top-right",
         });
@@ -164,7 +182,7 @@ export const Yttervegger = forwardRef(
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
             <div className="border border-[#B9C0D4] rounded-lg">
-            <div className="text-darkBlack font-semibold text-base md:text-lg p-3 md:p-5 border-b border-[#B9C0D4]">
+              <div className="text-darkBlack font-semibold text-base md:text-lg p-3 md:p-5 border-b border-[#B9C0D4]">
                 Yttervegger
               </div>
               <div className="p-3 md:p-5">

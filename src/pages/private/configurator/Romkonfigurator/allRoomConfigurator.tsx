@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   collection,
-  deleteDoc,
   doc,
+  getDoc,
   getDocs,
   orderBy,
   query,
@@ -62,7 +62,7 @@ export const AllRoomkonfigurator: React.FC = () => {
     setIsLoading(true);
     try {
       let q = query(
-        collection(db, "room_configurator"),
+        collection(db, "housemodell_configure_broker"),
         orderBy("updatedAt", "desc")
       );
       const querySnapshot = await getDocs(q);
@@ -72,20 +72,67 @@ export const AllRoomkonfigurator: React.FC = () => {
         ...doc.data(),
       }));
 
-      const finalData: any =
-        IsAdmin === true
-          ? data
-          : (
-              await Promise.all(
-                data.map(async (item: any) => {
-                  const userData = await getData(item?.createDataBy?.email);
+      let finalData: any = [];
 
-                  return userData?.office === office ? item : null;
-                })
-              )
-            ).filter((item) => item !== null);
+      if (IsAdmin) {
+        finalData = data;
+      } else {
+        const filteredData = await Promise.all(
+          data.map(async (item: any) => {
+            const userData = await getData(item?.createDataBy?.email);
+            return userData?.office === office ? item : null;
+          })
+        );
+        finalData = filteredData.filter((item) => item !== null);
+      }
 
-      setRoomConfigurator(finalData);
+      const filteredData = finalData
+        .filter((item: any) => {
+          return Array.isArray(item.KundeInfo);
+        })
+        .map((item: any) => {
+          const filteredKundes = item.KundeInfo.filter((kunde: any) => {
+            return kunde && kunde.placeOrder === true;
+          });
+
+          return {
+            ...item,
+            KundeInfo: filteredKundes,
+          };
+        });
+
+      const allKunder = filteredData.flatMap((item: any) => {
+        if (
+          item?.KundeInfo &&
+          Array.isArray(item.KundeInfo) &&
+          item.KundeInfo.length > 0
+        ) {
+          return item.KundeInfo.map((kunde: any) => ({
+            ...kunde,
+            photo: item.photo || null,
+            husmodell_name: kunde?.VelgSerie || item?.husmodell_name || null,
+            parentId: item.id,
+            createDataBy: item?.createDataBy || null,
+            tag: item?.tag || null,
+            configurator:
+              kunde?.Plantegninger &&
+              kunde?.Plantegninger.length > 0 &&
+              kunde?.Plantegninger.some((room: any) => !room.configurator)
+                ? false
+                : true,
+            updatedAt: kunde.updatedAt || item.updatedAt || null,
+            name: kunde.name || item.name || null,
+          }));
+        }
+        return [];
+      });
+
+      allKunder.sort((a: any, b: any) => {
+        const dateA = new Date(a.updatedAt).getTime();
+        const dateB = new Date(b.updatedAt).getTime();
+        return dateB - dateA;
+      });
+      setRoomConfigurator(allKunder);
     } catch (error) {
       console.error("Error fetching husmodell data:", error);
     } finally {
@@ -113,25 +160,35 @@ export const AllRoomkonfigurator: React.FC = () => {
   const [confirmDeleteIndex, setConfirmDeleteIndex] = useState<number | null>(
     null
   );
-  const [id, setId] = useState();
-  const handleDeleteFloor = async () => {
+  const [id, setId] = useState(null);
+  const [selectedId, setSelectedId] = useState<any>(null);
+
+  const handleDelete = async (entryId: string) => {
     setIsSubmitLoading(true);
-    setConfirmDeleteIndex(null);
-
-    const husmodellDocRef = doc(db, "room_configurator", String(id));
-
     try {
-      await deleteDoc(husmodellDocRef);
+      const docRef = doc(db, "housemodell_configure_broker", String(id));
+      const docSnap = await getDoc(docRef);
 
-      fetchRoomConfiguratorData();
-      toast.success("Romkonfiguratoren er slettet!", {
-        position: "top-right",
-      });
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const currentKundeInfo = data?.KundeInfo || [];
+
+        const updatedKundeInfo = currentKundeInfo.filter(
+          (entry: any) => entry.uniqueId !== entryId
+        );
+
+        await updateDoc(docRef, {
+          KundeInfo: updatedKundeInfo,
+          updatedAt: new Date().toISOString(),
+        });
+        setId(null);
+        toast.success("Slettet", { position: "top-right" });
+        fetchRoomConfiguratorData();
+        setSelectedId(null);
+      }
     } catch (error) {
-      console.error("Error deleting floor:", error);
-      toast.error("Failed to delete room configurator", {
-        position: "top-right",
-      });
+      console.error("Error deleting entry from KundeInfo:", error);
+      toast.error("Noe gikk galt ved sletting.");
     } finally {
       setIsSubmitLoading(false);
     }
@@ -210,7 +267,9 @@ export const AllRoomkonfigurator: React.FC = () => {
                         key={index}
                         className="relative shadow-shadow2 cursor-pointer p-4 rounded-lg flex flex-col justify-between gap-4"
                         onClick={() => {
-                          navigate(`/Room-Configurator/${item?.id}`);
+                          navigate(
+                            `/Room-Configurator/${item?.parentId}/${item?.uniqueId}`
+                          );
                           const currIndex = 0;
                           const currVerticalIndex = 1;
                           localStorage.setItem(
@@ -258,7 +317,7 @@ export const AllRoomkonfigurator: React.FC = () => {
 
                                   const husmodellDocRef = doc(
                                     db,
-                                    "room_configurator",
+                                    "housemodell_configure_broker",
                                     String(id)
                                   );
 
@@ -282,7 +341,7 @@ export const AllRoomkonfigurator: React.FC = () => {
                                   e.stopPropagation();
                                   setEditIndex(index);
                                   setEditedFloorName(item?.name);
-                                  setId(item?.id);
+                                  setId(item?.parentId);
                                 }}
                               />
                             )}
@@ -293,7 +352,8 @@ export const AllRoomkonfigurator: React.FC = () => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 setConfirmDeleteIndex(index);
-                                setId(item?.id);
+                                setId(item?.parentId);
+                                setSelectedId(item?.uniqueId);
                               }}
                             />
                           </div>
@@ -348,7 +408,7 @@ export const AllRoomkonfigurator: React.FC = () => {
                     className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   />
                 </div>
-                <div onClick={() => handleDeleteFloor()}>
+                <div onClick={() => handleDelete(selectedId)}>
                   <Button
                     text="Bekreft"
                     className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"

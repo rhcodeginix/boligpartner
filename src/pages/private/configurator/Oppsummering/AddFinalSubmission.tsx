@@ -13,7 +13,7 @@ import { Input } from "../../../../components/ui/input";
 import { parsePhoneNumber } from "react-phone-number-input";
 import {
   fetchAdminDataByEmail,
-  fetchRoomData,
+  fetchHusmodellData,
   phoneNumberValidations,
 } from "../../../../lib/utils";
 import { InputMobile } from "../../../../components/ui/inputMobile";
@@ -80,6 +80,8 @@ export const AddFinalSubmission: React.FC<{
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const kundeId = pathSegments.length > 3 ? pathSegments[3] : null;
+
   const previewRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -104,38 +106,19 @@ export const AddFinalSubmission: React.FC<{
     setIsSubmitLoading(true);
 
     try {
-      const roomDocRef = doc(db, "room_configurator", String(id));
-
       const formatDate = (date: Date) => {
         return date
           .toLocaleString("sv-SE", { timeZone: "UTC" })
           .replace(",", "");
       };
-      const roomSnap = await getDoc(roomDocRef);
-
-      if (!roomSnap.exists()) {
-        throw new Error("Document does not exist!");
-      }
-      const existingData = roomSnap.data();
 
       const filteredData = removeUndefinedOrNull(data);
-      const mergedData = {
-        ...existingData,
-        FinalSubmission: filteredData,
-        id: id,
-        updatedAt: formatDate(new Date()),
-        VelgSerie: data.Serie,
-        Prosjektdetaljer: {
-          ...existingData.Prosjektdetaljer,
-          VelgSerie: data.Serie,
-        },
-      };
 
-      if (roomsData?.houseId && roomsData?.kundeId) {
+      if (id && kundeId) {
         const husmodellDocRef = doc(
           db,
           "housemodell_configure_broker",
-          String(roomsData?.houseId)
+          String(id)
         );
         const docSnap = await getDoc(husmodellDocRef);
         if (!docSnap.exists()) {
@@ -146,10 +129,16 @@ export const AddFinalSubmission: React.FC<{
         const existingKundeInfo = existingDocData.KundeInfo || [];
 
         const updatedKundeInfo = existingKundeInfo.map((kunde: any) => {
-          if (kunde.uniqueId === roomsData?.kundeId) {
+          if (kunde.uniqueId === kundeId) {
             return {
               ...kunde,
               VelgSerie: data.Serie,
+              FinalSubmission: filteredData,
+              Prosjektdetaljer: {
+                ...existingDocData.Prosjektdetaljer,
+                VelgSerie: data.Serie,
+              },
+              updatedAt: formatDate(new Date()),
             };
           }
           return kunde;
@@ -160,7 +149,6 @@ export const AddFinalSubmission: React.FC<{
           updatedAt: new Date().toISOString(),
         });
       }
-      await updateDoc(roomDocRef, mergedData);
 
       onClose();
       toast.success("Lagret", {
@@ -488,7 +476,7 @@ export const AddFinalSubmission: React.FC<{
   const [array, setArray] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!id) {
+    if (!id || !kundeId) {
       return;
     }
 
@@ -506,46 +494,59 @@ export const AddFinalSubmission: React.FC<{
     }
 
     const getData = async () => {
-      const data = await fetchRoomData(id);
+      const data = await fetchHusmodellData(id);
 
-      if (data && data?.FinalSubmission) {
-        Object.entries(data?.FinalSubmission).forEach(([key, value]) => {
-          if (value !== undefined && value !== null) {
-            form.setValue(key as any, value);
-            if (key === "Kundenummer") {
-              form.setValue("Kundenummer", String(value));
-            }
-          }
-          if (key === "Serie" && value === "") {
+      if (data) {
+        if (data && data.KundeInfo) {
+          const finalData = data.KundeInfo.find(
+            (item: any) => item.uniqueId === kundeId
+          );
+
+          if (finalData && finalData?.FinalSubmission) {
+            Object.entries(finalData?.FinalSubmission).forEach(
+              ([key, value]) => {
+                if (value !== undefined && value !== null) {
+                  form.setValue(key as any, value);
+                  if (key === "Kundenummer") {
+                    form.setValue("Kundenummer", String(value));
+                  }
+                }
+                if (key === "Serie" && value === "") {
+                  const serieValue =
+                    roomsData?.Prosjektdetaljer?.VelgSerie ??
+                    roomsData?.VelgSerie;
+                  form.setValue(
+                    key,
+                    serieValue && serieValue.trim() !== ""
+                      ? serieValue
+                      : undefined
+                  );
+                  form.setValue("exportType", "PDF");
+                }
+              }
+            );
+          } else if (roomsData) {
             const serieValue =
               roomsData?.Prosjektdetaljer?.VelgSerie ?? roomsData?.VelgSerie;
-            form.setValue(
-              key,
-              serieValue && serieValue.trim() !== "" ? serieValue : undefined
-            );
+
+            form.reset({
+              Serie:
+                serieValue && serieValue.trim() !== "" ? serieValue : undefined,
+              Kundenummer: String(
+                roomsData?.Prosjektdetaljer?.Kundenr ?? roomsData?.Kundenummer
+              ),
+              mobile:
+                roomsData?.Prosjektdetaljer?.TelefonMobile ??
+                roomsData?.mobileNummer ??
+                "",
+              Kundenavn:
+                roomsData?.Prosjektdetaljer?.Tiltakshaver ??
+                roomsData?.Kundenavn ??
+                "",
+            });
             form.setValue("exportType", "PDF");
           }
-        });
-      } else if (roomsData) {
-        const serieValue =
-          roomsData?.Prosjektdetaljer?.VelgSerie ?? roomsData?.VelgSerie;
-
-        form.reset({
-          Serie:
-            serieValue && serieValue.trim() !== "" ? serieValue : undefined,
-          Kundenummer: String(
-            roomsData?.Prosjektdetaljer?.Kundenr ?? roomsData?.Kundenummer
-          ),
-          mobile:
-            roomsData?.Prosjektdetaljer?.TelefonMobile ??
-            roomsData?.mobileNummer ??
-            "",
-          Kundenavn:
-            roomsData?.Prosjektdetaljer?.Tiltakshaver ??
-            roomsData?.Kundenavn ??
-            "",
-        });
-        form.setValue("exportType", "PDF");
+        }
       }
     };
 

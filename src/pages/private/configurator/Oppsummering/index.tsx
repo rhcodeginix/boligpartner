@@ -1,31 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { fetchRoomData } from "../../../../lib/utils";
+import { fetchHusmodellData } from "../../../../lib/utils";
 import { OppsummeringData } from "./oppsummeringData";
 
 export const Oppsummering: React.FC = () => {
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const kundeId = pathSegments.length > 3 ? pathSegments[3] : null;
   const [loading, setLoading] = useState(true);
   const [roomsData, setRoomsData] = useState<any>([]);
 
   useEffect(() => {
-    if (!id) {
+    if (!id || !kundeId) {
       setLoading(false);
       return;
     }
     const getData = async () => {
-      const data = await fetchRoomData(id);
+      const data = await fetchHusmodellData(id);
 
-      if (data) {
-        setRoomsData(data);
+      if (data && data.KundeInfo) {
+        const finalData = data.KundeInfo.find(
+          (item: any) => item.uniqueId === kundeId
+        );
+        setRoomsData(finalData);
       }
       setLoading(false);
     };
 
     getData();
-  }, [id]);
+  }, [id, kundeId]);
 
   return (
     <>

@@ -20,6 +20,7 @@ export const MicrosoftCallBack = () => {
       try {
         // Handle login redirect result
         const response = await instance.handleRedirectPromise();
+
         if (response?.account) {
           console.log("Login success", response.account);
         }

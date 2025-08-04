@@ -374,6 +374,24 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const activeTabFromParam = params.get("activeTab");
+    const activeSubTabFromParam = params.get("activeSubTab");
+
+    if (activeTabFromParam !== null && Category && FloorData) {
+      setActiveTabData(Number(activeSubTabFromParam));
+      params.delete("activeTab");
+      params.delete("activeSubTab");
+
+      const newRelativePathQuery =
+        window.location.pathname +
+        (params.toString() ? `?${params.toString()}` : "");
+
+      window.history.replaceState(null, "", newRelativePathQuery);
+    }
+  }, [FloorData, Category]);
+
   return (
     <>
       <div className="py-4 px-4 md:px-6 bg-lightPurple">

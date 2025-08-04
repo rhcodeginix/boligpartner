@@ -21,8 +21,8 @@ import { useEffect, useMemo, useState } from "react";
 import Ic_search from "../../../../assets/images/Ic_search.svg";
 import {
   collection,
-  deleteDoc,
   doc,
+  getDoc,
   getDocs,
   orderBy,
   query,
@@ -77,23 +77,34 @@ export const RoomTable = () => {
     }
   };
 
-  const handleDelete = async () => {
-    const husmodellDocRef = doc(db, "room_configurator", String(id));
+  const [selectedId, setSelectedId] = useState<any>(null);
 
+  const handleDelete = async (entryId: string) => {
     try {
-      await deleteDoc(husmodellDocRef);
+      const docRef = doc(db, "housemodell_configure_broker", String(id));
+      const docSnap = await getDoc(docRef);
 
-      setId(null);
-      fetchRoomConfiguratorData();
-      setShowConfirm(false);
-      toast.success("Romkonfiguratoren er slettet!", {
-        position: "top-right",
-      });
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const currentKundeInfo = data?.KundeInfo || [];
+
+        const updatedKundeInfo = currentKundeInfo.filter(
+          (entry: any) => entry.uniqueId !== entryId
+        );
+
+        await updateDoc(docRef, {
+          KundeInfo: updatedKundeInfo,
+          updatedAt: new Date().toISOString(),
+        });
+        setId(null);
+        toast.success("Slettet", { position: "top-right" });
+        fetchRoomConfiguratorData();
+        setShowConfirm(false);
+        setSelectedId(null);
+      }
     } catch (error) {
-      console.error("Error deleting floor:", error);
-      toast.error("Failed to delete room configurator", {
-        position: "top-right",
-      });
+      console.error("Error deleting entry from KundeInfo:", error);
+      toast.error("Noe gikk galt ved sletting.");
     }
   };
 
@@ -109,7 +120,7 @@ export const RoomTable = () => {
     setIsLoading(true);
     try {
       let q = query(
-        collection(db, "room_configurator"),
+        collection(db, "housemodell_configure_broker"),
         orderBy("updatedAt", "desc")
       );
       const querySnapshot = await getDocs(q);
@@ -118,19 +129,37 @@ export const RoomTable = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      const finalData: any = IsAdmin
-        ? data
-        : (
-            await Promise.all(
-              data.map(async (item: any) => {
-                const userData = await getData(item?.createDataBy?.email);
 
-                return userData?.office === office ? item : null;
-              })
-            )
-          ).filter((item) => item !== null);
+      let finalData: any = [];
 
-      setRoomConfigurator(finalData);
+      if (IsAdmin) {
+        finalData = data;
+      } else {
+        const filteredData = await Promise.all(
+          data.map(async (item: any) => {
+            const userData = await getData(item?.createDataBy?.email);
+            return userData?.office === office ? item : null;
+          })
+        );
+        finalData = filteredData.filter((item) => item !== null);
+      }
+
+      const filteredData = finalData
+        .filter((item: any) => {
+          return Array.isArray(item.KundeInfo);
+        })
+        .map((item: any) => {
+          const filteredKundes = item.KundeInfo.filter((kunde: any) => {
+            return kunde && kunde.placeOrder === true;
+          });
+
+          return {
+            ...item,
+            KundeInfo: filteredKundes,
+          };
+        });
+
+      setRoomConfigurator(filteredData);
     } catch (error) {
       console.error("Error fetching husmodell data:", error);
     } finally {
@@ -144,10 +173,56 @@ export const RoomTable = () => {
     }
   }, [office, IsAdmin]);
 
+  // const filteredData = useMemo(() => {
+  //   if (!searchTerm.trim()) {
+  //     return RoomConfigurator;
+  //   }
+
+  //   return RoomConfigurator.filter((model: any) =>
+  //     model.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  //   );
+  // }, [RoomConfigurator, searchTerm]);
+
   const filteredData = useMemo(() => {
-    return RoomConfigurator.filter((model: any) =>
-      model.name?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const allKunder = RoomConfigurator.flatMap((item: any) => {
+      if (
+        item?.KundeInfo &&
+        Array.isArray(item.KundeInfo) &&
+        item.KundeInfo.length > 0
+      ) {
+        return item.KundeInfo.map((kunde: any) => ({
+          ...kunde,
+          photo: item.photo || null,
+          husmodell_name: kunde?.VelgSerie || item?.husmodell_name || null,
+          parentId: item.id,
+          createDataBy: item?.createDataBy || null,
+          tag: item?.tag || null,
+          configurator:
+            kunde?.Plantegninger &&
+            kunde?.Plantegninger.length > 0 &&
+            kunde?.Plantegninger.some((room: any) => !room.configurator)
+              ? false
+              : true,
+          updatedAt: kunde.updatedAt || item.updatedAt || null,
+          name: kunde.name || item.name || null,
+        }));
+      }
+      return [];
+    });
+
+    const filtered = allKunder.filter((kunde: any) => {
+      const matchesSearch =
+        !searchTerm ||
+        kunde.Kundenavn?.toLowerCase().includes(searchTerm.toLowerCase());
+
+      return matchesSearch;
+    });
+
+    return filtered.sort((a: any, b: any) => {
+      const dateA = new Date(a.updatedAt).getTime();
+      const dateB = new Date(b.updatedAt).getTime();
+      return dateB - dateA;
+    });
   }, [RoomConfigurator, searchTerm]);
 
   const [editId, setEditId] = useState<string | null>(null);
@@ -161,14 +236,14 @@ export const RoomTable = () => {
         cell: ({ row }) => (
           <div className="flex gap-2 items-center justify-between">
             <p className="text-sm font-medium text-black w-max">
-              {row.original?.name}
+              {row.original?.name ?? "-"}
             </p>
             <Pencil
               className="w-5 h-5 text-purple cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setEditId(row.original.id);
+                setEditId(row.original.parentId);
                 setEditedFloorName(row.original.name || "");
               }}
             />
@@ -261,7 +336,9 @@ export const RoomTable = () => {
               <Pencil
                 className="h-5 w-5 text-primary cursor-pointer"
                 onClick={() => {
-                  navigate(`/Room-Configurator/${row.original?.id}`);
+                  navigate(
+                    `/Room-Configurator/${row.original?.parentId}/${row.original?.uniqueId}`
+                  );
                   const currIndex = 0;
                   const currVerticalIndex = 1;
                   localStorage.setItem("currIndexBolig", currIndex.toString());
@@ -278,7 +355,8 @@ export const RoomTable = () => {
                   e.preventDefault();
                   e.stopPropagation();
                   setShowConfirm(true);
-                  setId(row.original.id);
+                  setId(row.original.parentId);
+                  setSelectedId(row.original.uniqueId);
                 }}
               />
             </div>
@@ -380,7 +458,9 @@ export const RoomTable = () => {
                   data-state={row.getIsSelected() && "selected"}
                   className="hover:bg-muted/50 cursor-pointer"
                   onClick={() => {
-                    navigate(`/Room-Configurator/${row.original?.id}`);
+                    navigate(
+                      `/Room-Configurator/${row.original?.parentId}/${row.original?.uniqueId}`
+                    );
                     const currIndex = 0;
                     const currVerticalIndex = 1;
                     localStorage.setItem(
@@ -441,7 +521,7 @@ export const RoomTable = () => {
                     className="border border-gray2 text-black text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   />
                 </div>
-                <div onClick={() => handleDelete()}>
+                <div onClick={() => handleDelete(selectedId)}>
                   <Button
                     text="Bekreft"
                     className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
@@ -478,7 +558,7 @@ export const RoomTable = () => {
                     try {
                       const husmodellDocRef = doc(
                         db,
-                        "room_configurator",
+                        "housemodell_configure_broker",
                         String(editId)
                       );
                       await updateDoc(husmodellDocRef, {
