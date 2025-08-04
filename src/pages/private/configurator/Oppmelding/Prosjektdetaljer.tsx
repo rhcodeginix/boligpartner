@@ -87,9 +87,10 @@ const formSchema = z
       required_error: "Situasjonsplan dat er påkrevd.",
     }),
     TegnNummer: z.number({ required_error: "Tegn.nummer er påkrevd." }),
-    GjeldendeDato: z.string({
-      required_error: "Gjeldende 1:50 tegning datert er påkrevd.",
-    }),
+    // GjeldendeDato: z.string({
+    //   required_error: "Gjeldende 1:50 tegning datert er påkrevd.",
+    // }),
+    GjeldendeDato: z.string().optional(),
     SignertDato: z.string({
       required_error: "Signert 1:100 tegning datert er påkrevd.",
     }),
@@ -264,14 +265,16 @@ export const Prosjektdetaljer = forwardRef(
               (item: any) => item.uniqueId === kundeId
             );
             if (finalData && finalData?.Prosjektdetaljer) {
-              Object.entries(finalData?.Prosjektdetaljer).forEach(([key, value]) => {
-                if (value !== undefined && value !== null) {
-                  form.setValue(key as any, value);
+              Object.entries(finalData?.Prosjektdetaljer).forEach(
+                ([key, value]) => {
+                  if (value !== undefined && value !== null) {
+                    form.setValue(key as any, value);
+                  }
+                  if (key === "Byggeadresse") {
+                    setAddress(String(value));
+                  }
                 }
-                if (key === "Byggeadresse") {
-                  setAddress(String(value));
-                }
-              });
+              );
             } else {
               form.setValue("Kundenr", String(finalData?.Kundenummer));
               form.setValue("VelgSerie", finalData?.HouseType ?? "");

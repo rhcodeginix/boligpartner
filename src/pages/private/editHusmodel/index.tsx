@@ -28,7 +28,7 @@ export const EditHouseModel = () => {
               to={"/Husmodell"}
               className="text-primary text-sm font-medium"
             >
-              Husmodeller
+              Boligkonfigurator
             </Link>
             <ChevronRight className="text-[#5D6B98] w-4 h-4" />
             <span className="text-gray text-sm">

@@ -32,9 +32,10 @@ const formSchema = z.object({
   Kundenavn: z.string().min(1, {
     message: "Kundenavn må bestå av minst 2 tegn.",
   }),
-  Anleggsadresse: z.string().min(1, {
-    message: "Anleggsadresse må bestå av minst 2 tegn.",
-  }),
+  // Anleggsadresse: z.string().min(1, {
+  //   message: "Anleggsadresse må bestå av minst 2 tegn.",
+  // }),
+  Anleggsadresse: z.string().optional(),
   mobileNummer: z.string().refine(
     (value) => {
       const parsedNumber = parsePhoneNumber(value);

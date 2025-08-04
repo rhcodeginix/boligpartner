@@ -755,7 +755,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                 toast.success("Bestillingen er lagt inn!", {
                   position: "top-right",
                 });
-                navigate(`/Room-Configurator/${newId}`);
+                navigate(`/Room-Configurator/${id}/${kundeId}`);
               } catch (err) {
                 console.error("Error saving data:", err);
                 toast.error("Noe gikk galt", { position: "top-right" });
@@ -880,7 +880,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
 
                   setShowConfiguratorModal(false);
                   setNewConfiguratorName("");
-                  navigate(`/Room-Configurator/${newId}`);
+                  navigate(`/Room-Configurator/${id}/${kundeId}`);
                   const currIndex = 0;
                   const currVerticalIndex = 1;
                   localStorage.setItem("currIndexBolig", currIndex.toString());

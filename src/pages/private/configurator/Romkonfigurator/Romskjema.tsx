@@ -64,7 +64,7 @@ export const Romskjema: React.FC<{ Next: any }> = ({ Next }) => {
           igangsette oppmeldingen»”
         </p>
       </div>
-      <div className="px-4 md:px-6 lg:px-8 py-6">
+      {/* <div className="px-4 md:px-6 lg:px-8 py-6">
         <h3 className="text-darkBlack text-lg md:text-xl lg:text-2xl font-semibold mb-2">
           Prosjektets plantegning
         </h3>
@@ -73,7 +73,7 @@ export const Romskjema: React.FC<{ Next: any }> = ({ Next }) => {
           “Neste” vil AI trekke ut alle rommene fra de opplastede
           plantegningene.
         </p>
-      </div>
+      </div> */}
 
       <div className="px-4 md:px-6 lg:px-8 py-6 mb-28">
         <h4 className="uppercase text-darkBlack font-semibold col-span-3 text-sm md:text-base mb-4">

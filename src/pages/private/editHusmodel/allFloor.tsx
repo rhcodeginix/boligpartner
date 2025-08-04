@@ -397,7 +397,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
       <div className="py-4 px-4 md:px-6 bg-lightPurple">
         <div className="flex items-center gap-1.5 mb-4 md:mb-6 flex-wrap">
           <Link to={"/Husmodell"} className="text-primary text-sm font-medium">
-            Husmodeller
+            Boligkonfigurator
           </Link>
           <ChevronRight className="text-[#5D6B98] w-4 h-4" />
           <div
@@ -413,10 +413,10 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
             }}
             className="text-primary text-sm font-medium cursor-pointer"
           >
-            Legg til nytt hus
+            Romskjema
           </div>
           <ChevronRight className="text-[#5D6B98] w-4 h-4" />
-          <span className="text-gray text-sm">Detaljer om gulvet</span>
+          <span className="text-gray text-sm">{FloorData?.title}</span>
         </div>
         <div className="flex items-center justify-between gap-2 md:gap-3">
           <div className="flex flex-col gap-2">
