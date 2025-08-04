@@ -355,7 +355,6 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
       valueName: "TekniskeInstallasjoner",
     },
   ];
-  console.log(roomsData);
 
   // useEffect(() => {
   //   if (roomsData) {
