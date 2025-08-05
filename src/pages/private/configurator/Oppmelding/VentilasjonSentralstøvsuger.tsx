@@ -106,15 +106,13 @@ export const VentilasjonSentralstøvsuger = forwardRef(
         };
 
         await setDoc(husmodellDocRef, updatePayload);
-        (existingData.KundeInfo || []).map((kunde: any) => {
-          if (kunde.uniqueId === kundeId) {
-            setRoomsData((prev: any) => ({
-              ...prev,
-              VentilasjonSentralstøvsuger: filteredData,
-              updatedAt: formatDate(new Date()),
-            }));
-          }
-        });
+
+        setRoomsData((prev: any) => ({
+          ...prev,
+          VentilasjonSentralstøvsuger: filteredData,
+          updatedAt: formatDate(new Date()),
+        }));
+
         toast.success("Lagret", {
           position: "top-right",
         });

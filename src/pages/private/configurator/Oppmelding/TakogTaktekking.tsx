@@ -78,7 +78,11 @@ export const TakogTaktekking = forwardRef(
       setIsSubmitLoading(true);
 
       try {
-        const husmodellDocRef = doc(db, "housemodell_configure_broker", String(id));
+        const husmodellDocRef = doc(
+          db,
+          "housemodell_configure_broker",
+          String(id)
+        );
 
         const formatDate = (date: Date) => {
           return date
@@ -97,7 +101,6 @@ export const TakogTaktekking = forwardRef(
         let updatedKundeInfo = (existingData.KundeInfo || []).map(
           (kunde: any) => {
             if (kunde.uniqueId === kundeId) {
-              
               return {
                 ...kunde,
                 TakogTaktekking: filteredData,
@@ -114,15 +117,12 @@ export const TakogTaktekking = forwardRef(
         };
 
         await setDoc(husmodellDocRef, updatePayload);
-        (existingData.KundeInfo || []).map((kunde: any) => {
-          if (kunde.uniqueId === kundeId) {
-            setRoomsData((prev: any) => ({
-              ...prev,
-              TakogTaktekking: filteredData,
-              updatedAt: formatDate(new Date()),
-            }));
-          }
-        });
+
+        setRoomsData((prev: any) => ({
+          ...prev,
+          TakogTaktekking: filteredData,
+          updatedAt: formatDate(new Date()),
+        }));
         toast.success("Lagret", {
           position: "top-right",
         });
@@ -165,13 +165,11 @@ export const TakogTaktekking = forwardRef(
 
     useEffect(() => {
       if (roomsData && roomsData?.TakogTaktekking) {
-        Object.entries(roomsData?.TakogTaktekking).forEach(
-          ([key, value]) => {
-            if (value !== undefined && value !== null) {
-              form.setValue(key as any, value);
-            }
+        Object.entries(roomsData?.TakogTaktekking).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            form.setValue(key as any, value);
           }
-        );
+        });
       }
     }, [roomsData]);
     return (
