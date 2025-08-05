@@ -203,7 +203,7 @@ export const Eksterior: React.FC<{
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    setIsSubmitLoading(true);
+    // setIsSubmitLoading(true);
 
     const normalizedRooms = data.hovedkategorinavn.map((room: any) => {
       if (!Array.isArray(room.Kategorinavn)) return room;
@@ -286,12 +286,13 @@ export const Eksterior: React.FC<{
         updatedAt: formatDate(new Date()),
       });
 
-      toast.success("Lagret", { position: "top-right" });
-      setActiveTab(1);
+      // toast.success("Lagret", { position: "top-right" });
+      // setActiveTab(1);
     } catch (error) {
-      console.error("Failed to update plantegning:", error);
+      // console.error("Failed to update plantegning:", error);
       toast.error("Noe gikk galt", { position: "top-right" });
-    } finally {
+    }
+     finally {
       setIsSubmitLoading(false);
     }
   };
@@ -1260,6 +1261,7 @@ export const Eksterior: React.FC<{
                   replace: true,
                 });
               }}
+              type="submit"
             />
             {/* <Button
               text="Lukk og lagre"

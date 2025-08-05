@@ -32,9 +32,21 @@ export const EditHouseModel = () => {
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between mb-4 md:mb-5">
             <div>
-              <h1 className="text-darkBlack font-semibold text-2xl md:text-[28px] desktop:text-[32px]">
-                Legg til kundeinformasjon
-              </h1>
+              {activeTab === 0 && (
+                <h1 className="text-darkBlack font-semibold text-2xl md:text-[28px] desktop:text-[32px]">
+                  Legg til kundeinformasjon
+                </h1>
+              )}
+              {activeTab === 1 && (
+                <h1 className="text-darkBlack font-semibold text-2xl md:text-[28px] desktop:text-[32px] mb-3">
+                  Her laster du opp plantegning
+                </h1>
+              )}
+              {activeTab === 1 && (
+                <p className="text-secondary">
+                  Du må laste opp hvert enkelt plan
+                </p>
+              )}
             </div>
             <div>
               <div className="flex gap-1.5">

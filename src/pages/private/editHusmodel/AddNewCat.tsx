@@ -26,7 +26,7 @@ const requiredCategoriesWithProducts = {
   Himlling: [
     {
       Produktnavn: "Mdf panel",
-      isSelected: true,
+      isSelected: false,
       InfoText: "Beskriv type og farge",
     },
     {
@@ -36,7 +36,7 @@ const requiredCategoriesWithProducts = {
     },
     {
       Produktnavn: "Gips",
-      isSelected: false,
+      isSelected: true,
       InfoText: "Beskriv evt avvik fra standard gips",
     },
     {
@@ -46,14 +46,20 @@ const requiredCategoriesWithProducts = {
     },
   ],
   Vegger: [
+    // {
+    //   Produktnavn: "I henhold til leveransebeskrivelse",
+    //   isSelected: true,
+    // },
+    // { Produktnavn: "5 bords kostmald mdf plate", isSelected: false },
     {
       Produktnavn: "Ubehandlet sponplate",
-      isSelected: true,
+      isSelected: false,
       InfoText: "Beskriv evt avvik fra standard",
     },
+    // { Produktnavn: "Eget valg", isSelected: false },
     {
       Produktnavn: "Gips",
-      isSelected: false,
+      isSelected: true,
       InfoText: "Beskriv evt avvik fra standard gips",
     },
     {
@@ -73,6 +79,11 @@ const requiredCategoriesWithProducts = {
     },
   ],
   Gulv: [
+    // { Produktnavn: "Lokalleveranse", isSelected: true },
+    // { Produktnavn: "Eikeparkett 3 stavs", isSelected: false },
+    // { Produktnavn: "Eikeparkett 1 stavs", isSelected: false },
+    // { Produktnavn: "Laminat 1 stavs", isSelected: false },
+    // { Produktnavn: "Eget valg", isSelected: false },
     {
       Produktnavn: "Parkett (leveres av forhandler)",
       isSelected: true,
