@@ -961,7 +961,7 @@ export const Prosjektdetaljer = forwardRef(
                               fieldState.error ? "text-red" : ""
                             } mb-[6px] text-sm`}
                           >
-                            Gjeldende 1:50 tegning datert*
+                            Gjeldende 1:50 tegning datert
                           </p>
                           <FormControl>
                             <div className="relative">

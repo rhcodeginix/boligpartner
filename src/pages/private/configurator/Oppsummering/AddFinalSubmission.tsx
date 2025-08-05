@@ -135,7 +135,7 @@ export const AddFinalSubmission: React.FC<{
               VelgSerie: data.Serie,
               FinalSubmission: filteredData,
               Prosjektdetaljer: {
-                ...existingDocData.Prosjektdetaljer,
+                ...kunde.Prosjektdetaljer,
                 VelgSerie: data.Serie,
               },
               updatedAt: formatDate(new Date()),

@@ -24,7 +24,7 @@ export const ExportViewData: React.FC<{
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const kundeId = pathSegments.length > 3 ? pathSegments[3] : null;
-  const [createDataBy, setCreatedDataBy] = useState();
+  const [createDataBy, setCreatedDataBy] = useState<any>();
 
   useEffect(() => {
     if (!id || !kundeId) {
@@ -48,8 +48,8 @@ export const ExportViewData: React.FC<{
   const [offices, setOffices] = useState<any>(null);
   const fetchOfficeData = async () => {
     try {
-      if (createDataBy) {
-        const husmodellDocRef = doc(db, "office", createDataBy);
+      if (createDataBy && createDataBy?.office) {
+        const husmodellDocRef = doc(db, "office", createDataBy?.office);
         const docSnap = await getDoc(husmodellDocRef);
 
         if (docSnap.exists()) {
@@ -141,21 +141,21 @@ export const ExportViewData: React.FC<{
             alt="logo"
             style={{ marginBottom: "10px" }}
           />
-          {roomsData?.createDataBy && (
+          {createDataBy && (
             <p style={{ color: "#101828", fontSize: "20px" }}>
               <span style={{ fontWeight: 600 }}>Laget av:</span>{" "}
-              {roomsData?.createDataBy?.f_name
-                ? `${roomsData?.createDataBy?.f_name} ${roomsData?.createDataBy?.l_name}`
-                : roomsData?.createDataBy?.name}
+              {createDataBy?.f_name
+                ? `${createDataBy?.f_name} ${createDataBy?.l_name}`
+                : createDataBy?.name}
             </p>
           )}
-          {roomsData?.createDataBy && (
+          {createDataBy && (
             <p style={{ color: "#101828", fontSize: "20px" }}>
               <span style={{ fontWeight: 600 }}>E-post:</span>{" "}
-              {roomsData?.createDataBy?.email}
+              {createDataBy?.email}
             </p>
           )}
-          {roomsData?.createDataBy && (
+          {createDataBy && (
             <p style={{ color: "#101828", fontSize: "20px" }}>
               <span style={{ fontWeight: 600 }}>Kontor:</span>{" "}
               {offices?.data?.name}
