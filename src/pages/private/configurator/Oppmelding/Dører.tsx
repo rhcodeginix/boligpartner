@@ -152,7 +152,11 @@ export const Dører = forwardRef(
       setIsSubmitLoading(true);
 
       try {
-        const husmodellDocRef = doc(db, "housemodell_configure_broker", String(id));
+        const husmodellDocRef = doc(
+          db,
+          "housemodell_configure_broker",
+          String(id)
+        );
 
         const formatDate = (date: Date) => {
           return date
@@ -186,8 +190,16 @@ export const Dører = forwardRef(
           KundeInfo: updatedKundeInfo,
         };
 
-        setRoomsData(updatePayload);
         await setDoc(husmodellDocRef, updatePayload);
+        (existingData.KundeInfo || []).map((kunde: any) => {
+          if (kunde.uniqueId === kundeId) {
+            setRoomsData((prev: any) => ({
+              ...prev,
+              Dører: filteredData,
+              updatedAt: formatDate(new Date()),
+            }));
+          }
+        });
         toast.success("Lagret", {
           position: "top-right",
         });

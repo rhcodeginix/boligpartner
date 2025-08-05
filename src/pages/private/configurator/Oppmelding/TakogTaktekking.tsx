@@ -97,9 +97,10 @@ export const TakogTaktekking = forwardRef(
         let updatedKundeInfo = (existingData.KundeInfo || []).map(
           (kunde: any) => {
             if (kunde.uniqueId === kundeId) {
+              
               return {
                 ...kunde,
-                TakogTaktekkingTakogTaktekking: filteredData,
+                TakogTaktekking: filteredData,
                 updatedAt: formatDate(new Date()),
               };
             }
@@ -112,8 +113,16 @@ export const TakogTaktekking = forwardRef(
           KundeInfo: updatedKundeInfo,
         };
 
-        setRoomsData(updatePayload);
         await setDoc(husmodellDocRef, updatePayload);
+        (existingData.KundeInfo || []).map((kunde: any) => {
+          if (kunde.uniqueId === kundeId) {
+            setRoomsData((prev: any) => ({
+              ...prev,
+              TakogTaktekking: filteredData,
+              updatedAt: formatDate(new Date()),
+            }));
+          }
+        });
         toast.success("Lagret", {
           position: "top-right",
         });
@@ -155,8 +164,8 @@ export const TakogTaktekking = forwardRef(
     const Takstein = form.watch("Taktekking");
 
     useEffect(() => {
-      if (roomsData && roomsData?.TakogTaktekkingTakogTaktekking) {
-        Object.entries(roomsData?.TakogTaktekkingTakogTaktekking).forEach(
+      if (roomsData && roomsData?.TakogTaktekking) {
+        Object.entries(roomsData?.TakogTaktekking).forEach(
           ([key, value]) => {
             if (value !== undefined && value !== null) {
               form.setValue(key as any, value);

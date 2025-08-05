@@ -132,8 +132,16 @@ export const Yttervegger = forwardRef(
           KundeInfo: updatedKundeInfo,
         };
 
-        setRoomsData(updatePayload);
         await setDoc(husmodellDocRef, updatePayload);
+        (existingData.KundeInfo || []).map((kunde: any) => {
+          if (kunde.uniqueId === kundeId) {
+            setRoomsData((prev: any) => ({
+              ...prev,
+              Yttervegger: filteredData,
+              updatedAt: formatDate(new Date()),
+            }));
+          }
+        });
         toast.success("Lagret", {
           position: "top-right",
         });

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AllSummury } from "./allSummury";
 import { useLocation } from "react-router-dom";
-import { fetchRoomData } from "../../../../lib/utils";
+import { fetchHusmodellData } from "../../../../lib/utils";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 
@@ -23,31 +23,33 @@ export const ExportViewData: React.FC<{
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
+  const kundeId = pathSegments.length > 3 ? pathSegments[3] : null;
+  const [createDataBy, setCreatedDataBy] = useState();
 
   useEffect(() => {
-    if (!id) {
+    if (!id || !kundeId) {
       return;
     }
     const getData = async () => {
-      const data = await fetchRoomData(id);
+      const data = await fetchHusmodellData(id);
+      setCreatedDataBy(data?.createDataBy);
 
-      if (data) {
-        setRoomsData(data);
+      if (data && data.KundeInfo) {
+        const finalData = data.KundeInfo.find(
+          (item: any) => item.uniqueId === kundeId
+        );
+        setRoomsData(finalData);
       }
     };
 
     getData();
-  }, [id]);
+  }, [id, kundeId]);
 
   const [offices, setOffices] = useState<any>(null);
   const fetchOfficeData = async () => {
     try {
-      if (roomsData?.createDataBy?.office) {
-        const husmodellDocRef = doc(
-          db,
-          "office",
-          roomsData?.createDataBy?.office
-        );
+      if (createDataBy) {
+        const husmodellDocRef = doc(db, "office", createDataBy);
         const docSnap = await getDoc(husmodellDocRef);
 
         if (docSnap.exists()) {
@@ -55,15 +57,15 @@ export const ExportViewData: React.FC<{
         }
       }
     } catch (error) {
-      console.error("Error fetching husmodell data:", error);
+      console.error("Error fetching office data:", error);
     }
   };
 
   useEffect(() => {
-    if (roomsData?.createDataBy?.office) {
+    if (createDataBy) {
       fetchOfficeData();
     }
-  }, [roomsData]);
+  }, [createDataBy]);
 
   return (
     <div>

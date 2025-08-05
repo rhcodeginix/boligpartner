@@ -312,7 +312,7 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     {
       id: 5,
       title: "Tak og taktekking",
-      valueName: "TakogTaktekkingTakogTaktekking",
+      valueName: "TakogTaktekking",
     },
     {
       id: 6,
