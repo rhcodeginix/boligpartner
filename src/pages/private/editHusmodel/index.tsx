@@ -10,9 +10,6 @@ export const EditHouseModel = () => {
   const [activeTab, setActiveTab] = useState(0);
   const location = useLocation();
 
-  const pathSegments = location.pathname.split("/");
-  const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
-
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const activeTabFromParam = params.get("activeTab");
@@ -31,18 +28,13 @@ export const EditHouseModel = () => {
               Boligkonfigurator
             </Link>
             <ChevronRight className="text-[#5D6B98] w-4 h-4" />
-            <span className="text-gray text-sm">
-              {kundeId ? "Romskjema" : "Legg til nytt hus"}
-            </span>
+            <span className="text-gray text-sm">Legg til kundeinformasjon</span>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between mb-4 md:mb-5">
             <div>
-              <h1 className="text-darkBlack font-semibold text-2xl md:text-[28px] desktop:text-[32px] mb-3">
-                {kundeId ? "Romskjema" : "Legg til nytt hus"}
+              <h1 className="text-darkBlack font-semibold text-2xl md:text-[28px] desktop:text-[32px]">
+                Legg til kundeinformasjon
               </h1>
-              <p className="text-secondary">
-                Du må laste opp hvert enkelt plan..
-              </p>
             </div>
             <div>
               <div className="flex gap-1.5">

@@ -1,6 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { Download, Loader2, Pencil, Trash } from "lucide-react";
+import {
+  ArrowBigRightDash,
+  Download,
+  Loader2,
+  Pencil,
+  Trash,
+  X,
+} from "lucide-react";
 import {
   Table,
   TableBody,
@@ -26,11 +33,16 @@ import {
   getDocs,
   orderBy,
   query,
+  setDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
-import { fetchAdminDataByEmail, formatDateTime } from "../../../lib/utils";
+import {
+  fetchAdminDataByEmail,
+  fetchHusmodellData,
+  formatDateTime,
+} from "../../../lib/utils";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Modal from "../../../components/common/modal";
@@ -46,6 +58,7 @@ export const HusmodellerTable = () => {
   const [selectedId, setSelectedId] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState(null);
+  const [kundeId, setKundeId] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState<string>("");
 
   const [IsAdmin, setIsAdmin] = useState<any>(null);
@@ -88,7 +101,7 @@ export const HusmodellerTable = () => {
         });
         setId(null);
         toast.success("Slettet", { position: "top-right" });
-        fetchHusmodellData();
+        fetchHusmodellsData();
         setShowConfirm(false);
       }
     } catch (error) {
@@ -120,7 +133,7 @@ export const HusmodellerTable = () => {
     }
   };
 
-  const fetchHusmodellData = async () => {
+  const fetchHusmodellsData = async () => {
     setIsLoading(true);
     try {
       const q = query(
@@ -161,7 +174,7 @@ export const HusmodellerTable = () => {
 
   useEffect(() => {
     if (IsAdmin !== null || office !== null) {
-      fetchHusmodellData();
+      fetchHusmodellsData();
     }
   }, [office, IsAdmin]);
   const confirmDelete = (id: string) => {
@@ -183,14 +196,16 @@ export const HusmodellerTable = () => {
           parentId: item.id,
           createDataBy: item?.createDataBy || null,
           tag: item?.tag || null,
-          placeOrder: item?.placeOrder || false,
+          placeOrder: kunde?.placeOrder || false,
           configurator:
-            kunde?.Plantegninger &&
-            kunde?.Plantegninger.length > 0 &&
-            kunde?.Plantegninger.some((room: any) => !room.configurator)
-              ? false
+            kunde?.Plantegninger && kunde?.Plantegninger.length > 0
+              ? kunde?.Plantegninger.some((room: any) => !room.configurator)
+                ? true
+                : false
               : true,
           updatedAt: kunde.updatedAt || item.updatedAt || null,
+          kundeId: kunde?.uniqueId,
+          id: item?.id,
         }));
       }
       return [];
@@ -220,7 +235,21 @@ export const HusmodellerTable = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [selectedData, setSelectedData] = useState<any>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+  const [showConfiguratorModal, setShowConfiguratorModal] = useState(false);
+  const [newConfiguratorName, setNewConfiguratorName] = useState("");
+  const [pendingPayload, setPendingPayload] = useState<any>(null);
 
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+
+  useEffect(() => {
+    if (showConfiguratorModal) {
+      setNewConfiguratorName(
+        `${pendingPayload?.Anleggsadresse} - ${pendingPayload?.Kundenavn}`
+      );
+    } else {
+      setNewConfiguratorName("");
+    }
+  }, [showConfiguratorModal, pendingPayload]);
   useEffect(() => {
     const exportToPDF = async () => {
       if (!isExporting || !selectedData) return;
@@ -381,6 +410,19 @@ export const HusmodellerTable = () => {
     exportToPDF();
   }, [isExporting, selectedData]);
 
+  const [createData, setCreateData] = useState<any>(null);
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+
+      if (data) {
+        setCreateData(data);
+      }
+    };
+
+    getData();
+  }, []);
+
   const columns = useMemo<ColumnDef<any>[]>(() => {
     const baseColumns: ColumnDef<any>[] = [
       {
@@ -463,6 +505,84 @@ export const HusmodellerTable = () => {
         header: "Action",
         cell: ({ row }) => (
           <div className="flex items-center justify-end gap-3">
+            {!row.original.placeOrder && (
+              <ArrowBigRightDash
+                className={`text-primary cursor-pointer ${
+                  row.original.configurator
+                    ? "cursor-not-allowed opacity-50"
+                    : ""
+                }`}
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  if (row.original.configurator === true) return;
+                  if (!row.original.id || !row.original.kundeId) return;
+                  setKundeId(row.original.kundeId);
+                  setId(row.original.id);
+                  setIsPlacingOrder(true);
+                  const formatDate = (date: Date) =>
+                    date
+                      .toLocaleString("sv-SE", { timeZone: "UTC" })
+                      .replace(",", "");
+
+                  try {
+                    const houseData: any = await fetchHusmodellData(
+                      row.original.id
+                    );
+                    const kundeList = houseData?.KundeInfo || [];
+
+                    const targetKundeIndex = kundeList.findIndex(
+                      (k: any) =>
+                        String(k.uniqueId) === String(row.original.kundeId)
+                    );
+                    if (targetKundeIndex === -1) return;
+
+                    const refetched = await fetchHusmodellData(row.original.id);
+                    const targetKunde = refetched?.KundeInfo?.find(
+                      (kunde: any) =>
+                        String(kunde.uniqueId) === String(row.original.kundeId)
+                    );
+
+                    const newId = row.original.id;
+
+                    const docRef = doc(
+                      db,
+                      "housemodell_configure_broker",
+                      newId
+                    );
+
+                    if (!newConfiguratorName.trim()) {
+                      setPendingPayload({
+                        ...targetKunde,
+                        createdAt: formatDate(new Date()),
+                      });
+                      setShowConfiguratorModal(true);
+                      return;
+                    }
+
+                    await setDoc(docRef, {
+                      ...targetKunde,
+                      createdAt: formatDate(new Date()),
+                      name: newConfiguratorName.trim(),
+                    });
+
+                    toast.success("Bestillingen er lagt inn!", {
+                      position: "top-right",
+                    });
+                    navigate(
+                      `/Room-Configurator/${row.original.id}/${row.original.kundeId}`
+                    );
+                  } catch (err) {
+                    console.error("Error saving data:", err);
+                    toast.error("Noe gikk galt", { position: "top-right" });
+                  } finally {
+                    setIsPlacingOrder(false);
+                  }
+                }}
+              />
+            )}
+
             {row.original?.Plantegninger?.filter(
               (p: any) => p?.rooms && p.rooms.length > 0
             ).length > 0 && (
@@ -828,6 +948,129 @@ export const HusmodellerTable = () => {
               <div className="w-48 h-1 overflow-hidden rounded-lg">
                 <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
               </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {isPlacingOrder && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center"
+          style={{ zIndex: 99999 }}
+        >
+          <div className="flex flex-col items-center gap-4 bg-white p-3 rounded-lg">
+            <span className="text-purple text-base font-medium">
+              Overfører til Aktive tiltak...
+            </span>
+            <div className="w-48 h-1 overflow-hidden rounded-lg">
+              <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showConfiguratorModal && (
+        <Modal
+          isOpen={true}
+          onClose={() => setShowConfiguratorModal(false)}
+          outSideClick={true}
+        >
+          <div className="p-6 bg-white rounded-lg shadow-lg relative w-full sm:w-[546px]">
+            <X
+              className="text-primary absolute top-2.5 right-2.5 w-5 h-5 cursor-pointer"
+              onClick={() => {
+                setShowConfiguratorModal(false);
+                setNewConfiguratorName("");
+                setPendingPayload(null);
+              }}
+            />
+            <h2 className="text-lg font-bold mb-4">
+              Sett navn på konfigurasjonen
+            </h2>
+            <input
+              type="text"
+              value={newConfiguratorName}
+              onChange={(e) => setNewConfiguratorName(e.target.value)}
+              placeholder="Skriv inn navn på konfigurator"
+              className="bg-white rounded-[8px] border text-black border-gray1 flex h-11 w-full border-input px-[14px] py-[10px] text-base file:border-0 file:bg-transparent file:text-sm file:font-medium  focus-visible:outline-none focus:bg-lightYellow2 disabled:cursor-not-allowed disabled:bg-[#F5F5F5] disabled:hover:border-gray7 focus:shadow-none focus-visible:shadow-none placeholder:text-[#667085] placeholder:text-opacity-55 placeholder:text-base disabled:text-[#767676] focus:shadow-shadow1 mb-4"
+            />
+            <div className="flex justify-end gap-4">
+              <Button
+                text="Avbryt"
+                className="border border-gray2 text-black"
+                onClick={() => {
+                  setNewConfiguratorName("");
+                  setShowConfiguratorModal(false);
+                  setPendingPayload(null);
+                }}
+              />
+              <Button
+                text="Opprett"
+                className="bg-purple text-white"
+                onClick={async () => {
+                  setShowConfiguratorModal(false);
+                  setIsPlacingOrder(true);
+
+                  if (!pendingPayload) return;
+                  const newId = id;
+                  const docRef = doc(
+                    db,
+                    "housemodell_configure_broker",
+                    String(newId)
+                  );
+                  const docSnap = await getDoc(docRef);
+                  const formatDate = (date: Date) =>
+                    date
+                      .toLocaleString("sv-SE", { timeZone: "UTC" })
+                      .replace(",", "");
+
+                  let existingData = docSnap.exists() ? docSnap.data() : {};
+
+                  let updatedKundeInfo = (existingData.KundeInfo || []).map(
+                    (kunde: any) => {
+                      if (kunde.uniqueId === kundeId) {
+                        return {
+                          ...kunde,
+                          placeOrder: true,
+                          name: newConfiguratorName.trim(),
+                        };
+                      }
+                      return kunde;
+                    }
+                  );
+
+                  const updatePayload: any = {
+                    ...existingData,
+                    KundeInfo: updatedKundeInfo,
+
+                    createDataBy: createData,
+                  };
+
+                  if (!docSnap.exists()) {
+                    updatePayload.createdAt = formatDate(new Date());
+                  }
+
+                  await setDoc(docRef, updatePayload);
+
+                  toast.success("Bestillingen er lagt inn!", {
+                    position: "top-right",
+                  });
+
+                  setShowConfiguratorModal(false);
+                  setNewConfiguratorName("");
+                  navigate(`/Room-Configurator/${id}/${kundeId}`);
+                  const currIndex = 0;
+                  const currVerticalIndex = 1;
+                  localStorage.setItem("currIndexBolig", currIndex.toString());
+                  localStorage.setItem(
+                    "currVerticalIndex",
+                    currVerticalIndex.toString()
+                  );
+                  setIsPlacingOrder(false);
+                  setKundeId(null);
+                  setId(null);
+                }}
+              />
             </div>
           </div>
         </Modal>

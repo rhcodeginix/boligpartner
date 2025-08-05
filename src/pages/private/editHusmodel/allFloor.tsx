@@ -88,7 +88,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         Himlling: [
           {
             Produktnavn: "Mdf panel",
-            isSelected: true,
+            isSelected: false,
             InfoText: "Beskriv type og farge",
           },
           {
@@ -98,7 +98,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           },
           {
             Produktnavn: "Gips",
-            isSelected: false,
+            isSelected: true,
             InfoText: "Beskriv evt avvik fra standard gips",
           },
           {
@@ -115,13 +115,13 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           // { Produktnavn: "5 bords kostmald mdf plate", isSelected: false },
           {
             Produktnavn: "Ubehandlet sponplate",
-            isSelected: true,
+            isSelected: false,
             InfoText: "Beskriv evt avvik fra standard",
           },
           // { Produktnavn: "Eget valg", isSelected: false },
           {
             Produktnavn: "Gips",
-            isSelected: false,
+            isSelected: true,
             InfoText: "Beskriv evt avvik fra standard gips",
           },
           {
@@ -247,49 +247,75 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               .filter(([name]) => !(isWetRoom && name === "Gulvlist"))
               .map(([name, produkter]) => {
                 if (isWetRoom && (name === "Vegg" || name === "Vegger")) {
+                  const existingProducts =
+                    existingMap.get("Vegg")?.produkter || [];
+
                   return {
                     navn: "Vegg",
                     productOptions: "Single Select",
                     produkter: [
                       {
                         Produktnavn: "Flis",
-                        isSelected: false,
+                        isSelected:
+                          existingProducts.find(
+                            (p: any) => p.Produktnavn === "Flis"
+                          )?.isSelected ?? false,
                         InfoText: "Ev beskriv type og farge",
                       },
                       {
                         Produktnavn: "Baderomsplate",
-                        isSelected: false,
+                        isSelected:
+                          existingProducts.find(
+                            (p: any) => p.Produktnavn === "Baderomsplate"
+                          )?.isSelected ?? false,
                         InfoText: "Beskriv type og farge",
                       },
                       {
                         Produktnavn: "Annet",
-                        isSelected: false,
+                        isSelected:
+                          existingProducts.find(
+                            (p: any) => p.Produktnavn === "Annet"
+                          )?.isSelected ?? false,
                         InfoText: "Beskriv type og farge",
                       },
                     ],
+                    comment: existingMap.get("Vegg")?.comment ?? "",
                   };
                 }
                 if (isWetRoom && name === "Gulv") {
+                  const existingProducts =
+                    existingMap.get("Gulv")?.produkter || [];
+
                   return {
                     navn: "Gulv",
                     productOptions: "Single Select",
                     produkter: [
                       {
                         Produktnavn: "Flis",
-                        isSelected: false,
+                        isSelected:
+                          existingProducts.find(
+                            (p: any) => p.Produktnavn === "Flis"
+                          )?.isSelected ?? false,
                         InfoText: "Ev beskriv type og farge",
                       },
                       {
                         Produktnavn: "Belegg",
-                        isSelected: false,
+                        isSelected:
+                          existingProducts.find(
+                            (p: any) => p.Produktnavn === "Belegg"
+                          )?.isSelected ?? false,
                         InfoText: "Beskriv type og farge",
                       },
                       {
                         Produktnavn: "Annet",
-                        isSelected: false,
+                        isSelected:
+                          existingProducts.find(
+                            (p: any) => p.Produktnavn === "Annet"
+                          )?.isSelected ?? false,
                         InfoText: "Beskriv type og farge",
                       },
                     ],
+                    comment: existingMap.get("Gulv")?.comment ?? "",
                   };
                 }
 

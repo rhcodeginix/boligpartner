@@ -854,6 +854,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                       if (kunde.uniqueId === kundeId) {
                         return {
                           ...kunde,
+                          name: newConfiguratorName.trim(),
                           placeOrder: true,
                         };
                       }
@@ -864,7 +865,6 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                   const updatePayload: any = {
                     ...existingData,
                     KundeInfo: updatedKundeInfo,
-                    name: newConfiguratorName.trim(),
                     createDataBy: createData,
                   };
 
