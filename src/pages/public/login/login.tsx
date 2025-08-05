@@ -14,7 +14,7 @@ import {
 import { Input } from "../../../components/ui/input";
 import { z } from "zod";
 import Ic_logo from "../../../assets/images/Ic_logo.svg";
-// import Microsoft_logo from "../../../assets/images/Microsoft_logo.svg";
+import Microsoft_logo from "../../../assets/images/Microsoft_logo.svg";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/common/button";
@@ -24,12 +24,12 @@ import bcrypt from "bcryptjs";
 import { useState } from "react";
 import Modal from "../../../components/common/modal";
 import { Landmark, Home, X } from "lucide-react";
-// import { useMsal } from "@azure/msal-react";
-// import { RedirectRequest } from "@azure/msal-browser";
+import { useMsal } from "@azure/msal-react";
+import { RedirectRequest } from "@azure/msal-browser";
 
-// const loginRequest: RedirectRequest = {
-//   scopes: ["user.read"],
-// };
+const loginRequest: RedirectRequest = {
+  scopes: ["user.read"],
+};
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -169,11 +169,11 @@ export const Login = () => {
     }
   };
 
-  // const { instance } = useMsal();
+  const { instance } = useMsal();
 
-  // const handleLogin = () => {
-  //   instance.loginRedirect(loginRequest);
-  // };
+  const handleLogin = () => {
+    instance.loginRedirect(loginRequest);
+  };
 
   return (
     <>
@@ -277,7 +277,7 @@ export const Login = () => {
                 </div>
               </form>
             </Form>
-            {/* <div
+            <div
               onClick={handleLogin}
               className="text-black border border-[#DCDFEA] rounded-[8px] py-[10px] px-4 mt-4 md:mt-6 flex gap-2 justify-center items-center cursor-pointer text-sm md:text-base"
               style={{
@@ -286,7 +286,7 @@ export const Login = () => {
             >
               <img src={Microsoft_logo} alt="microsoft" />
               Logg inn med Microsoft
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
