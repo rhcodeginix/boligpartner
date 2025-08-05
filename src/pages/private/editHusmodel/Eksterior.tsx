@@ -291,8 +291,7 @@ export const Eksterior: React.FC<{
     } catch (error) {
       // console.error("Failed to update plantegning:", error);
       toast.error("Noe gikk galt", { position: "top-right" });
-    }
-     finally {
+    } finally {
       setIsSubmitLoading(false);
     }
   };
@@ -488,6 +487,85 @@ export const Eksterior: React.FC<{
     );
   }, [activeTabData, activeSubTabData]);
 
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+
+  const handleDeleteClick = (index: number) => {
+    setDeleteIndex(index);
+    setShowConfirmPopup(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteIndex === null) return;
+
+    const updatedCategories = hovedkategorinavn.filter(
+      (_, i) => i !== deleteIndex
+    );
+
+    setCategory((prev: any) => {
+      const updatedCategory = [...prev];
+      updatedCategory[activeTabData] = {
+        ...updatedCategory[activeTabData],
+        Kategorinavn: updatedCategories,
+      };
+      return updatedCategory;
+    });
+
+    form.setValue(
+      `hovedkategorinavn.${activeTabData}.Kategorinavn`,
+      updatedCategories,
+      { shouldValidate: true }
+    );
+
+    try {
+      const husmodellDocRef = doc(db, "housemodell_configure_broker", id);
+      const docSnap = await getDoc(husmodellDocRef);
+
+      if (!docSnap.exists() || !kundeId || !pdfId) return;
+
+      const houseData = docSnap.data();
+      const kundeList = houseData?.KundeInfo || [];
+      const targetKundeIndex = kundeList.findIndex(
+        (k: any) => String(k.uniqueId) === String(kundeId)
+      );
+      if (targetKundeIndex === -1) return;
+
+      const targetKunde = kundeList[targetKundeIndex];
+      const plantegninger = targetKunde?.Plantegninger || [];
+      const plantegningIndex = plantegninger.findIndex(
+        (p: any) => String(p?.pdf_id) === String(pdfId)
+      );
+      if (plantegningIndex === -1) return;
+
+      if (
+        Array.isArray(
+          plantegninger[plantegningIndex].rooms?.[activeTabData]?.Kategorinavn
+        )
+      ) {
+        plantegninger[plantegningIndex].rooms[activeTabData].Kategorinavn =
+          plantegninger[plantegningIndex].rooms[
+            activeTabData
+          ].Kategorinavn.filter((_: any, i: number) => i !== deleteIndex);
+      }
+
+      const updatedKundeInfo = kundeList.map((kunde: any, idx: number) =>
+        idx === targetKundeIndex
+          ? {
+              ...kunde,
+              Plantegninger: plantegninger,
+            }
+          : kunde
+      );
+
+      await updateDoc(husmodellDocRef, {
+        KundeInfo: updatedKundeInfo,
+        updatedAt: new Date().toISOString(),
+      });
+    } catch (err) {
+      console.error("Error removing subcategory from Firestore:", err);
+    }
+  };
+
   return (
     <>
       {isSubmitLoading && <Spinner />}
@@ -545,88 +623,7 @@ export const Eksterior: React.FC<{
                           onClick={async (e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            const updatedCategories = hovedkategorinavn.filter(
-                              (_, i) => i !== index
-                            );
-
-                            setCategory((prev: any) => {
-                              const updatedCategory = [...prev];
-                              updatedCategory[activeTabData] = {
-                                ...updatedCategory[activeTabData],
-                                Kategorinavn: updatedCategories,
-                              };
-                              return updatedCategory;
-                            });
-
-                            form.setValue(
-                              `hovedkategorinavn.${activeTabData}.Kategorinavn`,
-                              updatedCategories,
-                              { shouldValidate: true }
-                            );
-
-                            try {
-                              const husmodellDocRef = doc(
-                                db,
-                                "housemodell_configure_broker",
-                                id
-                              );
-                              const docSnap = await getDoc(husmodellDocRef);
-
-                              if (!docSnap.exists() || !kundeId || !pdfId)
-                                return;
-
-                              const houseData = docSnap.data();
-                              const kundeList = houseData?.KundeInfo || [];
-                              const targetKundeIndex = kundeList.findIndex(
-                                (k: any) =>
-                                  String(k.uniqueId) === String(kundeId)
-                              );
-                              if (targetKundeIndex === -1) return;
-
-                              const targetKunde = kundeList[targetKundeIndex];
-                              const plantegninger =
-                                targetKunde?.Plantegninger || [];
-                              const plantegningIndex = plantegninger.findIndex(
-                                (p: any) => String(p?.pdf_id) === String(pdfId)
-                              );
-                              if (plantegningIndex === -1) return;
-
-                              if (
-                                Array.isArray(
-                                  plantegninger[plantegningIndex].rooms?.[
-                                    activeTabData
-                                  ]?.Kategorinavn
-                                )
-                              ) {
-                                plantegninger[plantegningIndex].rooms[
-                                  activeTabData
-                                ].Kategorinavn = plantegninger[
-                                  plantegningIndex
-                                ].rooms[activeTabData].Kategorinavn.filter(
-                                  (_: any, i: number) => i !== index
-                                );
-                              }
-
-                              const updatedKundeInfo = kundeList.map(
-                                (kunde: any, idx: number) =>
-                                  idx === targetKundeIndex
-                                    ? {
-                                        ...kunde,
-                                        Plantegninger: plantegninger,
-                                      }
-                                    : kunde
-                              );
-
-                              await updateDoc(husmodellDocRef, {
-                                KundeInfo: updatedKundeInfo,
-                                updatedAt: new Date().toISOString(),
-                              });
-                            } catch (err) {
-                              console.error(
-                                "Error removing subcategory from Firestore:",
-                                err
-                              );
-                            }
+                            handleDeleteClick(index);
                           }}
                         />
                       </div>
@@ -1468,6 +1465,52 @@ export const Eksterior: React.FC<{
             </span>
             <div className="w-48 h-1 overflow-hidden rounded-lg">
               <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showConfirmPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100000]">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base md:text-lg lg:text-xl font-semibold text-darkBlack">
+                Bekreft sletting
+              </h3>
+              <X
+                className="w-5 h-5 text-primary cursor-pointer"
+                onClick={() => {
+                  setShowConfirmPopup(false);
+                  setDeleteIndex(null);
+                }}
+              />
+            </div>
+
+            <p className="text-secondary mb-6">
+              Er du sikker på at du vil slette?
+            </p>
+
+            <div className="flex gap-3 justify-end">
+              <div
+                onClick={() => {
+                  setShowConfirmPopup(false);
+                  setDeleteIndex(null);
+                }}
+              >
+                <Button
+                  text="Avbryt"
+                  className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-12 py-2 flex items-center gap-2"
+                />
+              </div>
+              <Button
+                text="Slett"
+                className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-12 py-2 flex items-center gap-2"
+                onClick={() => {
+                  handleConfirmDelete();
+                  setShowConfirmPopup(false);
+                  setDeleteIndex(null);
+                }}
+              />
             </div>
           </div>
         </div>

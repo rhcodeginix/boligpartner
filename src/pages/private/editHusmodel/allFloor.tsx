@@ -205,146 +205,273 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         ],
       };
 
-      const updatedPlantegninger = (targetKunde?.Plantegninger || []).map(
-        (floor: any) => {
-          if (!Array.isArray(floor.rooms)) return floor;
+      // const updatedPlantegninger = (targetKunde?.Plantegninger || []).map(
+      //   (floor: any) => {
+      //     if (!Array.isArray(floor.rooms)) return floor;
 
-          // const updatedRooms = floor.rooms.map((room: any) => {
-          //   const existingMap = new Map(
-          //     (room.Kategorinavn || []).map((k: any) => [k.navn, k])
-          //   );
+      //     // const updatedRooms = floor.rooms.map((room: any) => {
+      //     //   const existingMap = new Map(
+      //     //     (room.Kategorinavn || []).map((k: any) => [k.navn, k])
+      //     //   );
 
-          //   const finalKategorinavn = Object.entries(
-          //     requiredCategoriesWithProducts
-          //   ).map(([name, produkter]) => {
-          //     if (existingMap.has(name)) {
-          //       return existingMap.get(name);
-          //     }
-          //     return {
-          //       navn: name,
-          //       productOptions: name === "Kommentar" ? "Text" : "Single Select",
-          //       produkter,
-          //     };
-          //   });
+      //     //   const finalKategorinavn = Object.entries(
+      //     //     requiredCategoriesWithProducts
+      //     //   ).map(([name, produkter]) => {
+      //     //     if (existingMap.has(name)) {
+      //     //       return existingMap.get(name);
+      //     //     }
+      //     //     return {
+      //     //       navn: name,
+      //     //       productOptions: name === "Kommentar" ? "Text" : "Single Select",
+      //     //       produkter,
+      //     //     };
+      //     //   });
 
-          //   return {
-          //     ...room,
-          //     Kategorinavn: finalKategorinavn,
-          //   };
-          // });
-          const updatedRooms = floor.rooms.map((room: any) => {
-            const isWetRoom = /Bad|Vaskerom/i.test(
-              room?.name_no || room?.name || ""
-            );
+      //     //   return {
+      //     //     ...room,
+      //     //     Kategorinavn: finalKategorinavn,
+      //     //   };
+      //     // });
+      //     const updatedRooms = floor.rooms.map((room: any) => {
+      //       const isWetRoom = /Bad|Vaskerom/i.test(
+      //         room?.name_no || room?.name || ""
+      //       );
 
-            const existingMap: any = new Map(
-              (room.Kategorinavn || []).map((k: any) => [k.navn, k])
-            );
+      //       const existingMap: any = new Map(
+      //         (room.Kategorinavn || []).map((k: any) => [k.navn, k])
+      //       );
 
-            const finalKategorinavn = Object.entries(
-              requiredCategoriesWithProducts
-            )
-              .filter(([name]) => !(isWetRoom && name === "Gulvlist"))
-              .map(([name, produkter]) => {
-                if (isWetRoom && (name === "Vegg" || name === "Vegger")) {
-                  const existingProducts =
-                    existingMap.get("Vegg")?.produkter || [];
+      //       const finalKategorinavn = Object.entries(
+      //         requiredCategoriesWithProducts
+      //       )
+      //         .filter(([name]) => !(isWetRoom && name === "Gulvlist"))
+      //         .map(([name, produkter]) => {
+      //           if (isWetRoom && (name === "Vegg" || name === "Vegger")) {
+      //             const existingProducts =
+      //               existingMap.get("Vegg")?.produkter || [];
 
-                  return {
-                    navn: "Vegg",
-                    productOptions: "Single Select",
-                    produkter: [
-                      {
-                        Produktnavn: "Flis",
-                        isSelected:
-                          existingProducts.find(
-                            (p: any) => p.Produktnavn === "Flis"
-                          )?.isSelected ?? false,
-                        InfoText: "Ev beskriv type og farge",
-                      },
-                      {
-                        Produktnavn: "Baderomsplate",
-                        isSelected:
-                          existingProducts.find(
-                            (p: any) => p.Produktnavn === "Baderomsplate"
-                          )?.isSelected ?? false,
-                        InfoText: "Beskriv type og farge",
-                      },
-                      {
-                        Produktnavn: "Annet",
-                        isSelected:
-                          existingProducts.find(
-                            (p: any) => p.Produktnavn === "Annet"
-                          )?.isSelected ?? false,
-                        InfoText: "Beskriv type og farge",
-                      },
-                    ],
-                    comment: existingMap.get("Vegg")?.comment ?? "",
-                  };
-                }
-                if (isWetRoom && name === "Gulv") {
-                  const existingProducts =
-                    existingMap.get("Gulv")?.produkter || [];
+      //             return {
+      //               navn: "Vegg",
+      //               productOptions: "Single Select",
+      //               produkter: [
+      //                 {
+      //                   Produktnavn: "Flis",
+      //                   isSelected:
+      //                     existingProducts.find(
+      //                       (p: any) => p.Produktnavn === "Flis"
+      //                     )?.isSelected ?? false,
+      //                   InfoText: "Ev beskriv type og farge",
+      //                 },
+      //                 {
+      //                   Produktnavn: "Baderomsplate",
+      //                   isSelected:
+      //                     existingProducts.find(
+      //                       (p: any) => p.Produktnavn === "Baderomsplate"
+      //                     )?.isSelected ?? false,
+      //                   InfoText: "Beskriv type og farge",
+      //                 },
+      //                 {
+      //                   Produktnavn: "Annet",
+      //                   isSelected:
+      //                     existingProducts.find(
+      //                       (p: any) => p.Produktnavn === "Annet"
+      //                     )?.isSelected ?? false,
+      //                   InfoText: "Beskriv type og farge",
+      //                 },
+      //               ],
+      //               comment: existingMap.get("Vegg")?.comment ?? "",
+      //             };
+      //           }
+      //           if (isWetRoom && name === "Gulv") {
+      //             const existingProducts =
+      //               existingMap.get("Gulv")?.produkter || [];
 
-                  return {
-                    navn: "Gulv",
-                    productOptions: "Single Select",
-                    produkter: [
-                      {
-                        Produktnavn: "Flis",
-                        isSelected:
-                          existingProducts.find(
-                            (p: any) => p.Produktnavn === "Flis"
-                          )?.isSelected ?? false,
-                        InfoText: "Ev beskriv type og farge",
-                      },
-                      {
-                        Produktnavn: "Belegg",
-                        isSelected:
-                          existingProducts.find(
-                            (p: any) => p.Produktnavn === "Belegg"
-                          )?.isSelected ?? false,
-                        InfoText: "Beskriv type og farge",
-                      },
-                      {
-                        Produktnavn: "Annet",
-                        isSelected:
-                          existingProducts.find(
-                            (p: any) => p.Produktnavn === "Annet"
-                          )?.isSelected ?? false,
-                        InfoText: "Beskriv type og farge",
-                      },
-                    ],
-                    comment: existingMap.get("Gulv")?.comment ?? "",
-                  };
-                }
+      //             return {
+      //               navn: "Gulv",
+      //               productOptions: "Single Select",
+      //               produkter: [
+      //                 {
+      //                   Produktnavn: "Flis",
+      //                   isSelected:
+      //                     existingProducts.find(
+      //                       (p: any) => p.Produktnavn === "Flis"
+      //                     )?.isSelected ?? false,
+      //                   InfoText: "Ev beskriv type og farge",
+      //                 },
+      //                 {
+      //                   Produktnavn: "Belegg",
+      //                   isSelected:
+      //                     existingProducts.find(
+      //                       (p: any) => p.Produktnavn === "Belegg"
+      //                     )?.isSelected ?? false,
+      //                   InfoText: "Beskriv type og farge",
+      //                 },
+      //                 {
+      //                   Produktnavn: "Annet",
+      //                   isSelected:
+      //                     existingProducts.find(
+      //                       (p: any) => p.Produktnavn === "Annet"
+      //                     )?.isSelected ?? false,
+      //                   InfoText: "Beskriv type og farge",
+      //                 },
+      //               ],
+      //               comment: existingMap.get("Gulv")?.comment ?? "",
+      //             };
+      //           }
 
-                if (existingMap.has(name)) {
-                  return existingMap.get(name);
-                }
-                const existingComment = existingMap.get(name)?.comment ?? "";
+      //           if (existingMap.has(name)) {
+      //             return existingMap.get(name);
+      //           }
+      //           const existingComment = existingMap.get(name)?.comment ?? "";
 
-                return {
-                  navn: name,
-                  productOptions:
-                    name === "Kommentar" ? "Text" : "Single Select",
-                  produkter,
-                  comment: existingComment,
-                };
-              });
+      //           return {
+      //             navn: name,
+      //             productOptions:
+      //               name === "Kommentar" ? "Text" : "Single Select",
+      //             produkter,
+      //             comment: existingComment,
+      //           };
+      //         });
+
+      //       return {
+      //         ...room,
+      //         Kategorinavn: finalKategorinavn,
+      //       };
+      //     });
+
+      //     return {
+      //       ...floor,
+      //       rooms: updatedRooms,
+      //     };
+      //   }
+      // );
+
+      let updatedPlantegninger: any[] = targetKunde?.Plantegninger || [];
+
+const existingPlantegning = updatedPlantegninger.find(
+  (plan: any) => String(plan?.pdf_id) === String(pdfId)
+);
+
+if (!existingPlantegning) {
+  updatedPlantegninger = (targetKunde?.Plantegninger || []).map(
+    (floor: any) => {
+      if (!Array.isArray(floor.rooms)) return floor;
+
+      const updatedRooms = floor.rooms.map((room: any) => {
+        const isWetRoom = /Bad|Vaskerom/i.test(
+          room?.name_no || room?.name || ""
+        );
+
+        const existingMap: any = new Map(
+          (room.Kategorinavn || []).map((k: any) => [k.navn, k])
+        );
+
+        const finalKategorinavn = Object.entries(
+          requiredCategoriesWithProducts
+        )
+          .filter(([name]) => !(isWetRoom && name === "Gulvlist"))
+          .map(([name, produkter]) => {
+            if (isWetRoom && (name === "Vegg" || name === "Vegger")) {
+              const existingProducts =
+                existingMap.get("Vegg")?.produkter || [];
+
+              return {
+                navn: "Vegg",
+                productOptions: "Single Select",
+                produkter: [
+                  {
+                    Produktnavn: "Flis",
+                    isSelected:
+                      existingProducts.find(
+                        (p: any) => p.Produktnavn === "Flis"
+                      )?.isSelected ?? false,
+                    InfoText: "Ev beskriv type og farge",
+                  },
+                  {
+                    Produktnavn: "Baderomsplate",
+                    isSelected:
+                      existingProducts.find(
+                        (p: any) => p.Produktnavn === "Baderomsplate"
+                      )?.isSelected ?? false,
+                    InfoText: "Beskriv type og farge",
+                  },
+                  {
+                    Produktnavn: "Annet",
+                    isSelected:
+                      existingProducts.find(
+                        (p: any) => p.Produktnavn === "Annet"
+                      )?.isSelected ?? false,
+                    InfoText: "Beskriv type og farge",
+                  },
+                ],
+                comment: existingMap.get("Vegg")?.comment ?? "",
+              };
+            }
+            if (isWetRoom && name === "Gulv") {
+              const existingProducts =
+                existingMap.get("Gulv")?.produkter || [];
+
+              return {
+                navn: "Gulv",
+                productOptions: "Single Select",
+                produkter: [
+                  {
+                    Produktnavn: "Flis",
+                    isSelected:
+                      existingProducts.find(
+                        (p: any) => p.Produktnavn === "Flis"
+                      )?.isSelected ?? false,
+                    InfoText: "Ev beskriv type og farge",
+                  },
+                  {
+                    Produktnavn: "Belegg",
+                    isSelected:
+                      existingProducts.find(
+                        (p: any) => p.Produktnavn === "Belegg"
+                      )?.isSelected ?? false,
+                    InfoText: "Beskriv type og farge",
+                  },
+                  {
+                    Produktnavn: "Annet",
+                    isSelected:
+                      existingProducts.find(
+                        (p: any) => p.Produktnavn === "Annet"
+                      )?.isSelected ?? false,
+                    InfoText: "Beskriv type og farge",
+                  },
+                ],
+                comment: existingMap.get("Gulv")?.comment ?? "",
+              };
+            }
+
+            if (existingMap.has(name)) {
+              return existingMap.get(name);
+            }
+            const existingComment = existingMap.get(name)?.comment ?? "";
 
             return {
-              ...room,
-              Kategorinavn: finalKategorinavn,
+              navn: name,
+              productOptions:
+                name === "Kommentar" ? "Text" : "Single Select",
+              produkter,
+              comment: existingComment,
             };
           });
 
-          return {
-            ...floor,
-            rooms: updatedRooms,
-          };
-        }
-      );
+        return {
+          ...room,
+          Kategorinavn: finalKategorinavn,
+        };
+      });
+
+      return {
+        ...floor,
+        rooms: updatedRooms,
+      };
+    }
+  );
+}
+
 
       const finalData = updatedPlantegninger?.find(
         (item: any) => String(item?.pdf_id) === String(pdfId)
