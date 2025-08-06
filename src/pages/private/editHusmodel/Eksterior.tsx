@@ -779,7 +779,9 @@ export const Eksterior: React.FC<{
                                   />
                                 </div>
                               </FormControl>
-                              <FormMessage />
+                              {fieldState?.error && !field.value && (
+                                <FormMessage />
+                              )}
                             </FormItem>
                           )}
                         />
@@ -1005,7 +1007,8 @@ export const Eksterior: React.FC<{
                                               {...field}
                                               className={`bg-white rounded-[8px] border text-black
                                                  ${
-                                                   fieldState?.error
+                                                   fieldState?.error &&
+                                                   !field.value
                                                      ? "border-red"
                                                      : "border-gray1"
                                                  } `}
@@ -1108,7 +1111,9 @@ export const Eksterior: React.FC<{
                                             />
                                           </div>
                                         </FormControl>
-                                        <FormMessage />
+                                        {fieldState?.error && !field.value && (
+                                          <FormMessage />
+                                        )}
                                       </FormItem>
                                     )}
                                   />
@@ -1132,7 +1137,8 @@ export const Eksterior: React.FC<{
                                       {...field}
                                       className={`bg-white rounded-[8px] border text-black
                                                  ${
-                                                   fieldState?.error
+                                                   fieldState?.error &&
+                                                   !field.value
                                                      ? "border-red"
                                                      : "border-gray1"
                                                  } `}
@@ -1228,7 +1234,9 @@ export const Eksterior: React.FC<{
                                     />
                                   </div>
                                 </FormControl>
-                                <FormMessage />
+                                {fieldState?.error && !field.value && (
+                                  <FormMessage />
+                                )}
                               </FormItem>
                             );
                           }}
