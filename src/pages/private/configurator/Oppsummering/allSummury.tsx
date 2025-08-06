@@ -379,9 +379,22 @@ export const AllSummury: React.FC<{
                 <p style={{ fontSize: "20px", color: "#5d6b98" }}>
                   Detaljnummer for Termomur
                 </p>
-
                 <p style={{ fontSize: "24px", color: "#101828" }}>
                   {displayValue(roomsData?.GrunnerOgSkorstein?.detaljnummer)}
+                </p>
+              </div>
+            )}
+            {roomsData?.GrunnerOgSkorstein?.TypeGrunnmur === "Annet" && (
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+              >
+                <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                  kommentar til annet
+                </p>
+                <p style={{ fontSize: "24px", color: "#101828" }}>
+                  {displayValue(
+                    roomsData?.GrunnerOgSkorstein?.TypeGrunnmurText
+                  )}
                 </p>
               </div>
             )}
@@ -592,15 +605,15 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
-                Beskriv eventuelle leveransedetaljer til overflater
-              </p>
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Skriv type</p>
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
                 {displayValue(roomsData?.Yttervegger?.Overflater?.colorCode)}
               </p>
             </div>
           </div>
+          <p>Beskriv eventuelle leveransedetaljer til overflater</p>
+
           <div className="horizontal-divider"></div>
 
           <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
@@ -650,9 +663,7 @@ export const AllSummury: React.FC<{
               </p>
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
-                {displayValue(
-                  roomsData?.TakogTaktekkingTakogTaktekking?.Undertak
-                )}
+                {displayValue(roomsData?.TakogTaktekking?.Undertak)}
               </p>
             </div>
             <div
@@ -663,9 +674,7 @@ export const AllSummury: React.FC<{
               </p>
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
-                {displayValue(
-                  roomsData?.TakogTaktekkingTakogTaktekking?.KommentarUndertak
-                )}
+                {displayValue(roomsData?.TakogTaktekking?.KommentarUndertak)}
               </p>
             </div>
           </div>
@@ -683,9 +692,7 @@ export const AllSummury: React.FC<{
               </p>
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
-                {displayValue(
-                  roomsData?.TakogTaktekkingTakogTaktekking?.Taktekking?.type
-                )}
+                {displayValue(roomsData?.TakogTaktekking?.Taktekking?.type)}
               </p>
             </div>
             <div
@@ -697,8 +704,7 @@ export const AllSummury: React.FC<{
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
                 {displayValue(
-                  roomsData?.TakogTaktekkingTakogTaktekking?.Taktekking
-                    ?.colorCode
+                  roomsData?.TakogTaktekking?.Taktekking?.colorCode
                 )}
               </p>
             </div>
@@ -710,9 +716,7 @@ export const AllSummury: React.FC<{
               </p>
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
-                {displayValue(
-                  roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinType
-                )}
+                {displayValue(roomsData?.TakogTaktekking?.TaksteinType)}
               </p>
             </div>
             <div
@@ -723,9 +727,7 @@ export const AllSummury: React.FC<{
               </p>
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
-                {displayValue(
-                  roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinKode
-                )}
+                {displayValue(roomsData?.TakogTaktekking?.TaksteinKode)}
               </p>
             </div>
             <div
@@ -736,9 +738,7 @@ export const AllSummury: React.FC<{
               </p>
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
-                {displayValue(
-                  roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinFarge
-                )}
+                {displayValue(roomsData?.TakogTaktekking?.TaksteinFarge)}
               </p>
             </div>
             <div
@@ -749,9 +749,7 @@ export const AllSummury: React.FC<{
               </p>
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
-                {displayValue(
-                  roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinStruktur
-                )}
+                {displayValue(roomsData?.TakogTaktekking?.TaksteinStruktur)}
               </p>
             </div>
             <div
@@ -766,11 +764,8 @@ export const AllSummury: React.FC<{
               <label style={{ position: "relative" }}>
                 <input
                   type="checkbox"
-                  id="TakogTaktekkingTakogTaktekking?.HeisesPåTak"
-                  checked={
-                    roomsData?.TakogTaktekkingTakogTaktekking?.HeisesPåTak ||
-                    false
-                  }
+                  id="TakogTaktekking?.HeisesPåTak"
+                  checked={roomsData?.TakogTaktekking?.HeisesPåTak || false}
                   readOnly
                   className="peer sr-only"
                 />
@@ -778,8 +773,7 @@ export const AllSummury: React.FC<{
                 <div
                   className="checkmark"
                   style={{
-                    display: roomsData?.TakogTaktekkingTakogTaktekking
-                      ?.HeisesPåTak
+                    display: roomsData?.TakogTaktekking?.HeisesPåTak
                       ? "block"
                       : "none",
                   }}
@@ -814,9 +808,7 @@ export const AllSummury: React.FC<{
               <p style={{ fontSize: "20px", color: "#5d6b98" }}>Snøfangere</p>
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
-                {displayValue(
-                  roomsData?.TakogTaktekkingTakogTaktekking?.Snøfangere
-                )}
+                {displayValue(roomsData?.TakogTaktekking?.Snøfangere)}
               </p>
             </div>
             <div
@@ -827,9 +819,7 @@ export const AllSummury: React.FC<{
               </p>
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
-                {displayValue(
-                  roomsData?.TakogTaktekkingTakogTaktekking?.SnøfangereFarge
-                )}
+                {displayValue(roomsData?.TakogTaktekking?.SnøfangereFarge)}
               </p>
             </div>
             <div
@@ -840,10 +830,7 @@ export const AllSummury: React.FC<{
               </p>
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
-                {displayValue(
-                  roomsData?.TakogTaktekkingTakogTaktekking
-                    ?.SnøfangerkrokerIGrad
-                )}
+                {displayValue(roomsData?.TakogTaktekking?.SnøfangerkrokerIGrad)}
               </p>
             </div>
             <div
@@ -855,8 +842,7 @@ export const AllSummury: React.FC<{
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
                 {displayValue(
-                  roomsData?.TakogTaktekkingTakogTaktekking
-                    ?.GradrennerBeslagFarge
+                  roomsData?.TakogTaktekking?.GradrennerBeslagFarge
                 )}
               </p>
             </div>
@@ -866,9 +852,7 @@ export const AllSummury: React.FC<{
               <p style={{ fontSize: "20px", color: "#5d6b98" }}>Feieplatå</p>
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
-                {displayValue(
-                  roomsData?.TakogTaktekkingTakogTaktekking?.Feieplatå
-                )}
+                {displayValue(roomsData?.TakogTaktekking?.Feieplatå)}
               </p>
             </div>
             <div
@@ -877,9 +861,7 @@ export const AllSummury: React.FC<{
               <p style={{ fontSize: "20px", color: "#5d6b98" }}>Avløpslufter</p>
 
               <p style={{ fontSize: "24px", color: "#101828" }}>
-                {displayValue(
-                  roomsData?.TakogTaktekkingTakogTaktekking?.Avløpslufter
-                )}
+                {displayValue(roomsData?.TakogTaktekking?.Avløpslufter)}
               </p>
             </div>
             <div
@@ -1232,9 +1214,6 @@ export const AllSummury: React.FC<{
             >
               Boddør
             </div>
-            <div style={{ color: "#101828", fontSize: "20px" }}>
-              Ikke relevant
-            </div>
           </div>
           <div className="custom-grid">
             <div
@@ -1243,7 +1222,6 @@ export const AllSummury: React.FC<{
               <p style={{ fontSize: "20px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-
               <p style={{ fontSize: "24px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.Boddør?.type)}
               </p>
@@ -1290,9 +1268,9 @@ export const AllSummury: React.FC<{
             >
               Balkong/Terrassedør
             </div>
-            <div style={{ color: "#101828", fontSize: "20px" }}>
+            {/* <div style={{ color: "#101828", fontSize: "20px" }}>
               Standard hvitmalt utvendig/innvendig
-            </div>
+            </div> */}
           </div>
           <div className="custom-grid">
             <div
@@ -1422,8 +1400,7 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Dørfarge</p>
-
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Skriv kode</p>
               <p style={{ fontSize: "24px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.InnvendigeDører?.InnvendigeDører?.colorCode
@@ -1433,10 +1410,21 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Glassdør</p>
-
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Type dør</p>
               <p style={{ fontSize: "24px", color: "#101828" }}>
-                {displayValue(roomsData?.Dører?.InnvendigeDører?.Glassdør)}
+                {displayValue(
+                  roomsData?.Dører?.InnvendigeDører?.InnvendigeDører?.dør
+                )}
+              </p>
+            </div>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Dørfarge</p>
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.InnvendigeDører?.InnvendigeDører?.Dørfarge
+                )}
               </p>
             </div>
             <div
@@ -1445,7 +1433,6 @@ export const AllSummury: React.FC<{
               <p style={{ fontSize: "20px", color: "#5d6b98" }}>
                 Skyvedør med glass
               </p>
-
               <p style={{ fontSize: "24px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.InnvendigeDører?.SkyvedørMedGlass
@@ -1550,6 +1537,18 @@ export const AllSummury: React.FC<{
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
               <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til spor for belegg
+              </p>
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(
+                  roomsData?.Dører?.InnvendigeDører?.SporBeleggText
+                )}
+              </p>
+            </div>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
                 Kommentar til innvendige dører
               </p>
 
@@ -1577,6 +1576,14 @@ export const AllSummury: React.FC<{
                 {displayValue(roomsData?.Dører?.Dørvridere?.type)}
               </p>
             </div>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Type vrider</p>
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.Dørvridere?.colorCode)}
+              </p>
+            </div>
           </div>
           <div className="horizontal-divider"></div>
 
@@ -1589,6 +1596,14 @@ export const AllSummury: React.FC<{
             >
               <p style={{ fontSize: "24px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.DørerKjellerrom?.type)}
+              </p>
+            </div>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Beskriv her</p>
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Dører?.DørerKjellerrom?.colorCode)}
               </p>
             </div>
           </div>
@@ -1931,7 +1946,6 @@ export const AllSummury: React.FC<{
               <p style={{ fontSize: "20px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-
               <p style={{ fontSize: "24px", color: "#101828" }}>
                 {displayValue(roomsData?.Vinduer?.TakvinduVelux?.type)}
               </p>
@@ -1940,9 +1954,18 @@ export const AllSummury: React.FC<{
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
               <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Skriv fargekode
+              </p>
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Vinduer?.TakvinduVelux?.colorCode)}
+              </p>
+            </div>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
                 Utforing farge
               </p>
-
               <p style={{ fontSize: "24px", color: "#101828" }}>
                 {displayValue(roomsData?.Vinduer?.TakvinduVeluxUtforingFarge)}
               </p>
@@ -2062,7 +2085,6 @@ export const AllSummury: React.FC<{
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
               <p style={{ fontSize: "20px", color: "#5d6b98" }}>Montering</p>
-
               <p style={{ fontSize: "24px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.Montering)}
               </p>
@@ -2071,9 +2093,18 @@ export const AllSummury: React.FC<{
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
               <p style={{ fontSize: "20px", color: "#5d6b98" }}>Måltaking</p>
-
               <p style={{ fontSize: "24px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.Måltaking)}
+              </p>
+            </div>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til trapp
+              </p>
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.TrappogLuker?.KommentarTrapp)}
               </p>
             </div>
           </div>

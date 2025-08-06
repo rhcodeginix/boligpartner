@@ -133,6 +133,35 @@ export const HusmodellerTable = () => {
     }
   };
 
+  const fetchOfficeData = async (officeId: string) => {
+    if (!officeId) return null;
+
+    setIsLoading(true);
+    try {
+      const officeQuery = query(
+        collection(db, "office"),
+        where("id", "==", officeId)
+      );
+
+      const querySnapshot = await getDocs(officeQuery);
+
+      if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        return {
+          id: doc.id,
+          ...doc.data(),
+        };
+      }
+
+      return null;
+    } catch (error) {
+      console.error("Error fetching office data:", error);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const fetchHusmodellsData = async () => {
     setIsLoading(true);
     try {
@@ -182,54 +211,83 @@ export const HusmodellerTable = () => {
     setShowConfirm(true);
   };
 
-  const filteredData = useMemo(() => {
-    const allKunder = houseModels.flatMap((item: any) => {
-      if (
-        item?.KundeInfo &&
-        Array.isArray(item.KundeInfo) &&
-        item.KundeInfo.length > 0
-      ) {
-        return item.KundeInfo.map((kunde: any) => ({
-          ...kunde,
-          photo: item.photo || null,
-          husmodell_name: kunde?.VelgSerie || item?.husmodell_name || null,
-          parentId: item.id,
-          createDataBy: item?.createDataBy || null,
-          tag: item?.tag || null,
-          placeOrder: kunde?.placeOrder || false,
-          configurator:
-            kunde?.Plantegninger && kunde?.Plantegninger.length > 0
-              ? kunde?.Plantegninger.some((room: any) => !room.configurator)
-                ? true
-                : false
-              : true,
-          updatedAt: kunde.updatedAt || item.updatedAt || null,
-          kundeId: kunde?.uniqueId,
-          id: item?.id,
-        }));
+  const [filteredData, setFilteredData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      setIsLoading(true);
+
+      const allKunder: any[] = [];
+
+      for (const item of houseModels as any) {
+        if (Array.isArray(item?.KundeInfo) && item.KundeInfo.length > 0) {
+          for (const kunde of item.KundeInfo) {
+            let officeData: any = null;
+            if (item?.createDataBy?.office) {
+              officeData = await fetchOfficeData(item.createDataBy.office);
+            } else if (item?.createDataBy?.email) {
+              const userSnap = await getDocs(
+                query(
+                  collection(db, "admin"),
+                  where("email", "==", item.createDataBy.email)
+                )
+              );
+
+              if (!userSnap.empty) {
+                const userDoc = userSnap.docs[0];
+                const userData = userDoc.data();
+
+                if (userData?.office) {
+                  officeData = await fetchOfficeData(userData.office);
+                }
+              }
+            }
+
+            const mappedKunde = {
+              ...kunde,
+              photo: item.photo || null,
+              husmodell_name: kunde?.VelgSerie || item?.husmodell_name || null,
+              parentId: item.id,
+              createDataBy: item?.createDataBy || null,
+              tag: item?.tag || null,
+              placeOrder: kunde?.placeOrder || false,
+              configurator:
+                kunde?.Plantegninger?.length > 0
+                  ? kunde.Plantegninger.some((room: any) => !room.configurator)
+                  : true,
+              updatedAt: kunde.updatedAt || item.updatedAt || null,
+              kundeId: kunde?.uniqueId,
+              id: item?.id,
+              office_name: officeData?.data?.name || null,
+            };
+
+            allKunder.push(mappedKunde);
+          }
+        }
       }
-      return [];
-    });
 
-    const filtered = allKunder.filter((kunde: any) => {
-      const matchesSearch =
-        !searchTerm ||
-        kunde.Kundenavn?.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesFilter =
-        !selectedFilter ||
-        selectedFilter === "" ||
-        kunde.husmodell_name === selectedFilter;
-      const matchesTypeProsjekt =
-        !activeTab || kunde.tag?.toLowerCase() === activeTab.toLowerCase();
+      const filtered = allKunder.filter((kunde) => {
+        const matchesSearch =
+          !searchTerm ||
+          kunde.Kundenavn?.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesFilter =
+          !selectedFilter || kunde.husmodell_name === selectedFilter;
+        const matchesTypeProsjekt =
+          !activeTab || kunde.tag?.toLowerCase() === activeTab.toLowerCase();
+        return matchesSearch && matchesFilter && matchesTypeProsjekt;
+      });
 
-      return matchesSearch && matchesFilter && matchesTypeProsjekt;
-    });
+      const sorted = filtered.sort((a, b) => {
+        const dateA = new Date(a.updatedAt).getTime();
+        const dateB = new Date(b.updatedAt).getTime();
+        return dateB - dateA;
+      });
 
-    return filtered.sort((a, b) => {
-      const dateA = new Date(a.updatedAt).getTime();
-      const dateB = new Date(b.updatedAt).getTime();
-      return dateB - dateA;
-    });
+      setFilteredData(sorted);
+      setIsLoading(false);
+    };
+
+    getData();
   }, [houseModels, searchTerm, selectedFilter, activeTab]);
 
   const [isExporting, setIsExporting] = useState(false);
@@ -433,6 +491,17 @@ export const HusmodellerTable = () => {
             {row.original?.Kundenavn}
           </p>
         ),
+      },
+      {
+        accessorKey: "office_name",
+        header: "Kontornavn",
+        cell: ({ row }) => {
+          return (
+            <p className="text-sm font-medium text-black w-max">
+              {row.original?.office_name}
+            </p>
+          );
+        },
       },
       {
         accessorKey: "Anleggsadresse",

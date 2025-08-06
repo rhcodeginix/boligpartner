@@ -61,6 +61,10 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
   const [roomsData, setRoomsData] = useState<any>([]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentStep]);
+
+  useEffect(() => {
     if (!id || !kundeId) {
       return;
     }

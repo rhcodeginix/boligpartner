@@ -28,24 +28,55 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
   setInvalidSteps,
   validInitialSteps,
 }) => {
+  // const handleStepClick = async (stepId: number) => {
+  //   if (validInitialSteps?.includes(stepId)) {
+  //     setCurrentStep(stepId);
+  //     return;
+  //   }
+
+  //   const currentStepForm = formRefs.current[currentStep];
+  //   const isValid = await currentStepForm?.validateForm?.();
+
+  //   if (!isValid) {
+  //     if (!invalidSteps.includes(currentStep)) {
+  //       setInvalidSteps([...invalidSteps, currentStep]);
+  //     }
+  //   } else {
+  //     setInvalidSteps(invalidSteps.filter((id: any) => id !== currentStep));
+  //   }
+
+  //   if (stepId < currentStep || stepId === currentStep + 1) {
+  //     setCurrentStep(stepId);
+  //     localStorage.setItem("currVerticalIndex", stepId.toString());
+  //   }
+  // };
+
   const handleStepClick = async (stepId: number) => {
-    if (validInitialSteps?.includes(stepId)) {
-      setCurrentStep(stepId);
-      return;
-    }
+    if (stepId === currentStep) return;
 
     const currentStepForm = formRefs.current[currentStep];
+
+    if (typeof currentStepForm?.handleSubmit === "function") {
+      await currentStepForm.handleSubmit();
+    }
+
     const isValid = await currentStepForm?.validateForm?.();
 
     if (!isValid) {
       if (!invalidSteps.includes(currentStep)) {
         setInvalidSteps([...invalidSteps, currentStep]);
       }
+      return;
     } else {
       setInvalidSteps(invalidSteps.filter((id: any) => id !== currentStep));
     }
 
-    if (stepId < currentStep || stepId === currentStep + 1) {
+    // Step 3: Allow navigation if clicking back or just one step ahead
+    if (
+      validInitialSteps?.includes(stepId) ||
+      stepId < currentStep ||
+      stepId === currentStep + 1
+    ) {
       setCurrentStep(stepId);
       localStorage.setItem("currVerticalIndex", stepId.toString());
     }

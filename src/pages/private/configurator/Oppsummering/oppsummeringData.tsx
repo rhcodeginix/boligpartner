@@ -506,6 +506,26 @@ export const OppsummeringData: React.FC<{
                   )}
                 </div>
               )}
+              {roomsData?.GrunnerOgSkorstein?.TypeGrunnmur === "Annet" && (
+                <div className="flex flex-col gap-1.5">
+                  {loading ? (
+                    <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                  ) : (
+                    <p className="text-secondary text-xs">
+                      kommentar til annet
+                    </p>
+                  )}
+                  {loading ? (
+                    <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                  ) : (
+                    <p className="text-darkBlack text-sm">
+                      {displayValue(
+                        roomsData?.GrunnerOgSkorstein?.TypeGrunnmurText
+                      )}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
             <div className="border-t border-[#EBEBEB] w-full"></div>
             <div className="text-darkBlack font-medium text-sm">
@@ -751,9 +771,7 @@ export const OppsummeringData: React.FC<{
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
-                  <p className="text-secondary text-xs">
-                    Beskriv eventuelle leveransedetaljer til overflater
-                  </p>
+                  <p className="text-secondary text-xs">Skriv type</p>
                 )}
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
@@ -762,6 +780,15 @@ export const OppsummeringData: React.FC<{
                     {displayValue(
                       roomsData?.Yttervegger?.Overflater?.colorCode
                     )}
+                  </p>
+                )}
+              </div>
+              <div className="col-span-4">
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-darkBlack text-xs">
+                    Beskriv eventuelle leveransedetaljer til overflater
                   </p>
                 )}
               </div>
@@ -805,9 +832,7 @@ export const OppsummeringData: React.FC<{
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
                   <p className="text-darkBlack text-sm">
-                    {displayValue(
-                      roomsData?.TakogTaktekkingTakogTaktekking?.Undertak
-                    )}
+                    {displayValue(roomsData?.TakogTaktekking?.Undertak)}
                   </p>
                 )}
               </div>
@@ -824,8 +849,7 @@ export const OppsummeringData: React.FC<{
                 ) : (
                   <p className="text-darkBlack text-sm">
                     {displayValue(
-                      roomsData?.TakogTaktekkingTakogTaktekking
-                        ?.KommentarUndertak
+                      roomsData?.TakogTaktekking?.KommentarUndertak
                     )}
                   </p>
                 )}
@@ -844,10 +868,7 @@ export const OppsummeringData: React.FC<{
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
                   <p className="text-darkBlack text-sm">
-                    {displayValue(
-                      roomsData?.TakogTaktekkingTakogTaktekking?.Taktekking
-                        ?.type
-                    )}
+                    {displayValue(roomsData?.TakogTaktekking?.Taktekking?.type)}
                   </p>
                 )}
               </div>
@@ -864,8 +885,7 @@ export const OppsummeringData: React.FC<{
                 ) : (
                   <p className="text-darkBlack text-sm">
                     {displayValue(
-                      roomsData?.TakogTaktekkingTakogTaktekking?.Taktekking
-                        ?.colorCode
+                      roomsData?.TakogTaktekking?.Taktekking?.colorCode
                     )}
                   </p>
                 )}
@@ -880,9 +900,7 @@ export const OppsummeringData: React.FC<{
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
                   <p className="text-darkBlack text-sm">
-                    {displayValue(
-                      roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinType
-                    )}
+                    {displayValue(roomsData?.TakogTaktekking?.TaksteinType)}
                   </p>
                 )}
               </div>
@@ -896,9 +914,7 @@ export const OppsummeringData: React.FC<{
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
                   <p className="text-darkBlack text-sm">
-                    {displayValue(
-                      roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinKode
-                    )}
+                    {displayValue(roomsData?.TakogTaktekking?.TaksteinKode)}
                   </p>
                 )}
               </div>
@@ -912,9 +928,7 @@ export const OppsummeringData: React.FC<{
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
                   <p className="text-darkBlack text-sm">
-                    {displayValue(
-                      roomsData?.TakogTaktekkingTakogTaktekking?.TaksteinFarge
-                    )}
+                    {displayValue(roomsData?.TakogTaktekking?.TaksteinFarge)}
                   </p>
                 )}
               </div>
@@ -928,10 +942,7 @@ export const OppsummeringData: React.FC<{
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
                   <p className="text-darkBlack text-sm">
-                    {displayValue(
-                      roomsData?.TakogTaktekkingTakogTaktekking
-                        ?.TaksteinStruktur
-                    )}
+                    {displayValue(roomsData?.TakogTaktekking?.TaksteinStruktur)}
                   </p>
                 )}
               </div>
@@ -939,11 +950,8 @@ export const OppsummeringData: React.FC<{
                 <label className="relative">
                   <input
                     type="checkbox"
-                    id="TakogTaktekkingTakogTaktekking?.HeisesPåTak"
-                    checked={
-                      roomsData?.TakogTaktekkingTakogTaktekking?.HeisesPåTak ||
-                      false
-                    }
+                    id="TakogTaktekking?.HeisesPåTak"
+                    checked={roomsData?.TakogTaktekking?.HeisesPåTak || false}
                     readOnly
                     className="peer sr-only"
                   />
@@ -980,9 +988,7 @@ export const OppsummeringData: React.FC<{
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
                   <p className="text-darkBlack text-sm">
-                    {displayValue(
-                      roomsData?.TakogTaktekkingTakogTaktekking?.Snøfangere
-                    )}
+                    {displayValue(roomsData?.TakogTaktekking?.Snøfangere)}
                   </p>
                 )}
               </div>
@@ -996,9 +1002,7 @@ export const OppsummeringData: React.FC<{
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
                   <p className="text-darkBlack text-sm">
-                    {displayValue(
-                      roomsData?.TakogTaktekkingTakogTaktekking?.SnøfangereFarge
-                    )}
+                    {displayValue(roomsData?.TakogTaktekking?.SnøfangereFarge)}
                   </p>
                 )}
               </div>
@@ -1015,8 +1019,7 @@ export const OppsummeringData: React.FC<{
                 ) : (
                   <p className="text-darkBlack text-sm">
                     {displayValue(
-                      roomsData?.TakogTaktekkingTakogTaktekking
-                        ?.SnøfangerkrokerIGrad
+                      roomsData?.TakogTaktekking?.SnøfangerkrokerIGrad
                     )}
                   </p>
                 )}
@@ -1034,8 +1037,7 @@ export const OppsummeringData: React.FC<{
                 ) : (
                   <p className="text-darkBlack text-sm">
                     {displayValue(
-                      roomsData?.TakogTaktekkingTakogTaktekking
-                        ?.GradrennerBeslagFarge
+                      roomsData?.TakogTaktekking?.GradrennerBeslagFarge
                     )}
                   </p>
                 )}
@@ -1050,9 +1052,7 @@ export const OppsummeringData: React.FC<{
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
                   <p className="text-darkBlack text-sm">
-                    {displayValue(
-                      roomsData?.TakogTaktekkingTakogTaktekking?.Feieplatå
-                    )}
+                    {displayValue(roomsData?.TakogTaktekking?.Feieplatå)}
                   </p>
                 )}
               </div>
@@ -1066,9 +1066,7 @@ export const OppsummeringData: React.FC<{
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
                   <p className="text-darkBlack text-sm">
-                    {displayValue(
-                      roomsData?.TakogTaktekkingTakogTaktekking?.Avløpslufter
-                    )}
+                    {displayValue(roomsData?.TakogTaktekking?.Avløpslufter)}
                   </p>
                 )}
               </div>
@@ -1347,7 +1345,6 @@ export const OppsummeringData: React.FC<{
             <div className="border-t border-[#EBEBEB] w-full"></div>
             <div className="flex flex-col gap-1">
               <div className="text-darkBlack font-medium text-sm">Boddør</div>
-              <div className="text-darkBlack text-xs">Ikke relevant</div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               <div className="flex flex-col gap-1.5">
@@ -1412,9 +1409,9 @@ export const OppsummeringData: React.FC<{
               <div className="text-darkBlack font-medium text-sm">
                 Balkong/Terrassedør
               </div>
-              <div className="text-darkBlack text-xs">
+              {/* <div className="text-darkBlack text-xs">
                 Standard hvitmalt utvendig/innvendig
-              </div>
+              </div> */}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               <div className="flex flex-col gap-1.5">
@@ -1581,7 +1578,7 @@ export const OppsummeringData: React.FC<{
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
-                  <p className="text-secondary text-xs">Dørfarge</p>
+                  <p className="text-secondary text-xs">Skriv kode</p>
                 )}
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
@@ -1598,13 +1595,32 @@ export const OppsummeringData: React.FC<{
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
-                  <p className="text-secondary text-xs">Glassdør</p>
+                  <p className="text-secondary text-xs">Type dør</p>
                 )}
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
                   <p className="text-darkBlack text-sm">
-                    {displayValue(roomsData?.Dører?.InnvendigeDører?.Glassdør)}
+                    {displayValue(
+                      roomsData?.Dører?.InnvendigeDører?.InnvendigeDører?.dør
+                    )}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-1.5">
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-secondary text-xs">Dørfarge</p>
+                )}
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-darkBlack text-sm">
+                    {displayValue(
+                      roomsData?.Dører?.InnvendigeDører?.InnvendigeDører
+                        ?.Dørfarge
+                    )}
                   </p>
                 )}
               </div>
@@ -1768,6 +1784,24 @@ export const OppsummeringData: React.FC<{
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
                   <p className="text-secondary text-xs">
+                    Kommentar til spor for belegg
+                  </p>
+                )}
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-darkBlack text-sm">
+                    {displayValue(
+                      roomsData?.Dører?.InnvendigeDører?.SporBeleggText
+                    )}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-1.5">
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-secondary text-xs">
                     Kommentar til innvendige dører
                   </p>
                 )}
@@ -1800,6 +1834,20 @@ export const OppsummeringData: React.FC<{
                   </p>
                 )}
               </div>
+              <div className="flex flex-col gap-1.5">
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-secondary text-xs">Type vrider</p>
+                )}
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-darkBlack text-sm">
+                    {displayValue(roomsData?.Dører?.Dørvridere?.colorCode)}
+                  </p>
+                )}
+              </div>
             </div>
             <div className="border-t border-[#EBEBEB] w-full"></div>
             <div className="text-darkBlack font-medium text-sm">
@@ -1812,6 +1860,20 @@ export const OppsummeringData: React.FC<{
                 ) : (
                   <p className="text-darkBlack text-sm">
                     {displayValue(roomsData?.Dører?.DørerKjellerrom?.type)}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-1.5">
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-secondary text-xs">Beskriv her</p>
+                )}
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-darkBlack text-sm">
+                    {displayValue(roomsData?.Dører?.DørerKjellerrom?.colorCode)}
                   </p>
                 )}
               </div>
@@ -2147,6 +2209,20 @@ export const OppsummeringData: React.FC<{
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
+                  <p className="text-secondary text-xs">Skriv fargekode</p>
+                )}
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-darkBlack text-sm">
+                    {displayValue(roomsData?.Vinduer?.TakvinduVelux?.colorCode)}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-1.5">
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
                   <p className="text-secondary text-xs">Utforing farge</p>
                 )}
                 {loading ? (
@@ -2336,6 +2412,20 @@ export const OppsummeringData: React.FC<{
                 ) : (
                   <p className="text-darkBlack text-sm">
                     {displayValue(roomsData?.TrappogLuker?.Måltaking)}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-1.5">
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-secondary text-xs">Kommentar til trapp</p>
+                )}
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-darkBlack text-sm">
+                    {displayValue(roomsData?.TrappogLuker?.KommentarTrapp)}
                   </p>
                 )}
               </div>
@@ -2811,7 +2901,7 @@ export const OppsummeringData: React.FC<{
 
       <Drawer isOpen={FinalSubmission} onClose={handleFinalSubmissionPopup}>
         <h4 className="text-darkBlack font-medium text-lg md:text-xl lg:text-2xl bg-[#F9F9FB] flex items-center gap-2 justify-between p-4 md:p-6">
-        Generer PDF
+          Generer PDF
           <X
             onClick={() => setFinalSubmission(false)}
             className="text-primary cursor-pointer"
