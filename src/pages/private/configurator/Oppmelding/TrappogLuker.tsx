@@ -68,7 +68,6 @@ export const TrappogLuker = forwardRef(
   ) => {
     const location = useLocation();
     const pathSegments = location.pathname.split("/");
-    const id = pathSegments.length > 2 ? pathSegments[2] : null;
     const kundeId = pathSegments.length > 3 ? pathSegments[3] : null;
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -79,6 +78,9 @@ export const TrappogLuker = forwardRef(
         const valid = await form.trigger();
         return valid;
       },
+      handleSubmit: async () => {
+        await form.handleSubmit(onSubmit)();
+      },
     }));
     const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
@@ -86,11 +88,7 @@ export const TrappogLuker = forwardRef(
       setIsSubmitLoading(true);
 
       try {
-        const husmodellDocRef = doc(
-          db,
-          "housemodell_configure_broker",
-          String(id)
-        );
+        const husmodellDocRef = doc(db, "projects", String(kundeId));
 
         const formatDate = (date: Date) => {
           return date
@@ -106,22 +104,14 @@ export const TrappogLuker = forwardRef(
 
         const filteredData = removeUndefinedOrNull(data);
 
-        let updatedKundeInfo = (existingData.KundeInfo || []).map(
-          (kunde: any) => {
-            if (kunde.uniqueId === kundeId) {
-              return {
-                ...kunde,
-                TrappogLuker: filteredData,
-                updatedAt: formatDate(new Date()),
-              };
-            }
-            return kunde;
-          }
-        );
+        let updatedKundeInfo = {
+          TrappogLuker: filteredData,
+          updatedAt: formatDate(new Date()),
+        };
 
         const updatePayload: any = {
           ...existingData,
-          KundeInfo: updatedKundeInfo,
+          ...updatedKundeInfo,
         };
 
         await setDoc(husmodellDocRef, updatePayload);

@@ -13,13 +13,13 @@ import {
 import Button from "../../../components/common/button";
 import { Input } from "../../../components/ui/input";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 import {
   fetchAdminDataByEmail,
-  fetchHusmodellData,
+  fetchProjectsData,
   phoneNumberValidations,
 } from "../../../lib/utils";
 import { InputMobile } from "../../../components/ui/inputMobile";
@@ -82,12 +82,17 @@ export const Husdetaljer: React.FC<{
   const [address, setAddress] = useState("");
   const navigate = useNavigate();
   const [createData, setCreateData] = useState<any>(null);
+  const [officeId, setOficeId] = useState<any>(null);
+
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
   useEffect(() => {
     const getData = async () => {
       const data = await fetchAdminDataByEmail();
       if (data) {
         setCreateData(data);
+        if (data?.office) {
+          setOficeId(data?.office?.id);
+        }
       }
     };
 
@@ -98,13 +103,12 @@ export const Husdetaljer: React.FC<{
     if (!id || !kundeId) {
       return;
     }
+
     const getData = async () => {
-      const data = await fetchHusmodellData(id);
-      if (data && data.KundeInfo) {
-        const finalData = data.KundeInfo.find(
-          (item: any) => item.uniqueId === kundeId
-        );
-        Object.entries(finalData).forEach(([key, value]) => {
+      const data = await fetchProjectsData(kundeId);
+
+      if (data) {
+        Object.entries(data).forEach(([key, value]) => {
           if (value !== undefined && value !== null) {
             form.setValue(key as any, value);
           }
@@ -133,60 +137,51 @@ export const Husdetaljer: React.FC<{
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsSubmitLoading(true);
-    try {
-      const formatDate = (date: Date) => {
-        return date
-          .toLocaleString("sv-SE", { timeZone: "UTC" })
-          .replace(",", "");
-      };
 
-      const husmodellDocRef = doc(
-        db,
-        "housemodell_configure_broker",
-        String(id)
-      );
+    const formatDate = (date: Date) =>
+      date.toLocaleString("sv-SE", { timeZone: "UTC" }).replace(",", "");
+
+    try {
+      const now = new Date();
+      const createdAt = formatDate(now);
+      const updatedAt = formatDate(now);
 
       const uniqueId = kundeId || uuidv4();
       const finalData = {
         ...data,
-        uniqueId,
-        updatedAt: formatDate(new Date()),
-        createdAt: formatDate(new Date()),
+        id: uniqueId,
+        createdAt,
+        updatedAt,
       };
 
-      const docSnap = await getDoc(husmodellDocRef);
+      const projectDocRef = doc(db, "projects", uniqueId);
+
+      const docSnap = await getDoc(projectDocRef);
 
       if (docSnap.exists()) {
-        const existingData = docSnap.data();
-
-        const existingKundeInfo = existingData.KundeInfo || [];
-
-        let updatedKundeInfo;
-
-        if (kundeId) {
-          updatedKundeInfo = existingKundeInfo.map((item: any) =>
-            item.uniqueId === kundeId ? { ...item, ...finalData } : item
-          );
-        } else {
-          updatedKundeInfo = [...existingKundeInfo, finalData];
-        }
-
-        await updateDoc(husmodellDocRef, {
-          ...existingData,
-          KundeInfo: updatedKundeInfo,
-          updatedAt: formatDate(new Date()),
-          createDataBy: {
-            email: createData?.email,
-            photo: createData?.photo,
-            name: createData?.f_name
-              ? `${createData?.f_name} ${createData?.l_name}`
-              : createData?.name,
-          },
+        await updateDoc(projectDocRef, {
+          ...finalData,
+          updatedAt,
+          updated_by: createData?.id,
+          category_id: id,
+          self_id: uniqueId,
         });
 
         toast.success("Updated successfully", { position: "top-right" });
+      } else {
+        await setDoc(projectDocRef, {
+          ...finalData,
+          createdAt,
+          updatedAt,
+          created_by: createData?.id,
+          updated_by: createData?.id,
+          category_id: id,
+          self_id: uniqueId,
+          office_id: officeId,
+        });
+
+        toast.success("Added successfully", { position: "top-right" });
       }
-      //
 
       navigate(`/se-series/${id}/edit-husmodell/${uniqueId}`);
       setActiveTab(1);

@@ -28,19 +28,19 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Ic_search from "../../../assets/images/Ic_search.svg";
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
-  orderBy,
   query,
   setDoc,
-  updateDoc,
   where,
 } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import {
+  fetchAdminData,
   fetchAdminDataByEmail,
-  fetchHusmodellData,
+  fetchProjectsData,
   formatDateTime,
 } from "../../../lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -84,26 +84,9 @@ export const HusmodellerTable = () => {
 
   const handleDelete = async (entryId: string) => {
     try {
-      const docRef = doc(db, "housemodell_configure_broker", String(id));
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        const currentKundeInfo = data?.KundeInfo || [];
-
-        const updatedKundeInfo = currentKundeInfo.filter(
-          (entry: any) => entry.uniqueId !== entryId
-        );
-
-        await updateDoc(docRef, {
-          KundeInfo: updatedKundeInfo,
-          updatedAt: new Date().toISOString(),
-        });
-        setId(null);
-        toast.success("Slettet", { position: "top-right" });
-        fetchHusmodellsData();
-        setShowConfirm(false);
-      }
+      await deleteDoc(doc(db, "projects", entryId));
+      fetchHusmodellsData();
+      setShowConfirm(false);
     } catch (error) {
       console.error("Error deleting entry from KundeInfo:", error);
       toast.error("Noe gikk galt ved sletting.");
@@ -118,28 +101,28 @@ export const HusmodellerTable = () => {
     }
   };
 
-  const getData = async (email: string) => {
-    try {
-      if (email) {
-        const q = query(collection(db, "admin"), where("email", "==", email));
-        const querySnapshot = await getDocs(q);
+  const fetchUserData = async (id: string) => {
+    if (!id) return null;
 
-        if (!querySnapshot.empty) {
-          return querySnapshot.docs[0].data();
-        }
+    try {
+      const officeData = await fetchAdminData(id);
+      if (officeData) {
+        return officeData;
       }
+      return null;
     } catch (error) {
-      console.error("Error fetching admin data:", error);
+      console.error("Error fetching office data:", error);
+      return null;
     }
   };
 
-  const fetchOfficeData = async (officeId: string) => {
-    if (!officeId) return null;
+  const fetchTagData = async (id: string) => {
+    if (!id) return null;
 
     try {
       const officeQuery = query(
-        collection(db, "office"),
-        where("id", "==", officeId)
+        collection(db, "housemodell_configure_broker"),
+        where("id", "==", id)
       );
 
       const querySnapshot = await getDocs(officeQuery);
@@ -154,7 +137,7 @@ export const HusmodellerTable = () => {
 
       return null;
     } catch (error) {
-      console.error("Error fetching office data:", error);
+      console.error("Error fetching tag data:", error);
       return null;
     }
   };
@@ -162,35 +145,32 @@ export const HusmodellerTable = () => {
   const fetchHusmodellsData = async () => {
     setIsLoading(true);
     try {
-      const q = query(
-        collection(db, "housemodell_configure_broker"),
-        orderBy("updatedAt", "desc")
-      );
+      // const q = query(collection(db, "projects"), orderBy("updatedAt", "desc"));
+
+      let q;
+      if (IsAdmin) {
+        q = query(collection(db, "projects"));
+      } else {
+        q = query(collection(db, "projects"), where("office_id", "==", office));
+      }
       const querySnapshot = await getDocs(q);
 
-      const data: any = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const data: any = querySnapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        .sort((a: any, b: any) => {
+          const dateA = a.updatedAt?.toDate
+            ? a.updatedAt.toDate()
+            : new Date(a.updatedAt);
+          const dateB = b.updatedAt?.toDate
+            ? b.updatedAt.toDate()
+            : new Date(b.updatedAt);
+          return dateB - dateA;
+        });
 
-      let finalData: any = [];
-
-      if (IsAdmin) {
-        finalData = data;
-      } else {
-        const filteredData = await Promise.all(
-          data.map(async (item: any) => {
-            const email = item?.createDataBy?.email;
-            if (!email) return null;
-
-            const userData = await getData(email);
-            return userData?.office === office ? item : null;
-          })
-        );
-        finalData = filteredData.filter((item) => item !== null);
-      }
-
-      setHouseModels(finalData);
+      setHouseModels(data);
     } catch (error) {
       console.error("Error fetching husmodell data:", error);
     } finally {
@@ -218,51 +198,39 @@ export const HusmodellerTable = () => {
         const allKunder: any[] = [];
 
         for (const item of (houseModels as any) || []) {
-          const kundeInfo = item?.KundeInfo;
-          if (!Array.isArray(kundeInfo) || kundeInfo.length === 0) continue;
+          // let officeData: any = null;
+          let tagData: any = null;
+          let userData: any = null;
 
-          let officeData: any = null;
-
-          if (item?.createDataBy?.office) {
-            officeData = await fetchOfficeData(item.createDataBy.office);
-          } else if (item?.createDataBy?.email) {
-            const userSnap = await getDocs(
-              query(
-                collection(db, "admin"),
-                where("email", "==", item.createDataBy.email)
-              )
-            );
-
-            if (!userSnap.empty) {
-              const userData = userSnap.docs[0].data();
-
-              if (userData?.office) {
-                officeData = await fetchOfficeData(userData.office);
-              }
-            }
+          // if (item?.office_id) {
+          //   officeData = await fetchOfficeData(item.office_id);
+          // }
+          if (item?.category_id) {
+            tagData = await fetchTagData(item?.category_id);
+          }
+          if (item?.created_by) {
+            userData = await fetchUserData(item?.created_by);
           }
 
-          for (const kunde of kundeInfo) {
-            const mappedKunde = {
-              ...kunde,
-              photo: item.photo || null,
-              husmodell_name: kunde?.VelgSerie || item?.husmodell_name || null,
-              parentId: item.id,
-              createDataBy: item?.createDataBy || null,
-              tag: item?.tag || null,
-              placeOrder: kunde?.placeOrder || false,
-              configurator:
-                kunde?.Plantegninger?.length > 0
-                  ? kunde.Plantegninger.some((room: any) => !room.configurator)
-                  : true,
-              updatedAt: kunde.updatedAt || item.updatedAt || null,
-              kundeId: kunde?.uniqueId,
-              id: item?.id,
-              office_name: officeData?.data?.name || null,
-            };
+          const mappedKunde = {
+            ...item,
+            husmodell_name: item?.VelgSerie || null,
+            parentId: item.category_id,
+            createDataBy: userData || null,
+            tag: tagData?.tag || null,
+            placeOrder: item?.placeOrder || false,
+            configurator:
+              item?.Plantegninger?.length > 0
+                ? item.Plantegninger.some((room: any) => !room.configurator)
+                : true,
+            updatedAt: item?.updatedAt || item?.createdAt || null,
+            kundeId: item?.uniqueId,
+            id: item?.uniqueId,
+            // office_name: officeData?.data?.name || null,
+            self_id: item?.self_id,
+          };
 
-            allKunder.push(mappedKunde);
-          }
+          allKunder.push(mappedKunde);
         }
 
         const filtered = allKunder.filter((kunde) => {
@@ -471,19 +439,6 @@ export const HusmodellerTable = () => {
     exportToPDF();
   }, [isExporting, selectedData]);
 
-  const [createData, setCreateData] = useState<any>(null);
-  useEffect(() => {
-    const getData = async () => {
-      const data = await fetchAdminDataByEmail();
-
-      if (data) {
-        setCreateData(data);
-      }
-    };
-
-    getData();
-  }, []);
-
   const columns = useMemo<ColumnDef<any>[]>(() => {
     const baseColumns: ColumnDef<any>[] = [
       {
@@ -495,17 +450,17 @@ export const HusmodellerTable = () => {
           </p>
         ),
       },
-      {
-        accessorKey: "office_name",
-        header: "Kontornavn",
-        cell: ({ row }) => {
-          return (
-            <p className="text-sm font-medium text-black w-max">
-              {row.original?.office_name}
-            </p>
-          );
-        },
-      },
+      // {
+      //   accessorKey: "office_name",
+      //   header: "Kontornavn",
+      //   cell: ({ row }) => {
+      //     return (
+      //       <p className="text-sm font-medium text-black w-max">
+      //         {row.original?.office_name}
+      //       </p>
+      //     );
+      //   },
+      // },
       {
         accessorKey: "Anleggsadresse",
         header: "Anleggsadresse",
@@ -591,9 +546,9 @@ export const HusmodellerTable = () => {
                   e.stopPropagation();
 
                   if (row.original.configurator === true) return;
-                  if (!row.original.id || !row.original.kundeId) return;
-                  setKundeId(row.original.kundeId);
-                  setId(row.original.id);
+                  if (!row.original.category_id || !row.original.self_id) return;
+                  setKundeId(row.original.self_id);
+                  setId(row.original.category_id);
                   setIsPlacingOrder(true);
                   const formatDate = (date: Date) =>
                     date
@@ -601,42 +556,24 @@ export const HusmodellerTable = () => {
                       .replace(",", "");
 
                   try {
-                    const houseData: any = await fetchHusmodellData(
-                      row.original.id
-                    );
-                    const kundeList = houseData?.KundeInfo || [];
-
-                    const targetKundeIndex = kundeList.findIndex(
-                      (k: any) =>
-                        String(k.uniqueId) === String(row.original.kundeId)
-                    );
-                    if (targetKundeIndex === -1) return;
-
-                    const refetched = await fetchHusmodellData(row.original.id);
-                    const targetKunde = refetched?.KundeInfo?.find(
-                      (kunde: any) =>
-                        String(kunde.uniqueId) === String(row.original.kundeId)
+                    const houseData = await fetchProjectsData(
+                      row.original.self_id
                     );
 
-                    const newId = row.original.id;
+                    const newId = row.original.self_id;
 
-                    const docRef = doc(
-                      db,
-                      "housemodell_configure_broker",
-                      newId
-                    );
+                    const docRef = doc(db, "projects", newId);
 
                     if (!newConfiguratorName.trim()) {
                       setPendingPayload({
-                        ...targetKunde,
-                        createdAt: formatDate(new Date()),
+                        ...houseData,
                       });
                       setShowConfiguratorModal(true);
                       return;
                     }
 
                     await setDoc(docRef, {
-                      ...targetKunde,
+                      ...houseData,
                       createdAt: formatDate(new Date()),
                       name: newConfiguratorName.trim(),
                     });
@@ -645,7 +582,7 @@ export const HusmodellerTable = () => {
                       position: "top-right",
                     });
                     navigate(
-                      `/Room-Configurator/${row.original.id}/${row.original.kundeId}`
+                      `/Room-Configurator/${row.original.category_id}/${row.original.self_id}`
                     );
                   } catch (err) {
                     console.error("Error saving data:", err);
@@ -675,7 +612,7 @@ export const HusmodellerTable = () => {
               className="h-5 w-5 text-primary cursor-pointer"
               onClick={() =>
                 navigate(
-                  `/se-series/${row.original.parentId}/edit-husmodell/${row.original?.uniqueId}`
+                  `/se-series/${row.original.parentId}/edit-husmodell/${row.original?.self_id}`
                 )
               }
             />
@@ -684,7 +621,7 @@ export const HusmodellerTable = () => {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                confirmDelete(row.original?.uniqueId);
+                confirmDelete(row.original?.self_id);
                 setId(row.original.parentId);
               }}
             />
@@ -927,7 +864,7 @@ export const HusmodellerTable = () => {
                   className="hover:bg-muted/50 cursor-pointer"
                   onClick={() =>
                     navigate(
-                      `/se-series/${row.original.parentId}/edit-husmodell/${row.original?.uniqueId}`
+                      `/se-series/${row.original.parentId}/edit-husmodell/${row.original?.self_id}`
                     )
                   }
                 >
@@ -1086,12 +1023,8 @@ export const HusmodellerTable = () => {
                   setIsPlacingOrder(true);
 
                   if (!pendingPayload) return;
-                  const newId = id;
-                  const docRef = doc(
-                    db,
-                    "housemodell_configure_broker",
-                    String(newId)
-                  );
+                  const newId = kundeId;
+                  const docRef = doc(db, "projects", String(newId));
                   const docSnap = await getDoc(docRef);
                   const formatDate = (date: Date) =>
                     date
@@ -1100,31 +1033,14 @@ export const HusmodellerTable = () => {
 
                   let existingData = docSnap.exists() ? docSnap.data() : {};
 
-                  let updatedKundeInfo = (existingData.KundeInfo || []).map(
-                    (kunde: any) => {
-                      if (kunde.uniqueId === kundeId) {
-                        return {
-                          ...kunde,
-                          placeOrder: true,
-                          name: newConfiguratorName.trim(),
-                        };
-                      }
-                      return kunde;
-                    }
-                  );
-
-                  const updatePayload: any = {
+                  let updatedKundeInfo = {
                     ...existingData,
-                    KundeInfo: updatedKundeInfo,
-
-                    createDataBy: createData,
+                    placeOrder: true,
+                    name: newConfiguratorName.trim(),
+                    createdAt: formatDate(new Date()),
                   };
 
-                  if (!docSnap.exists()) {
-                    updatePayload.createdAt = formatDate(new Date());
-                  }
-
-                  await setDoc(docRef, updatePayload);
+                  await setDoc(docRef, { ...updatedKundeInfo });
 
                   toast.success("Bestillingen er lagt inn!", {
                     position: "top-right",

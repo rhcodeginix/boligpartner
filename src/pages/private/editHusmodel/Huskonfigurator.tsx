@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Ic_upload_blue_img from "../../../assets/images/Ic_upload_blue_img.svg";
 import { useLocation, useNavigate } from "react-router-dom";
-import { fetchAdminDataByEmail, fetchHusmodellData } from "../../../lib/utils";
+import { fetchAdminDataByEmail, fetchProjectsData } from "../../../lib/utils";
 import Button from "../../../components/common/button";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../config/firebaseConfig";
@@ -55,25 +55,26 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
   const [IsPlaceOrder, setIsPlaceOrder] = useState(false);
 
   useEffect(() => {
-    if (!id) {
+    if (!id || !kundeId) {
       setLoading(false);
       return;
     }
-    const getData = async () => {
-      const data = await fetchHusmodellData(id);
 
-      if (data && data.KundeInfo) {
-        const finalData = data.KundeInfo.find(
-          (item: any) => item.uniqueId === kundeId
-        );
-        setRoomsData(finalData?.Plantegninger);
-        setIsPlaceOrder(finalData?.placeOrder ?? false);
+    const getData = async () => {
+      const data = await fetchProjectsData(kundeId);
+
+      if (data) {
+        if (data?.Plantegninger) {
+          setRoomsData(data?.Plantegninger);
+        }
+        setIsPlaceOrder(data?.placeOrder ?? false);
       }
       setLoading(false);
     };
 
     getData();
-  }, [id]);
+  }, [id, kundeId]);
+
   useEffect(() => {
     pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
   }, []);
@@ -190,11 +191,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           const imageBase64Array = await convertPdfToImages(base64PDF);
 
           if (imageBase64Array.length) {
-            const husmodellDocRef = doc(
-              db,
-              "housemodell_configure_broker",
-              String(id)
-            );
+            const husmodellDocRef = doc(db, "projects", String(kundeId));
             const docSnap = await getDoc(husmodellDocRef);
             if (!docSnap.exists()) {
               toast.error("Husmodell not found", { position: "top-right" });
@@ -202,40 +199,36 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
             }
 
             const docvData = docSnap.data();
-            const existingKundeInfo = docvData.KundeInfo || [];
+            const existingData = docvData || {};
+            const existingFloors = existingData.Plantegninger || [];
+            const newFloors = [...existingFloors];
 
-            const updatedKundeInfo = existingKundeInfo.map((kunde: any) => {
-              if (kunde.uniqueId === kundeId) {
-                const existingFloors = kunde.Plantegninger || [];
-                let newFloors = [...existingFloors];
+            imageBase64Array.forEach((imgDataUrl) => {
+              const floorIndex = newFloors.length + 1;
+              const updatedFloor = {
+                ...data,
+                image: imgDataUrl,
+                title: `Romskjema ${floorIndex}`,
+              };
+              newFloors.push(updatedFloor);
 
-                imageBase64Array.forEach((imgDataUrl) => {
-                  const floorIndex = newFloors.length + 1;
-                  const updatedFloor = {
-                    ...data,
-                    image: imgDataUrl,
-                    title: `Romskjema ${floorIndex}`,
-                  };
-
-                  newFloors.push(updatedFloor);
-
-                  setRoomsData((prev: any) => [
-                    ...(Array.isArray(prev) ? prev : []),
-                    updatedFloor,
-                  ]);
-                });
-
-                return {
-                  ...kunde,
-                  Plantegninger: newFloors,
-                };
-              }
-              return kunde;
+              setRoomsData((prev: any) => [
+                ...(Array.isArray(prev) ? prev : []),
+                updatedFloor,
+              ]);
             });
 
+            const updatedFinalData = {
+              ...existingData,
+              Plantegninger: newFloors,
+            };
+            const formatDate = (date: Date) =>
+              date
+                .toLocaleString("sv-SE", { timeZone: "UTC" })
+                .replace(",", "");
             await updateDoc(husmodellDocRef, {
-              KundeInfo: updatedKundeInfo,
-              updatedAt: new Date().toISOString(),
+              ...updatedFinalData,
+              updatedAt: formatDate(new Date()),
             });
 
             toast.success("PDF uploaded and floors added!", {
@@ -247,11 +240,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           const finalImageUrl = await uploadBase64Image(imageBase64);
 
           if (finalImageUrl) {
-            const husmodellDocRef = doc(
-              db,
-              "housemodell_configure_broker",
-              String(id)
-            );
+            const husmodellDocRef = doc(db, "projects", String(kundeId));
             const docSnap = await getDoc(husmodellDocRef);
             if (!docSnap.exists()) {
               toast.error("Husmodell not found", { position: "top-right" });
@@ -259,35 +248,35 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
             }
 
             const docvData = docSnap.data();
-            const existingKundeInfo = docvData.KundeInfo || [];
+            const existingData = docvData.finalData || {};
+            const existingFloors = existingData.Plantegninger || [];
 
-            const updatedKundeInfo = existingKundeInfo.map((kunde: any) => {
-              if (kunde.uniqueId === kundeId) {
-                const existingFloors = kunde.Plantegninger || [];
-                const newIndex = existingFloors.length + 1;
+            const newIndex = existingFloors.length + 1;
 
-                const updatedFloor = {
-                  ...data,
-                  image: finalImageUrl,
-                  title: `Romskjema ${newIndex}`,
-                };
+            const updatedFloor = {
+              ...data,
+              image: finalImageUrl,
+              title: `Romskjema ${newIndex}`,
+            };
 
-                setRoomsData((prev: any) => [
-                  ...(Array.isArray(prev) ? prev : []),
-                  updatedFloor,
-                ]);
+            const updatedFinalData = {
+              ...existingData,
+              Plantegninger: [...existingFloors, updatedFloor],
+            };
 
-                return {
-                  ...kunde,
-                  Plantegninger: [...existingFloors, updatedFloor],
-                };
-              }
-              return kunde;
-            });
+            setRoomsData((prev: any) => [
+              ...(Array.isArray(prev) ? prev : []),
+              updatedFloor,
+            ]);
+
+            const formatDate = (date: Date) =>
+              date
+                .toLocaleString("sv-SE", { timeZone: "UTC" })
+                .replace(",", "");
 
             await updateDoc(husmodellDocRef, {
-              KundeInfo: updatedKundeInfo,
-              updatedAt: new Date().toISOString(),
+              ...updatedFinalData,
+              updatedAt: formatDate(new Date()),
             });
 
             toast.success(data.message, { position: "top-right" });
@@ -344,29 +333,33 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
     setIsSubmitLoading(true);
     setConfirmDeleteIndex(null);
 
-    const husmodellDocRef = doc(db, "housemodell_configure_broker", String(id));
+    const husmodellDocRef = doc(db, "projects", String(kundeId));
+    const formatDate = (date: Date) =>
+      date.toLocaleString("sv-SE", { timeZone: "UTC" }).replace(",", "");
 
     try {
       const docSnap = await getDoc(husmodellDocRef);
-      const docData: any = docSnap.data();
-      const existingKundeInfo = docData.KundeInfo || [];
 
-      const updatedKundeInfo = existingKundeInfo.map((kunde: any) => {
-        if (kunde.uniqueId === kundeId) {
-          const newFloors = (kunde.Plantegninger || []).filter(
-            (_: any, i: number) => i !== indexToDelete
-          );
-          return {
-            ...kunde,
-            Plantegninger: newFloors,
-          };
-        }
-        return kunde;
-      });
+      if (!docSnap.exists()) {
+        toast.error("Husmodell not found", { position: "top-right" });
+        return;
+      }
+
+      const docData: any = docSnap.data();
+      const existingData = docData || {};
+
+      const newFloors = (existingData.Plantegninger || []).filter(
+        (_: any, i: number) => i !== indexToDelete
+      );
+
+      const updatedFinalData = {
+        ...existingData,
+        Plantegninger: newFloors,
+      };
 
       await updateDoc(husmodellDocRef, {
-        KundeInfo: updatedKundeInfo,
-        updatedAt: new Date().toISOString(),
+        ...updatedFinalData,
+        updatedAt: formatDate(new Date()),
       });
 
       const updatedRooms = roomsData.filter(
@@ -385,6 +378,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
       setIsSubmitLoading(false);
     }
   };
+
   const handleConfirmPopup = () => {
     if (confirmDeleteIndex) {
       setConfirmDeleteIndex(null);
@@ -538,29 +532,22 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
 
                                 const husmodellDocRef = doc(
                                   db,
-                                  "housemodell_configure_broker",
-                                  String(id)
+                                  "projects",
+                                  String(kundeId)
                                 );
                                 const docSnap = await getDoc(husmodellDocRef);
 
                                 if (docSnap.exists()) {
                                   const docData = docSnap.data();
-                                  const existingKundeInfo =
-                                    docData.KundeInfo || [];
+                                  const existingData = docData || {};
 
-                                  const updatedKundeInfo =
-                                    existingKundeInfo.map((kunde: any) => {
-                                      if (kunde.uniqueId === kundeId) {
-                                        return {
-                                          ...kunde,
-                                          Plantegninger: updatedRooms,
-                                        };
-                                      }
-                                      return kunde;
-                                    });
+                                  const updatedFinalData = {
+                                    ...existingData,
+                                    Plantegninger: updatedRooms,
+                                  };
 
                                   await updateDoc(husmodellDocRef, {
-                                    KundeInfo: updatedKundeInfo,
+                                    ...updatedFinalData,
                                     updatedAt: new Date().toISOString(),
                                   });
 
@@ -568,6 +555,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                                     position: "top-right",
                                   });
                                 }
+
                                 setUpdatingIndex(null);
                                 setEditIndex(null);
                               }}
@@ -720,34 +708,23 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                   .replace(",", "");
 
               try {
-                const houseData: any = await fetchHusmodellData(id);
-                const kundeList = houseData?.KundeInfo || [];
+                const houseData: any = await fetchProjectsData(kundeId);
+                const existingData = houseData || {};
 
-                const targetKundeIndex = kundeList.findIndex(
-                  (k: any) => String(k.uniqueId) === String(kundeId)
-                );
-                if (targetKundeIndex === -1) return;
+                const newId = kundeId;
 
-                const refetched = await fetchHusmodellData(id);
-                const targetKunde = refetched?.KundeInfo?.find(
-                  (kunde: any) => String(kunde.uniqueId) === String(kundeId)
-                );
-
-                const newId = id;
-
-                const docRef = doc(db, "housemodell_configure_broker", newId);
+                const docRef = doc(db, "projects", newId);
 
                 if (!newConfiguratorName.trim()) {
                   setPendingPayload({
-                    ...targetKunde,
-                    createdAt: formatDate(new Date()),
+                    ...existingData,
                   });
                   setShowConfiguratorModal(true);
                   return;
                 }
 
                 await setDoc(docRef, {
-                  ...targetKunde,
+                  ...existingData,
                   createdAt: formatDate(new Date()),
                   name: newConfiguratorName.trim(),
                 });
@@ -835,12 +812,8 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                   setIsPlacingOrder(true);
 
                   if (!pendingPayload) return;
-                  const newId = id;
-                  const docRef = doc(
-                    db,
-                    "housemodell_configure_broker",
-                    String(newId)
-                  );
+                  const newId = kundeId;
+                  const docRef = doc(db, "projects", String(newId));
                   const docSnap = await getDoc(docRef);
                   const formatDate = (date: Date) =>
                     date
@@ -849,23 +822,16 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
 
                   let existingData = docSnap.exists() ? docSnap.data() : {};
 
-                  let updatedKundeInfo = (existingData.KundeInfo || []).map(
-                    (kunde: any) => {
-                      if (kunde.uniqueId === kundeId) {
-                        return {
-                          ...kunde,
-                          name: newConfiguratorName.trim(),
-                          placeOrder: true,
-                        };
-                      }
-                      return kunde;
-                    }
-                  );
-
-                  const updatePayload: any = {
+                  const updatedFinalData = {
                     ...existingData,
-                    KundeInfo: updatedKundeInfo,
-                    createDataBy: createData,
+                    ...pendingPayload,
+                    name: newConfiguratorName.trim(),
+                    placeOrder: true,
+                  };
+                  const updatePayload: any = {
+                    ...updatedFinalData,
+                    updated_by: createData?.id,
+                    updatedAt: formatDate(new Date()),
                   };
 
                   if (!docSnap.exists()) {

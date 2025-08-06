@@ -28,6 +28,20 @@ export const fetchHusmodellData = async (id: string) => {
     console.error("Error fetching husmodell data:", error);
   }
 };
+export const fetchProjectsData = async (id: string) => {
+  try {
+    if (id) {
+      const husmodellDocRef = doc(db, "projects", id);
+      const docSnap = await getDoc(husmodellDocRef);
+
+      if (docSnap.exists()) {
+        return docSnap.data();
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching project data:", error);
+  }
+};
 export const fetchRoomData = async (id: string) => {
   try {
     if (id) {

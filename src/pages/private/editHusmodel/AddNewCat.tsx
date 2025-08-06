@@ -245,25 +245,13 @@ export const AddNewCat: React.FC<{
     }
 
     try {
-      const husmodellDocRef = doc(
-        db,
-        "housemodell_configure_broker",
-        String(id)
-      );
+      const husmodellDocRef = doc(db, "projects", String(kundeId));
       const docSnap = await getDoc(husmodellDocRef);
 
       if (docSnap.exists()) {
         const houseData = docSnap.data();
 
-        const kundeList = houseData?.KundeInfo || [];
-
-        const targetKundeIndex = kundeList.findIndex(
-          (k: any) => String(k.uniqueId) === String(kundeId)
-        );
-        if (targetKundeIndex === -1) return;
-
-        const targetKunde = kundeList[targetKundeIndex];
-        const existingPlantegninger = targetKunde?.Plantegninger || [];
+        const existingPlantegninger = houseData?.Plantegninger || [];
 
         const itemToUpdate = existingPlantegninger.find(
           (item: any) => String(item?.pdf_id) === String(pdfId)
@@ -294,11 +282,10 @@ export const AddNewCat: React.FC<{
         }
 
         itemToUpdate.rooms = roomsList;
-        targetKunde.Plantegninger = existingPlantegninger;
-        kundeList[targetKundeIndex] = targetKunde;
+        houseData.Plantegninger = existingPlantegninger;
 
         await updateDoc(husmodellDocRef, {
-          KundeInfo: kundeList,
+          ...houseData,
         });
       } else {
         console.error("Document does not exist");

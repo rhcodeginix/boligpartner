@@ -22,11 +22,7 @@ export const ExportView: React.FC<{
   const fetchOfficeData = async () => {
     try {
       if (roomsData?.createDataBy?.office) {
-        const husmodellDocRef = doc(
-          db,
-          "office",
-          roomsData?.createDataBy?.office
-        );
+        const husmodellDocRef = doc(db, "office", roomsData?.office_id);
         const docSnap = await getDoc(husmodellDocRef);
 
         if (docSnap.exists()) {

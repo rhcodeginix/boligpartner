@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../../../components/common/button";
-import { fetchHusmodellData } from "../../../../lib/utils";
+import { fetchProjectsData } from "../../../../lib/utils";
 import { Spinner } from "../../../../components/Spinner";
 
 export const Romskjema: React.FC<{ Next: any }> = ({ Next }) => {
@@ -21,13 +21,10 @@ export const Romskjema: React.FC<{ Next: any }> = ({ Next }) => {
       return;
     }
     const getData = async () => {
-      const data = await fetchHusmodellData(id);
+      const data = await fetchProjectsData(kundeId);
 
-      if (data && data.KundeInfo) {
-        const finalData = data.KundeInfo.find(
-          (item: any) => item.uniqueId === kundeId
-        );
-        setRoomsData(finalData);
+      if (data) {
+        setRoomsData(data);
       }
       setLoading(false);
     };

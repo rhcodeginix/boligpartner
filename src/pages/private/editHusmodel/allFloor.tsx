@@ -5,7 +5,7 @@ import { AddNewCat } from "./AddNewCat";
 import Ic_trash from "../../../assets/images/Ic_trash.svg";
 import Button from "../../../components/common/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { fetchHusmodellData } from "../../../lib/utils";
+import { fetchAdminDataByEmail, fetchProjectsData } from "../../../lib/utils";
 import { ChevronRight, Pencil, Plus, X } from "lucide-react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
@@ -21,6 +21,19 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
     index: number;
     data: any;
   }>(null);
+
+  const [createData, setCreateData] = useState<any>(null);
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+
+      if (data) {
+        setCreateData(data);
+      }
+    };
+
+    getData();
+  }, []);
 
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
@@ -70,19 +83,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
     if (!id || !pdfId || !kundeId) return;
 
     const getData = async () => {
-      const data: any = await fetchHusmodellData(id);
-
-      if (!data?.KundeInfo) {
-        return;
-      }
-
-      const targetKunde = data.KundeInfo.find(
-        (kunde: any) => String(kunde.uniqueId) === String(kundeId)
-      );
-
-      if (!targetKunde) {
-        return;
-      }
+      const data: any = await fetchProjectsData(kundeId);
 
       const requiredCategoriesWithProducts = {
         Himlling: [
@@ -205,7 +206,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         ],
       };
 
-      const updatedPlantegninger = (targetKunde?.Plantegninger || []).map(
+      const updatedPlantegninger = (data?.Plantegninger || []).map(
         (floor: any) => {
           if (!Array.isArray(floor.rooms)) return floor;
 
@@ -354,19 +355,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         (item: any) => String(item?.pdf_id) === String(pdfId)
       );
 
-      // const husmodellDocRef = doc(db, "housemodell_configure_broker", id);
-      // await updateDoc(husmodellDocRef, {
-      //   KundeInfo: data.KundeInfo.map((kunde: any) => {
-      //     if (String(kunde.uniqueId) === String(kundeId)) {
-      //       return {
-      //         ...kunde,
-      //         Plantegninger: updatedPlantegninger,
-      //       };
-      //     }
-      //     return kunde;
-      //   }),
-      // });
-
       if (finalData) {
         const filteredRooms = (finalData.rooms || []).filter((room: any) => {
           const roomName = room?.name_no || room?.name || "";
@@ -376,24 +364,16 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         setFloorData(finalData);
         setCategory(filteredRooms);
 
-        const husmodellDocRef = doc(db, "housemodell_configure_broker", id);
+        const husmodellDocRef = doc(db, "projects", kundeId);
         await updateDoc(husmodellDocRef, {
-          KundeInfo: data.KundeInfo.map((kunde: any) => {
-            if (String(kunde.uniqueId) === String(kundeId)) {
+          Plantegninger: data.Plantegninger.map((plan: any) => {
+            if (String(plan?.pdf_id) === String(pdfId)) {
               return {
-                ...kunde,
-                Plantegninger: kunde.Plantegninger.map((plan: any) => {
-                  if (String(plan?.pdf_id) === String(pdfId)) {
-                    return {
-                      ...plan,
-                      rooms: filteredRooms,
-                    };
-                  }
-                  return plan;
-                }),
+                ...plan,
+                rooms: filteredRooms,
               };
             }
-            return kunde;
+            return plan;
           }),
         });
       }
@@ -537,41 +517,36 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
                             const husmodellDocRef = doc(
                               db,
-                              "housemodell_configure_broker",
-                              id
+                              "projects",
+                              kundeId
                             );
+
                             try {
                               const docSnap = await getDoc(husmodellDocRef);
                               if (docSnap.exists()) {
                                 const houseData = docSnap.data();
-                                const kundeList = houseData?.KundeInfo || [];
-                                const targetKundeIndex = kundeList.findIndex(
-                                  (k: any) =>
-                                    String(k.uniqueId) === String(kundeId)
-                                );
-                                if (targetKundeIndex === -1) return;
-
-                                const targetKunde = kundeList[targetKundeIndex];
                                 const existingPlantegninger =
-                                  targetKunde?.Plantegninger || [];
+                                  houseData.Plantegninger || [];
 
-                                const itemToUpdate = existingPlantegninger.find(
-                                  (item: any) =>
-                                    String(item?.pdf_id) === String(pdfId)
-                                );
-
-                                if (!itemToUpdate) return;
-
-                                itemToUpdate.rooms = itemToUpdate.rooms?.filter(
-                                  (_: any, i: number) => i !== index
-                                );
-
-                                targetKunde.Plantegninger =
-                                  existingPlantegninger;
-                                kundeList[targetKundeIndex] = targetKunde;
+                                const updatedPlantegninger =
+                                  existingPlantegninger.map((item: any) => {
+                                    if (
+                                      String(item?.pdf_id) === String(pdfId)
+                                    ) {
+                                      return {
+                                        ...item,
+                                        rooms: item.rooms?.filter(
+                                          (_: any, i: number) => i !== index
+                                        ),
+                                      };
+                                    }
+                                    return item;
+                                  });
 
                                 await updateDoc(husmodellDocRef, {
-                                  KundeInfo: kundeList,
+                                  Plantegninger: updatedPlantegninger,
+                                  updatedAt: new Date().toISOString(),
+                                  updated_by: createData?.id,
                                 });
                               }
                             } catch (error) {

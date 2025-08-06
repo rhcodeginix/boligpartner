@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   collection,
+  deleteDoc,
   doc,
-  getDoc,
   getDocs,
-  orderBy,
   query,
   updateDoc,
   where,
@@ -43,95 +42,46 @@ export const AllRoomkonfigurator: React.FC = () => {
     getData();
   }, []);
 
-  const getData = async (email: string) => {
-    try {
-      if (email) {
-        const q = query(collection(db, "admin"), where("email", "==", email));
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-          return querySnapshot.docs[0].data();
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching admin data:", error);
-    }
-  };
-
   const fetchRoomConfiguratorData = async () => {
     setIsLoading(true);
     try {
-      let q = query(
-        collection(db, "housemodell_configure_broker"),
-        orderBy("updatedAt", "desc")
-      );
+      let q;
+      if (IsAdmin) {
+        q = query(collection(db, "projects"), where("placeOrder", "==", true));
+      } else {
+        q = query(
+          collection(db, "projects"),
+          where("placeOrder", "==", true),
+          where("office_id", "==", office)
+        );
+      }
       const querySnapshot = await getDocs(q);
 
-      const data: any = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      let finalData: any = [];
-
-      if (IsAdmin) {
-        finalData = data;
-      } else {
-        const filteredData = await Promise.all(
-          data.map(async (item: any) => {
-            const userData = await getData(item?.createDataBy?.email);
-            return userData?.office === office ? item : null;
-          })
-        );
-        finalData = filteredData.filter((item) => item !== null);
-      }
-
-      const filteredData = finalData
-        .filter((item: any) => {
-          return Array.isArray(item.KundeInfo);
-        })
-        .map((item: any) => {
-          const filteredKundes = item.KundeInfo.filter((kunde: any) => {
-            return kunde && kunde.placeOrder === true;
-          });
-
-          return {
-            ...item,
-            KundeInfo: filteredKundes,
-          };
+      const data: any = querySnapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        .sort((a: any, b: any) => {
+          const dateA = a.updatedAt?.toDate
+            ? a.updatedAt.toDate()
+            : new Date(a.updatedAt);
+          const dateB = b.updatedAt?.toDate
+            ? b.updatedAt.toDate()
+            : new Date(b.updatedAt);
+          return dateB - dateA;
         });
 
-      const allKunder = filteredData.flatMap((item: any) => {
-        if (
-          item?.KundeInfo &&
-          Array.isArray(item.KundeInfo) &&
-          item.KundeInfo.length > 0
-        ) {
-          return item.KundeInfo.map((kunde: any) => ({
-            ...kunde,
-            photo: item.photo || null,
-            husmodell_name: kunde?.VelgSerie || item?.husmodell_name || null,
-            parentId: item.id,
-            createDataBy: item?.createDataBy || null,
-            tag: item?.tag || null,
-            configurator:
-              kunde?.Plantegninger &&
-              kunde?.Plantegninger.length > 0 &&
-              kunde?.Plantegninger.some((room: any) => !room.configurator)
-                ? false
-                : true,
-            updatedAt: kunde.updatedAt || item.updatedAt || null,
-            name: kunde.name || item.name || null,
-          }));
-        }
-        return [];
+      const allKunder = data.flatMap((item: any) => {
+        return {
+          ...item,
+          photo: item.photo || null,
+          name: item.name || "-",
+          self_id: item?.self_id,
+          parentId: item.category_id,
+        };
       });
 
-      allKunder.sort((a: any, b: any) => {
-        const dateA = new Date(a.updatedAt).getTime();
-        const dateB = new Date(b.updatedAt).getTime();
-        return dateB - dateA;
-      });
       setRoomConfigurator(allKunder);
     } catch (error) {
       console.error("Error fetching husmodell data:", error);
@@ -165,27 +115,12 @@ export const AllRoomkonfigurator: React.FC = () => {
 
   const handleDelete = async (entryId: string) => {
     setIsSubmitLoading(true);
+
     try {
-      const docRef = doc(db, "housemodell_configure_broker", String(id));
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        const currentKundeInfo = data?.KundeInfo || [];
-
-        const updatedKundeInfo = currentKundeInfo.filter(
-          (entry: any) => entry.uniqueId !== entryId
-        );
-
-        await updateDoc(docRef, {
-          KundeInfo: updatedKundeInfo,
-          updatedAt: new Date().toISOString(),
-        });
-        setId(null);
-        toast.success("Slettet", { position: "top-right" });
-        fetchRoomConfiguratorData();
-        setSelectedId(null);
-      }
+      await deleteDoc(doc(db, "projects", entryId));
+      fetchRoomConfiguratorData();
+      setId(null);
+      setSelectedId(null);
     } catch (error) {
       console.error("Error deleting entry from KundeInfo:", error);
       toast.error("Noe gikk galt ved sletting.");
@@ -268,7 +203,7 @@ export const AllRoomkonfigurator: React.FC = () => {
                         className="relative shadow-shadow2 cursor-pointer p-4 rounded-lg flex flex-col justify-between gap-4"
                         onClick={() => {
                           navigate(
-                            `/Room-Configurator/${item?.parentId}/${item?.uniqueId}`
+                            `/Room-Configurator/${item?.parentId}/${item?.self_id}`
                           );
                           const currIndex = 0;
                           const currVerticalIndex = 1;
@@ -317,7 +252,7 @@ export const AllRoomkonfigurator: React.FC = () => {
 
                                   const husmodellDocRef = doc(
                                     db,
-                                    "housemodell_configure_broker",
+                                    "projects",
                                     String(id)
                                   );
 
@@ -341,7 +276,7 @@ export const AllRoomkonfigurator: React.FC = () => {
                                   e.stopPropagation();
                                   setEditIndex(index);
                                   setEditedFloorName(item?.name);
-                                  setId(item?.parentId);
+                                  setId(item?.self_id);
                                 }}
                               />
                             )}
@@ -352,8 +287,8 @@ export const AllRoomkonfigurator: React.FC = () => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 setConfirmDeleteIndex(index);
-                                setId(item?.parentId);
-                                setSelectedId(item?.uniqueId);
+                                setId(item?.self_id);
+                                setSelectedId(item?.self_id);
                               }}
                             />
                           </div>

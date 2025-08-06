@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { fetchHusmodellData } from "../../../../lib/utils";
+import { fetchProjectsData } from "../../../../lib/utils";
 import { OppsummeringData } from "./oppsummeringData";
 
 export const Oppsummering: React.FC = () => {
@@ -17,13 +17,10 @@ export const Oppsummering: React.FC = () => {
       return;
     }
     const getData = async () => {
-      const data = await fetchHusmodellData(id);
+      const data = await fetchProjectsData(kundeId);
 
-      if (data && data.KundeInfo) {
-        const finalData = data.KundeInfo.find(
-          (item: any) => item.uniqueId === kundeId
-        );
-        setRoomsData(finalData);
+      if (data) {
+        setRoomsData(data);
       }
       setLoading(false);
     };

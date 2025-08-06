@@ -6,7 +6,6 @@ import {
   Husmodeller,
   BoligConfiurator,
   BoligConfiuratorStepper,
-  KundeInfo,
 } from "./pages";
 import { AuthLayout } from "./layouts/AuthLayout";
 import { Login, MicrosoftCallBack } from "./pages/public";
@@ -33,7 +32,6 @@ export const routes = createBrowserRouter([
       { path: "Room-Configurator/*", element: <BoligConfiuratorStepper /> },
       { path: "Inventory", element: <Inventory /> },
       { path: "Husmodell", element: <Husmodeller /> },
-      { path: "se-series/*", element: <KundeInfo /> },
       {
         path: "se-series/:seriesId/edit-husmodell/*",
         element: <EditHouseModel />,

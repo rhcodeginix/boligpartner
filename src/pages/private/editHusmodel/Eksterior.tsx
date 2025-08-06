@@ -20,7 +20,7 @@ import Drawer from "../../../components/ui/drawer";
 import { ProductFormDrawer } from "./productform";
 import { toast } from "react-hot-toast";
 import { db } from "../../../config/firebaseConfig";
-import { fetchHusmodellData } from "../../../lib/utils";
+import { fetchAdminDataByEmail, fetchProjectsData } from "../../../lib/utils";
 import { ViewProductDetail } from "./ViewDetailProduct";
 import { Input } from "../../../components/ui/input";
 import { Spinner } from "../../../components/Spinner";
@@ -120,6 +120,18 @@ export const Eksterior: React.FC<{
   const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
 
   const navigate = useNavigate();
+  const [createData, setCreateData] = useState<any>(null);
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+
+      if (data) {
+        setCreateData(data);
+      }
+    };
+
+    getData();
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -235,17 +247,12 @@ export const Eksterior: React.FC<{
     };
 
     try {
-      const houseData: any = await fetchHusmodellData(id);
-      if (!houseData || !kundeId || !pdfId) return;
+      if (!kundeId) return;
 
-      const kundeList = houseData?.KundeInfo || [];
-      const targetKundeIndex = kundeList.findIndex(
-        (k: any) => String(k.uniqueId) === String(kundeId)
-      );
-      if (targetKundeIndex === -1) return;
+      const houseData: any = await fetchProjectsData(String(kundeId));
+      if (!houseData || !pdfId) return;
 
-      const targetKunde = kundeList[targetKundeIndex];
-      const existingPlantegninger = targetKunde?.Plantegninger || [];
+      const existingPlantegninger = houseData?.Plantegninger || [];
 
       const itemToUpdate = existingPlantegninger.find(
         (item: any) => String(item?.pdf_id) === String(pdfId)
@@ -267,23 +274,19 @@ export const Eksterior: React.FC<{
         };
       }
 
-      const updatedKundeInfo = kundeList.map((kunde: any, index: number) => {
-        if (index === targetKundeIndex) {
-          return {
-            ...kunde,
-            Plantegninger: updatedPlantegninger,
-          };
-        }
-        return kunde;
-      });
+      const updatedKundeInfo = {
+        ...houseData,
+        Plantegninger: updatedPlantegninger,
+      };
 
-      const husmodellDocRef = doc(db, "housemodell_configure_broker", id);
+      const husmodellDocRef = doc(db, "projects", kundeId);
       const formatDate = (date: Date) =>
         date.toLocaleString("sv-SE", { timeZone: "UTC" }).replace(",", "");
 
       await updateDoc(husmodellDocRef, {
-        KundeInfo: updatedKundeInfo,
+        ...updatedKundeInfo,
         updatedAt: formatDate(new Date()),
+        updated_by: createData?.id,
       });
 
       // toast.success("Lagret", { position: "top-right" });
@@ -518,20 +521,15 @@ export const Eksterior: React.FC<{
     );
 
     try {
-      const husmodellDocRef = doc(db, "housemodell_configure_broker", id);
+      const husmodellDocRef = doc(db, "projects", String(kundeId));
       const docSnap = await getDoc(husmodellDocRef);
 
       if (!docSnap.exists() || !kundeId || !pdfId) return;
 
       const houseData = docSnap.data();
-      const kundeList = houseData?.KundeInfo || [];
-      const targetKundeIndex = kundeList.findIndex(
-        (k: any) => String(k.uniqueId) === String(kundeId)
-      );
-      if (targetKundeIndex === -1) return;
+      const data = houseData || {};
 
-      const targetKunde = kundeList[targetKundeIndex];
-      const plantegninger = targetKunde?.Plantegninger || [];
+      const plantegninger = data?.Plantegninger || [];
       const plantegningIndex = plantegninger.findIndex(
         (p: any) => String(p?.pdf_id) === String(pdfId)
       );
@@ -548,18 +546,15 @@ export const Eksterior: React.FC<{
           ].Kategorinavn.filter((_: any, i: number) => i !== deleteIndex);
       }
 
-      const updatedKundeInfo = kundeList.map((kunde: any, idx: number) =>
-        idx === targetKundeIndex
-          ? {
-              ...kunde,
-              Plantegninger: plantegninger,
-            }
-          : kunde
-      );
+      const updatedKundeInfo = {
+        ...data,
+        Plantegninger: plantegninger,
+      };
 
       await updateDoc(husmodellDocRef, {
-        KundeInfo: updatedKundeInfo,
+        ...updatedKundeInfo,
         updatedAt: new Date().toISOString(),
+        updated_by: createData?.id,
       });
     } catch (err) {
       console.error("Error removing subcategory from Firestore:", err);
@@ -715,8 +710,8 @@ export const Eksterior: React.FC<{
                                       try {
                                         const husmodellDocRef = doc(
                                           db,
-                                          "housemodell_configure_broker",
-                                          id
+                                          "projects",
+                                          String(kundeId)
                                         );
                                         const docSnap = await getDoc(
                                           husmodellDocRef
@@ -730,20 +725,9 @@ export const Eksterior: React.FC<{
                                           return;
 
                                         const houseData = docSnap.data();
-                                        const kundeList =
-                                          houseData?.KundeInfo || [];
-                                        const targetKundeIndex =
-                                          kundeList.findIndex(
-                                            (k: any) =>
-                                              String(k.uniqueId) ===
-                                              String(kundeId)
-                                          );
-                                        if (targetKundeIndex === -1) return;
 
-                                        const targetKunde =
-                                          kundeList[targetKundeIndex];
                                         const existingPlantegninger =
-                                          targetKunde?.Plantegninger || [];
+                                          houseData?.Plantegninger || [];
                                         const indexToUpdate =
                                           existingPlantegninger.findIndex(
                                             (item: any) =>
@@ -758,18 +742,13 @@ export const Eksterior: React.FC<{
                                           activeSubTabData
                                         ].text = newCustomText;
 
-                                        const updatedKundeInfo = kundeList.map(
-                                          (kunde: any, idx: number) =>
-                                            idx === targetKundeIndex
-                                              ? {
-                                                  ...kunde,
-                                                  Plantegninger:
-                                                    existingPlantegninger,
-                                                }
-                                              : kunde
-                                        );
+                                        const updatedKundeInfo = {
+                                          ...houseData,
+                                          Plantegninger: existingPlantegninger,
+                                        };
                                         await updateDoc(husmodellDocRef, {
-                                          KundeInfo: updatedKundeInfo,
+                                          ...updatedKundeInfo,
+                                          updated_by: createData?.id,
                                           updatedAt: new Date().toISOString(),
                                         });
                                       } catch (err) {
@@ -845,8 +824,8 @@ export const Eksterior: React.FC<{
                                   try {
                                     const husmodellDocRef = doc(
                                       db,
-                                      "housemodell_configure_broker",
-                                      id
+                                      "projects",
+                                      String(kundeId)
                                     );
                                     const docSnap = await getDoc(
                                       husmodellDocRef
@@ -855,19 +834,9 @@ export const Eksterior: React.FC<{
                                       return;
 
                                     const houseData = docSnap.data();
-                                    const kundeList =
-                                      houseData?.KundeInfo || [];
-                                    const targetKundeIndex =
-                                      kundeList.findIndex(
-                                        (k: any) =>
-                                          String(k.uniqueId) === String(kundeId)
-                                      );
-                                    if (targetKundeIndex === -1) return;
 
-                                    const targetKunde =
-                                      kundeList[targetKundeIndex];
                                     const existingPlantegninger =
-                                      targetKunde?.Plantegninger || [];
+                                      houseData?.Plantegninger || [];
                                     const indexToUpdate =
                                       existingPlantegninger.findIndex(
                                         (item: any) =>
@@ -875,17 +844,16 @@ export const Eksterior: React.FC<{
                                       );
                                     if (indexToUpdate === -1) return;
 
-                                    const kundeInfo = [...kundeList];
-
-                                    kundeInfo[targetKundeIndex].Plantegninger[
+                                    houseData.Plantegninger[
                                       indexToUpdate
                                     ].rooms[activeTabData].Kategorinavn[
                                       activeSubTabData
                                     ].produkter = updatedProducts;
 
                                     await updateDoc(husmodellDocRef, {
-                                      KundeInfo: kundeInfo,
+                                      ...houseData,
                                       updatedAt: new Date().toISOString(),
+                                      updated_by: createData?.id,
                                     });
                                   } catch (err) {
                                     console.error("selection in firebase", err);
@@ -1027,8 +995,8 @@ export const Eksterior: React.FC<{
                                                 try {
                                                   const husmodellDocRef = doc(
                                                     db,
-                                                    "housemodell_configure_broker",
-                                                    id
+                                                    "projects",
+                                                    String(kundeId)
                                                   );
                                                   const docSnap = await getDoc(
                                                     husmodellDocRef
@@ -1043,21 +1011,9 @@ export const Eksterior: React.FC<{
 
                                                   const houseData =
                                                     docSnap.data();
-                                                  const kundeList =
-                                                    houseData?.KundeInfo || [];
-                                                  const targetKundeIndex =
-                                                    kundeList.findIndex(
-                                                      (k: any) =>
-                                                        String(k.uniqueId) ===
-                                                        String(kundeId)
-                                                    );
-                                                  if (targetKundeIndex === -1)
-                                                    return;
 
-                                                  const targetKunde =
-                                                    kundeList[targetKundeIndex];
                                                   const existingPlantegninger =
-                                                    targetKunde?.Plantegninger ||
+                                                    houseData?.Plantegninger ||
                                                     [];
                                                   const indexToUpdate =
                                                     existingPlantegninger.findIndex(
@@ -1078,27 +1034,18 @@ export const Eksterior: React.FC<{
                                                     index
                                                   ].customText = newCustomText;
 
-                                                  const updatedKundeInfo =
-                                                    kundeList.map(
-                                                      (
-                                                        kunde: any,
-                                                        idx: number
-                                                      ) =>
-                                                        idx === targetKundeIndex
-                                                          ? {
-                                                              ...kunde,
-                                                              Plantegninger:
-                                                                existingPlantegninger,
-                                                            }
-                                                          : kunde
-                                                    );
+                                                  const updatedKundeInfo = {
+                                                    ...houseData,
+                                                    Plantegninger:
+                                                      existingPlantegninger,
+                                                  };
                                                   await updateDoc(
                                                     husmodellDocRef,
                                                     {
-                                                      KundeInfo:
-                                                        updatedKundeInfo,
+                                                      ...updatedKundeInfo,
                                                       updatedAt:
                                                         new Date().toISOString(),
+                                                      updated_by: createData?.id,
                                                     }
                                                   );
                                                 } catch (err) {
@@ -1164,8 +1111,8 @@ export const Eksterior: React.FC<{
                                         try {
                                           const husmodellDocRef = doc(
                                             db,
-                                            "housemodell_configure_broker",
-                                            id
+                                            "projects",
+                                            String(kundeId)
                                           );
                                           const docSnap = await getDoc(
                                             husmodellDocRef
@@ -1179,20 +1126,9 @@ export const Eksterior: React.FC<{
                                             return;
 
                                           const houseData = docSnap.data();
-                                          const kundeList =
-                                            houseData?.KundeInfo || [];
-                                          const targetKundeIndex =
-                                            kundeList.findIndex(
-                                              (k: any) =>
-                                                String(k.uniqueId) ===
-                                                String(kundeId)
-                                            );
-                                          if (targetKundeIndex === -1) return;
 
-                                          const targetKunde =
-                                            kundeList[targetKundeIndex];
                                           const existingPlantegninger =
-                                            targetKunde?.Plantegninger || [];
+                                            houseData?.Plantegninger || [];
                                           const indexToUpdate =
                                             existingPlantegninger.findIndex(
                                               (item: any) =>
@@ -1207,20 +1143,15 @@ export const Eksterior: React.FC<{
                                             activeSubTabData
                                           ].comment = newComment;
 
-                                          const updatedKundeInfo =
-                                            kundeList.map(
-                                              (kunde: any, idx: number) =>
-                                                idx === targetKundeIndex
-                                                  ? {
-                                                      ...kunde,
-                                                      Plantegninger:
-                                                        existingPlantegninger,
-                                                    }
-                                                  : kunde
-                                            );
+                                          const updatedKundeInfo = {
+                                            ...houseData,
+                                            Plantegninger:
+                                              existingPlantegninger,
+                                          };
                                           await updateDoc(husmodellDocRef, {
-                                            KundeInfo: updatedKundeInfo,
+                                            ...updatedKundeInfo,
                                             updatedAt: new Date().toISOString(),
+                                            updated_by: createData?.id,
                                           });
                                         } catch (err) {
                                           console.error("firebase", err);
@@ -1292,15 +1223,11 @@ export const Eksterior: React.FC<{
                     const data = form.watch("hovedkategorinavn");
                     const rooms = { rooms: data };
 
-                    const houseData = await fetchHusmodellData(id);
-                    const kundeList = houseData?.KundeInfo || [];
-                    const targetKunde = kundeList.find(
-                      (k: any) => String(k.uniqueId) === String(kundeId)
-                    );
-                    if (!targetKunde) return;
+                    const houseData = await fetchProjectsData(String(kundeId));
+                    const kundeList = houseData || {};
 
                     const updatedPlantegninger = (
-                      targetKunde.Plantegninger || []
+                      kundeList.Plantegninger || []
                     ).map((item: any) => {
                       if (String(item.pdf_id) === String(pdfId)) {
                         const merged = removeUndefined(
@@ -1311,29 +1238,19 @@ export const Eksterior: React.FC<{
                       return item;
                     });
 
-                    const houseDocRef = doc(
-                      db,
-                      "housemodell_configure_broker",
-                      String(id)
-                    );
+                    const houseDocRef = doc(db, "projects", String(kundeId));
                     const houseDocSnap = await getDoc(houseDocRef);
                     if (houseDocSnap.exists()) {
                       const houseData = houseDocSnap.data();
-                      const updatedKundeInfo = (houseData.KundeInfo || []).map(
-                        (kunde: any) => {
-                          if (String(kunde.uniqueId) === String(kundeId)) {
-                            return {
-                              ...kunde,
-                              Plantegninger: updatedPlantegninger,
-                            };
-                          }
-                          return kunde;
-                        }
-                      );
+                      const updatedKundeInfo = {
+                        ...houseData,
+                        Plantegninger: updatedPlantegninger,
+                      };
 
                       await updateDoc(houseDocRef, {
-                        KundeInfo: updatedKundeInfo,
+                        ...updatedKundeInfo,
                         updatedAt: formatDate(new Date()),
+                        updated_by: createData?.id,
                       });
                     }
 

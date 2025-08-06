@@ -13,7 +13,7 @@ import { Input } from "../../../../components/ui/input";
 import { parsePhoneNumber } from "react-phone-number-input";
 import {
   fetchAdminDataByEmail,
-  fetchHusmodellData,
+  fetchProjectsData,
   phoneNumberValidations,
 } from "../../../../lib/utils";
 import { InputMobile } from "../../../../components/ui/inputMobile";
@@ -115,37 +115,27 @@ export const AddFinalSubmission: React.FC<{
       const filteredData = removeUndefinedOrNull(data);
 
       if (id && kundeId) {
-        const husmodellDocRef = doc(
-          db,
-          "housemodell_configure_broker",
-          String(id)
-        );
+        const husmodellDocRef = doc(db, "projects", String(kundeId));
+
         const docSnap = await getDoc(husmodellDocRef);
         if (!docSnap.exists()) {
           throw new Error("Document does not exist!");
         }
         const existingDocData = docSnap.data();
 
-        const existingKundeInfo = existingDocData.KundeInfo || [];
-
-        const updatedKundeInfo = existingKundeInfo.map((kunde: any) => {
-          if (kunde.uniqueId === kundeId) {
-            return {
-              ...kunde,
-              VelgSerie: data.Serie,
-              FinalSubmission: filteredData,
-              Prosjektdetaljer: {
-                ...kunde.Prosjektdetaljer,
-                VelgSerie: data.Serie,
-              },
-              updatedAt: formatDate(new Date()),
-            };
-          }
-          return kunde;
-        });
+        const updatedKundeInfo = {
+          ...existingDocData,
+          VelgSerie: data.Serie,
+          FinalSubmission: filteredData,
+          Prosjektdetaljer: {
+            ...existingDocData.Prosjektdetaljer,
+            VelgSerie: data.Serie,
+          },
+          updatedAt: formatDate(new Date()),
+        };
 
         await updateDoc(husmodellDocRef, {
-          KundeInfo: updatedKundeInfo,
+          ...updatedKundeInfo,
           updatedAt: new Date().toISOString(),
         });
       }
@@ -494,58 +484,47 @@ export const AddFinalSubmission: React.FC<{
     }
 
     const getData = async () => {
-      const data = await fetchHusmodellData(id);
+      const data = await fetchProjectsData(kundeId);
 
       if (data) {
-        if (data && data.KundeInfo) {
-          const finalData = data.KundeInfo.find(
-            (item: any) => item.uniqueId === kundeId
-          );
-
-          if (finalData && finalData?.FinalSubmission) {
-            Object.entries(finalData?.FinalSubmission).forEach(
-              ([key, value]) => {
-                if (value !== undefined && value !== null) {
-                  form.setValue(key as any, value);
-                  if (key === "Kundenummer") {
-                    form.setValue("Kundenummer", String(value));
-                  }
-                }
-                if (key === "Serie" && value === "") {
-                  const serieValue =
-                    roomsData?.Prosjektdetaljer?.VelgSerie ??
-                    roomsData?.VelgSerie;
-                  form.setValue(
-                    key,
-                    serieValue && serieValue.trim() !== ""
-                      ? serieValue
-                      : undefined
-                  );
-                  form.setValue("exportType", "PDF");
-                }
+        if (data && data?.FinalSubmission) {
+          Object.entries(data?.FinalSubmission).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+              form.setValue(key as any, value);
+              if (key === "Kundenummer") {
+                form.setValue("Kundenummer", String(value));
               }
-            );
-          } else if (roomsData) {
-            const serieValue =
-              roomsData?.Prosjektdetaljer?.VelgSerie ?? roomsData?.VelgSerie;
+            }
+            if (key === "Serie" && value === "") {
+              const serieValue =
+                roomsData?.Prosjektdetaljer?.VelgSerie ?? roomsData?.VelgSerie;
+              form.setValue(
+                key,
+                serieValue && serieValue.trim() !== "" ? serieValue : undefined
+              );
+              form.setValue("exportType", "PDF");
+            }
+          });
+        } else if (roomsData) {
+          const serieValue =
+            roomsData?.Prosjektdetaljer?.VelgSerie ?? roomsData?.VelgSerie;
 
-            form.reset({
-              Serie:
-                serieValue && serieValue.trim() !== "" ? serieValue : undefined,
-              Kundenummer: String(
-                roomsData?.Prosjektdetaljer?.Kundenr ?? roomsData?.Kundenummer
-              ),
-              mobile:
-                roomsData?.Prosjektdetaljer?.TelefonMobile ??
-                roomsData?.mobileNummer ??
-                "",
-              Kundenavn:
-                roomsData?.Prosjektdetaljer?.Tiltakshaver ??
-                roomsData?.Kundenavn ??
-                "",
-            });
-            form.setValue("exportType", "PDF");
-          }
+          form.reset({
+            Serie:
+              serieValue && serieValue.trim() !== "" ? serieValue : undefined,
+            Kundenummer: String(
+              roomsData?.Prosjektdetaljer?.Kundenr ?? roomsData?.Kundenummer
+            ),
+            mobile:
+              roomsData?.Prosjektdetaljer?.TelefonMobile ??
+              roomsData?.mobileNummer ??
+              "",
+            Kundenavn:
+              roomsData?.Prosjektdetaljer?.Tiltakshaver ??
+              roomsData?.Kundenavn ??
+              "",
+          });
+          form.setValue("exportType", "PDF");
         }
       }
     };

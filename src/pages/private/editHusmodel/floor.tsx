@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { fetchHusmodellData } from "../../../lib/utils";
+import { fetchAdminDataByEmail, fetchRoomData } from "../../../lib/utils";
 import Button from "../../../components/common/button";
 import { ChevronRight } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -24,6 +24,18 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
   const [loading, setLoading] = useState(true);
   const [FloorData, setFloorData] = useState<any>(null);
+  const [createData, setCreateData] = useState<any>(null);
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+
+      if (data) {
+        setCreateData(data);
+      }
+    };
+
+    getData();
+  }, []);
 
   useEffect(() => {
     if (!id || !pdfId || !kundeId) {
@@ -33,13 +45,10 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
     setLoading(true);
 
     const getData = async () => {
-      const data: any = await fetchHusmodellData(id);
+      const data: any = await fetchRoomData(kundeId);
 
       if (data) {
-        const targetKunde = data.KundeInfo?.find(
-          (k: any) => String(k.uniqueId) === String(kundeId)
-        );
-        const finalData = targetKunde?.Plantegninger?.find(
+        const finalData = data?.Plantegninger?.find(
           (item: any) => String(item?.pdf_id) === String(pdfId)
         );
 
@@ -50,24 +59,12 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         }
       }
       try {
-        const husmodellDocRef = doc(
-          db,
-          "housemodell_configure_broker",
-          String(id)
-        );
+        const husmodellDocRef = doc(db, "projects", String(kundeId));
         const docSnap = await getDoc(husmodellDocRef);
 
-        const allKundeInfo = docSnap.exists()
-          ? docSnap.data().KundeInfo || []
-          : [];
+        const allKundeInfo = docSnap.exists() ? docSnap.data() || {} : {};
 
-        const targetKunde = allKundeInfo.find(
-          (k: any) => String(k.uniqueId) === String(kundeId)
-        );
-
-        if (!targetKunde) throw new Error("Kunde not found");
-
-        const existingPlantegninger = targetKunde.Plantegninger || [];
+        const existingPlantegninger = allKundeInfo.Plantegninger || [];
 
         const PDFresponse = await fetch(
           `https://iplotnor-hf-api-version-2.hf.space/analyze/${pdfId}`,
@@ -97,12 +94,10 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
           return item;
         });
 
-        const updatedKundeInfo = allKundeInfo.map((k: any) => {
-          if (k.uniqueId === kundeId) {
-            return { ...k, Plantegninger: updatedPlantegninger };
-          }
-          return k;
-        });
+        const updatedKundeInfo = {
+          ...allKundeInfo,
+          Plantegninger: updatedPlantegninger,
+        };
 
         const formatDate = (date: Date) => {
           return date
@@ -111,8 +106,9 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         };
 
         await updateDoc(husmodellDocRef, {
-          KundeInfo: updatedKundeInfo,
+          ...updatedKundeInfo,
           updatedAt: formatDate(new Date()),
+          updated_by: createData?.id,
         });
 
         const finalData = updatedPlantegninger.find(

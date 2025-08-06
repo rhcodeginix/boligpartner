@@ -56,9 +56,9 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
 
     const currentStepForm = formRefs.current[currentStep];
 
-    if (typeof currentStepForm?.handleSubmit === "function") {
-      await currentStepForm.handleSubmit();
-    }
+    // if (typeof currentStepForm?.handleSubmit === "function") {
+    //   await currentStepForm.handleSubmit();
+    // }
 
     const isValid = await currentStepForm?.validateForm?.();
 

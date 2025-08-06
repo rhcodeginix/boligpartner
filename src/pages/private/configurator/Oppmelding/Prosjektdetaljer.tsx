@@ -12,7 +12,7 @@ import { Input } from "../../../../components/ui/input";
 import { z } from "zod";
 import { parsePhoneNumber } from "react-phone-number-input";
 import {
-  fetchHusmodellData,
+  fetchProjectsData,
   phoneNumberValidations,
 } from "../../../../lib/utils";
 import { InputMobile } from "../../../../components/ui/inputMobile";
@@ -136,16 +136,19 @@ export const Prosjektdetaljer = forwardRef(
   ) => {
     const location = useLocation();
     const pathSegments = location.pathname.split("/");
-    const id = pathSegments.length > 2 ? pathSegments[2] : null;
     const kundeId = pathSegments.length > 3 ? pathSegments[3] : null;
 
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
     });
+
     useImperativeHandle(ref, () => ({
       validateForm: async () => {
         const result = await form.trigger();
         return result;
+      },
+      handleSubmit: async () => {
+        await form.handleSubmit(onSubmit)();
       },
     }));
     const selectedHouseType = form.watch("TypeProsjekt");
@@ -157,11 +160,7 @@ export const Prosjektdetaljer = forwardRef(
       setIsSubmitLoading(true);
 
       try {
-        const husmodellDocRef = doc(
-          db,
-          "housemodell_configure_broker",
-          String(id)
-        );
+        const husmodellDocRef = doc(db, "projects", String(kundeId));
 
         const formatDate = (date: Date) => {
           return date
@@ -178,22 +177,14 @@ export const Prosjektdetaljer = forwardRef(
 
         const filteredData = removeUndefinedOrNull(data);
 
-        let updatedKundeInfo = (existingData.KundeInfo || []).map(
-          (kunde: any) => {
-            if (kunde.uniqueId === kundeId) {
-              return {
-                ...kunde,
-                Prosjektdetaljer: filteredData,
-                updatedAt: formatDate(new Date()),
-              };
-            }
-            return kunde;
-          }
-        );
+        let updatedKundeInfo = {
+          Prosjektdetaljer: filteredData,
+          updatedAt: formatDate(new Date()),
+        };
 
         const updatePayload: any = {
           ...existingData,
-          KundeInfo: updatedKundeInfo,
+          ...updatedKundeInfo,
         };
 
         await setDoc(husmodellDocRef, updatePayload);
@@ -257,42 +248,35 @@ export const Prosjektdetaljer = forwardRef(
     );
 
     useEffect(() => {
-      if (!id) {
+      if (!kundeId) {
         return;
       }
 
       const getData = async () => {
-        const data = await fetchHusmodellData(id);
+        const data = await fetchProjectsData(kundeId);
 
         if (data) {
-          if (data && data.KundeInfo) {
-            const finalData = data.KundeInfo.find(
-              (item: any) => item.uniqueId === kundeId
-            );
-            if (finalData && finalData?.Prosjektdetaljer) {
-              Object.entries(finalData?.Prosjektdetaljer).forEach(
-                ([key, value]) => {
-                  if (value !== undefined && value !== null) {
-                    form.setValue(key as any, value);
-                  }
-                  if (key === "Byggeadresse") {
-                    setAddress(String(value));
-                  }
-                }
-              );
-            } else {
-              form.setValue("Kundenr", String(finalData?.Kundenummer));
-              form.setValue("VelgSerie", finalData?.HouseType ?? "");
-              form.setValue("Byggeadresse", finalData?.Anleggsadresse ?? "");
-              form.setValue("Poststed", finalData?.Poststed ?? "");
-              form.setValue("Kommune", finalData?.Kommune ?? "");
-              form.setValue("Postnr", finalData?.Postnr ?? "");
-              form.setValue("TypeProsjekt", finalData?.TypeProsjekt ?? "Bolig");
-              form.setValue("VelgSerie", finalData?.VelgSerie ?? "");
-              form.setValue("TelefonMobile", finalData?.mobileNummer ?? "");
-              form.setValue("Tiltakshaver", finalData?.Kundenavn ?? "");
-              setAddress(String(finalData?.Anleggsadresse) ?? "");
-            }
+          if (data && data?.Prosjektdetaljer) {
+            Object.entries(data?.Prosjektdetaljer).forEach(([key, value]) => {
+              if (value !== undefined && value !== null) {
+                form.setValue(key as any, value);
+              }
+              if (key === "Byggeadresse") {
+                setAddress(String(value));
+              }
+            });
+          } else {
+            form.setValue("Kundenr", String(data?.Kundenummer));
+            form.setValue("VelgSerie", data?.HouseType ?? "");
+            form.setValue("Byggeadresse", data?.Anleggsadresse ?? "");
+            form.setValue("Poststed", data?.Poststed ?? "");
+            form.setValue("Kommune", data?.Kommune ?? "");
+            form.setValue("Postnr", data?.Postnr ?? "");
+            form.setValue("TypeProsjekt", data?.TypeProsjekt ?? "Bolig");
+            form.setValue("VelgSerie", data?.VelgSerie ?? "");
+            form.setValue("TelefonMobile", data?.mobileNummer ?? "");
+            form.setValue("Tiltakshaver", data?.Kundenavn ?? "");
+            setAddress(String(data?.Anleggsadresse) ?? "");
           }
         } else {
           form.setValue("TypeProsjekt", "Bolig");
@@ -300,7 +284,7 @@ export const Prosjektdetaljer = forwardRef(
       };
 
       getData();
-    }, [form, id]);
+    }, [form]);
 
     const typeProsjekt = form.watch("TypeProsjekt")?.toLowerCase();
 

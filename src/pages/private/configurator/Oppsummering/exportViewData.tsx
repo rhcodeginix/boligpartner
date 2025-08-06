@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AllSummury } from "./allSummury";
 import { useLocation } from "react-router-dom";
-import { fetchHusmodellData } from "../../../../lib/utils";
+import { fetchAdminData, fetchProjectsData } from "../../../../lib/utils";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 
@@ -25,47 +25,36 @@ export const ExportViewData: React.FC<{
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const kundeId = pathSegments.length > 3 ? pathSegments[3] : null;
   const [createDataBy, setCreatedDataBy] = useState<any>();
+  const [offices, setOffices] = useState<any>(null);
 
   useEffect(() => {
     if (!id || !kundeId) {
       return;
     }
     const getData = async () => {
-      const data = await fetchHusmodellData(id);
-      setCreatedDataBy(data?.createDataBy);
+      const data = await fetchProjectsData(kundeId);
 
-      if (data && data.KundeInfo) {
-        const finalData = data.KundeInfo.find(
-          (item: any) => item.uniqueId === kundeId
-        );
-        setRoomsData(finalData);
-      }
-    };
+      if (data?.created_by && data?.office_id) {
+        const adminData = await fetchAdminData(data?.created_by);
+        if (adminData) {
+          setCreatedDataBy(adminData);
+        }
 
-    getData();
-  }, [id, kundeId]);
-
-  const [offices, setOffices] = useState<any>(null);
-  const fetchOfficeData = async () => {
-    try {
-      if (createDataBy && createDataBy?.office) {
-        const husmodellDocRef = doc(db, "office", createDataBy?.office);
-        const docSnap = await getDoc(husmodellDocRef);
+        const officeDocRef = doc(db, "office", data?.office_id);
+        const docSnap = await getDoc(officeDocRef);
 
         if (docSnap.exists()) {
           setOffices(docSnap.data());
         }
       }
-    } catch (error) {
-      console.error("Error fetching office data:", error);
-    }
-  };
 
-  useEffect(() => {
-    if (createDataBy) {
-      fetchOfficeData();
-    }
-  }, [createDataBy]);
+      if (data) {
+        setRoomsData(data);
+      }
+    };
+
+    getData();
+  }, [id, kundeId]);
 
   return (
     <div>
