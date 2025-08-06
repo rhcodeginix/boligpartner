@@ -235,6 +235,7 @@ export const HusmodellerTable = () => {
 
             if (!userSnap.empty) {
               const userData = userSnap.docs[0].data();
+
               if (userData?.office) {
                 officeData = await fetchOfficeData(userData.office);
               }

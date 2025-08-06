@@ -203,8 +203,8 @@ export const RoomTable = () => {
   const [filteredData, setFilteredData] = useState<any[]>([]);
 
   useEffect(() => {
+    setIsLoading(true);
     const getData = async () => {
-      setIsLoading(true);
       try {
         const allKunder: any[] = [];
 
