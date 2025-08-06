@@ -77,7 +77,7 @@ export const Login = () => {
       const adminSnap = await getDoc(adminDocRef);
 
       if (!adminSnap.exists()) {
-        toast.error("Admin not exist", { position: "top-right" });
+        toast.error("Admin finnes ikke", { position: "top-right" });
       } else {
         if (data.password) {
           const hashedPassword = bcrypt.hashSync(data.password, 10);
@@ -113,7 +113,7 @@ export const Login = () => {
     const adminSnap = await getDoc(adminDocRef);
 
     if (!adminSnap.exists()) {
-      toast.error("User not exist", { position: "top-right" });
+      toast.error("Brukeren finnes ikke", { position: "top-right" });
     } else {
       const adminData = adminSnap.data();
       if (adminData && adminData?.role === "Bankansvarlig") {
@@ -144,14 +144,14 @@ export const Login = () => {
             form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
           }
         } else {
-          toast.error("Please login with Bolig Partner user.", {
+          toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
             position: "top-right",
           });
         }
 
         return;
       } else {
-        toast.error("Please login with Bolig Partner user.", {
+        toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
           position: "top-right",
         });
         return;
