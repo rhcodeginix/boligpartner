@@ -83,7 +83,7 @@ export const Login = () => {
           const hashedPassword = bcrypt.hashSync(data.password, 10);
           await updateDoc(adminDocRef, { password: hashedPassword });
 
-          toast.success("Login successfully", {
+          toast.success("Logg inn", {
             position: "top-right",
           });
           if (type === "boligpartner") {
