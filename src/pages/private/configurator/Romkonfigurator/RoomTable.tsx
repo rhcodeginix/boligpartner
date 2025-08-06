@@ -176,7 +176,6 @@ export const RoomTable = () => {
   const fetchOfficeData = async (officeId: string) => {
     if (!officeId) return null;
 
-    setIsLoading(true);
     try {
       const officeQuery = query(
         collection(db, "office"),
@@ -198,7 +197,6 @@ export const RoomTable = () => {
       console.error("Error fetching office data:", error);
       return null;
     } finally {
-      setIsLoading(false);
     }
   };
 
@@ -207,73 +205,78 @@ export const RoomTable = () => {
   useEffect(() => {
     const getData = async () => {
       setIsLoading(true);
+      try {
+        const allKunder: any[] = [];
 
-      const allKunder: any[] = [];
+        for (const item of RoomConfigurator || []) {
+          const kundeInfo = item?.KundeInfo;
+          if (!Array.isArray(kundeInfo) || kundeInfo.length === 0) continue;
 
-      for (const item of RoomConfigurator as any) {
-        if (Array.isArray(item?.KundeInfo) && item.KundeInfo.length > 0) {
-          for (const kunde of item.KundeInfo) {
-            let officeData: any = null;
-            if (item?.createDataBy?.office) {
-              officeData = await fetchOfficeData(item.createDataBy.office);
-            } else if (item?.createDataBy?.email) {
-              const userSnap = await getDocs(
-                query(
-                  collection(db, "admin"),
-                  where("email", "==", item.createDataBy.email)
-                )
-              );
+          let officeData: any = null;
+          const createdBy = item?.createDataBy;
 
-              if (!userSnap.empty) {
-                const userDoc = userSnap.docs[0];
-                const userData = userDoc.data();
+          if (createdBy?.office) {
+            officeData = await fetchOfficeData(createdBy.office);
+          } else if (createdBy?.email) {
+            const userSnap = await getDocs(
+              query(
+                collection(db, "admin"),
+                where("email", "==", createdBy.email)
+              )
+            );
 
-                if (userData?.office) {
-                  officeData = await fetchOfficeData(userData.office);
-                }
+            if (!userSnap.empty) {
+              const userData = userSnap.docs[0].data();
+              if (userData?.office) {
+                officeData = await fetchOfficeData(userData.office);
               }
             }
+          }
 
+          for (const kunde of kundeInfo) {
             const mappedKunde = {
               ...kunde,
               photo: item.photo || null,
               husmodell_name: kunde?.VelgSerie || item?.husmodell_name || null,
-              parentId: item.id,
-              createDataBy: item?.createDataBy || null,
+              parentId: item?.id || null,
+              createDataBy: createdBy || null,
               tag: item?.tag || null,
               placeOrder: kunde?.placeOrder || false,
               configurator:
-                kunde?.Plantegninger?.length > 0
+                Array.isArray(kunde?.Plantegninger) &&
+                kunde.Plantegninger.length > 0
                   ? kunde.Plantegninger.some((room: any) => !room.configurator)
                   : true,
-              updatedAt: kunde.updatedAt || item.updatedAt || null,
+              updatedAt: kunde?.updatedAt || item?.updatedAt || null,
               kundeId: kunde?.uniqueId,
               id: item?.id,
               office_name: officeData?.data?.name || null,
-              name: kunde.name || item.name || null,
+              name: kunde?.name || item?.name || null,
             };
 
             allKunder.push(mappedKunde);
           }
         }
+
+        const filtered = allKunder.filter((kunde) => {
+          return (
+            !searchTerm ||
+            kunde.Kundenavn?.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        });
+
+        const sorted = filtered.sort((a, b) => {
+          const dateA = new Date(a.updatedAt || 0).getTime();
+          const dateB = new Date(b.updatedAt || 0).getTime();
+          return dateB - dateA;
+        });
+
+        setFilteredData(sorted);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      } finally {
+        setIsLoading(false);
       }
-
-      const filtered = allKunder.filter((kunde) => {
-        const matchesSearch =
-          !searchTerm ||
-          kunde.Kundenavn?.toLowerCase().includes(searchTerm.toLowerCase());
-
-        return matchesSearch;
-      });
-
-      const sorted = filtered.sort((a, b) => {
-        const dateA = new Date(a.updatedAt).getTime();
-        const dateB = new Date(b.updatedAt).getTime();
-        return dateB - dateA;
-      });
-
-      setFilteredData(sorted);
-      setIsLoading(false);
     };
 
     getData();
