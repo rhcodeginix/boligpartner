@@ -577,7 +577,7 @@ export const Eksterior: React.FC<{
               <div
                 className="flex items-center gap-2 md:gap-2.5 mb-2.5 cursor-pointer"
                 onClick={() => {
-                  setActiveTab(2);
+                  setActiveTab(1);
                 }}
               >
                 <ArrowLeft className="text-purple w-5 h-5 md:w-6 md:h-6" />
