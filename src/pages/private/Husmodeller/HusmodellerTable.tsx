@@ -457,7 +457,9 @@ export const HusmodellerTable = () => {
         header: "Boligkonsulent",
         cell: ({ row }) => (
           <p className="text-sm font-medium text-black w-max">
-            {row.original?.createDataBy?.name}
+            {row.original?.createDataBy?.f_name
+              ? `${row.original?.createDataBy?.f_name} ${row.original?.createDataBy?.l_name}`
+              : row.original?.createDataBy?.name}
           </p>
         ),
       },
