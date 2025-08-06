@@ -108,7 +108,6 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         await updateDoc(husmodellDocRef, {
           ...updatedKundeInfo,
           updatedAt: formatDate(new Date()),
-          updated_by: createData?.id,
         });
 
         const finalData = updatedPlantegninger.find(

@@ -830,7 +830,6 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                   };
                   const updatePayload: any = {
                     ...updatedFinalData,
-                    updated_by: createData?.id,
                     updatedAt: formatDate(new Date()),
                   };
 

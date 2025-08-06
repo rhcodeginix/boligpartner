@@ -91,7 +91,7 @@ export const Husdetaljer: React.FC<{
       if (data) {
         setCreateData(data);
         if (data?.office) {
-          setOficeId(data?.office?.id);
+          setOficeId(data?.office);
         }
       }
     };
@@ -162,7 +162,6 @@ export const Husdetaljer: React.FC<{
         await updateDoc(projectDocRef, {
           ...finalData,
           updatedAt,
-          updated_by: createData?.id,
           category_id: id,
           self_id: uniqueId,
         });
@@ -174,7 +173,6 @@ export const Husdetaljer: React.FC<{
           createdAt,
           updatedAt,
           created_by: createData?.id,
-          updated_by: createData?.id,
           category_id: id,
           self_id: uniqueId,
           office_id: officeId,
