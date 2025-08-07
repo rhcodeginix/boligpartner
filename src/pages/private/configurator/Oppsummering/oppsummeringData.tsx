@@ -787,8 +787,17 @@ export const OppsummeringData: React.FC<{
                 {loading ? (
                   <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
                 ) : (
-                  <p className="text-darkBlack text-xs">
+                  <p className="text-secondary text-xs">
                     Beskriv eventuelle leveransedetaljer til overflater
+                  </p>
+                )}
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-darkBlack text-sm">
+                    {displayValue(
+                      roomsData?.Yttervegger?.OverflaterDeliveryDetail
+                    )}
                   </p>
                 )}
               </div>

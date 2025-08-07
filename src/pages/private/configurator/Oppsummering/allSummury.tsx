@@ -611,8 +611,15 @@ export const AllSummury: React.FC<{
                 {displayValue(roomsData?.Yttervegger?.Overflater?.colorCode)}
               </p>
             </div>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Beskriv eventuelle leveransedetaljer til overflater</p>
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Yttervegger?.OverflaterDeliveryDetail)}
+              </p>
+            </div>
           </div>
-          <p>Beskriv eventuelle leveransedetaljer til overflater</p>
 
           <div className="horizontal-divider"></div>
 
