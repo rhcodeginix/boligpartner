@@ -89,8 +89,6 @@ export const Husdetaljer: React.FC<{
     const getData = async () => {
       const data = await fetchAdminDataByEmail();
       if (data) {
-        console.log(data);
-        
         setCreateData(data);
         if (data?.office) {
           setOficeId(data?.office);
