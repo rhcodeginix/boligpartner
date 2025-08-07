@@ -438,7 +438,7 @@ export const AddFinalSubmission: React.FC<{
           type: data?.exportType,
           timeStamp: new Date().toISOString(),
           created_by: createData?.id,
-          document_id: id,
+          document_id: kundeId,
         };
 
         await setDoc(boligconfiguratorDocRef, initialData);
