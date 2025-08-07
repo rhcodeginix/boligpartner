@@ -202,13 +202,15 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
             const existingData = docvData || {};
             const existingFloors = existingData.Plantegninger || [];
             const newFloors = [...existingFloors];
+            let index = newFloors.length;
 
             imageBase64Array.forEach((imgDataUrl) => {
-              const floorIndex = newFloors.length + 1;
+              index += 1;
+
               const updatedFloor = {
                 ...data,
                 image: imgDataUrl,
-                title: `Romskjema ${floorIndex}`,
+                title: `Romskjema ${index}`,
               };
               newFloors.push(updatedFloor);
 
