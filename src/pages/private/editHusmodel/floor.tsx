@@ -38,7 +38,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
   }, []);
 
   useEffect(() => {
-    if (!id || !pdfId || !kundeId) {
+    if (!id || !pdfId || !kundeId || !createData) {
       setLoading(false);
       return;
     }
@@ -130,7 +130,7 @@ export const Floor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
     };
 
     getData();
-  }, [id, pdfId, setActiveTab, kundeId]);
+  }, [id, pdfId, setActiveTab, kundeId, createData]);
 
   return (
     <>

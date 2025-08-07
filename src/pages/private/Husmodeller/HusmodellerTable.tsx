@@ -546,7 +546,8 @@ export const HusmodellerTable = () => {
                   e.stopPropagation();
 
                   if (row.original.configurator === true) return;
-                  if (!row.original.category_id || !row.original.self_id) return;
+                  if (!row.original.category_id || !row.original.self_id)
+                    return;
                   setKundeId(row.original.self_id);
                   setId(row.original.category_id);
                   setIsPlacingOrder(true);
