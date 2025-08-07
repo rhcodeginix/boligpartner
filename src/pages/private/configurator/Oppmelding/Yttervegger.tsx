@@ -110,8 +110,10 @@ export const Yttervegger = forwardRef(
         }
         let existingData = husmodellSnap.exists() ? husmodellSnap.data() : {};
 
-        const filteredData = removeUndefinedOrNull(data);
-
+        const filteredData = removeUndefinedOrNull({
+          ...data,
+          updatedAt: formatDate(new Date()),
+        });
         let updatedKundeInfo = {
           Yttervegger: filteredData,
           updatedAt: formatDate(new Date()),

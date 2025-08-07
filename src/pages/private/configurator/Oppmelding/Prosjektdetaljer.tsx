@@ -175,8 +175,10 @@ export const Prosjektdetaljer = forwardRef(
 
         let existingData = husmodellSnap.exists() ? husmodellSnap.data() : {};
 
-        const filteredData = removeUndefinedOrNull(data);
-
+        const filteredData = removeUndefinedOrNull({
+          ...data,
+          updatedAt: formatDate(new Date()),
+        });
         let updatedKundeInfo = {
           Prosjektdetaljer: filteredData,
           updatedAt: formatDate(new Date()),

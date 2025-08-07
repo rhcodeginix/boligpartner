@@ -93,7 +93,10 @@ export const BalkongTerrasse = forwardRef(
         }
         let existingData = husmodellSnap.exists() ? husmodellSnap.data() : {};
 
-        const filteredData = removeUndefinedOrNull(data);
+        const filteredData = removeUndefinedOrNull({
+          ...data,
+          updatedAt: formatDate(new Date()),
+        });
 
         let updatedKundeInfo = {
           BalkongTerrasse: filteredData,
