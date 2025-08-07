@@ -546,7 +546,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                                 await updateDoc(husmodellDocRef, {
                                   Plantegninger: updatedPlantegninger,
                                   updatedAt: new Date().toISOString(),
-                                  updated_by: createData?.id,
+                                  // updated_by: createData?.id,
                                 });
                               }
                             } catch (error) {

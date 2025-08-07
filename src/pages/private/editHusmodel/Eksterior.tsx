@@ -286,7 +286,7 @@ export const Eksterior: React.FC<{
       await updateDoc(husmodellDocRef, {
         ...updatedKundeInfo,
         updatedAt: formatDate(new Date()),
-        updated_by: createData?.id,
+        // updated_by: createData?.id,
       });
 
       // toast.success("Lagret", { position: "top-right" });
@@ -554,7 +554,7 @@ export const Eksterior: React.FC<{
       await updateDoc(husmodellDocRef, {
         ...updatedKundeInfo,
         updatedAt: new Date().toISOString(),
-        updated_by: createData?.id,
+        // updated_by: createData?.id,
       });
     } catch (err) {
       console.error("Error removing subcategory from Firestore:", err);
@@ -748,7 +748,7 @@ export const Eksterior: React.FC<{
                                         };
                                         await updateDoc(husmodellDocRef, {
                                           ...updatedKundeInfo,
-                                          updated_by: createData?.id,
+                                          // updated_by: createData?.id,
                                           updatedAt: new Date().toISOString(),
                                         });
                                       } catch (err) {
@@ -853,7 +853,7 @@ export const Eksterior: React.FC<{
                                     await updateDoc(husmodellDocRef, {
                                       ...houseData,
                                       updatedAt: new Date().toISOString(),
-                                      updated_by: createData?.id,
+                                      // updated_by: createData?.id,
                                     });
                                   } catch (err) {
                                     console.error("selection in firebase", err);
@@ -1045,7 +1045,7 @@ export const Eksterior: React.FC<{
                                                       ...updatedKundeInfo,
                                                       updatedAt:
                                                         new Date().toISOString(),
-                                                      updated_by: createData?.id,
+                                                      // updated_by: createData?.id,
                                                     }
                                                   );
                                                 } catch (err) {
@@ -1151,7 +1151,7 @@ export const Eksterior: React.FC<{
                                           await updateDoc(husmodellDocRef, {
                                             ...updatedKundeInfo,
                                             updatedAt: new Date().toISOString(),
-                                            updated_by: createData?.id,
+                                            // updated_by: createData?.id,
                                           });
                                         } catch (err) {
                                           console.error("firebase", err);
@@ -1250,7 +1250,7 @@ export const Eksterior: React.FC<{
                       await updateDoc(houseDocRef, {
                         ...updatedKundeInfo,
                         updatedAt: formatDate(new Date()),
-                        updated_by: createData?.id,
+                        // updated_by: createData?.id,
                       });
                     }
 

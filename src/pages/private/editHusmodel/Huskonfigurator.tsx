@@ -250,7 +250,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
             }
 
             const docvData = docSnap.data();
-            const existingData = docvData.finalData || {};
+            const existingData = docvData;
             const existingFloors = existingData.Plantegninger || [];
 
             const newIndex = existingFloors.length + 1;
@@ -832,7 +832,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                   };
                   const updatePayload: any = {
                     ...updatedFinalData,
-                    updated_by: createData?.id,
+                    // updated_by: createData?.id,
                     updatedAt: formatDate(new Date()),
                   };
 
