@@ -214,7 +214,7 @@ export const HusmodellerTable = () => {
 
           const mappedKunde = {
             ...item,
-            husmodell_name: item?.VelgSerie || null,
+            husmodell_name: item?.VelgSerie || tagData?.husmodell_name || null,
             parentId: item.category_id,
             createDataBy: userData || null,
             tag: tagData?.tag || null,
