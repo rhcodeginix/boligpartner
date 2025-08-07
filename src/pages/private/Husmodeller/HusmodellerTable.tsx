@@ -190,29 +190,120 @@ export const HusmodellerTable = () => {
 
   const [filteredData, setFilteredData] = useState<any[]>([]);
 
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     try {
+  //       setIsLoading(true);
+
+  //       const allKunder: any[] = [];
+
+  //       for (const item of (houseModels as any) || []) {
+  //         // let officeData: any = null;
+  //         let tagData: any = null;
+  //         let userData: any = null;
+
+  //         // if (item?.office_id) {
+  //         //   officeData = await fetchOfficeData(item.office_id);
+  //         // }
+  //         if (item?.category_id) {
+  //           tagData = await fetchTagData(item?.category_id);
+  //         }
+  //         if (item?.created_by) {
+  //           userData = await fetchUserData(item?.created_by);
+  //         }
+
+  //         const mappedKunde = {
+  //           ...item,
+  //           husmodell_name: item?.VelgSerie || tagData?.husmodell_name || null,
+  //           parentId: item.category_id,
+  //           createDataBy: userData || null,
+  //           tag: tagData?.tag || null,
+  //           placeOrder: item?.placeOrder || false,
+  //           configurator:
+  //             item?.Plantegninger?.length > 0
+  //               ? item.Plantegninger.some((room: any) => !room.configurator)
+  //               : true,
+  //           updatedAt: item?.updatedAt || item?.createdAt || null,
+  //           kundeId: item?.uniqueId,
+  //           id: item?.uniqueId,
+  //           // office_name: officeData?.data?.name || null,
+  //           self_id: item?.self_id,
+  //         };
+
+  //         allKunder.push(mappedKunde);
+  //       }
+
+  //       const filtered = allKunder.filter((kunde) => {
+  //         const matchesSearch =
+  //           !searchTerm ||
+  //           kunde.Kundenavn?.toLowerCase().includes(searchTerm.toLowerCase());
+  //         const matchesFilter =
+  //           !selectedFilter || kunde.husmodell_name === selectedFilter;
+  //         const matchesTypeProsjekt =
+  //           !activeTab || kunde.tag?.toLowerCase() === activeTab.toLowerCase();
+  //         return matchesSearch && matchesFilter && matchesTypeProsjekt;
+  //       });
+
+  //       const sorted = filtered.sort((a, b) => {
+  //         const dateA = new Date(a.updatedAt || 0).getTime();
+  //         const dateB = new Date(b.updatedAt || 0).getTime();
+  //         return dateB - dateA;
+  //       });
+
+  //       setFilteredData(sorted);
+  //     } catch (error) {
+  //       console.error("Error loading data:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   getData();
+  // }, [houseModels, searchTerm, selectedFilter, activeTab]);
+
   useEffect(() => {
     const getData = async () => {
       try {
         setIsLoading(true);
 
-        const allKunder: any[] = [];
+        const categoryIds = new Set<string>();
+        const userIds = new Set<string>();
 
-        for (const item of (houseModels as any) || []) {
-          // let officeData: any = null;
-          let tagData: any = null;
-          let userData: any = null;
+        for (const item of houseModels as any) {
+          if (item?.category_id) categoryIds.add(item.category_id);
+          if (item?.created_by) userIds.add(item.created_by);
+        }
 
-          // if (item?.office_id) {
-          //   officeData = await fetchOfficeData(item.office_id);
-          // }
-          if (item?.category_id) {
-            tagData = await fetchTagData(item?.category_id);
-          }
-          if (item?.created_by) {
-            userData = await fetchUserData(item?.created_by);
-          }
+        const fetchTags = async () => {
+          const results: Record<string, any> = {};
+          const promises = Array.from(categoryIds).map(async (id) => {
+            const data = await fetchTagData(id);
+            if (data) results[id] = data;
+          });
+          await Promise.all(promises);
+          return results;
+        };
 
-          const mappedKunde = {
+        const fetchUsers = async () => {
+          const results: Record<string, any> = {};
+          const promises = Array.from(userIds).map(async (id) => {
+            const data = await fetchUserData(id);
+            if (data) results[id] = data;
+          });
+          await Promise.all(promises);
+          return results;
+        };
+
+        const [tagMap, userMap] = await Promise.all([
+          fetchTags(),
+          fetchUsers(),
+        ]);
+
+        const allKunder = houseModels.map((item: any) => {
+          const tagData = item?.category_id ? tagMap[item.category_id] : null;
+          const userData = item?.created_by ? userMap[item.created_by] : null;
+
+          return {
             ...item,
             husmodell_name: item?.VelgSerie || tagData?.husmodell_name || null,
             parentId: item.category_id,
@@ -226,12 +317,9 @@ export const HusmodellerTable = () => {
             updatedAt: item?.updatedAt || item?.createdAt || null,
             kundeId: item?.uniqueId,
             id: item?.uniqueId,
-            // office_name: officeData?.data?.name || null,
             self_id: item?.self_id,
           };
-
-          allKunder.push(mappedKunde);
-        }
+        });
 
         const filtered = allKunder.filter((kunde) => {
           const matchesSearch =
