@@ -614,7 +614,9 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Beskriv eventuelle leveransedetaljer til overflater</p>
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Beskriv eventuelle leveransedetaljer til overflater
+              </p>
               <p style={{ fontSize: "24px", color: "#101828" }}>
                 {displayValue(roomsData?.Yttervegger?.OverflaterDeliveryDetail)}
               </p>
