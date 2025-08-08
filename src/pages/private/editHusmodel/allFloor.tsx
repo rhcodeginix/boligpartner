@@ -23,19 +23,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
     data: any;
   }>(null);
 
-  // const [createData, setCreateData] = useState<any>(null);
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     const data = await fetchAdminDataByEmail();
-
-  //     if (data) {
-  //       setCreateData(data);
-  //     }
-  //   };
-
-  //   getData();
-  // }, []);
-
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
