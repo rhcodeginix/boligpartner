@@ -57,7 +57,7 @@ export const ExportViewData: React.FC<{
   }, [id, kundeId]);
 
   return (
-    <div>
+    <div style={{ margin: "32px" }}>
       <div
         style={{
           marginBottom: "1.25rem",

@@ -21,7 +21,7 @@ export const ExportView: React.FC<{
   const [offices, setOffices] = useState<any>(null);
   const fetchOfficeData = async () => {
     try {
-      if (roomsData?.createDataBy?.office) {
+      if (roomsData?.office_id) {
         const husmodellDocRef = doc(db, "office", roomsData?.office_id);
         const docSnap = await getDoc(husmodellDocRef);
 
@@ -41,7 +41,11 @@ export const ExportView: React.FC<{
   }, [roomsData]);
 
   return (
-    <div>
+    <div
+      style={{
+        margin: "32px",
+      }}
+    >
       <div
         style={{
           marginBottom: "1.25rem",
@@ -59,7 +63,7 @@ export const ExportView: React.FC<{
               marginBottom: "10px",
             }}
           >
-            Romskjema
+            Her følger oppsummering
           </h4>
           <div
             style={{
@@ -180,6 +184,7 @@ export const ExportView: React.FC<{
                               display: "flex",
                               justifyContent: "center",
                               alignItems: "center",
+                              marginBottom: "24px",
                             }}
                           >
                             <img
@@ -214,50 +219,38 @@ export const ExportView: React.FC<{
                             innerRoom.Kategorinavn.length > 0 &&
                             (() => {
                               const allSelectedProducts: any[] = [];
-
                               innerRoom.Kategorinavn.filter(
                                 (kat: any) => kat.productOptions !== "Text"
                               ).forEach((kat: any) => {
-                                const selectedProducts =
-                                  kat?.produkter?.filter(
+                                kat?.produkter
+                                  ?.filter(
                                     (prod: any) => prod?.isSelected === true
-                                  ) || [];
-
-                                if (selectedProducts.length > 0) {
-                                  selectedProducts.forEach((prod: any) => {
+                                  )
+                                  .forEach((prod: any) => {
                                     allSelectedProducts.push({
                                       ...prod,
                                       categoryName: kat?.navn,
                                       comment: kat?.comment ?? "",
                                     });
                                   });
-                                } else {
-                                  allSelectedProducts.push({
-                                    Produktnavn: "",
-                                    customText: "",
-                                    categoryName: kat?.navn ?? "",
-                                    comment: kat?.comment ?? "",
-                                  });
-                                }
                               });
 
                               return (
                                 <div className="custom-grid">
                                   {allSelectedProducts.map(
-                                    (prod: any, prodIndex: number) => (
-                                      <div key={prodIndex}>
-                                        <div
-                                          style={{
-                                            color: "#5d6b98",
-                                            fontSize: "24px",
-                                            fontWeight: 500,
-                                            marginBottom: "2px",
-                                          }}
-                                        >
-                                          {prod.categoryName}
-                                        </div>
-
-                                        {prod.Produktnavn ? (
+                                    (prod: any, prodIndex: number) => {
+                                      return (
+                                        <div key={prodIndex}>
+                                          <div
+                                            style={{
+                                              color: "#5d6b98",
+                                              fontSize: "24px",
+                                              fontWeight: 500,
+                                              marginBottom: "2px",
+                                            }}
+                                          >
+                                            {prod.categoryName}
+                                          </div>
                                           <div
                                             style={{
                                               color: "#101828",
@@ -275,21 +268,18 @@ export const ExportView: React.FC<{
                                               </span>
                                             )}
                                           </div>
-                                        ) : (
-                                          "-"
-                                        )}
-
-                                        <div
-                                          style={{
-                                            color: "#101828",
-                                            fontSize: "20px",
-                                            marginTop: "2px",
-                                          }}
-                                        >
-                                          {prod.comment}
+                                          <div
+                                            style={{
+                                              color: "#101828",
+                                              fontSize: "20px",
+                                              marginTop: "2px",
+                                            }}
+                                          >
+                                            {prod.comment}
+                                          </div>
                                         </div>
-                                      </div>
-                                    )
+                                      );
+                                    }
                                   )}
                                 </div>
                               );
