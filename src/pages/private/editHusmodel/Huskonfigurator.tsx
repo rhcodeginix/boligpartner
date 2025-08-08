@@ -446,7 +446,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 desktop:grid-cols-3 gap-4 lg:gap-6 w-full mt-6 md:mt-8">
           {loading ? (
             <>
-              {Array.from({ length: 3 }, (_, i) => i + 1).map((item, index) => {
+              {Array.from({ length: 3 }, (_, i) => i + 1).map((_, index) => {
                 return (
                   <div
                     key={index}
