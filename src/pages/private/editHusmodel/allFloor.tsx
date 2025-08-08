@@ -248,7 +248,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                         isSelected:
                           existingProducts.find(
                             (p: any) => p.Produktnavn === "Flis"
-                          )?.isSelected ?? false,
+                          )?.isSelected ?? true,
                         InfoText: "Ev beskriv type og farge",
                       },
                       {

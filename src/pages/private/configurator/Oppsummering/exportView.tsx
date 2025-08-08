@@ -214,38 +214,50 @@ export const ExportView: React.FC<{
                             innerRoom.Kategorinavn.length > 0 &&
                             (() => {
                               const allSelectedProducts: any[] = [];
+
                               innerRoom.Kategorinavn.filter(
                                 (kat: any) => kat.productOptions !== "Text"
                               ).forEach((kat: any) => {
-                                kat?.produkter
-                                  ?.filter(
+                                const selectedProducts =
+                                  kat?.produkter?.filter(
                                     (prod: any) => prod?.isSelected === true
-                                  )
-                                  .forEach((prod: any) => {
+                                  ) || [];
+
+                                if (selectedProducts.length > 0) {
+                                  selectedProducts.forEach((prod: any) => {
                                     allSelectedProducts.push({
                                       ...prod,
                                       categoryName: kat?.navn,
                                       comment: kat?.comment ?? "",
                                     });
                                   });
+                                } else {
+                                  allSelectedProducts.push({
+                                    Produktnavn: "",
+                                    customText: "",
+                                    categoryName: kat?.navn ?? "",
+                                    comment: kat?.comment ?? "",
+                                  });
+                                }
                               });
 
                               return (
                                 <div className="custom-grid">
                                   {allSelectedProducts.map(
-                                    (prod: any, prodIndex: number) => {
-                                      return (
-                                        <div key={prodIndex}>
-                                          <div
-                                            style={{
-                                              color: "#5d6b98",
-                                              fontSize: "24px",
-                                              fontWeight: 500,
-                                              marginBottom: "2px",
-                                            }}
-                                          >
-                                            {prod.categoryName}
-                                          </div>
+                                    (prod: any, prodIndex: number) => (
+                                      <div key={prodIndex}>
+                                        <div
+                                          style={{
+                                            color: "#5d6b98",
+                                            fontSize: "24px",
+                                            fontWeight: 500,
+                                            marginBottom: "2px",
+                                          }}
+                                        >
+                                          {prod.categoryName}
+                                        </div>
+
+                                        {prod.Produktnavn ? (
                                           <div
                                             style={{
                                               color: "#101828",
@@ -263,18 +275,21 @@ export const ExportView: React.FC<{
                                               </span>
                                             )}
                                           </div>
-                                          <div
-                                            style={{
-                                              color: "#101828",
-                                              fontSize: "20px",
-                                              marginTop: "2px",
-                                            }}
-                                          >
-                                            {prod.comment}
-                                          </div>
+                                        ) : (
+                                          "-"
+                                        )}
+
+                                        <div
+                                          style={{
+                                            color: "#101828",
+                                            fontSize: "20px",
+                                            marginTop: "2px",
+                                          }}
+                                        >
+                                          {prod.comment}
                                         </div>
-                                      );
-                                    }
+                                      </div>
+                                    )
                                   )}
                                 </div>
                               );

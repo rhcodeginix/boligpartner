@@ -1097,7 +1097,7 @@ export const AllSummury: React.FC<{
                                                 )}
                                               </div>
                                             ) : (
-                                              ""
+                                              "-"
                                             )}
 
                                             <div
