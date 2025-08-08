@@ -292,7 +292,6 @@ export const Eksterior: React.FC<{
       // toast.success("Lagret", { position: "top-right" });
       // setActiveTab(1);
     } catch (error) {
-      // console.error("Failed to update plantegning:", error);
       toast.error("Noe gikk galt", { position: "top-right" });
     } finally {
       setIsSubmitLoading(false);
