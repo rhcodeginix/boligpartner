@@ -20,7 +20,7 @@ import Drawer from "../../../components/ui/drawer";
 import { ProductFormDrawer } from "./productform";
 import { toast } from "react-hot-toast";
 import { db } from "../../../config/firebaseConfig";
-import { fetchAdminDataByEmail, fetchProjectsData } from "../../../lib/utils";
+import { fetchProjectsData } from "../../../lib/utils";
 import { ViewProductDetail } from "./ViewDetailProduct";
 import { Input } from "../../../components/ui/input";
 import { Spinner } from "../../../components/Spinner";
@@ -120,18 +120,18 @@ export const Eksterior: React.FC<{
   const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
 
   const navigate = useNavigate();
-  const [createData, setCreateData] = useState<any>(null);
-  useEffect(() => {
-    const getData = async () => {
-      const data = await fetchAdminDataByEmail();
+  // const [createData, setCreateData] = useState<any>(null);
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     const data = await fetchAdminDataByEmail();
 
-      if (data) {
-        setCreateData(data);
-      }
-    };
+  //     if (data) {
+  //       setCreateData(data);
+  //     }
+  //   };
 
-    getData();
-  }, []);
+  //   getData();
+  // }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -1256,6 +1256,12 @@ export const Eksterior: React.FC<{
 
                     toast.success("Bestillingen er lagt inn!", {
                       position: "top-right",
+                    });
+                    const params = new URLSearchParams(location.search);
+                    params.delete("pdf_id");
+
+                    navigate(`${location.pathname}?${params.toString()}`, {
+                      replace: true,
                     });
                     setActiveTab(1);
                   } catch (err) {
