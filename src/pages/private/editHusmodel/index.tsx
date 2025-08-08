@@ -18,7 +18,6 @@ export const EditHouseModel = () => {
 
   return (
     <>
-    abcd
       {(activeTab === 0 || activeTab === 1) && (
         <div className="py-4 px-4 md:px-6 bg-lightPurple">
           <div className="flex items-center gap-1.5 mb-4 md:mb-6 flex-wrap">
