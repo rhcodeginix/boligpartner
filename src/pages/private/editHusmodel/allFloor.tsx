@@ -34,7 +34,6 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
 
     getData();
   }, []);
-  console.log(createData);
 
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
