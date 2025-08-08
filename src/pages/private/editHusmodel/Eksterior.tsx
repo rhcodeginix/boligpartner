@@ -120,18 +120,6 @@ export const Eksterior: React.FC<{
   const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
 
   const navigate = useNavigate();
-  // const [createData, setCreateData] = useState<any>(null);
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     const data = await fetchAdminDataByEmail();
-
-  //     if (data) {
-  //       setCreateData(data);
-  //     }
-  //   };
-
-  //   getData();
-  // }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

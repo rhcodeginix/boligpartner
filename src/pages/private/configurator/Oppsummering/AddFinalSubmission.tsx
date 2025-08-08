@@ -170,7 +170,7 @@ export const AddFinalSubmission: React.FC<{
               .upperCaseHeading {
                 color: #101828;
                 font-weight: 700;
-                font-size: 28px;
+                font-size: 18px;
                 text-transform: uppercase;
               }  
               .sr-only {
@@ -186,8 +186,8 @@ export const AddFinalSubmission: React.FC<{
               }
             
               .checkbox-box {
-                width: 1.25rem; /* 20px */
-                height: 1.25rem;
+                width: 1rem; /* 20px */
+                height: 1rem;
                 border: 2px solid #444CE7;
                 border-radius: 0.125rem; /* rounded-sm */
               }
@@ -195,13 +195,13 @@ export const AddFinalSubmission: React.FC<{
               .checkmark {
                 pointer-events: none;
                 position: absolute;
-                left: 4px; /* 2px */
-                top: 4px;
+                left: 2px; /* 2px */
+                top: 2px;
               }
             
               .checkmark-icon {
-                width: 1rem;
-                height: 1rem;
+                width: 0.75rem;
+                height: 0.75rem;
                 color: #444CE7;
               }
             
@@ -234,57 +234,138 @@ export const AddFinalSubmission: React.FC<{
           </html>
         `;
 
-      const htmlFile = new File([htmlDocument], "document.html", {
-        type: "text/html",
-      });
+      // const htmlFile = new File([htmlDocument], "document.html", {
+      //   type: "text/html",
+      // });
 
-      const formData = new FormData();
-      formData.append("File", htmlFile);
-      formData.append("FileName", "exported.pdf");
+      // const formData = new FormData();
+      // formData.append("File", htmlFile);
+      // formData.append("FileName", "exported.pdf");
 
       try {
-        const response = await fetch(
-          "https://v2.convertapi.com/convert/html/to/pdf",
+        // const response = await fetch(
+        //   "https://v2.convertapi.com/convert/html/to/pdf",
+        //   {
+        //     method: "POST",
+        //     headers: {
+        //       Authorization: `Bearer ${process.env.REACT_APP_HTML_TO_PDF}`,
+        //     },
+        //     body: formData,
+        //   }
+        // );
+
+        // if (!response.ok) {
+        //   const errorText = await response.text();
+        //   console.error("ConvertAPI returned an error:", errorText);
+        //   throw new Error(
+        //     `HTTP error! status: ${response.status} - ${errorText}`
+        //   );
+        // }
+
+        // const json = await response.json();
+
+        // if (json.Files && json.Files[0]) {
+        //   const file = json.Files[0];
+        //   const base64 = file.FileData;
+        //   const fileName = roomsData?.Kundenavn;
+
+        //   const byteCharacters = atob(base64);
+        //   const byteNumbers = new Array(byteCharacters.length);
+        //   for (let i = 0; i < byteCharacters.length; i++) {
+        //     byteNumbers[i] = byteCharacters.charCodeAt(i);
+        //   }
+        //   const byteArray = new Uint8Array(byteNumbers);
+        //   const blob = new Blob([byteArray], { type: "application/pdf" });
+
+        //   const link = document.createElement("a");
+        //   link.href = window.URL.createObjectURL(blob);
+        //   link.download = fileName;
+        //   document.body.appendChild(link);
+        //   link.click();
+        //   document.body.removeChild(link);
+        //   setIsExporting(false);
+        // }
+
+        const payload = {
+          tasks: {
+            "import-1": {
+              operation: "import/raw",
+              file: htmlDocument,
+              filename: "document.html",
+            },
+            convert: {
+              operation: "convert",
+              input: "import-1",
+              output_format: "pdf",
+              options: {
+                page_size: "A4",
+                margin_top: "10mm",
+                margin_bottom: "10mm",
+                margin_left: "10mm",
+                margin_right: "10mm",
+              },
+            },
+            export: {
+              operation: "export/url",
+              input: "convert",
+            },
+          },
+          tag: "html-css-conversion",
+        };
+
+        const createJobRes = await fetch(
+          "https://api.cloudconvert.com/v2/jobs",
           {
             method: "POST",
             headers: {
-              Authorization: `Bearer ${process.env.REACT_APP_HTML_TO_PDF}`,
+              Authorization: `Bearer ${process.env.REACT_APP_HTML_TO_PDF_TOKEN}`,
+              "Content-Type": "application/json",
             },
-            body: formData,
+            body: JSON.stringify(payload),
           }
         );
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error("ConvertAPI returned an error:", errorText);
-          throw new Error(
-            `HTTP error! status: ${response.status} - ${errorText}`
+        if (!createJobRes.ok) {
+          throw new Error(`Job creation failed: ${await createJobRes.text()}`);
+        }
+
+        const createJobData = await createJobRes.json();
+        const jobId = createJobData.data.id;
+
+        let exportFileUrl = "";
+        while (true) {
+          const jobStatusRes = await fetch(
+            `https://api.cloudconvert.com/v2/jobs/${jobId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${process.env.REACT_APP_HTML_TO_PDF_TOKEN}`,
+              },
+            }
           );
-        }
 
-        const json = await response.json();
+          const jobStatusData = await jobStatusRes.json();
+          const exportTask = jobStatusData.data.tasks.find(
+            (t: any) => t.operation === "export/url" && t.status === "finished"
+          );
 
-        if (json.Files && json.Files[0]) {
-          const file = json.Files[0];
-          const base64 = file.FileData;
-          const fileName = roomsData?.Kundenavn;
-
-          const byteCharacters = atob(base64);
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          if (exportTask) {
+            exportFileUrl = exportTask.result.files[0].url;
+            break;
           }
-          const byteArray = new Uint8Array(byteNumbers);
-          const blob = new Blob([byteArray], { type: "application/pdf" });
 
-          const link = document.createElement("a");
-          link.href = window.URL.createObjectURL(blob);
-          link.download = fileName;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          setIsExporting(false);
+          await new Promise((r) => setTimeout(r, 2000));
         }
+
+        const pdfResponse = await fetch(exportFileUrl);
+        const pdfBlob = await pdfResponse.blob();
+
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(pdfBlob);
+        link.download = roomsData?.Kundenavn;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setIsExporting(false);
       } catch (error) {
         console.error("Error converting HTML to PDF:", error);
       } finally {
@@ -445,7 +526,7 @@ export const AddFinalSubmission: React.FC<{
       }
 
       setIsExporting(false);
-      navigate("/Bolig-configurator");
+      // navigate("/Bolig-configurator");
     } catch (error) {
       console.error("error:", error);
       toast.error("Something went wrong!", {

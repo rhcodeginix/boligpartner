@@ -190,77 +190,6 @@ export const HusmodellerTable = () => {
 
   const [filteredData, setFilteredData] = useState<any[]>([]);
 
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     try {
-  //       setIsLoading(true);
-
-  //       const allKunder: any[] = [];
-
-  //       for (const item of (houseModels as any) || []) {
-  //         // let officeData: any = null;
-  //         let tagData: any = null;
-  //         let userData: any = null;
-
-  //         // if (item?.office_id) {
-  //         //   officeData = await fetchOfficeData(item.office_id);
-  //         // }
-  //         if (item?.category_id) {
-  //           tagData = await fetchTagData(item?.category_id);
-  //         }
-  //         if (item?.created_by) {
-  //           userData = await fetchUserData(item?.created_by);
-  //         }
-
-  //         const mappedKunde = {
-  //           ...item,
-  //           husmodell_name: item?.VelgSerie || tagData?.husmodell_name || null,
-  //           parentId: item.category_id,
-  //           createDataBy: userData || null,
-  //           tag: tagData?.tag || null,
-  //           placeOrder: item?.placeOrder || false,
-  //           configurator:
-  //             item?.Plantegninger?.length > 0
-  //               ? item.Plantegninger.some((room: any) => !room.configurator)
-  //               : true,
-  //           updatedAt: item?.updatedAt || item?.createdAt || null,
-  //           kundeId: item?.uniqueId,
-  //           id: item?.uniqueId,
-  //           // office_name: officeData?.data?.name || null,
-  //           self_id: item?.self_id,
-  //         };
-
-  //         allKunder.push(mappedKunde);
-  //       }
-
-  //       const filtered = allKunder.filter((kunde) => {
-  //         const matchesSearch =
-  //           !searchTerm ||
-  //           kunde.Kundenavn?.toLowerCase().includes(searchTerm.toLowerCase());
-  //         const matchesFilter =
-  //           !selectedFilter || kunde.husmodell_name === selectedFilter;
-  //         const matchesTypeProsjekt =
-  //           !activeTab || kunde.tag?.toLowerCase() === activeTab.toLowerCase();
-  //         return matchesSearch && matchesFilter && matchesTypeProsjekt;
-  //       });
-
-  //       const sorted = filtered.sort((a, b) => {
-  //         const dateA = new Date(a.updatedAt || 0).getTime();
-  //         const dateB = new Date(b.updatedAt || 0).getTime();
-  //         return dateB - dateA;
-  //       });
-
-  //       setFilteredData(sorted);
-  //     } catch (error) {
-  //       console.error("Error loading data:", error);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   getData();
-  // }, [houseModels, searchTerm, selectedFilter, activeTab]);
-
   useEffect(() => {
     const getData = async () => {
       try {
@@ -367,6 +296,7 @@ export const HusmodellerTable = () => {
       setNewConfiguratorName("");
     }
   }, [showConfiguratorModal, pendingPayload]);
+
   useEffect(() => {
     const exportToPDF = async () => {
       if (!isExporting || !selectedData) return;
@@ -376,145 +306,168 @@ export const HusmodellerTable = () => {
         if (!element) return;
 
         const htmlDocument = `
-          <html>
-            <head>
-              <meta charset="UTF-8" />
-              <title>Export</title>
-              <style>
-              body {
-                font-family: "Inter", sans-serif !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                box-sizing: border-box;
-                list-style: none;
-              }
-              p {
-                margin: 0 !important;
-              }
-              
-              .upperCaseHeading {
-                color: #101828;
-                font-weight: 700;
-                font-size: 28px;
-                text-transform: uppercase;
-              }  
-              .sr-only {
-                position: absolute;
-                width: 1px;
-                height: 1px;
-                padding: 0;
-                margin: -1px;
-                overflow: hidden;
-                clip: rect(0, 0, 0, 0);
-                white-space: nowrap;
-                border: 0;
-              }
-            
-              .checkbox-box {
-                width: 1.25rem; /* 20px */
-                height: 1.25rem;
-                border: 2px solid #444CE7;
-                border-radius: 0.125rem; /* rounded-sm */
-              }
-            
-              .checkmark {
-                pointer-events: none;
-                position: absolute;
-                left: 4px; /* 2px */
-                top: 4px;
-              }
-            
-              .checkmark-icon {
-                width: 1rem;
-                height: 1rem;
-                color: #444CE7;
-              }
-            
-              .horizontal-divider {
-                width: 100%;
-                border-top: 1px solid #EBEBEB;
-              }           
-              .custom-grid {
-                display: grid;
-                grid-template-columns: repeat(1, minmax(0, 1fr));
-                gap: 1rem;
-              }
-      
-              @media (min-width: 640px) {
-                .custom-grid {
-                  grid-template-columns: repeat(2, minmax(0, 1fr));
-                }
-              }
-      
-              @media (min-width: 768px) {
-                .custom-grid {
-                  grid-template-columns: repeat(3, minmax(0, 1fr));
-                }
-              }
-            </style>
-            </head>
-            <body>
-              ${element.outerHTML}
-            </body>
-          </html>
-        `;
+           <html>
+             <head>
+               <meta charset="UTF-8" />
+               <title>Export</title>
+               <style>
+               body {
+                 font-family: "Inter", sans-serif !important;
+                 margin: 0 !important;
+                 padding: 0 !important;
+                 box-sizing: border-box;
+                 list-style: none;
+               }
+               p {
+                 margin: 0 !important;
+               }
 
-        const htmlFile = new File([htmlDocument], "document.html", {
-          type: "text/html",
-        });
+               .upperCaseHeading {
+                 color: #101828;
+                 font-weight: 700;
+                 font-size: 28px;
+                 text-transform: uppercase;
+               }
+               .sr-only {
+                 position: absolute;
+                 width: 1px;
+                 height: 1px;
+                 padding: 0;
+                 margin: -1px;
+                 overflow: hidden;
+                 clip: rect(0, 0, 0, 0);
+                 white-space: nowrap;
+                 border: 0;
+               }
 
-        const formData = new FormData();
-        formData.append("File", htmlFile);
-        formData.append("FileName", "exported.pdf");
+               .checkbox-box {
+                 width: 1.25rem; /* 20px */
+                 height: 1.25rem;
+                 border: 2px solid #444CE7;
+                 border-radius: 0.125rem; /* rounded-sm */
+               }
 
-        try {
-          const response = await fetch(
-            "https://v2.convertapi.com/convert/html/to/pdf",
-            {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${process.env.REACT_APP_HTML_TO_PDF}`,
+               .checkmark {
+                 pointer-events: none;
+                 position: absolute;
+                 left: 4px; /* 2px */
+                 top: 4px;
+               }
+
+               .checkmark-icon {
+                 width: 1rem;
+                 height: 1rem;
+                 color: #444CE7;
+               }
+
+               .horizontal-divider {
+                 width: 100%;
+                 border-top: 1px solid #EBEBEB;
+               }
+               .custom-grid {
+                 display: grid;
+                 grid-template-columns: repeat(1, minmax(0, 1fr));
+                 gap: 1rem;
+               }
+
+               @media (min-width: 640px) {
+                 .custom-grid {
+                   grid-template-columns: repeat(2, minmax(0, 1fr));
+                 }
+               }
+
+               @media (min-width: 768px) {
+                 .custom-grid {
+                   grid-template-columns: repeat(3, minmax(0, 1fr));
+                 }
+               }
+             </style>
+             </head>
+             <body>
+               ${element.outerHTML}
+             </body>
+           </html>
+         `;
+
+        const payload = {
+          tasks: {
+            "import-1": {
+              operation: "import/raw",
+              file: htmlDocument,
+              filename: "document.html",
+            },
+            convert: {
+              operation: "convert",
+              input: "import-1",
+              output_format: "pdf",
+              options: {
+                page_size: "A4",
+                margin_top: "10mm",
+                margin_bottom: "10mm",
+                margin_left: "10mm",
+                margin_right: "10mm",
               },
-              body: formData,
+            },
+            export: {
+              operation: "export/url",
+              input: "convert",
+            },
+          },
+          tag: "html-css-conversion",
+        };
+
+        const createJobRes = await fetch(
+          "https://api.cloudconvert.com/v2/jobs",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${process.env.REACT_APP_HTML_TO_PDF_TOKEN}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+
+        if (!createJobRes.ok) {
+          throw new Error(`Job creation failed: ${await createJobRes.text()}`);
+        }
+
+        const createJobData = await createJobRes.json();
+        const jobId = createJobData.data.id;
+
+        let exportFileUrl = "";
+        while (true) {
+          const jobStatusRes = await fetch(
+            `https://api.cloudconvert.com/v2/jobs/${jobId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${process.env.REACT_APP_HTML_TO_PDF_TOKEN}`,
+              },
             }
           );
 
-          if (!response.ok) {
-            const errorText = await response.text();
-            console.error("ConvertAPI returned an error:", errorText);
-            throw new Error(
-              `HTTP error! status: ${response.status} - ${errorText}`
-            );
+          const jobStatusData = await jobStatusRes.json();
+          const exportTask = jobStatusData.data.tasks.find(
+            (t: any) => t.operation === "export/url" && t.status === "finished"
+          );
+
+          if (exportTask) {
+            exportFileUrl = exportTask.result.files[0].url;
+            break;
           }
 
-          const json = await response.json();
-
-          if (json.Files && json.Files[0]) {
-            const file = json.Files[0];
-            const base64 = file.FileData;
-            const fileName = selectedData?.Kundenavn;
-
-            const byteCharacters = atob(base64);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-              byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: "application/pdf" });
-
-            const link = document.createElement("a");
-            link.href = window.URL.createObjectURL(blob);
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            setIsExporting(false);
-          }
-        } catch (error) {
-          console.error("Error converting HTML to PDF:", error);
-        } finally {
-          setIsExporting(false);
+          await new Promise((r) => setTimeout(r, 2000));
         }
+
+        const pdfResponse = await fetch(exportFileUrl);
+        const pdfBlob = await pdfResponse.blob();
+
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(pdfBlob);
+        link.download = selectedData?.Kundenavn;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
       } catch (err) {
         console.error("Failed to generate PDF:", err);
         toast.error("Kunne ikke laste ned PDF.");
@@ -764,6 +717,28 @@ export const HusmodellerTable = () => {
       }
     },
   });
+  const [offices, setOffices] = useState<any>(null);
+
+  const fetchOfficeData = async () => {
+    try {
+      if (selectedData?.office_id) {
+        const husmodellDocRef = doc(db, "office", selectedData?.office_id);
+        const docSnap = await getDoc(husmodellDocRef);
+
+        if (docSnap.exists()) {
+          setOffices(docSnap.data());
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching husmodell data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedData?.office_id) {
+      fetchOfficeData();
+    }
+  }, [selectedData]);
 
   return (
     <>
@@ -1031,6 +1006,7 @@ export const HusmodellerTable = () => {
             rooms={selectedData?.Plantegninger}
             kundeInfo={selectedData}
             roomsData={selectedData}
+            offices={offices}
           />
         </div>
       </div>

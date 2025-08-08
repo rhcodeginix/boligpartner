@@ -1,7 +1,3 @@
-import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../../config/firebaseConfig";
-
 export function formatPhoneNumber(number: any) {
   let cleaned = number.replace(/[^\d+]/g, "");
 
@@ -17,31 +13,14 @@ export const ExportView: React.FC<{
   rooms: any;
   kundeInfo: any;
   roomsData: any;
-}> = ({ rooms, kundeInfo, roomsData }) => {
-  const [offices, setOffices] = useState<any>(null);
-  const fetchOfficeData = async () => {
-    try {
-      if (roomsData?.createDataBy?.office) {
-        const husmodellDocRef = doc(db, "office", roomsData?.office_id);
-        const docSnap = await getDoc(husmodellDocRef);
-
-        if (docSnap.exists()) {
-          setOffices(docSnap.data());
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching husmodell data:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (roomsData?.office_id) {
-      fetchOfficeData();
-    }
-  }, [roomsData]);
-
+  offices: any;
+}> = ({ rooms, kundeInfo, roomsData, offices }) => {
   return (
-    <div>
+    <div
+      style={{
+        margin: "32px",
+      }}
+    >
       <div
         style={{
           marginBottom: "1.25rem",
@@ -55,11 +34,11 @@ export const ExportView: React.FC<{
             style={{
               color: "#101828",
               fontWeight: 600,
-              fontSize: "28px",
+              fontSize: "22px",
               marginBottom: "10px",
             }}
           >
-            Romskjema
+            Her følger oppsummering
           </h4>
           <div
             style={{
@@ -76,21 +55,21 @@ export const ExportView: React.FC<{
                 gap: "0.5rem",
               }}
             >
-              <p style={{ color: "#101828", fontSize: "20px" }}>
+              <p style={{ color: "#101828", fontSize: "16px" }}>
                 <span style={{ fontWeight: 600 }}>Kundenavn:</span>{" "}
                 {kundeInfo?.Kundenavn}
               </p>
-              <p style={{ color: "#101828", fontSize: "20px" }}>
+              <p style={{ color: "#101828", fontSize: "16px" }}>
                 <span style={{ fontWeight: 600 }}>BP prosjektnummer:</span>{" "}
                 {kundeInfo?.Kundenummer}
               </p>
               {kundeInfo?.Serie && (
-                <p style={{ color: "#101828", fontSize: "20px" }}>
+                <p style={{ color: "#101828", fontSize: "16px" }}>
                   <span style={{ fontWeight: 600 }}>Serie:</span>{" "}
                   {kundeInfo?.Serie}
                 </p>
               )}
-              <p style={{ color: "#101828", fontSize: "20px" }}>
+              <p style={{ color: "#101828", fontSize: "16px" }}>
                 <span style={{ fontWeight: 600 }}>Mobile:</span>{" "}
                 {kundeInfo?.mobile
                   ? formatPhoneNumber(kundeInfo?.mobile)
@@ -115,7 +94,7 @@ export const ExportView: React.FC<{
             style={{ marginBottom: "10px" }}
           />
           {roomsData?.createDataBy && (
-            <p style={{ color: "#101828", fontSize: "20px" }}>
+            <p style={{ color: "#101828", fontSize: "16px" }}>
               <span style={{ fontWeight: 600 }}>Laget av:</span>{" "}
               {roomsData?.createDataBy?.f_name
                 ? `${roomsData?.createDataBy?.f_name} ${roomsData?.createDataBy?.l_name}`
@@ -123,18 +102,18 @@ export const ExportView: React.FC<{
             </p>
           )}
           {roomsData?.createDataBy && (
-            <p style={{ color: "#101828", fontSize: "20px" }}>
+            <p style={{ color: "#101828", fontSize: "16px" }}>
               <span style={{ fontWeight: 600 }}>E-post:</span>{" "}
               {roomsData?.createDataBy?.email}
             </p>
           )}
           {roomsData?.createDataBy && (
-            <p style={{ color: "#101828", fontSize: "20px" }}>
+            <p style={{ color: "#101828", fontSize: "16px" }}>
               <span style={{ fontWeight: 600 }}>Kontor:</span>{" "}
               {offices?.data?.name}
             </p>
           )}
-          <p style={{ color: "#101828", fontSize: "20px" }}>
+          <p style={{ color: "#101828", fontSize: "16px" }}>
             <span style={{ fontWeight: 600 }}>Dato og klokkeslett:</span>{" "}
             {new Date().toLocaleString("nb-NO", {
               day: "2-digit",
@@ -180,6 +159,7 @@ export const ExportView: React.FC<{
                               display: "flex",
                               justifyContent: "center",
                               alignItems: "center",
+                              marginBottom: "24px",
                             }}
                           >
                             <img
@@ -204,7 +184,7 @@ export const ExportView: React.FC<{
                           <div
                             style={{
                               color: "#30374f",
-                              fontSize: "24px",
+                              fontSize: "18px",
                               fontWeight: 600,
                             }}
                           >
@@ -214,54 +194,42 @@ export const ExportView: React.FC<{
                             innerRoom.Kategorinavn.length > 0 &&
                             (() => {
                               const allSelectedProducts: any[] = [];
-
                               innerRoom.Kategorinavn.filter(
                                 (kat: any) => kat.productOptions !== "Text"
                               ).forEach((kat: any) => {
-                                const selectedProducts =
-                                  kat?.produkter?.filter(
+                                kat?.produkter
+                                  ?.filter(
                                     (prod: any) => prod?.isSelected === true
-                                  ) || [];
-
-                                if (selectedProducts.length > 0) {
-                                  selectedProducts.forEach((prod: any) => {
+                                  )
+                                  .forEach((prod: any) => {
                                     allSelectedProducts.push({
                                       ...prod,
                                       categoryName: kat?.navn,
                                       comment: kat?.comment ?? "",
                                     });
                                   });
-                                } else {
-                                  allSelectedProducts.push({
-                                    Produktnavn: "",
-                                    customText: "",
-                                    categoryName: kat?.navn ?? "",
-                                    comment: kat?.comment ?? "",
-                                  });
-                                }
                               });
 
                               return (
                                 <div className="custom-grid">
                                   {allSelectedProducts.map(
-                                    (prod: any, prodIndex: number) => (
-                                      <div key={prodIndex}>
-                                        <div
-                                          style={{
-                                            color: "#5d6b98",
-                                            fontSize: "24px",
-                                            fontWeight: 500,
-                                            marginBottom: "2px",
-                                          }}
-                                        >
-                                          {prod.categoryName}
-                                        </div>
-
-                                        {prod.Produktnavn ? (
+                                    (prod: any, prodIndex: number) => {
+                                      return (
+                                        <div key={prodIndex}>
+                                          <div
+                                            style={{
+                                              color: "#5d6b98",
+                                              fontSize: "14px",
+                                              fontWeight: 500,
+                                              marginBottom: "2px",
+                                            }}
+                                          >
+                                            {prod.categoryName}
+                                          </div>
                                           <div
                                             style={{
                                               color: "#101828",
-                                              fontSize: "20px",
+                                              fontSize: "16px",
                                             }}
                                           >
                                             {prod?.Produktnavn}{" "}
@@ -275,21 +243,18 @@ export const ExportView: React.FC<{
                                               </span>
                                             )}
                                           </div>
-                                        ) : (
-                                          "-"
-                                        )}
-
-                                        <div
-                                          style={{
-                                            color: "#101828",
-                                            fontSize: "20px",
-                                            marginTop: "2px",
-                                          }}
-                                        >
-                                          {prod.comment}
+                                          <div
+                                            style={{
+                                              color: "#101828",
+                                              fontSize: "16px",
+                                              marginTop: "2px",
+                                            }}
+                                          >
+                                            {prod.comment}
+                                          </div>
                                         </div>
-                                      </div>
-                                    )
+                                      );
+                                    }
                                   )}
                                 </div>
                               );

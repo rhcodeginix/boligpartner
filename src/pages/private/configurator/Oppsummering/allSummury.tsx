@@ -34,14 +34,14 @@ export const AllSummury: React.FC<{
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: 24,
+          gap: "16px",
         }}
       >
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
+            gap: "10px",
           }}
         >
           <h4 className="upperCaseHeading">PROSJEKTDETALJER</h4>
@@ -49,68 +49,68 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Type prosjekt
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Prosjektdetaljer?.TypeProsjekt)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 BP prosjektnummer
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Prosjektdetaljer?.Kundenr)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Tiltakshaver</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Tiltakshaver</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Prosjektdetaljer?.Tiltakshaver)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Byggeadresse</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Byggeadresse</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Prosjektdetaljer?.Byggeadresse)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Postnr</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Postnr</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Prosjektdetaljer?.Postnr)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Poststed</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Poststed</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Prosjektdetaljer?.Poststed)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Kommune</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Kommune</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Prosjektdetaljer?.Kommune)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Tlf. Mobil</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Tlf. Mobil</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {(roomsData?.Prosjektdetaljer?.TelefonMobile &&
                   formatPhoneNumber(
                     roomsData?.Prosjektdetaljer?.TelefonMobile
@@ -121,34 +121,34 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Har kunden godkjent finansiering?
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Prosjektdetaljer?.Finansiering)}
               </p>
             </div>
           </div>
           <div className="horizontal-divider"></div>
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Serie og leveransebeskrivelse
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Velg serie</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Velg serie</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Prosjektdetaljer?.VelgSerie)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Dato BoligPartner leveransebeskrivelse
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {(roomsData?.Prosjektdetaljer
                   ?.DatoBoligPartnerLeveransebeskrivelse &&
                   formatDate(
@@ -160,25 +160,25 @@ export const AllSummury: React.FC<{
             </div>
           </div>
           <div className="horizontal-divider"></div>
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Prosjekteringsunderlag
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Tegn.nummer</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Tegn.nummer</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Prosjektdetaljer?.TegnNummer)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Signert 1:100 tegning datert
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {(roomsData?.Prosjektdetaljer?.SignertDato &&
                   formatDate(roomsData?.Prosjektdetaljer?.SignertDato)) ??
                   "-"}
@@ -187,10 +187,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Gjeldende 1:50 tegning datert
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {(roomsData?.Prosjektdetaljer?.GjeldendeDato &&
                   formatDate(roomsData?.Prosjektdetaljer?.GjeldendeDato)) ??
                   "-"}
@@ -199,10 +199,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Situasjonsplan (dato)
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {(roomsData?.Prosjektdetaljer?.Situasjonsplan &&
                   formatDate(roomsData?.Prosjektdetaljer?.Situasjonsplan)) ??
                   "-"}
@@ -211,8 +211,8 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Kalkyledato</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Kalkyledato</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {(roomsData?.Prosjektdetaljer?.Kalkyledato &&
                   formatDate(roomsData?.Prosjektdetaljer?.Kalkyledato)) ??
                   "-"}
@@ -221,34 +221,34 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Type kalkyle</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Type kalkyle</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Prosjektdetaljer?.TypeKalkyle)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til kalkylse
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Prosjektdetaljer?.KommentarKalkyle)}
               </p>
             </div>
           </div>
           <div className="horizontal-divider"></div>
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Leveransedetaljer
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Ønsket leveranseuke for første utkjøring
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Prosjektdetaljer
                     ?.ØnsketLeveranseukeForFørsteKtkjøring
@@ -258,30 +258,30 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Takstoler leveres uke
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Prosjektdetaljer?.TakstolerLeveresUke)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Vinduer leveres uke
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Prosjektdetaljer?.VinduerLeveresUke)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Vedlegg til kontrakt datert
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {(roomsData?.Prosjektdetaljer?.VedleggTilKontraktDatert &&
                   formatDate(
                     roomsData?.Prosjektdetaljer?.VedleggTilKontraktDatert
@@ -292,10 +292,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Bestillingsoversikt datert
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {(roomsData?.Prosjektdetaljer?.BestillingsoversiktDatert &&
                   formatDate(
                     roomsData?.Prosjektdetaljer?.BestillingsoversiktDatert
@@ -306,10 +306,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til prosjekt- og leveransedetaljer
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Prosjektdetaljer
                     ?.KommentarProsjektLeveransedetaljer
@@ -323,7 +323,7 @@ export const AllSummury: React.FC<{
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
+            gap: "10px",
           }}
         >
           <h4 className="upperCaseHeading">Grunnmur og pipe</h4>
@@ -331,10 +331,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Type grunn og fundament
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.GrunnerOgSkorstein?.TypeGrunnFundament
                 )}
@@ -345,11 +345,11 @@ export const AllSummury: React.FC<{
               <div
                 style={{ display: "flex", flexDirection: "column", gap: "6px" }}
               >
-                <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                   Type grunnmur
                 </p>
 
-                <p style={{ fontSize: "24px", color: "#101828" }}>
+                <p style={{ fontSize: "16px", color: "#101828" }}>
                   {displayValue(roomsData?.GrunnerOgSkorstein?.TypeGrunnmur)}
                 </p>
               </div>
@@ -358,10 +358,10 @@ export const AllSummury: React.FC<{
               <div
                 style={{ display: "flex", flexDirection: "column", gap: "6px" }}
               >
-                <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                   Detaljnummer for Termomur
                 </p>
-                <p style={{ fontSize: "24px", color: "#101828" }}>
+                <p style={{ fontSize: "16px", color: "#101828" }}>
                   {displayValue(roomsData?.GrunnerOgSkorstein?.detaljnummer)}
                 </p>
               </div>
@@ -370,10 +370,10 @@ export const AllSummury: React.FC<{
               <div
                 style={{ display: "flex", flexDirection: "column", gap: "6px" }}
               >
-                <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                   kommentar til annet
                 </p>
-                <p style={{ fontSize: "24px", color: "#101828" }}>
+                <p style={{ fontSize: "16px", color: "#101828" }}>
                   {displayValue(
                     roomsData?.GrunnerOgSkorstein?.TypeGrunnmurText
                   )}
@@ -382,27 +382,27 @@ export const AllSummury: React.FC<{
             )}
           </div>
           <div className="horizontal-divider"></div>
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Pipe og Ildsted
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Skorstein type
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.GrunnerOgSkorstein?.SkorsteinType)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Skorstein Enkel/Dobbel
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.GrunnerOgSkorstein?.SkorsteinEnkelDobbel
                 )}
@@ -411,10 +411,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Skorstein Leveres av
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.GrunnerOgSkorstein?.SkorsteinLeveresAv
                 )}
@@ -423,18 +423,18 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Ildsted Type</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Ildsted Type</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.GrunnerOgSkorstein?.SkorsteinType)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Ildsted leveres av
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.GrunnerOgSkorstein?.IldstedLeveresAv)}
               </p>
             </div>
@@ -445,21 +445,21 @@ export const AllSummury: React.FC<{
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
+            gap: "10px",
           }}
         >
           <h4 className="upperCaseHeading">Gulv OG bjelkelag</h4>
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Bjelkelag mellom etasjer
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.GulvBjelkelagHimling?.BjelkelagMellomEtasjer
                 )}
@@ -468,10 +468,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til etasjeskiller
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.GulvBjelkelagHimling?.KommentarEtasjeskiller
                 )}
@@ -480,10 +480,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Bjelkelag forsterkes for påstøp i følgende rom
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.GulvBjelkelagHimling?.BjelkelagForsterkesFølgende
                 )}
@@ -491,27 +491,27 @@ export const AllSummury: React.FC<{
             </div>
           </div>
           <div className="horizontal-divider"></div>
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Loft
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.GulvBjelkelagHimling?.Loft)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til loft
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.GulvBjelkelagHimling?.KommentarLoft)}
               </p>
             </div>
@@ -522,12 +522,12 @@ export const AllSummury: React.FC<{
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
+            gap: "10px",
           }}
         >
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             <h4 className="upperCaseHeading">Yttervegger</h4>
-            <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+            <p style={{ fontSize: "14px", color: "#5d6b98" }}>
               Oppbygging på yttervegg leveres med standard 198+48mm
             </p>
           </div>
@@ -535,58 +535,58 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kledningstype
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Yttervegger?.kledningstype)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Skriv type</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Skriv type</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Yttervegger?.kledningstypeText)}
               </p>
             </div>
           </div>
           <div className="horizontal-divider"></div>
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Overflater
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Yttervegger?.Overflater?.type)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Skriv type</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Skriv type</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Yttervegger?.Overflater?.colorCode)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Beskriv eventuelle leveransedetaljer til overflater
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Yttervegger?.OverflaterDeliveryDetail)}
               </p>
             </div>
           </div>
           <div className="horizontal-divider"></div>
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Garasje
           </div>
           <div className="custom-grid">
@@ -598,11 +598,11 @@ export const AllSummury: React.FC<{
                 gridColumn: "span 4 / span 4",
               }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Beskriv eventuelle leveransedetaljer på kledningstype og farge
                 som avviker fra husleveransen
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Yttervegger?.Garasje)}
               </p>
             </div>
@@ -619,53 +619,53 @@ export const AllSummury: React.FC<{
           }}
         >
           <h4 className="upperCaseHeading">Tak og taktekking</h4>
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Undertak
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TakogTaktekking?.Undertak)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til undertak
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TakogTaktekking?.KommentarUndertak)}
               </p>
             </div>
           </div>
           <div className="horizontal-divider"></div>
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Taktekking
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TakogTaktekking?.Taktekking?.type)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Beskriv type og farge
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.TakogTaktekking?.Taktekking?.colorCode
                 )}
@@ -674,40 +674,40 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Takstein type
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TakogTaktekking?.TaksteinType)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Takstein kode
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TakogTaktekking?.TaksteinKode)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Takstein farge
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TakogTaktekking?.TaksteinFarge)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Takstein struktur
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TakogTaktekking?.TaksteinStruktur)}
               </p>
             </div>
@@ -716,7 +716,7 @@ export const AllSummury: React.FC<{
                 display: "flex",
                 alignItems: "center",
                 gap: "8px",
-                fontSize: "24px",
+                fontSize: "16px",
                 color: "#30374f",
               }}
             >
@@ -756,45 +756,45 @@ export const AllSummury: React.FC<{
             </div>
           </div>
           <div className="horizontal-divider"></div>
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Tak Annet
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Snøfangere</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Snøfangere</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TakogTaktekking?.Snøfangere)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Snøfangere farge
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TakogTaktekking?.SnøfangereFarge)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Snøfangerkroker i grad
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TakogTaktekking?.SnøfangerkrokerIGrad)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Gradrenner/beslag farge
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.TakogTaktekking?.GradrennerBeslagFarge
                 )}
@@ -803,23 +803,23 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Feieplatå</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Feieplatå</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TakogTaktekking?.Feieplatå)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Avløpslufter</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Avløpslufter</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TakogTaktekking?.Avløpslufter)}
               </p>
             </div>
             <div
               style={{
                 gridColumn: "span 4 / span 4",
-                fontSize: "20px",
+                fontSize: "18px",
                 color: "#5d6b98",
               }}
             >
@@ -863,7 +863,7 @@ export const AllSummury: React.FC<{
                                   >
                                     <p
                                       style={{
-                                        fontSize: "20px",
+                                        fontSize: "14px",
                                         color: "#5d6b98",
                                       }}
                                     >
@@ -872,7 +872,7 @@ export const AllSummury: React.FC<{
 
                                     <p
                                       style={{
-                                        fontSize: "24px",
+                                        fontSize: "16px",
                                         color: "#101828",
                                       }}
                                     >
@@ -891,16 +891,15 @@ export const AllSummury: React.FC<{
                                   >
                                     <p
                                       style={{
-                                        fontSize: "20px",
+                                        fontSize: "14px",
                                         color: "#5d6b98",
                                       }}
                                     >
                                       Beskriv hvilke vegger dette gjelder
                                     </p>
-
                                     <p
                                       style={{
-                                        fontSize: "24px",
+                                        fontSize: "16px",
                                         color: "#101828",
                                       }}
                                     >
@@ -934,6 +933,7 @@ export const AllSummury: React.FC<{
                                   display: "flex",
                                   justifyContent: "center",
                                   alignItems: "center",
+                                  marginBottom: "24px",
                                 }}
                               >
                                 <img
@@ -958,7 +958,7 @@ export const AllSummury: React.FC<{
                               <div
                                 style={{
                                   color: "#30374f",
-                                  fontSize: "24px",
+                                  fontSize: "16px",
                                   fontWeight: 600,
                                 }}
                               >
@@ -1003,7 +1003,7 @@ export const AllSummury: React.FC<{
                                 //               <div
                                 //                 style={{
                                 //                   color: "#101828",
-                                //                   fontSize: "20px",
+                                //                   fontSize: "18px",
                                 //                 }}
                                 //               >
                                 //                 {prod?.Produktnavn}{" "}
@@ -1020,7 +1020,7 @@ export const AllSummury: React.FC<{
                                 //               <div
                                 //                 style={{
                                 //                   color: "#101828",
-                                //                   fontSize: "20px",
+                                //                   fontSize: "18px",
                                 //                   marginTop: "2px",
                                 //                 }}
                                 //               >
@@ -1070,19 +1070,18 @@ export const AllSummury: React.FC<{
                                             <div
                                               style={{
                                                 color: "#5d6b98",
-                                                fontSize: "24px",
+                                                fontSize: "14px",
                                                 fontWeight: 500,
                                                 marginBottom: "2px",
                                               }}
                                             >
                                               {prod.categoryName}
                                             </div>
-
                                             {prod.Produktnavn ? (
                                               <div
                                                 style={{
                                                   color: "#101828",
-                                                  fontSize: "20px",
+                                                  fontSize: "16px",
                                                 }}
                                               >
                                                 {prod?.Produktnavn}{" "}
@@ -1099,11 +1098,10 @@ export const AllSummury: React.FC<{
                                             ) : (
                                               "-"
                                             )}
-
                                             <div
                                               style={{
                                                 color: "#101828",
-                                                fontSize: "20px",
+                                                fontSize: "16px",
                                                 marginTop: "2px",
                                               }}
                                             >
@@ -1129,102 +1127,102 @@ export const AllSummury: React.FC<{
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
+            gap: "10px",
           }}
         >
           <h4 className="upperCaseHeading">DØRER</h4>
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Inngangsdør
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.Inngangsdør?.type)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Skriv kode</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Skriv kode</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.Inngangsdør?.colorCode)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Dør</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Dør</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.Inngangsdør?.dør)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Dørfarge</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Dørfarge</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.Inngangsdør?.Dørfarge)}
               </p>
             </div>
           </div>
           <div className="horizontal-divider"></div>
 
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Andre valg
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Utforing farge
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.UtforingFarge)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Slagretning tofløyet dør
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.SlagretningTofløyetDør)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Sikkerhetslås type
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.SikkerhetslåsType)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Tilleggslås type
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.TilleggslåsType)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til inngangsdør
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.KommentarInngangsdør)}
               </p>
             </div>
@@ -1233,7 +1231,7 @@ export const AllSummury: React.FC<{
 
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             <div
-              style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}
+              style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}
             >
               Boddør
             </div>
@@ -1242,40 +1240,40 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.Boddør?.type)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Skriv fargekode
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.Boddør?.colorCode)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Likelås med hoveddør
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.LikelåsMedHoveddør)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til boddør
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.KommentarBoddør)}
               </p>
             </div>
@@ -1284,11 +1282,11 @@ export const AllSummury: React.FC<{
 
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             <div
-              style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}
+              style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}
             >
               Balkong/Terrassedør
             </div>
-            {/* <div style={{ color: "#101828", fontSize: "20px" }}>
+            {/* <div style={{ color: "#101828", fontSize: "18px" }}>
               Standard hvitmalt utvendig/innvendig
             </div> */}
           </div>
@@ -1296,10 +1294,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.BalkongTerrassedør?.BalkongTerrassedør?.type
                 )}
@@ -1308,8 +1306,8 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Dørfarge</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Dørfarge</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.BalkongTerrassedør?.BalkongTerrassedør
                     ?.colorCode
@@ -1319,10 +1317,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Utforing farge
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.BalkongTerrassedør?.UtforingFarge
                 )}
@@ -1331,10 +1329,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Slagretning tofløyet dør/skyveretning
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.BalkongTerrassedør?.SlagretningTofløyetDør
                 )}
@@ -1343,10 +1341,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Med terskelforing
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.BalkongTerrassedør?.MedTerskelforing
                 )}
@@ -1355,10 +1353,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Likelås med hoveddør
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.BalkongTerrassedør?.LikelåsMedHoveddør
                 )}
@@ -1367,10 +1365,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Utvendig/innvendig sylinder
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.BalkongTerrassedør
                     ?.UtvendigInnvendigSylinder
@@ -1380,10 +1378,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til balkongdør
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.BalkongTerrassedør?.KommentarBalkongdør
                 )}
@@ -1392,17 +1390,17 @@ export const AllSummury: React.FC<{
           </div>
           <div className="horizontal-divider"></div>
 
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Innvendige Dører
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.InnvendigeDører?.InnvendigeDører?.type
                 )}
@@ -1411,8 +1409,8 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Skriv kode</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Skriv kode</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.InnvendigeDører?.InnvendigeDører?.colorCode
                 )}
@@ -1421,8 +1419,8 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Type dør</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Type dør</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.InnvendigeDører?.InnvendigeDører?.dør
                 )}
@@ -1431,8 +1429,8 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Dørfarge</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Dørfarge</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.InnvendigeDører?.InnvendigeDører?.Dørfarge
                 )}
@@ -1441,10 +1439,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Skyvedør med glass
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.InnvendigeDører?.SkyvedørMedGlass
                 )}
@@ -1453,10 +1451,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Skyvedørskarm separat ordre
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {(roomsData?.Dører?.InnvendigeDører
                   ?.SkyvedørskarmSeparatOrdre &&
                   formatDate(
@@ -1468,20 +1466,20 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Utforing farge
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.InnvendigeDører?.UtforingFarge)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Slagretning tofløyet dør
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.InnvendigeDører?.SlagretningTofløyetDør
                 )}
@@ -1490,16 +1488,16 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Dempelister</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Dempelister</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.InnvendigeDører?.Dempelister)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Terskeltype</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Terskeltype</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {roomsData?.Dører?.InnvendigeDører?.Terskeltype &&
                 roomsData?.Dører?.InnvendigeDører?.Terskeltype.length > 0
                   ? roomsData?.Dører?.InnvendigeDører?.Terskeltype.join(", ")
@@ -1509,10 +1507,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til terskeltype
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.InnvendigeDører?.TerskeltypeText
                 )}
@@ -1521,28 +1519,28 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Hengsler</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Hengsler</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.InnvendigeDører?.Hengsler)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Spor for belegg
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.InnvendigeDører?.SporBelegg)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til spor for belegg
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.InnvendigeDører?.SporBeleggText
                 )}
@@ -1551,10 +1549,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til innvendige dører
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.InnvendigeDører?.KommentarTilInnvendigeDører
                 )}
@@ -1563,61 +1561,61 @@ export const AllSummury: React.FC<{
           </div>
           <div className="horizontal-divider"></div>
 
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Dørvridere
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.Dørvridere?.type)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Type vrider</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Type vrider</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.Dørvridere?.colorCode)}
               </p>
             </div>
           </div>
           <div className="horizontal-divider"></div>
 
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Dører i kjellerrom
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.DørerKjellerrom?.type)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Beskriv her</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Beskriv her</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.DørerKjellerrom?.colorCode)}
               </p>
             </div>
           </div>
           <div className="horizontal-divider"></div>
 
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Garasjeport
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.Garasjeport?.Garasjeport?.type)}
               </p>
             </div>
@@ -1629,8 +1627,8 @@ export const AllSummury: React.FC<{
                 gridColumn: "span 3 / span 3",
               }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Beskriv her</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Beskriv her</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.Garasjeport?.Garasjeport?.colorCode
                 )}
@@ -1639,10 +1637,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Bredde x høyde
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.Garasjeport?.BreddeXhøyde)}
               </p>
             </div>
@@ -1651,7 +1649,7 @@ export const AllSummury: React.FC<{
                 display: "flex",
                 alignItems: "center",
                 gap: "8px",
-                fontSize: "24px",
+                fontSize: "16px",
                 color: "#30374f",
               }}
             >
@@ -1692,20 +1690,20 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Micro-sender antall
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Dører?.Garasjeport?.MicroSenderAntall)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Fargekode på garasjeport
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.Dører?.Garasjeport?.FargekodePåGarasjeport
                 )}
@@ -1718,7 +1716,7 @@ export const AllSummury: React.FC<{
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
+            gap: "10px",
           }}
         >
           <h4 className="upperCaseHeading">Vinduer</h4>
@@ -1726,40 +1724,40 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Vinduer?.Vinduer?.type)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Skriv fargekode
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Vinduer?.Vinduer?.colorCode)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Alubeslått utvendig
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Vinduer?.AlubeslåttUtvendigText)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Utforing farge
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Vinduer?.UtforingFarge)}
               </p>
             </div>
@@ -1768,7 +1766,7 @@ export const AllSummury: React.FC<{
                 display: "flex",
                 alignItems: "center",
                 gap: "8px",
-                fontSize: "24px",
+                fontSize: "16px",
                 color: "#30374f",
               }}
             >
@@ -1811,7 +1809,7 @@ export const AllSummury: React.FC<{
                 display: "flex",
                 alignItems: "center",
                 gap: "8px",
-                fontSize: "24px",
+                fontSize: "16px",
                 color: "#30374f",
               }}
             >
@@ -1854,10 +1852,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Foringer separat ordre
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {(roomsData?.Vinduer?.ForingerSeparatOrdre &&
                   formatDate(roomsData?.Vinduer?.ForingerSeparatOrdre)) ??
                   "-"}
@@ -1866,10 +1864,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til vindu
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Vinduer?.KommentarVindu)}
               </p>
             </div>
@@ -1891,11 +1889,11 @@ export const AllSummury: React.FC<{
               <div
                 style={{ display: "flex", flexDirection: "column", gap: "6px" }}
               >
-                <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                   Ønsker soldemping i glass
                 </p>
 
-                <p style={{ fontSize: "24px", color: "#101828" }}>
+                <p style={{ fontSize: "16px", color: "#101828" }}>
                   {displayValue(roomsData?.Vinduer?.ØnskerSoldempingGlassText)}
                 </p>
               </div>
@@ -1914,11 +1912,11 @@ export const AllSummury: React.FC<{
               <div
                 style={{ display: "flex", flexDirection: "column", gap: "6px" }}
               >
-                <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                   Ønsker screens
                 </p>
 
-                <p style={{ fontSize: "24px", color: "#101828" }}>
+                <p style={{ fontSize: "16px", color: "#101828" }}>
                   {displayValue(roomsData?.Vinduer?.ØnskerScreensText)}
                 </p>
               </div>
@@ -1926,47 +1924,47 @@ export const AllSummury: React.FC<{
           </div>
           <div className="horizontal-divider"></div>
 
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Takvindu Velux
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Vinduer?.TakvinduVelux?.type)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Skriv fargekode
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Vinduer?.TakvinduVelux?.colorCode)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Utforing farge
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Vinduer?.TakvinduVeluxUtforingFarge)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til takvindu og eventuelt tilvalg
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Vinduer?.TakvinduVeluxKommentar)}
               </p>
             </div>
@@ -1977,7 +1975,7 @@ export const AllSummury: React.FC<{
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
+            gap: "10px",
           }}
         >
           <h4 className="upperCaseHeading">Trapp og Luker</h4>
@@ -1985,121 +1983,121 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.Trapp?.type)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Beskriv trappemodell
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.Trapp?.colorCode)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Type trinn</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Type trinn</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.TypeTrinn)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Opptrinn</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Opptrinn</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.Opptrinn)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Sidevanger</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Sidevanger</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {roomsData?.TrappogLuker?.Sidevanger ?? "-"}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Rekkverk</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Rekkverk</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.Rekkverk)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Håndlist</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Håndlist</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.Håndlist)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Spiler</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Spiler</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.Spiler)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Bodløsning i trapperom
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.BodløsningTrapperom)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Montering</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Montering</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.Montering)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Måltaking</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Måltaking</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.Måltaking)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til trapp
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.KommentarTrapp)}
               </p>
             </div>
           </div>
           <div className="horizontal-divider"></div>
 
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Isolerte inspeksjonsluker
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.TrappogLuker?.IsolerteInspeksjonsluker
                 )}
@@ -2108,26 +2106,26 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Himling</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Himling</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.HimlingText)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Vegg</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Vegg</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TrappogLuker?.VeggText)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til inspeksjonsluker
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.TrappogLuker?.KommentarInspeksjonsluker
                 )}
@@ -2140,7 +2138,7 @@ export const AllSummury: React.FC<{
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
+            gap: "10px",
           }}
         >
           <h4 className="upperCaseHeading">Balkong & Terrasse</h4>
@@ -2148,10 +2146,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Velg ett alternativ
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.BalkongTerrasse?.Rekkverk?.type)}
               </p>
             </div>
@@ -2163,34 +2161,34 @@ export const AllSummury: React.FC<{
                 gridColumn: "span 3 / span 3",
               }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Beskriv type, modell og farge
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.BalkongTerrasse?.Rekkverk?.colorCode)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Ønsker megler
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.BalkongTerrasse?.ØnskerMeglerText)}
               </p>
             </div>
           </div>
           <div className="horizontal-divider"></div>
 
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Velg gulv balkong
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.BalkongTerrasse?.VelgGulvBalkong?.type
                 )}
@@ -2199,10 +2197,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Beskriv type og farge
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.BalkongTerrasse?.VelgGulvBalkong?.colorCode
                 )}
@@ -2211,47 +2209,47 @@ export const AllSummury: React.FC<{
           </div>
           <div className="horizontal-divider"></div>
 
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Platting
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Ønsker platting?
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.BalkongTerrasse?.ØnskerPlatting)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Beskrivelse platting
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.BalkongTerrasse?.BeskrivelsePlatting)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Fotskraperist
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.BalkongTerrasse?.Fotskraperist)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til balkong og terrasse
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.BalkongTerrasse?.KommentarTerrasse)}
               </p>
             </div>
@@ -2262,11 +2260,11 @@ export const AllSummury: React.FC<{
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
+            gap: "10px",
           }}
         >
           <h4 className="upperCaseHeading">Ventilasjon og Sentralstøvsuger</h4>
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Ventilasjon
           </div>
           <div
@@ -2274,7 +2272,7 @@ export const AllSummury: React.FC<{
               display: "flex",
               alignItems: "center",
               gap: "8px",
-              fontSize: "24px",
+              fontSize: "16px",
               color: "#30374f",
             }}
           >
@@ -2316,14 +2314,14 @@ export const AllSummury: React.FC<{
           </div>
           <div className="horizontal-divider"></div>
 
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Fargeønske utvendig kombirist
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.VentilasjonSentralstøvsuger
                     ?.FargeønskeUtvendigKombirist
@@ -2333,14 +2331,14 @@ export const AllSummury: React.FC<{
           </div>
           <div className="horizontal-divider"></div>
 
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Fargeønske innvendig ventiler
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.VentilasjonSentralstøvsuger
                     ?.FargeønskeInnvendigVentiler
@@ -2350,10 +2348,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til ventilasjon
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.VentilasjonSentralstøvsuger?.KommentarVentilasjon
                 )}
@@ -2362,14 +2360,14 @@ export const AllSummury: React.FC<{
           </div>
           <div className="horizontal-divider"></div>
 
-          <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
+          <div style={{ fontWeight: 500, fontSize: "18px", color: "#101828" }}>
             Sentralstøvsuger
           </div>
           <div className="custom-grid">
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.VentilasjonSentralstøvsuger?.Sentralstøvsuger
                 )}
@@ -2378,10 +2376,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Antall sugekontakter
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.VentilasjonSentralstøvsuger?.AntallKontakter
                 )}
@@ -2390,8 +2388,8 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>Sugebrett</p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>Sugebrett</p>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.VentilasjonSentralstøvsuger?.Sugebrett
                 )}
@@ -2400,10 +2398,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til sentralstøvsuger
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.VentilasjonSentralstøvsuger?.Kommentar
                 )}
@@ -2416,7 +2414,7 @@ export const AllSummury: React.FC<{
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
+            gap: "10px",
           }}
         >
           <h4 className="upperCaseHeading">Brannvern</h4>
@@ -2424,17 +2422,17 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Brannvern?.Brannvern)}
               </p>
             </div>
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Kommentar til brannvern
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.Brannvern?.BrannvernKommentar)}
               </p>
             </div>
@@ -2445,7 +2443,7 @@ export const AllSummury: React.FC<{
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
+            gap: "10px",
           }}
         >
           <h4 className="upperCaseHeading">Tekniske Installasjoner</h4>
@@ -2453,7 +2451,7 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(
                   roomsData?.TekniskeInstallasjoner?.TekniskeInstallasjoner
                 )}
@@ -2462,10 +2460,10 @@ export const AllSummury: React.FC<{
             <div
               style={{ display: "flex", flexDirection: "column", gap: "6px" }}
             >
-              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+              <p style={{ fontSize: "14px", color: "#5d6b98" }}>
                 Punkt (referanse)
               </p>
-              <p style={{ fontSize: "24px", color: "#101828" }}>
+              <p style={{ fontSize: "16px", color: "#101828" }}>
                 {displayValue(roomsData?.TekniskeInstallasjoner?.Punkt)}
               </p>
             </div>
