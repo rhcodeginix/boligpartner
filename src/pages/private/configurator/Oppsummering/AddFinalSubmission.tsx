@@ -526,7 +526,7 @@ export const AddFinalSubmission: React.FC<{
       }
 
       setIsExporting(false);
-      // navigate("/Bolig-configurator");
+      navigate("/Bolig-configurator");
     } catch (error) {
       console.error("error:", error);
       toast.error("Something went wrong!", {
