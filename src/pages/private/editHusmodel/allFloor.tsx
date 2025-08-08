@@ -284,7 +284,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                         isSelected:
                           existingProducts.find(
                             (p: any) => p.Produktnavn === "Flis"
-                          )?.isSelected ?? false,
+                          )?.isSelected ?? true,
                         InfoText: "Ev beskriv type og farge",
                       },
                       {
@@ -514,110 +514,121 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               </div>
               <div className="flex lg:flex-col p-3 md:p-4 pb-0 rounded-lg gap-3 h-full lg:max-h-[calc(100%-90px)] overflow-y-auto overFlowAutoY sticky top-[80px]">
                 {Category.length > 0
-                  ? Category.map((tab: any, index: number) => (
-                      <div
-                        key={index}
-                        draggable
-                        onDragStart={() => handleDragStart(index)}
-                        onDragOver={handleDragOver}
-                        onDrop={() => handleDrop(index)}
-                        className={`bg-white cursor-pointer rounded-lg flex items-center justify-between gap-1 px-3 ${
-                          activeTabData === index
-                            ? "border-2 border-primary bg-lightPurple rounded-t-[12px]"
-                            : "border border-gray2"
-                        }`}
-                        onClick={() => setActiveTabData(index)}
-                      >
-                        <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold truncate">
-                          <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
-                            {index + 1}
-                          </span>
-                          <span className="truncate">
-                            {tab?.name_no === "" || !tab?.name_no
-                              ? tab?.name
-                              : tab?.name_no}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <div
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setEditCategory({ index, data: tab });
-                              setAddCategory(true);
-
-                              setEditTabData(index);
-                            }}
-                          >
-                            <Pencil className="w-5 h-5 text-primary" />
+                  ? Category.map((tab: any, index: number) => {
+                      return (
+                        <div
+                          key={index}
+                          draggable
+                          onDragStart={() => handleDragStart(index)}
+                          onDragOver={handleDragOver}
+                          onDrop={() => handleDrop(index)}
+                          className={`bg-white cursor-pointer rounded-lg flex items-center justify-between gap-1 px-3 ${
+                            activeTabData === index
+                              ? "border-2 border-primary bg-lightPurple rounded-t-[12px]"
+                              : "border border-gray2"
+                          }`}
+                          onClick={() => setActiveTabData(index)}
+                        >
+                          <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold truncate">
+                            <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
+                              {index + 1}
+                            </span>
+                            <span className="truncate">
+                              {tab?.name_no === "" || !tab?.name_no
+                                ? tab?.name
+                                : tab?.name_no}{" "}
+                              <span className="font-normal">
+                                ({tab?.area_m2} m<sup>2</sup>)
+                              </span>
+                            </span>
                           </div>
+                          <div className="flex items-center gap-1.5">
+                            <div
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setEditCategory({ index, data: tab });
+                                setAddCategory(true);
 
-                          <div
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setCategory((prev: any[]) =>
-                                prev.filter((_, i) => i !== index)
-                              );
-                              setActiveTabData(0);
-                              const deleteRoomFromFirestore = async () => {
-                                if (!id || !kundeId || !pdfId) return;
+                                setEditTabData(index);
+                              }}
+                            >
+                              <Pencil className="w-5 h-5 text-primary" />
+                            </div>
 
-                                const husmodellDocRef = doc(
-                                  db,
-                                  "projects",
-                                  kundeId
+                            <div
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setCategory((prev: any[]) =>
+                                  prev.filter((_, i) => i !== index)
                                 );
+                                setActiveTabData(0);
+                                const deleteRoomFromFirestore = async () => {
+                                  if (!id || !kundeId || !pdfId) return;
 
-                                try {
-                                  const docSnap = await getDoc(husmodellDocRef);
-                                  if (docSnap.exists()) {
-                                    const houseData = docSnap.data();
-                                    const existingPlantegninger =
-                                      houseData.Plantegninger || [];
-
-                                    const updatedPlantegninger =
-                                      existingPlantegninger.map((item: any) => {
-                                        if (
-                                          String(item?.pdf_id) === String(pdfId)
-                                        ) {
-                                          return {
-                                            ...item,
-                                            rooms: item.rooms?.filter(
-                                              (_: any, i: number) => i !== index
-                                            ),
-                                          };
-                                        }
-                                        return item;
-                                      });
-
-                                    await updateDoc(husmodellDocRef, {
-                                      Plantegninger: updatedPlantegninger,
-                                      updatedAt: new Date().toISOString(),
-                                      // updated_by: createData?.id,
-                                    });
-                                  }
-                                } catch (error) {
-                                  console.error(
-                                    "Error deleting room from Firestore:",
-                                    error
+                                  const husmodellDocRef = doc(
+                                    db,
+                                    "projects",
+                                    kundeId
                                   );
-                                }
-                              };
 
-                              deleteRoomFromFirestore();
-                            }}
-                            className="w-5 h-5"
-                          >
-                            <img
-                              src={Ic_trash}
-                              alt="delete"
-                              className="w-full h-full"
-                            />
+                                  try {
+                                    const docSnap = await getDoc(
+                                      husmodellDocRef
+                                    );
+                                    if (docSnap.exists()) {
+                                      const houseData = docSnap.data();
+                                      const existingPlantegninger =
+                                        houseData.Plantegninger || [];
+
+                                      const updatedPlantegninger =
+                                        existingPlantegninger.map(
+                                          (item: any) => {
+                                            if (
+                                              String(item?.pdf_id) ===
+                                              String(pdfId)
+                                            ) {
+                                              return {
+                                                ...item,
+                                                rooms: item.rooms?.filter(
+                                                  (_: any, i: number) =>
+                                                    i !== index
+                                                ),
+                                              };
+                                            }
+                                            return item;
+                                          }
+                                        );
+
+                                      await updateDoc(husmodellDocRef, {
+                                        Plantegninger: updatedPlantegninger,
+                                        updatedAt: new Date().toISOString(),
+                                        // updated_by: createData?.id,
+                                      });
+                                    }
+                                  } catch (error) {
+                                    console.error(
+                                      "Error deleting room from Firestore:",
+                                      error
+                                    );
+                                  }
+                                };
+
+                                deleteRoomFromFirestore();
+                              }}
+                              className="w-5 h-5"
+                            >
+                              <img
+                                src={Ic_trash}
+                                alt="delete"
+                                className="w-full h-full"
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))
+                      );
+                    })
                   : "No data found!"}
               </div>
             </div>

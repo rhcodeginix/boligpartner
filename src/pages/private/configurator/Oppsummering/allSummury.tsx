@@ -226,6 +226,16 @@ export const AllSummury: React.FC<{
                 {displayValue(roomsData?.Prosjektdetaljer?.TypeKalkyle)}
               </p>
             </div>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <p style={{ fontSize: "20px", color: "#5d6b98" }}>
+                Kommentar til kalkylse
+              </p>
+              <p style={{ fontSize: "24px", color: "#101828" }}>
+                {displayValue(roomsData?.Prosjektdetaljer?.KommentarKalkyle)}
+              </p>
+            </div>
           </div>
           <div className="horizontal-divider"></div>
           <div style={{ fontWeight: 500, fontSize: "24px", color: "#101828" }}>
@@ -956,40 +966,119 @@ export const AllSummury: React.FC<{
                               </div>
                               {innerRoom?.Kategorinavn &&
                                 innerRoom.Kategorinavn.length > 0 &&
+                                // (() => {
+                                //   const allSelectedProducts: any[] = [];
+                                //   innerRoom.Kategorinavn.filter(
+                                //     (kat: any) => kat.productOptions !== "Text"
+                                //   ).forEach((kat: any) => {
+                                //     kat?.produkter
+                                //       ?.filter(
+                                //         (prod: any) => prod?.isSelected === true
+                                //       )
+                                //       .forEach((prod: any) => {
+                                //         allSelectedProducts.push({
+                                //           ...prod,
+                                //           categoryName: kat?.navn,
+                                //           comment: kat?.comment ?? "",
+                                //         });
+                                //       });
+                                //   });
+
+                                //   return (
+                                //     <div className="custom-grid">
+                                //       {allSelectedProducts.map(
+                                //         (prod: any, prodIndex: number) => {
+                                //           return (
+                                //             <div key={prodIndex}>
+                                //               <div
+                                //                 style={{
+                                //                   color: "#5d6b98",
+                                //                   fontSize: "24px",
+                                //                   fontWeight: 500,
+                                //                   marginBottom: "2px",
+                                //                 }}
+                                //               >
+                                //                 {prod.categoryName}
+                                //               </div>
+                                //               <div
+                                //                 style={{
+                                //                   color: "#101828",
+                                //                   fontSize: "20px",
+                                //                 }}
+                                //               >
+                                //                 {prod?.Produktnavn}{" "}
+                                //                 {prod?.customText && (
+                                //                   <span
+                                //                     style={{
+                                //                       color: "#101828",
+                                //                     }}
+                                //                   >
+                                //                     ({prod?.customText})
+                                //                   </span>
+                                //                 )}
+                                //               </div>
+                                //               <div
+                                //                 style={{
+                                //                   color: "#101828",
+                                //                   fontSize: "20px",
+                                //                   marginTop: "2px",
+                                //                 }}
+                                //               >
+                                //                 {prod.comment}
+                                //               </div>
+                                //             </div>
+                                //           );
+                                //         }
+                                //       )}
+                                //     </div>
+                                //   );
+                                // })()
                                 (() => {
                                   const allSelectedProducts: any[] = [];
+
                                   innerRoom.Kategorinavn.filter(
                                     (kat: any) => kat.productOptions !== "Text"
                                   ).forEach((kat: any) => {
-                                    kat?.produkter
-                                      ?.filter(
+                                    const selectedProducts =
+                                      kat?.produkter?.filter(
                                         (prod: any) => prod?.isSelected === true
-                                      )
-                                      .forEach((prod: any) => {
+                                      ) || [];
+
+                                    if (selectedProducts.length > 0) {
+                                      selectedProducts.forEach((prod: any) => {
                                         allSelectedProducts.push({
                                           ...prod,
                                           categoryName: kat?.navn,
                                           comment: kat?.comment ?? "",
                                         });
                                       });
+                                    } else {
+                                      allSelectedProducts.push({
+                                        Produktnavn: "",
+                                        customText: "",
+                                        categoryName: kat?.navn ?? "",
+                                        comment: kat?.comment ?? "",
+                                      });
+                                    }
                                   });
 
                                   return (
                                     <div className="custom-grid">
                                       {allSelectedProducts.map(
-                                        (prod: any, prodIndex: number) => {
-                                          return (
-                                            <div key={prodIndex}>
-                                              <div
-                                                style={{
-                                                  color: "#5d6b98",
-                                                  fontSize: "24px",
-                                                  fontWeight: 500,
-                                                  marginBottom: "2px",
-                                                }}
-                                              >
-                                                {prod.categoryName}
-                                              </div>
+                                        (prod: any, prodIndex: number) => (
+                                          <div key={prodIndex}>
+                                            <div
+                                              style={{
+                                                color: "#5d6b98",
+                                                fontSize: "24px",
+                                                fontWeight: 500,
+                                                marginBottom: "2px",
+                                              }}
+                                            >
+                                              {prod.categoryName}
+                                            </div>
+
+                                            {prod.Produktnavn ? (
                                               <div
                                                 style={{
                                                   color: "#101828",
@@ -1007,18 +1096,21 @@ export const AllSummury: React.FC<{
                                                   </span>
                                                 )}
                                               </div>
-                                              <div
-                                                style={{
-                                                  color: "#101828",
-                                                  fontSize: "20px",
-                                                  marginTop: "2px",
-                                                }}
-                                              >
-                                                {prod.comment}
-                                              </div>
+                                            ) : (
+                                              ""
+                                            )}
+
+                                            <div
+                                              style={{
+                                                color: "#101828",
+                                                fontSize: "20px",
+                                                marginTop: "2px",
+                                              }}
+                                            >
+                                              {prod.comment}
                                             </div>
-                                          );
-                                        }
+                                          </div>
+                                        )
                                       )}
                                     </div>
                                   );

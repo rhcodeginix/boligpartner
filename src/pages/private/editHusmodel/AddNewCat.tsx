@@ -156,7 +156,6 @@ export const AddNewCat: React.FC<{
 
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
-  const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const kundeId = pathSegments.length > 4 ? pathSegments[4] : null;
 
   useEffect(() => {
@@ -167,8 +166,13 @@ export const AddNewCat: React.FC<{
         ? data.name_no
         : data.name?.trim() || "";
 
+      const area = data?.area_m2 ? `(${data?.area_m2} m²)` : "";
+
       if (hovedKategoriValue) {
-        form.setValue("Hovedkategoriname", hovedKategoriValue);
+        form.setValue(
+          "Hovedkategoriname",
+          `${hovedKategoriValue} ${area && area}`
+        );
       }
 
       if (typeof data.isSelected !== "undefined") {

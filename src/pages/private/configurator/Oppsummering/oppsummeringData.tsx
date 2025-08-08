@@ -323,6 +323,24 @@ export const OppsummeringData: React.FC<{
                   </p>
                 )}
               </div>
+              <div className="flex flex-col gap-1.5">
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-secondary text-xs">
+                    Kommentar til kalkylse
+                  </p>
+                )}
+                {loading ? (
+                  <div className="w-[100px] h-[20px] rounded-lg custom-shimmer"></div>
+                ) : (
+                  <p className="text-darkBlack text-sm">
+                    {displayValue(
+                      roomsData?.Prosjektdetaljer?.KommentarKalkyle
+                    )}
+                  </p>
+                )}
+              </div>
             </div>
             <div className="border-t border-[#EBEBEB] w-full"></div>
             <div className="text-darkBlack font-medium text-sm">
@@ -1148,37 +1166,55 @@ export const OppsummeringData: React.FC<{
                                   innerRoom.Kategorinavn.length > 0 &&
                                   (() => {
                                     const allSelectedProducts: any[] = [];
+
                                     innerRoom.Kategorinavn.filter(
                                       (kat: any) =>
                                         kat.productOptions !== "Text"
                                     ).forEach((kat: any) => {
-                                      kat?.produkter
-                                        ?.filter(
+                                      const selectedProducts =
+                                        kat?.produkter?.filter(
                                           (prod: any) =>
                                             prod?.isSelected === true
-                                        )
-                                        .forEach((prod: any) => {
-                                          allSelectedProducts.push({
-                                            ...prod,
-                                            categoryName: kat?.navn,
-                                            comment: kat?.comment ?? "",
-                                          });
+                                        ) || [];
+
+                                      if (selectedProducts.length > 0) {
+                                        selectedProducts.forEach(
+                                          (prod: any) => {
+                                            allSelectedProducts.push({
+                                              ...prod,
+                                              categoryName: kat?.navn,
+                                              comment: kat?.comment ?? "",
+                                            });
+                                          }
+                                        );
+                                      }
+                                      // if (
+                                      //   (kat?.comment ?? "").trim() !== ""
+                                      // )
+                                      else {
+                                        allSelectedProducts.push({
+                                          Produktnavn: "",
+                                          categoryName: kat?.navn ?? "",
+                                          customText: "",
+                                          comment: kat?.comment ?? "",
                                         });
+                                      }
                                     });
 
                                     return (
-                                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 lg:gap-4">
+                                      <div className="grid grid-cols-1 sm:grid-cols-2 desktop:grid-cols-3 gap-4">
                                         {allSelectedProducts.map(
-                                          (prod: any, prodIndex: number) => {
-                                            return (
-                                              <div
-                                                key={prodIndex}
-                                                className="flex flex-col"
-                                              >
-                                                <div>
-                                                  <h4 className="text-sm font-medium text-secondary mb-0.5">
-                                                    {prod.categoryName}
-                                                  </h4>
+                                          (prod: any, prodIndex: number) => (
+                                            <div
+                                              key={prodIndex}
+                                              className="flex flex-col"
+                                            >
+                                              <div>
+                                                <h4 className="text-sm font-medium text-secondary mb-1">
+                                                  {prod.categoryName}
+                                                </h4>
+
+                                                {prod.Produktnavn ? (
                                                   <h3 className="text-darkBlack">
                                                     {prod?.Produktnavn}{" "}
                                                     {prod?.customText && (
@@ -1187,13 +1223,16 @@ export const OppsummeringData: React.FC<{
                                                       </span>
                                                     )}
                                                   </h3>
-                                                  <div className="text-darkBlack mt-0.5 text-sm">
-                                                    {prod.comment}
-                                                  </div>
+                                                ) : (
+                                                  "-"
+                                                )}
+
+                                                <div className="text-darkBlack mt-0.5 text-sm">
+                                                  {prod.comment}
                                                 </div>
                                               </div>
-                                            );
-                                          }
+                                            </div>
+                                          )
                                         )}
                                       </div>
                                     );

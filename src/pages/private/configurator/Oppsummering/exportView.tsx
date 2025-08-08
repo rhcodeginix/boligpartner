@@ -59,7 +59,7 @@ export const ExportView: React.FC<{
               marginBottom: "10px",
             }}
           >
-            Her følger oppsummering
+            Romskjema
           </h4>
           <div
             style={{

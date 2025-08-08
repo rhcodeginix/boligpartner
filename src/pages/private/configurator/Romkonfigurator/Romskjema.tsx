@@ -121,42 +121,113 @@ export const Romskjema: React.FC<{ Next: any }> = ({ Next }) => {
                             </div>
                             {innerRoom?.Kategorinavn &&
                             innerRoom.Kategorinavn.length > 0 ? (
+                              // (() => {
+                              //   const allSelectedProducts: any[] = [];
+                              //   innerRoom.Kategorinavn.filter(
+                              //     (kat: any) => kat.productOptions !== "Text"
+                              //   ).forEach((kat: any) => {
+                              //     kat?.produkter
+                              //       ?.filter(
+                              //         (prod: any) => prod?.isSelected === true
+                              //       )
+                              //       .forEach((prod: any) => {
+                              //         allSelectedProducts.push({
+                              //           ...prod,
+                              //           categoryName: kat?.navn,
+                              //           comment: kat?.comment ?? "",
+                              //         });
+                              //       });
+                              //   });
+
+                              //   return (
+                              //     <div className="grid grid-cols-1 sm:grid-cols-2 desktop:grid-cols-3 gap-4">
+                              //       {allSelectedProducts.map(
+                              //         (prod: any, prodIndex: number) => {
+                              //           return (
+                              //             <div
+                              //               key={prodIndex}
+                              //               className="flex flex-col cursor-pointer"
+                              //               onClick={() =>
+                              //                 navigate(
+                              //                   `/se-series/${id}/edit-husmodell/${kundeId}?pdf_id=${room?.pdf_id}&activeTab=3&activeSubTab=${index}`
+                              //                 )
+                              //               }
+                              //             >
+                              //               <div>
+                              //                 <h4 className="text-sm font-medium text-secondary mb-1">
+                              //                   {prod.categoryName}
+                              //                 </h4>
+                              //                 <h3 className="text-darkBlack">
+                              //                   {prod?.Produktnavn}{" "}
+                              //                   {prod?.customText && (
+                              //                     <span className="text-darkBlack">
+                              //                       ({prod?.customText})
+                              //                     </span>
+                              //                   )}
+                              //                 </h3>
+                              //                 <div className="text-darkBlack mt-0.5 text-sm">
+                              //                   {prod.comment}
+                              //                 </div>
+                              //               </div>
+                              //             </div>
+                              //           );
+                              //         }
+                              //       )}
+                              //     </div>
+                              //   );
+                              // })()
                               (() => {
                                 const allSelectedProducts: any[] = [];
+
                                 innerRoom.Kategorinavn.filter(
                                   (kat: any) => kat.productOptions !== "Text"
                                 ).forEach((kat: any) => {
-                                  kat?.produkter
-                                    ?.filter(
+                                  const selectedProducts =
+                                    kat?.produkter?.filter(
                                       (prod: any) => prod?.isSelected === true
-                                    )
-                                    .forEach((prod: any) => {
+                                    ) || [];
+
+                                  if (selectedProducts.length > 0) {
+                                    selectedProducts.forEach((prod: any) => {
                                       allSelectedProducts.push({
                                         ...prod,
                                         categoryName: kat?.navn,
                                         comment: kat?.comment ?? "",
                                       });
                                     });
+                                  }
+                                  // if (
+                                  //   (kat?.comment ?? "").trim() !== ""
+                                  // )
+                                  else {
+                                    allSelectedProducts.push({
+                                      Produktnavn: "",
+                                      categoryName: kat?.navn ?? "",
+                                      customText: "",
+                                      comment: kat?.comment ?? "",
+                                    });
+                                  }
                                 });
 
                                 return (
                                   <div className="grid grid-cols-1 sm:grid-cols-2 desktop:grid-cols-3 gap-4">
                                     {allSelectedProducts.map(
-                                      (prod: any, prodIndex: number) => {
-                                        return (
-                                          <div
-                                            key={prodIndex}
-                                            className="flex flex-col cursor-pointer"
-                                            onClick={() =>
-                                              navigate(
-                                                `/se-series/${id}/edit-husmodell/${kundeId}?pdf_id=${room?.pdf_id}&activeTab=3&activeSubTab=${index}`
-                                              )
-                                            }
-                                          >
-                                            <div>
-                                              <h4 className="text-sm font-medium text-secondary mb-1">
-                                                {prod.categoryName}
-                                              </h4>
+                                      (prod: any, prodIndex: number) => (
+                                        <div
+                                          key={prodIndex}
+                                          className="flex flex-col cursor-pointer"
+                                          onClick={() =>
+                                            navigate(
+                                              `/se-series/${id}/edit-husmodell/${kundeId}?pdf_id=${room?.pdf_id}&activeTab=3&activeSubTab=${index}`
+                                            )
+                                          }
+                                        >
+                                          <div>
+                                            <h4 className="text-sm font-medium text-secondary mb-1">
+                                              {prod.categoryName}
+                                            </h4>
+
+                                            {prod.Produktnavn ? (
                                               <h3 className="text-darkBlack">
                                                 {prod?.Produktnavn}{" "}
                                                 {prod?.customText && (
@@ -165,13 +236,16 @@ export const Romskjema: React.FC<{ Next: any }> = ({ Next }) => {
                                                   </span>
                                                 )}
                                               </h3>
-                                              <div className="text-darkBlack mt-0.5 text-sm">
-                                                {prod.comment}
-                                              </div>
+                                            ) : (
+                                              "-"
+                                            )}
+
+                                            <div className="text-darkBlack mt-0.5 text-sm">
+                                              {prod.comment}
                                             </div>
                                           </div>
-                                        );
-                                      }
+                                        </div>
+                                      )
                                     )}
                                   </div>
                                 );

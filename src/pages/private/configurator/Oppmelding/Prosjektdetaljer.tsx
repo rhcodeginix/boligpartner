@@ -79,6 +79,7 @@ const formSchema = z
       required_error: "Dato BoligPartner leveransebeskrivelse er påkrevd.",
     }),
     TypeKalkyle: z.string({ required_error: "Type kalkyle er påkrevd." }),
+    KommentarKalkyle: z.string().optional(),
     VedleggTilKontraktDatert: z.string({
       required_error: "Vedlegg til kontrakt datert er påkrevd.",
     }),
@@ -1114,6 +1115,39 @@ export const Prosjektdetaljer = forwardRef(
                                   </p>
                                 </div>
                               ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="col-span-3">
+                    <FormField
+                      control={form.control}
+                      name={`KommentarKalkyle`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <p
+                            className={`mb-2 ${
+                              fieldState.error ? "text-red" : "text-black"
+                            } text-sm`}
+                          >
+                            Kommentar til kalkylse
+                          </p>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Er det gjort tillegg og fradrag i etterkant av siste kalkyle. Beskriv hva"
+                                {...field}
+                                className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                                type="text"
+                              />
                             </div>
                           </FormControl>
                           <FormMessage />
