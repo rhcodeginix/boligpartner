@@ -284,22 +284,39 @@ export const Innervegger = forwardRef(
                                           (() => {
                                             const allSelectedProducts: any[] =
                                               [];
+
                                             innerRoom.Kategorinavn.filter(
                                               (kat: any) =>
                                                 kat.productOptions !== "Text"
                                             ).forEach((kat: any) => {
-                                              kat?.produkter
-                                                ?.filter(
+                                              const selectedProducts =
+                                                kat?.produkter?.filter(
                                                   (prod: any) =>
                                                     prod?.isSelected === true
-                                                )
-                                                .forEach((prod: any) => {
-                                                  allSelectedProducts.push({
-                                                    ...prod,
-                                                    categoryName: kat?.navn,
-                                                    comment: kat?.comment ?? "",
-                                                  });
+                                                ) || [];
+
+                                              if (selectedProducts.length > 0) {
+                                                selectedProducts.forEach(
+                                                  (prod: any) => {
+                                                    allSelectedProducts.push({
+                                                      ...prod,
+                                                      categoryName: kat?.navn,
+                                                      comment:
+                                                        kat?.comment ?? "",
+                                                    });
+                                                  }
+                                                );
+                                              } else if (
+                                                (kat?.comment ?? "").trim() !==
+                                                ""
+                                              ) {
+                                                allSelectedProducts.push({
+                                                  Produktnavn: "",
+                                                  categoryName: kat?.navn,
+                                                  customText: "",
+                                                  comment: kat?.comment ?? "",
                                                 });
+                                              }
                                             });
 
                                             return (
@@ -308,16 +325,17 @@ export const Innervegger = forwardRef(
                                                   (
                                                     prod: any,
                                                     prodIndex: number
-                                                  ) => {
-                                                    return (
-                                                      <div
-                                                        key={prodIndex}
-                                                        className="flex flex-col"
-                                                      >
-                                                        <div>
-                                                          <h4 className="text-sm font-medium text-secondary mb-1">
-                                                            {prod.categoryName}
-                                                          </h4>
+                                                  ) => (
+                                                    <div
+                                                      key={prodIndex}
+                                                      className="flex flex-col"
+                                                    >
+                                                      <div>
+                                                        <h4 className="text-sm font-medium text-secondary mb-1">
+                                                          {prod.categoryName}
+                                                        </h4>
+
+                                                        {prod.Produktnavn ? (
                                                           <h3 className="text-darkBlack">
                                                             {prod?.Produktnavn}{" "}
                                                             {prod?.customText && (
@@ -330,13 +348,16 @@ export const Innervegger = forwardRef(
                                                               </span>
                                                             )}
                                                           </h3>
-                                                          <div className="text-darkBlack mt-0.5 text-sm">
-                                                            {prod.comment}
-                                                          </div>
+                                                        ) : (
+                                                          "-"
+                                                        )}
+
+                                                        <div className="text-darkBlack mt-0.5 text-sm">
+                                                          {prod.comment}
                                                         </div>
                                                       </div>
-                                                    );
-                                                  }
+                                                    </div>
+                                                  )
                                                 )}
                                               </div>
                                             );

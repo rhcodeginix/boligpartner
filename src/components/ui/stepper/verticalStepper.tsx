@@ -28,29 +28,6 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
   setInvalidSteps,
   validInitialSteps,
 }) => {
-  // const handleStepClick = async (stepId: number) => {
-  //   if (validInitialSteps?.includes(stepId)) {
-  //     setCurrentStep(stepId);
-  //     return;
-  //   }
-
-  //   const currentStepForm = formRefs.current[currentStep];
-  //   const isValid = await currentStepForm?.validateForm?.();
-
-  //   if (!isValid) {
-  //     if (!invalidSteps.includes(currentStep)) {
-  //       setInvalidSteps([...invalidSteps, currentStep]);
-  //     }
-  //   } else {
-  //     setInvalidSteps(invalidSteps.filter((id: any) => id !== currentStep));
-  //   }
-
-  //   if (stepId < currentStep || stepId === currentStep + 1) {
-  //     setCurrentStep(stepId);
-  //     localStorage.setItem("currVerticalIndex", stepId.toString());
-  //   }
-  // };
-
   const handleStepClick = async (stepId: number) => {
     if (stepId === currentStep) return;
 
