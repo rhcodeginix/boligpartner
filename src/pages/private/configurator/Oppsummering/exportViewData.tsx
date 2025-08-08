@@ -71,7 +71,7 @@ export const ExportViewData: React.FC<{
             style={{
               color: "#101828",
               fontWeight: 600,
-              fontSize: "28px",
+              fontSize: "22px",
               marginBottom: "10px",
             }}
           >
@@ -92,21 +92,21 @@ export const ExportViewData: React.FC<{
                 gap: "0.5rem",
               }}
             >
-              <p style={{ color: "#101828", fontSize: "20px" }}>
+              <p style={{ color: "#101828", fontSize: "16px" }}>
                 <span style={{ fontWeight: 600 }}>Kundenavn:</span>{" "}
                 {kundeInfo?.Kundenavn}
               </p>
-              <p style={{ color: "#101828", fontSize: "20px" }}>
+              <p style={{ color: "#101828", fontSize: "16px" }}>
                 <span style={{ fontWeight: 600 }}>BP prosjektnummer:</span>{" "}
                 {kundeInfo?.Kundenummer}
               </p>
               {kundeInfo?.Serie && (
-                <p style={{ color: "#101828", fontSize: "20px" }}>
+                <p style={{ color: "#101828", fontSize: "16px" }}>
                   <span style={{ fontWeight: 600 }}>Serie:</span>{" "}
                   {kundeInfo?.Serie}
                 </p>
               )}
-              <p style={{ color: "#101828", fontSize: "20px" }}>
+              <p style={{ color: "#101828", fontSize: "16px" }}>
                 <span style={{ fontWeight: 600 }}>Mobile:</span>{" "}
                 {kundeInfo?.mobile
                   ? formatPhoneNumber(kundeInfo?.mobile)
@@ -131,7 +131,7 @@ export const ExportViewData: React.FC<{
             style={{ marginBottom: "10px" }}
           />
           {createDataBy && (
-            <p style={{ color: "#101828", fontSize: "20px" }}>
+            <p style={{ color: "#101828", fontSize: "16px" }}>
               <span style={{ fontWeight: 600 }}>Laget av:</span>{" "}
               {createDataBy?.f_name
                 ? `${createDataBy?.f_name} ${createDataBy?.l_name}`
@@ -139,18 +139,18 @@ export const ExportViewData: React.FC<{
             </p>
           )}
           {createDataBy && (
-            <p style={{ color: "#101828", fontSize: "20px" }}>
+            <p style={{ color: "#101828", fontSize: "16px" }}>
               <span style={{ fontWeight: 600 }}>E-post:</span>{" "}
               {createDataBy?.email}
             </p>
           )}
           {createDataBy && (
-            <p style={{ color: "#101828", fontSize: "20px" }}>
+            <p style={{ color: "#101828", fontSize: "16px" }}>
               <span style={{ fontWeight: 600 }}>Kontor:</span>{" "}
               {offices?.data?.name}
             </p>
           )}
-          <p style={{ color: "#101828", fontSize: "20px" }}>
+          <p style={{ color: "#101828", fontSize: "16px" }}>
             <span style={{ fontWeight: 600 }}>Dato og klokkeslett:</span>{" "}
             {new Date().toLocaleString("nb-NO", {
               day: "2-digit",

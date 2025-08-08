@@ -717,6 +717,28 @@ export const HusmodellerTable = () => {
       }
     },
   });
+  const [offices, setOffices] = useState<any>(null);
+
+  const fetchOfficeData = async () => {
+    try {
+      if (selectedData?.office_id) {
+        const husmodellDocRef = doc(db, "office", selectedData?.office_id);
+        const docSnap = await getDoc(husmodellDocRef);
+
+        if (docSnap.exists()) {
+          setOffices(docSnap.data());
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching husmodell data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedData?.office_id) {
+      fetchOfficeData();
+    }
+  }, [selectedData]);
 
   return (
     <>
@@ -984,6 +1006,7 @@ export const HusmodellerTable = () => {
             rooms={selectedData?.Plantegninger}
             kundeInfo={selectedData}
             roomsData={selectedData}
+            offices={offices}
           />
         </div>
       </div>

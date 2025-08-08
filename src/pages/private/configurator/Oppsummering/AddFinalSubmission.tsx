@@ -170,7 +170,7 @@ export const AddFinalSubmission: React.FC<{
               .upperCaseHeading {
                 color: #101828;
                 font-weight: 700;
-                font-size: 28px;
+                font-size: 18px;
                 text-transform: uppercase;
               }  
               .sr-only {
@@ -186,8 +186,8 @@ export const AddFinalSubmission: React.FC<{
               }
             
               .checkbox-box {
-                width: 1.25rem; /* 20px */
-                height: 1.25rem;
+                width: 1rem; /* 20px */
+                height: 1rem;
                 border: 2px solid #444CE7;
                 border-radius: 0.125rem; /* rounded-sm */
               }
@@ -195,13 +195,13 @@ export const AddFinalSubmission: React.FC<{
               .checkmark {
                 pointer-events: none;
                 position: absolute;
-                left: 4px; /* 2px */
-                top: 4px;
+                left: 2px; /* 2px */
+                top: 2px;
               }
             
               .checkmark-icon {
-                width: 1rem;
-                height: 1rem;
+                width: 0.75rem;
+                height: 0.75rem;
                 color: #444CE7;
               }
             
@@ -526,7 +526,7 @@ export const AddFinalSubmission: React.FC<{
       }
 
       setIsExporting(false);
-      navigate("/Bolig-configurator");
+      // navigate("/Bolig-configurator");
     } catch (error) {
       console.error("error:", error);
       toast.error("Something went wrong!", {

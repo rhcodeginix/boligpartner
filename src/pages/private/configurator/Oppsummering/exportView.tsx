@@ -1,7 +1,3 @@
-import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../../config/firebaseConfig";
-
 export function formatPhoneNumber(number: any) {
   let cleaned = number.replace(/[^\d+]/g, "");
 
@@ -17,29 +13,8 @@ export const ExportView: React.FC<{
   rooms: any;
   kundeInfo: any;
   roomsData: any;
-}> = ({ rooms, kundeInfo, roomsData }) => {
-  const [offices, setOffices] = useState<any>(null);
-  const fetchOfficeData = async () => {
-    try {
-      if (roomsData?.office_id) {
-        const husmodellDocRef = doc(db, "office", roomsData?.office_id);
-        const docSnap = await getDoc(husmodellDocRef);
-
-        if (docSnap.exists()) {
-          setOffices(docSnap.data());
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching husmodell data:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (roomsData?.office_id) {
-      fetchOfficeData();
-    }
-  }, [roomsData]);
-
+  offices: any;
+}> = ({ rooms, kundeInfo, roomsData, offices }) => {
   return (
     <div
       style={{
@@ -59,7 +34,7 @@ export const ExportView: React.FC<{
             style={{
               color: "#101828",
               fontWeight: 600,
-              fontSize: "28px",
+              fontSize: "22px",
               marginBottom: "10px",
             }}
           >
@@ -80,21 +55,21 @@ export const ExportView: React.FC<{
                 gap: "0.5rem",
               }}
             >
-              <p style={{ color: "#101828", fontSize: "20px" }}>
+              <p style={{ color: "#101828", fontSize: "16px" }}>
                 <span style={{ fontWeight: 600 }}>Kundenavn:</span>{" "}
                 {kundeInfo?.Kundenavn}
               </p>
-              <p style={{ color: "#101828", fontSize: "20px" }}>
+              <p style={{ color: "#101828", fontSize: "16px" }}>
                 <span style={{ fontWeight: 600 }}>BP prosjektnummer:</span>{" "}
                 {kundeInfo?.Kundenummer}
               </p>
               {kundeInfo?.Serie && (
-                <p style={{ color: "#101828", fontSize: "20px" }}>
+                <p style={{ color: "#101828", fontSize: "16px" }}>
                   <span style={{ fontWeight: 600 }}>Serie:</span>{" "}
                   {kundeInfo?.Serie}
                 </p>
               )}
-              <p style={{ color: "#101828", fontSize: "20px" }}>
+              <p style={{ color: "#101828", fontSize: "16px" }}>
                 <span style={{ fontWeight: 600 }}>Mobile:</span>{" "}
                 {kundeInfo?.mobile
                   ? formatPhoneNumber(kundeInfo?.mobile)
@@ -119,7 +94,7 @@ export const ExportView: React.FC<{
             style={{ marginBottom: "10px" }}
           />
           {roomsData?.createDataBy && (
-            <p style={{ color: "#101828", fontSize: "20px" }}>
+            <p style={{ color: "#101828", fontSize: "16px" }}>
               <span style={{ fontWeight: 600 }}>Laget av:</span>{" "}
               {roomsData?.createDataBy?.f_name
                 ? `${roomsData?.createDataBy?.f_name} ${roomsData?.createDataBy?.l_name}`
@@ -127,18 +102,18 @@ export const ExportView: React.FC<{
             </p>
           )}
           {roomsData?.createDataBy && (
-            <p style={{ color: "#101828", fontSize: "20px" }}>
+            <p style={{ color: "#101828", fontSize: "16px" }}>
               <span style={{ fontWeight: 600 }}>E-post:</span>{" "}
               {roomsData?.createDataBy?.email}
             </p>
           )}
           {roomsData?.createDataBy && (
-            <p style={{ color: "#101828", fontSize: "20px" }}>
+            <p style={{ color: "#101828", fontSize: "16px" }}>
               <span style={{ fontWeight: 600 }}>Kontor:</span>{" "}
               {offices?.data?.name}
             </p>
           )}
-          <p style={{ color: "#101828", fontSize: "20px" }}>
+          <p style={{ color: "#101828", fontSize: "16px" }}>
             <span style={{ fontWeight: 600 }}>Dato og klokkeslett:</span>{" "}
             {new Date().toLocaleString("nb-NO", {
               day: "2-digit",
@@ -209,7 +184,7 @@ export const ExportView: React.FC<{
                           <div
                             style={{
                               color: "#30374f",
-                              fontSize: "24px",
+                              fontSize: "18px",
                               fontWeight: 600,
                             }}
                           >
@@ -244,7 +219,7 @@ export const ExportView: React.FC<{
                                           <div
                                             style={{
                                               color: "#5d6b98",
-                                              fontSize: "24px",
+                                              fontSize: "14px",
                                               fontWeight: 500,
                                               marginBottom: "2px",
                                             }}
@@ -254,7 +229,7 @@ export const ExportView: React.FC<{
                                           <div
                                             style={{
                                               color: "#101828",
-                                              fontSize: "20px",
+                                              fontSize: "16px",
                                             }}
                                           >
                                             {prod?.Produktnavn}{" "}
@@ -271,7 +246,7 @@ export const ExportView: React.FC<{
                                           <div
                                             style={{
                                               color: "#101828",
-                                              fontSize: "20px",
+                                              fontSize: "16px",
                                               marginTop: "2px",
                                             }}
                                           >
