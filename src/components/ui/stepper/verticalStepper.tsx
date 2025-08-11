@@ -48,7 +48,6 @@ const VerticalWizard: React.FC<VerticalWizardProps> = ({
       setInvalidSteps(invalidSteps.filter((id: any) => id !== currentStep));
     }
 
-    // Step 3: Allow navigation if clicking back or just one step ahead
     if (
       validInitialSteps?.includes(stepId) ||
       stepId < currentStep ||

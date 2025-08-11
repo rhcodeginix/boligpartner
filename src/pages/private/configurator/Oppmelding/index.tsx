@@ -357,39 +357,11 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
     },
   ];
 
-  // useEffect(() => {
-  //   if (roomsData) {
-  //     let firstInvalidStepId: number | null = null;
-
-  //     for (const step of wizardInvalidSteps) {
-  //       const value = roomsData?.[step.valueName];
-  //       const isEmpty =
-  //         !value ||
-  //         (typeof value === "object" && Object.keys(value).length === 0);
-
-  //       if (isEmpty) {
-  //         firstInvalidStepId = step.id;
-  //         break;
-  //       }
-  //     }
-
-  //     if (firstInvalidStepId !== null) {
-  //       setCurrentStep(firstInvalidStepId);
-  //     } else {
-  //       const lastStepId = wizardInvalidSteps[wizardInvalidSteps.length - 1].id;
-  //       setCurrentStep(lastStepId);
-  //     }
-  //   }
-  // }, [roomsData]);
-
   useEffect(() => {
     if (roomsData) {
       let firstInvalidStepId: number | null = null;
 
-      const firstTenSteps = wizardInvalidSteps.filter((step) => step.id);
-      const validSteps: number[] = [];
-
-      for (const step of firstTenSteps) {
+      for (const step of wizardInvalidSteps) {
         const value = roomsData?.[step.valueName];
         const isEmpty =
           !value ||
@@ -398,15 +370,12 @@ export const Oppmelding: React.FC<{ Next: any; Prev: any }> = ({
         if (isEmpty) {
           firstInvalidStepId = step.id;
           break;
-        } else {
-          validSteps.push(step.id);
         }
       }
 
       if (firstInvalidStepId !== null) {
         setCurrentStep(firstInvalidStepId);
       } else {
-        setValidInitialSteps(validSteps);
         const lastStepId = wizardInvalidSteps[wizardInvalidSteps.length - 1].id;
         setCurrentStep(lastStepId);
       }
