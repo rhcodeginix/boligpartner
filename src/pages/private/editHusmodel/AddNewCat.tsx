@@ -19,6 +19,9 @@ const formSchema = z.object({
   Hovedkategoriname: z.string().min(1, {
     message: "Hovedkategoriname må bestå av minst 2 tegn.",
   }),
+  area: z.string().min(1, {
+    message: "Område må bestå av minst 2 tegn.",
+  }),
   isSelected: z.boolean().optional(),
 });
 
@@ -166,13 +169,13 @@ export const AddNewCat: React.FC<{
         ? data.name_no
         : data.name?.trim() || "";
 
-      const area = data?.area_m2 ? `(${data?.area_m2} m²)` : "";
+      const area = data?.area_m2 ? data?.area_m2 : "";
 
       if (hovedKategoriValue) {
-        form.setValue(
-          "Hovedkategoriname",
-          `${hovedKategoriValue} ${area && area}`
-        );
+        form.setValue("Hovedkategoriname", `${hovedKategoriValue}`);
+      }
+      if (area) {
+        form.setValue("area", `${area && area}`);
       }
 
       if (typeof data.isSelected !== "undefined") {
@@ -184,6 +187,7 @@ export const AddNewCat: React.FC<{
     editData?.data?.name_no,
     editData?.data?.name,
     editData?.data?.isSelected,
+    editData?.data?.area_m2,
   ]);
   const [pdfId, setPdfId] = useState<string | null>(null);
 
@@ -224,6 +228,7 @@ export const AddNewCat: React.FC<{
                 ...cat,
                 name_no: data.Hovedkategoriname,
                 name: data.Hovedkategoriname,
+                area_m2: data.area,
                 isSelected: data.isSelected ?? false,
               }
             : cat
@@ -235,6 +240,7 @@ export const AddNewCat: React.FC<{
         {
           name_no: data.Hovedkategoriname,
           name: data.Hovedkategoriname,
+          area_m2: data.area,
           isSelected: data.isSelected ?? false,
           Kategorinavn: Object.entries(requiredCategoriesWithProducts).map(
             ([name, produkter]) => ({
@@ -270,6 +276,7 @@ export const AddNewCat: React.FC<{
           roomsList.push({
             name: data.Hovedkategoriname,
             name_no: data.Hovedkategoriname,
+            area_m2: data.area,
             isSelected: data.isSelected ?? false,
             Kategorinavn: Object.entries(requiredCategoriesWithProducts).map(
               ([name, produkter]) => ({
@@ -283,6 +290,7 @@ export const AddNewCat: React.FC<{
         } else {
           roomsList[targetRoomIndex].name = data.Hovedkategoriname;
           roomsList[targetRoomIndex].name_no = data.Hovedkategoriname;
+          roomsList[targetRoomIndex].area_m2 = data.area;
         }
 
         itemToUpdate.rooms = roomsList;
@@ -338,7 +346,40 @@ export const AddNewCat: React.FC<{
               )}
             />
           </div>
-          <div>
+          <div className="mt-3">
+            <FormField
+              control={form.control}
+              name="area"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <p
+                    className={`${
+                      fieldState.error ? "text-red" : "text-black"
+                    } mb-[6px] text-sm font-medium`}
+                  >
+                    Område
+                  </p>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        placeholder="Skriv inn Område"
+                        {...field}
+                        className={`bg-white rounded-[8px] border text-black
+                                          ${
+                                            fieldState?.error
+                                              ? "border-red"
+                                              : "border-gray1"
+                                          } `}
+                        type="text"
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="mt-3">
             <FormField
               control={form.control}
               name={`isSelected`}
@@ -346,7 +387,7 @@ export const AddNewCat: React.FC<{
                 <FormItem>
                   <FormControl>
                     <div
-                      className="relative flex items-center gap-2 mt-3 cursor-pointer"
+                      className="relative flex items-center gap-2 cursor-pointer"
                       onClick={() => {
                         form.setValue("isSelected", !field.value);
                       }}

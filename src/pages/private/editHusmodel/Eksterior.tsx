@@ -85,6 +85,7 @@ const mainCategorySchema = z.object({
   name: z.string().min(1, "Hovedkategorinavn må bestå av minst 1 tegn."),
   Kategorinavn: z.array(categorySchema).optional().nullable(),
   isSelected: z.boolean().optional(),
+  area_m2: z.string().min(1, "Område må bestå av minst 1 tegn."),
 });
 
 const formSchema = z.object({
@@ -163,10 +164,13 @@ export const Eksterior: React.FC<{
               newRoom.Kategorinavn || oldVal[indexToUpdate].Kategorinavn;
             oldVal[indexToUpdate].name =
               newRoom.name || oldVal[indexToUpdate].name;
+            oldVal[indexToUpdate].area_m2 =
+              newRoom.area_m2 || oldVal[indexToUpdate].area_m2;
           } else {
             oldVal[indexToUpdate] = {
               Kategorinavn: newRoom.Kategorinavn,
               name: newRoom.name,
+              area_m2: newRoom.area_m2,
               ...newRoom,
             };
           }
@@ -292,6 +296,7 @@ export const Eksterior: React.FC<{
     if (Array.isArray(Category) && Category.length > 0) {
       const formatted = Category.map((cat: any, index: number) => ({
         name: cat.name,
+        area_m2: cat.area,
         Kategorinavn:
           index === activeTabData
             ? cat.Kategorinavn && cat.Kategorinavn.length > 0
