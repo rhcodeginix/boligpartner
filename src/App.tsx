@@ -20,6 +20,19 @@ const queryClient = new QueryClient({
 });
 
 export const App = () => {
+  const params = new URLSearchParams(window.location.search);
+  const email = params.get("email");
+
+  if (email) {
+    localStorage.setItem("Iplot_admin_bolig", email);
+
+    params.delete("email");
+    const newUrl =
+      window.location.pathname +
+      (params.toString() ? `?${params.toString()}` : "");
+    window.history.replaceState({}, "", newUrl);
+  }
+
   useEffect(() => {
     const handleTab = (e: any) => {
       if (e.key === "Tab") {
