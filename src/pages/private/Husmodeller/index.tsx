@@ -16,6 +16,7 @@ import {
   FormItem,
   FormMessage,
 } from "../../../components/ui/form";
+import { fetchAdminDataByEmail } from "../../../lib/utils";
 
 const formSchema = z
   .object({
@@ -109,9 +110,27 @@ export const Husmodeller = () => {
     form.handleSubmit(onSubmit)();
   };
 
+  const [Supplier, setSupplier] = useState<any>(null);
+  const [Email, setEmail] = useState<any>(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchAdminDataByEmail();
+
+      if (data) {
+        setEmail(data?.email);
+        if (data?.supplier) {
+          setSupplier(data?.supplier);
+        }
+      }
+    };
+
+    getData();
+  }, []);
+
   return (
     <>
-      <div className="px-4 md:px-6 py-5 md:py-8 desktop:p-8 flex flex-col sm:flex-row gap-3 sm:items-center justify-between bg-lightPurple">
+      <div className="px-4 md:px-6 py-5 md:py-8 desktop:p-8 flex flex-col md:flex-row gap-3 md:items-center justify-between bg-lightPurple">
         <div>
           <h1 className="text-darkBlack font-medium text-2xl md:text-[28px] desktop:text-[32px] mb-2">
             Romskjema
@@ -121,7 +140,23 @@ export const Husmodeller = () => {
             du oversikt over alle kontorets lagrede konfigurasjoner
           </p>
         </div>
-        <div>
+        <div className="flex items-center gap-4">
+          {Supplier && Supplier === "9f523136-72ca-4bde-88e5-de175bc2fc71" && (
+            <div
+              className="text-primary text-sm md:text-base lg:text-lg font-semibold flex items-center gap-4 cursor-pointer"
+              onClick={() => {
+                const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(
+                  Email
+                )}`;
+                window.location.href = url;
+              }}
+            >
+              <Button
+                text="Gå til Tips til bank"
+                className="border-2 border-purple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+              />
+            </div>
+          )}
           <Button
             text="Ny konfigurasjon"
             className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
