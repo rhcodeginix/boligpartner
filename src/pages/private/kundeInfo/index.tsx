@@ -9,7 +9,7 @@ export const KundeInfo = () => {
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   return (
     <>
-      <div className="py-4 px-4 md:px-6 bg-lightPurple">
+      <div className="py-4 px-4 md:px-6 bg-lightGreen">
         <div className="flex items-center gap-1.5 mb-4 md:mb-6">
           <Link to={"/Husmodell"} className="text-primary text-sm font-medium">
             Husmodeller
@@ -24,7 +24,7 @@ export const KundeInfo = () => {
           <div>
             <Button
               text="Ny konfigurasjon"
-              className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+              className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
               path={`/se-series/${id}/add-husmodell`}
             />
           </div>

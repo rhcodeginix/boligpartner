@@ -122,7 +122,7 @@ export const RoomProjectTable = () => {
               {row.original?.title}
             </p>
             <Pencil
-              className="w-5 h-5 text-purple cursor-pointer"
+              className="w-5 h-5 text-primary cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -198,7 +198,7 @@ export const RoomProjectTable = () => {
     <>
       {isSubmitLoading && <Spinner />}
 
-      <div className="mb-2 flex gap-2 flex-col lg:flex-row lg:items-center justify-between bg-lightPurple rounded-[12px] py-3 px-4">
+      <div className="mb-2 flex gap-2 flex-col lg:flex-row lg:items-center justify-between bg-lightGreen rounded-[12px] py-3 px-4">
         <div className="flex items-center border border-gray1 shadow-shadow1 bg-[#fff] gap-2 rounded-lg py-[10px] px-[14px]">
           <img src={Ic_search} alt="search" />
           <input
@@ -315,7 +315,7 @@ export const RoomProjectTable = () => {
                 <div onClick={() => handleDelete(confirmDeleteId)}>
                   <Button
                     text="Bekreft"
-                    className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                    className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   />
                 </div>
               </div>
@@ -344,7 +344,7 @@ export const RoomProjectTable = () => {
                 />
                 <Button
                   text="Oppdater"
-                  className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-3 py-[10px]"
+                  className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-3 py-[10px]"
                   onClick={async () => {
                     try {
                       const husmodellDocRef = doc(

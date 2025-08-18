@@ -171,7 +171,7 @@ export const TekniskeInstallasjoner = forwardRef(
                                     className={`bg-white rounded-[8px] border text-black
         ${
           fieldState?.error ? "border-red" : "border-gray1"
-        } h-4 w-4 accent-[#444CE7]`}
+        } h-4 w-4 accent-primary`}
                                     type="radio"
                                     value={option}
                                     onChange={(e) => {
@@ -244,7 +244,7 @@ export const TekniskeInstallasjoner = forwardRef(
                 </div>
                 <Button
                   text="Gå til oppsummering"
-                  className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   type="submit"
                 />
               </div>

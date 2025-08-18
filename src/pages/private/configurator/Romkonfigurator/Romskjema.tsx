@@ -46,7 +46,7 @@ export const Romskjema: React.FC<{ Next: any }> = ({ Next }) => {
   return (
     <>
       {loading && <Spinner />}
-      <div className="bg-lightPurple px-4 md:px-6 lg:px-8 py-3">
+      <div className="bg-lightGreen px-4 md:px-6 lg:px-8 py-3">
         <h3 className="text-darkBlack font-medium text-xl md:text-[24px] lg:text-[28px] desktop:text-[2rem] desktop:leading-[44.8px] mb-2">
           Oppmelding
         </h3>
@@ -86,7 +86,7 @@ export const Romskjema: React.FC<{ Next: any }> = ({ Next }) => {
                     key={index}
                     className={`cursor-pointer w-max text-sm md:text-base py-2 px-3 rounded-lg ${
                       activeTab === room?.title
-                        ? "bg-white text-purple font-semibold"
+                        ? "bg-white text-primary font-semibold"
                         : "text-black"
                     }`}
                     onClick={() => setActiveTab(room?.title)}
@@ -275,7 +275,7 @@ export const Romskjema: React.FC<{ Next: any }> = ({ Next }) => {
         />
         <Button
           text="Start oppmelding"
-          className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+          className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
           onClick={() => {
             Next();
           }}

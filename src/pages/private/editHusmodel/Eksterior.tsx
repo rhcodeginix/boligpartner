@@ -567,8 +567,8 @@ export const Eksterior: React.FC<{
                   setActiveTab(1);
                 }}
               >
-                <ArrowLeft className="text-purple w-5 h-5 md:w-6 md:h-6" />
-                <span className="text-purple text-sm font-medium">
+                <ArrowLeft className="text-primary w-5 h-5 md:w-6 md:h-6" />
+                <span className="text-primary text-sm font-medium">
                   Tilbake til plantegning
                 </span>
               </div>
@@ -619,7 +619,7 @@ export const Eksterior: React.FC<{
                 )}
 
                 {/* <div
-                  className="text-purple font-semibold text-xs sm:text-sm flex items-center gap-1 cursor-pointer h-full whitespace-nowrap"
+                  className="text-primary font-semibold text-xs sm:text-sm flex items-center gap-1 cursor-pointer h-full whitespace-nowrap"
                   onClick={() => setAddSubCategory(true)}
                 >
                   <Plus className="w-4 h-4 md:w-6 md:h-6" />
@@ -636,7 +636,7 @@ export const Eksterior: React.FC<{
                       `hovedkategorinavn.${activeTabData}.Kategorinavn.${activeSubTabData}.productOptions`
                     ) !== "Text" && (
                       <div
-                        className="text-purple border-2 border-purple rounded-[40px] py-2 px-3 md:px-4 font-semibold text-sm md:text-base flex items-center gap-1 cursor-pointer h-full"
+                        className="text-primary border-2 border-primary rounded-[40px] py-2 px-3 md:px-4 font-semibold text-sm md:text-base flex items-center gap-1 cursor-pointer h-full"
                         onClick={() => {
                           setIsProductDrawerOpen(true);
                         }}
@@ -649,7 +649,7 @@ export const Eksterior: React.FC<{
                       className={`flex items-center gap-1 font-medium ${
                         produkter.length === 1
                           ? "text-gray cursor-not-allowed text-opacity-55"
-                          : "text-purple cursor-pointer"
+                          : "text-primary cursor-pointer"
                       }`}
                       onClick={() => {
                         if (produkter.length > 1) {
@@ -769,7 +769,7 @@ export const Eksterior: React.FC<{
                               <div
                                 className={`w-full cursor-pointer border rounded-lg ${
                                   isSelected
-                                    ? "border-2 border-purple bg-lightPurple bg-opacity-10"
+                                    ? "border-2 border-primary bg-lightGreen bg-opacity-10"
                                     : "border-[#EFF1F5]"
                                 }`}
                                 draggable
@@ -941,7 +941,7 @@ export const Eksterior: React.FC<{
                                       </span>
 
                                       {/* <span
-                                        className="text-purple font-medium text-sm cursor-pointer"
+                                        className="text-primary font-medium text-sm cursor-pointer"
                                         onClick={() => {
                                           handleproductViewDrawer();
                                           setViewSubCat(product);
@@ -1179,7 +1179,7 @@ export const Eksterior: React.FC<{
           >
             <Button
               text="Lagre"
-              className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
+              className="border border-lightGreen bg-lightGreen text-primary text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
               onClick={() => {
                 setActiveTab(1);
                 const params = new URLSearchParams(location.search);
@@ -1193,13 +1193,13 @@ export const Eksterior: React.FC<{
             />
             {/* <Button
               text="Lukk og lagre"
-              className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2"
+              className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2"
               type="submit"
             /> */}
             {FloorData?.configurator !== true && (
               <Button
                 text="Bekreft plan"
-                className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2"
+                className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2"
                 type="button"
                 onClick={async () => {
                   if (!id || !kundeId || !pdfId) return;
@@ -1383,11 +1383,11 @@ export const Eksterior: React.FC<{
           style={{ zIndex: 99999 }}
         >
           <div className="flex flex-col items-center gap-4 bg-white p-3 rounded-lg">
-            <span className="text-purple text-base font-medium">
+            <span className="text-primary text-base font-medium">
               Bekreft konfigurasjon...
             </span>
             <div className="w-48 h-1 overflow-hidden rounded-lg">
-              <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
+              <div className="w-full h-full bg-primary animate-[progress_1.5s_linear_infinite] rounded-lg" />
             </div>
           </div>
         </div>
@@ -1422,12 +1422,12 @@ export const Eksterior: React.FC<{
               >
                 <Button
                   text="Avbryt"
-                  className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-12 py-2 flex items-center gap-2"
+                  className="border border-lightGreen bg-lightGreen text-primary text-sm rounded-[8px] h-[40px] font-medium relative px-12 py-2 flex items-center gap-2"
                 />
               </div>
               <Button
                 text="Slett"
-                className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-12 py-2 flex items-center gap-2"
+                className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-12 py-2 flex items-center gap-2"
                 onClick={() => {
                   handleConfirmDelete();
                   setShowConfirmPopup(false);

@@ -92,7 +92,7 @@ export const Inventory = () => {
   }, []);
   return (
     <>
-      <div className="p-8 flex gap-3 items-center justify-between bg-lightPurple">
+      <div className="p-8 flex gap-3 items-center justify-between bg-lightGreen">
         <div>
           <h1 className="text-darkBlack font-medium text-[32px] mb-2">
             Romkonfigurator
@@ -104,7 +104,7 @@ export const Inventory = () => {
         </div>
         <Button
           text="Lag ny serie"
-          className="border border-purple bg-purple text-white text-base rounded-[40px] h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
+          className="border border-primary bg-primary text-white text-base rounded-[40px] h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
           path="/add-husmodell"
         />
       </div>
@@ -151,13 +151,13 @@ export const Inventory = () => {
                         onDrop={() => handleDrop(index)}
                         className={`bg-white cursor-pointer rounded-lg flex items-center justify-between gap-1 px-3 ${
                           activeTabData === index
-                            ? "border-2 border-primary bg-lightPurple rounded-t-[12px]"
+                            ? "border-2 border-primary bg-lightGreen rounded-t-[12px]"
                             : "border border-gray2"
                         }`}
                         onClick={() => setActiveTabData(index)}
                       >
                         <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold">
-                          <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
+                          <span className="w-5 h-5 rounded-full bg-lightGreen flex items-center justify-center text-darkBlack font-semibold text-xs">
                             {index + 1}
                           </span>
                           <span className="w-[135px] truncate">
@@ -232,7 +232,7 @@ export const Inventory = () => {
             )}
           </div>
           <div
-            className="flex items-center text-purple gap-2 cursor-pointer py-3 px-6"
+            className="flex items-center text-primary gap-2 cursor-pointer py-3 px-6"
             onClick={() => setAddCategory(true)}
             style={{
               boxShadow:

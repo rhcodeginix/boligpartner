@@ -130,7 +130,7 @@ export const Husmodeller = () => {
 
   return (
     <>
-      <div className="px-4 md:px-6 py-5 md:py-8 desktop:p-8 flex flex-col md:flex-row gap-3 md:items-center justify-between bg-lightPurple">
+      <div className="px-4 md:px-6 py-5 md:py-8 desktop:p-8 flex flex-col md:flex-row gap-3 md:items-center justify-between bg-lightGreen">
         <div>
           <h1 className="text-darkBlack font-medium text-2xl md:text-[28px] desktop:text-[32px] mb-2">
             Romskjema
@@ -153,13 +153,13 @@ export const Husmodeller = () => {
             >
               <Button
                 text="Gå til Tips til bank"
-                className="border-2 border-purple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                className="border-2 border-primary text-primary text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
               />
             </div>
           )}
           <Button
             text="Ny konfigurasjon"
-            className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+            className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
             onClick={() => setIsModalOpen(true)}
           />
         </div>
@@ -233,7 +233,7 @@ export const Husmodeller = () => {
                                     <House
                                       className={`${
                                         field.value === "Bolig"
-                                          ? "text-[#444CE7]"
+                                          ? "text-primary"
                                           : "text-[#5D6B98]"
                                       }`}
                                     />
@@ -246,7 +246,7 @@ export const Husmodeller = () => {
                                     <Store
                                       className={`${
                                         field.value === "Hytte"
-                                          ? "text-[#444CE7]"
+                                          ? "text-primary"
                                           : "text-[#5D6B98]"
                                       }`}
                                     />
@@ -259,7 +259,7 @@ export const Husmodeller = () => {
                                     <Warehouse
                                       className={`${
                                         field.value === "Prosjekt"
-                                          ? "text-[#444CE7]"
+                                          ? "text-primary"
                                           : "text-[#5D6B98]"
                                       }`}
                                     />
@@ -285,7 +285,7 @@ export const Husmodeller = () => {
                                   }}
                                   className={`flex items-center gap-2 border-2 rounded-lg py-2 px-3 cursor-pointer ${
                                     field.value === item.value
-                                      ? "border-[#444CE7]"
+                                      ? "border-primary"
                                       : "border-[#EFF1F5]"
                                   }`}
                                 >
@@ -392,13 +392,13 @@ export const Husmodeller = () => {
                   >
                     <Button
                       text="Avbryt"
-                      className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-12 py-2 flex items-center gap-2"
+                      className="border border-lightGreen bg-lightGreen text-primary text-sm rounded-[8px] h-[40px] font-medium relative px-12 py-2 flex items-center gap-2"
                     />
                   </div>
                   <Button
                     text="Neste"
                     onClick={handleNext}
-                    className="border border-purple bg-purple text-white ..."
+                    className="border border-primary bg-primary text-white ..."
                   />
                 </div>
               </form>

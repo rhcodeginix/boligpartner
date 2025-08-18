@@ -148,7 +148,7 @@ export const AllRoomkonfigurator: React.FC = () => {
         />
         {/* <Button
           text="Legg til ny romkonfigurator"
-          className="border border-purple bg-purple text-white text-base rounded-[40px] h-[44px] md:h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
+          className="border border-primary bg-primary text-white text-base rounded-[40px] h-[44px] md:h-[48px] font-medium relative px-5 py-3 flex items-center gap-2"
           onClick={() => navigate("/Room-Configurator")}
         /> */}
       </div>
@@ -236,7 +236,7 @@ export const AllRoomkonfigurator: React.FC = () => {
                           <div className="flex items-center gap-3">
                             {isEditing ? (
                               <button
-                                className="bg-purple text-white px-3 py-2 rounded text-sm self-end"
+                                className="bg-primary text-white px-3 py-2 rounded text-sm self-end"
                                 onClick={async (e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
@@ -270,7 +270,7 @@ export const AllRoomkonfigurator: React.FC = () => {
                               </button>
                             ) : (
                               <Pencil
-                                className="w-5 h-5 text-purple cursor-pointer"
+                                className="w-5 h-5 text-primary cursor-pointer"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
@@ -346,7 +346,7 @@ export const AllRoomkonfigurator: React.FC = () => {
                 <div onClick={() => handleDelete(selectedId)}>
                   <Button
                     text="Bekreft"
-                    className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                    className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   />
                 </div>
               </div>

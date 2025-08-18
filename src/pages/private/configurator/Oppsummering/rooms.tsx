@@ -62,7 +62,7 @@ export const Rooms: React.FC<{
                       key={index}
                       className={`cursor-pointer w-max py-2 px-3 rounded-lg ${
                         activeTab === room?.title
-                          ? "bg-white text-purple font-semibold"
+                          ? "bg-white text-primary font-semibold"
                           : "text-black"
                       }`}
                       onClick={() => setActiveTab(room?.title)}
@@ -226,7 +226,7 @@ export const Rooms: React.FC<{
         />
         <Button
           text="Neste"
-          className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+          className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
           onClick={() => setFinalSubmission(true)}
         />
       </div>

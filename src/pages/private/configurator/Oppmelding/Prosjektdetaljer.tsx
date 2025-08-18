@@ -343,7 +343,7 @@ export const Prosjektdetaljer = forwardRef(
                             <House
                               className={`${
                                 selectedHouseType === "Bolig"
-                                  ? "text-[#444CE7]"
+                                  ? "text-primary"
                                   : "text-[#5D6B98]"
                               }`}
                             />
@@ -356,7 +356,7 @@ export const Prosjektdetaljer = forwardRef(
                             <Store
                               className={`${
                                 selectedHouseType === "Hytte"
-                                  ? "text-[#444CE7]"
+                                  ? "text-primary"
                                   : "text-[#5D6B98]"
                               }`}
                             />
@@ -369,7 +369,7 @@ export const Prosjektdetaljer = forwardRef(
                             <Warehouse
                               className={`${
                                 selectedHouseType === "Prosjekt"
-                                  ? "text-[#444CE7]"
+                                  ? "text-primary"
                                   : "text-[#5D6B98]"
                               }`}
                             />
@@ -387,7 +387,7 @@ export const Prosjektdetaljer = forwardRef(
                           }}
                           className={`flex items-center gap-2 border-2 rounded-lg py-2 px-3 cursor-pointer ${
                             selectedHouseType === item.value
-                              ? "border-[#444CE7]"
+                              ? "border-primary"
                               : "border-[#EFF1F5]"
                           }`}
                         >
@@ -515,7 +515,7 @@ export const Prosjektdetaljer = forwardRef(
                                       addressData?.map(
                                         (address: any, index: number) => (
                                           <div
-                                            className="p-2 flex items-center gap-2 hover:bg-lightPurple cursor-pointer"
+                                            className="p-2 flex items-center gap-2 hover:bg-lightGreen cursor-pointer"
                                             key={index}
                                             onClick={() => {
                                               form.setValue(
@@ -729,7 +729,7 @@ export const Prosjektdetaljer = forwardRef(
                                       className={`bg-white rounded-[8px] border text-black
         ${
           fieldState?.error ? "border-red" : "border-gray1"
-        } h-4 w-4 accent-[#444CE7]`}
+        } h-4 w-4 accent-primary`}
                                       type="radio"
                                       value={option}
                                       onChange={(e) => {
@@ -778,14 +778,14 @@ export const Prosjektdetaljer = forwardRef(
                             }}
                             className={`flex items-center gap-2 border-2 rounded-lg py-2 px-3 cursor-pointer ${
                               VelgSerie === item.value
-                                ? "border-[#444CE7]"
+                                ? "border-primary"
                                 : "border-[#EFF1F5]"
                             }`}
                           >
                             <item.Icon
                               className={`${
                                 velgSerie === item.value
-                                  ? "text-[#444CE7]"
+                                  ? "text-primary"
                                   : "text-[#5D6B98]"
                               }`}
                             />
@@ -1099,7 +1099,7 @@ export const Prosjektdetaljer = forwardRef(
                                     className={`bg-white rounded-[8px] border text-black
         ${
           fieldState?.error ? "border-red" : "border-gray1"
-        } h-4 w-4 accent-[#444CE7]`}
+        } h-4 w-4 accent-primary`}
                                     type="radio"
                                     value={option}
                                     onChange={(e) => {
@@ -1499,7 +1499,7 @@ export const Prosjektdetaljer = forwardRef(
                 </div>
                 <Button
                   text="Neste"
-                  className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   type="submit"
                 />
               </div>

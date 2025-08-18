@@ -377,7 +377,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
     <>
       {isSubmitLoading && <Spinner />}
 
-      <div className="bg-lightPurple px-4 md:px-6 lg:px-8 py-3">
+      <div className="bg-lightGreen px-4 md:px-6 lg:px-8 py-3">
         <h3 className="text-darkBlack font-medium text-xl md:text-[24px] lg:text-[28px] desktop:text-[2rem] desktop:leading-[44.8px] mb-2">
           Oppmelding
         </h3>
@@ -420,7 +420,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
             <img src={Ic_upload_blue_img} alt="upload" />
             <div className="flex items-center justify-center flex-col gap-3">
               <div className="flex items-center gap-2 md:gap-3">
-                <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[36px] py-2 px-3 md:px-4 text-sm md:text-base">
+                <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-primary rounded-[40px] h-[36px] py-2 px-3 md:px-4 text-sm md:text-base">
                   Bla gjennom
                 </span>
                 <p className="text-gray text-xs sm:text-sm text-center truncate w-full">
@@ -522,7 +522,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                             <div className="flex items-center gap-3">
                               {isEditing ? (
                                 <button
-                                  className="bg-purple text-white px-3 py-2 rounded text-sm self-end"
+                                  className="bg-primary text-white px-3 py-2 rounded text-sm self-end"
                                   disabled={updatingIndex === index}
                                   onClick={async (e) => {
                                     e.preventDefault();
@@ -580,7 +580,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                                 </button>
                               ) : (
                                 <Pencil
-                                  className="w-6 h-6 text-purple cursor-pointer"
+                                  className="w-6 h-6 text-primary cursor-pointer"
                                   onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
@@ -621,7 +621,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                           </div>
                           <Button
                             text="Konfigurer plan"
-                            className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2`}
+                            className={`border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2`}
                             type="button"
                             onClick={() => {
                               if (item?.rooms) {
@@ -657,7 +657,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
         />
         <Button
           text="Start oppmelding"
-          className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+          className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
           onClick={() => {
             Next();
           }}
@@ -681,7 +681,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
                 <div onClick={() => handleDeleteFloor(confirmDeleteId)}>
                   <Button
                     text="Bekreft"
-                    className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                    className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   />
                 </div>
               </div>
@@ -725,7 +725,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
               />
               <Button
                 text="Opprett"
-                className="bg-purple text-white"
+                className="bg-primary text-white"
                 onClick={handleCreateNewConfigurator}
               />
             </div>
@@ -738,11 +738,11 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any; Next: any }> = ({
           style={{ zIndex: 99999 }}
         >
           <div className="flex flex-col items-center gap-4 bg-white p-3 rounded-lg">
-            <span className="text-purple text-base font-medium">
+            <span className="text-primary text-base font-medium">
               Opplasting...
             </span>
             <div className="w-48 h-1 overflow-hidden rounded-lg">
-              <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
+              <div className="w-full h-full bg-primary animate-[progress_1.5s_linear_infinite] rounded-lg" />
             </div>
           </div>
         </div>

@@ -271,7 +271,7 @@ export const Login = () => {
                   </div>
                   <Button
                     text="Lagre"
-                    className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                    className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                     type="submit"
                   />
                 </div>
@@ -324,7 +324,7 @@ export const Login = () => {
                         <Landmark
                           className={`${
                             selectedType === "lead"
-                              ? "text-[#444CE7]"
+                              ? "text-primary"
                               : "text-[#5D6B98]"
                           }`}
                         />
@@ -337,7 +337,7 @@ export const Login = () => {
                         <Home
                           className={`${
                             selectedType === "boligpartner"
-                              ? "text-[#444CE7]"
+                              ? "text-primary"
                               : "text-[#5D6B98]"
                           }`}
                         />
@@ -352,7 +352,7 @@ export const Login = () => {
                       }}
                       className={`flex items-center gap-2 border-2 rounded-lg py-2 px-3 cursor-pointer ${
                         selectedType === item.value
-                          ? "border-[#444CE7]"
+                          ? "border-primary"
                           : "border-[#EFF1F5]"
                       }`}
                     >
@@ -375,7 +375,7 @@ export const Login = () => {
                 />
                 <Button
                   text="Neste"
-                  className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   type="submit"
                 />
               </div>

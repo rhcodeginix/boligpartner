@@ -215,7 +215,7 @@ export const HusmodellerTable = () => {
 
   return (
     <>
-      <div className="mb-2 flex items-center justify-between bg-lightPurple rounded-[12px] py-3 px-4">
+      <div className="mb-2 flex items-center justify-between bg-lightGreen rounded-[12px] py-3 px-4">
         <div className="flex items-center border border-gray1 shadow-shadow1 bg-[#fff] gap-2 rounded-lg py-[10px] px-[14px]">
           <img src={Ic_search} alt="search" />
           <input
@@ -321,7 +321,7 @@ export const HusmodellerTable = () => {
                 <div onClick={() => handleDelete(selectedId)}>
                   <Button
                     text="Bekreft"
-                    className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                    className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   />
                 </div>
               </div>

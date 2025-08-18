@@ -29,7 +29,7 @@ export const OppsummeringData: React.FC<{
       <div className="px-4 md:px-6 py-6 md:py-8 mb-[120px]">
         <div className="bg-gray3 border border-[#EFF1F5] rounded-lg p-1.5 md:p-2 flex items-center gap-2 mb-5 md:mb-8">
           <div
-            className={`w-max py-2 px-3 rounded-lg bg-white text-purple font-semibold text-sm md:text-base`}
+            className={`w-max py-2 px-3 rounded-lg bg-white text-primary font-semibold text-sm md:text-base`}
             style={{
               boxShadow: "0px 1px 2px 0px #1018280D",
             }}
@@ -982,10 +982,10 @@ export const OppsummeringData: React.FC<{
                     readOnly
                     className="peer sr-only"
                   />
-                  <div className="w-4 md:w-5 h-4 md:h-5 border-2 border-[#444CE7] rounded-sm"></div>
+                  <div className="w-4 md:w-5 h-4 md:h-5 border-2 border-primary rounded-sm"></div>
                   <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
                     <svg
-                      className="w-3 md:w-4 h-3 md:h-4 text-[#444CE7]"
+                      className="w-3 md:w-4 h-3 md:h-4 text-primary"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="3"
@@ -1981,10 +1981,10 @@ export const OppsummeringData: React.FC<{
                     readOnly
                     className="peer sr-only"
                   />
-                  <div className="w-4 md:w-5 h-4 md:h-5 border-2 border-[#444CE7] rounded-sm"></div>
+                  <div className="w-4 md:w-5 h-4 md:h-5 border-2 border-primary rounded-sm"></div>
                   <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
                     <svg
-                      className="w-3 md:w-4 h-3 md:h-4 text-[#444CE7]"
+                      className="w-3 md:w-4 h-3 md:h-4 text-primary"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="3"
@@ -2107,10 +2107,10 @@ export const OppsummeringData: React.FC<{
                     readOnly
                     className="peer sr-only"
                   />
-                  <div className="w-4 md:w-5 h-4 md:h-5 border-2 border-[#444CE7] rounded-sm"></div>
+                  <div className="w-4 md:w-5 h-4 md:h-5 border-2 border-primary rounded-sm"></div>
                   <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
                     <svg
-                      className="w-3 md:w-4 h-3 md:h-4 text-[#444CE7]"
+                      className="w-3 md:w-4 h-3 md:h-4 text-primary"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="3"
@@ -2137,10 +2137,10 @@ export const OppsummeringData: React.FC<{
                     readOnly
                     className="peer sr-only"
                   />
-                  <div className="w-4 md:w-5 h-4 md:h-5 border-2 border-[#444CE7] rounded-sm"></div>
+                  <div className="w-4 md:w-5 h-4 md:h-5 border-2 border-primary rounded-sm"></div>
                   <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
                     <svg
-                      className="w-3 md:w-4 h-3 md:h-4 text-[#444CE7]"
+                      className="w-3 md:w-4 h-3 md:h-4 text-primary"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="3"
@@ -2721,10 +2721,10 @@ export const OppsummeringData: React.FC<{
                   readOnly
                   className="peer sr-only"
                 />
-                <div className="w-4 md:w-5 h-4 md:h-5 border-2 border-[#444CE7] rounded-sm"></div>
+                <div className="w-4 md:w-5 h-4 md:h-5 border-2 border-primary rounded-sm"></div>
                 <div className="pointer-events-none absolute left-0.5 top-0.5 hidden peer-checked:block">
                   <svg
-                    className="w-3 md:w-4 h-3 md:h-4 text-[#444CE7]"
+                    className="w-3 md:w-4 h-3 md:h-4 text-primary"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="3"
@@ -2942,7 +2942,7 @@ export const OppsummeringData: React.FC<{
         />
         <Button
           text="Generer PDF"
-          className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+          className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
           onClick={() => setFinalSubmission(true)}
         />
       </div>

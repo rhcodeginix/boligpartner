@@ -440,7 +440,7 @@ export const Customization: React.FC<{
                 )}
 
                 <div
-                  className="text-purple font-semibold text-sm flex items-center gap-1 cursor-pointer h-full whitespace-nowrap"
+                  className="text-primary font-semibold text-sm flex items-center gap-1 cursor-pointer h-full whitespace-nowrap"
                   onClick={() => setAddSubCategory(true)}
                 >
                   <Plus />
@@ -454,7 +454,7 @@ export const Customization: React.FC<{
                       {title} options
                     </h4>
                     <div
-                      className="text-purple border-2 border-purple rounded-[40px] py-2 px-4 font-semibold text-base flex items-center gap-1 cursor-pointer h-full"
+                      className="text-primary border-2 border-primary rounded-[40px] py-2 px-4 font-semibold text-base flex items-center gap-1 cursor-pointer h-full"
                       onClick={() => {
                         setIsProductDrawerOpen(true);
                       }}
@@ -493,7 +493,7 @@ export const Customization: React.FC<{
                                   </h4>
                                   <div className="flex items-center gap-2">
                                     <Pencil
-                                      className="text-purple w-5 h-5 cursor-pointer"
+                                      className="text-primary w-5 h-5 cursor-pointer"
                                       onClick={() => {
                                         setEditProductIndex(index);
                                         setEditProductData(product);
@@ -595,7 +595,7 @@ export const Customization: React.FC<{
                                       ? product?.pris
                                       : "Standard"}
                                   </span>
-                                  <span className="text-purple font-medium text-sm cursor-pointer">
+                                  <span className="text-primary font-medium text-sm cursor-pointer">
                                     View Details
                                   </span>
                                 </div>
@@ -614,11 +614,11 @@ export const Customization: React.FC<{
                     >
                       <Button
                         text="Avbryt"
-                        className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
+                        className="border border-lightGreen bg-lightGreen text-primary text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
                       />
                       <Button
                         text="Neste"
-                        className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2"
+                        className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2"
                         type="submit"
                       />
                     </div>

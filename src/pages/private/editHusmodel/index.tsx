@@ -19,7 +19,7 @@ export const EditHouseModel = () => {
   return (
     <>
       {(activeTab === 0 || activeTab === 1) && (
-        <div className="py-4 px-4 md:px-6 bg-lightPurple">
+        <div className="py-4 px-4 md:px-6 bg-lightGreen">
           <div className="flex items-center gap-1.5 mb-4 md:mb-6 flex-wrap">
             <Link
               to={"/Husmodell"}
@@ -62,7 +62,7 @@ export const EditHouseModel = () => {
                       }}
                       className={`px-2 md:px-4 py-2 text-sm md:text-base font-medium ${
                         activeTab === index
-                          ? "border-b-2 border-purple text-purple"
+                          ? "border-b-2 border-primary text-primary"
                           : "text-darkBlack"
                       } ${
                         location.pathname.includes("/edit-husmodell")

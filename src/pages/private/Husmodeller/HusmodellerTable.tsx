@@ -550,7 +550,7 @@ export const HusmodellerTable = () => {
                 Overført til oppmelding
               </p>
             ) : row.original?.configurator ? (
-              <p className="text-sm font-medium text-primary w-max bg-lightPurple py-1 px-2 rounded-full">
+              <p className="text-sm font-medium text-primary w-max bg-lightGreen py-1 px-2 rounded-full">
                 Ferdig konfiguert
               </p>
             ) : (
@@ -754,7 +754,7 @@ export const HusmodellerTable = () => {
               }}
               className={`px-2 md:px-4 py-2 text-sm font-medium ${
                 activeTab === tab
-                  ? "border-b-2 border-purple text-purple"
+                  ? "border-b-2 border-primary text-primary"
                   : "text-gray-500"
               }`}
             >
@@ -763,7 +763,7 @@ export const HusmodellerTable = () => {
           ))}
         </div>
       </div>
-      <div className="mb-2 flex gap-2 flex-col lg:flex-row lg:items-center justify-between bg-lightPurple rounded-[12px] py-3 px-4">
+      <div className="mb-2 flex gap-2 flex-col lg:flex-row lg:items-center justify-between bg-lightGreen rounded-[12px] py-3 px-4">
         <div className="flex items-center border border-gray1 shadow-shadow1 bg-[#fff] gap-2 rounded-lg py-[10px] px-[14px]">
           <img src={Ic_search} alt="search" />
           <input
@@ -983,7 +983,7 @@ export const HusmodellerTable = () => {
                 <div onClick={() => handleDelete(selectedId)}>
                   <Button
                     text="Bekreft"
-                    className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                    className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   />
                 </div>
               </div>
@@ -1018,11 +1018,11 @@ export const HusmodellerTable = () => {
         >
           <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
             <div className="flex flex-col items-center gap-4 bg-white p-3 rounded-lg">
-              <span className="text-purple text-base font-medium">
+              <span className="text-primary text-base font-medium">
                 Eksporterer...
               </span>
               <div className="w-48 h-1 overflow-hidden rounded-lg">
-                <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
+                <div className="w-full h-full bg-primary animate-[progress_1.5s_linear_infinite] rounded-lg" />
               </div>
             </div>
           </div>
@@ -1035,11 +1035,11 @@ export const HusmodellerTable = () => {
           style={{ zIndex: 99999 }}
         >
           <div className="flex flex-col items-center gap-4 bg-white p-3 rounded-lg">
-            <span className="text-purple text-base font-medium">
+            <span className="text-primary text-base font-medium">
               Overfører til Aktive tiltak...
             </span>
             <div className="w-48 h-1 overflow-hidden rounded-lg">
-              <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
+              <div className="w-full h-full bg-primary animate-[progress_1.5s_linear_infinite] rounded-lg" />
             </div>
           </div>
         </div>
@@ -1082,7 +1082,7 @@ export const HusmodellerTable = () => {
               />
               <Button
                 text="Opprett"
-                className="bg-purple text-white"
+                className="bg-primary text-white"
                 onClick={async () => {
                   setShowConfiguratorModal(false);
                   setIsPlacingOrder(true);

@@ -308,7 +308,7 @@ export const TakrennerBeslag = forwardRef(
                 </div>
                 <Button
                   text="Neste"
-                  className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                  className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   type="submit"
                 />
               </div>

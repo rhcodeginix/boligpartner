@@ -395,7 +395,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
     <>
       {isLoading ? (
         <>
-          <div className="py-4 px-4 md:px-6 bg-lightPurple">
+          <div className="py-4 px-4 md:px-6 bg-lightGreen">
             <div className="flex items-center gap-1.5 mb-4 md:mb-6 flex-wrap">
               <div className="w-[80px] h-[20px] rounded-lg custom-shimmer"></div>
               <div className="w-[20px] h-[20px] rounded-lg custom-shimmer"></div>
@@ -416,7 +416,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               <div className="p-3 md:p-4 border-b border-[#EFF1F5] text-darkBlack text-lg font-medium flex items-center justify-between gap-2">
                 <div className="w-[80px] h-[20px] rounded-lg custom-shimmer"></div>
                 <div
-                  className="flex items-center text-purple gap-2 cursor-pointer"
+                  className="flex items-center text-primary gap-2 cursor-pointer"
                   onClick={() => setAddCategory(true)}
                 >
                   <div className="w-[20px] h-[20px] rounded-lg custom-shimmer"></div>
@@ -449,7 +449,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
         </>
       ) : (
         <>
-          <div className="py-4 px-4 md:px-6 bg-lightPurple">
+          <div className="py-4 px-4 md:px-6 bg-lightGreen">
             <div className="flex items-center gap-1.5 mb-4 md:mb-6 flex-wrap">
               <Link
                 to={"/Husmodell"}
@@ -503,7 +503,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
               <div className="p-3 md:p-4 border-b border-[#EFF1F5] text-darkBlack text-lg font-medium flex items-center justify-between gap-2">
                 <span className="truncate">Romoversikt</span>
                 <div
-                  className="flex items-center text-purple gap-2 cursor-pointer"
+                  className="flex items-center text-primary gap-2 cursor-pointer"
                   onClick={() => setAddCategory(true)}
                 >
                   <Plus />
@@ -524,13 +524,13 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                           onDrop={() => handleDrop(index)}
                           className={`bg-white cursor-pointer rounded-lg flex items-center justify-between gap-1 px-3 ${
                             activeTabData === index
-                              ? "border-2 border-primary bg-lightPurple rounded-t-[12px]"
+                              ? "border-2 border-primary bg-lightGreen rounded-t-[12px]"
                               : "border border-gray2"
                           }`}
                           onClick={() => setActiveTabData(index)}
                         >
                           <div className="text-sm text-darkBlack py-3 flex items-center gap-2 font-semibold truncate">
-                            <span className="w-5 h-5 rounded-full bg-lightPurple flex items-center justify-center text-darkBlack font-semibold text-xs">
+                            <span className="w-5 h-5 rounded-full bg-lightGreen flex items-center justify-center text-darkBlack font-semibold text-xs">
                               {index + 1}
                             </span>
                             <span className="truncate">
@@ -679,7 +679,7 @@ export const AllFloor: React.FC<{ setActiveTab: any }> = ({ setActiveTab }) => {
                 </div>
                 <Button
                   text="Neste"
-                  className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
+                  className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
                   onClick={() => {
                     setActiveTabData(0);
                   }}

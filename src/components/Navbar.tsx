@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import Ic_chevron_up from "../assets/images/Ic_chevron_up.svg";
 import { fetchAdminDataByEmail } from "../lib/utils";
-import { Menu, X } from "lucide-react";
+import { LogOut, Menu, X } from "lucide-react";
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
@@ -95,7 +95,7 @@ export const Navbar: React.FC = () => {
               currentPath === "/add-husmodell" ||
               currentPath.startsWith("/se-series/") ||
               currentPath.startsWith("/edit-husmodell/")
-                ? "bg-lightPurple text-primary"
+                ? "bg-lightGreen text-primary"
                 : "text-black"
             }`}
           >
@@ -107,7 +107,7 @@ export const Navbar: React.FC = () => {
               currentPath === "/Room-Configurator" ||
               currentPath === "/Bolig-configurator" ||
               currentPath.startsWith("/Room-Configurator/")
-                ? "bg-lightPurple text-primary"
+                ? "bg-lightGreen text-primary"
                 : "text-black"
             }`}
             onClick={() => {
@@ -133,7 +133,7 @@ export const Navbar: React.FC = () => {
                 <img src={isPhoto} alt="profile" className="rounded-full" />
               </div>
             ) : (
-              <div className="w-8 h-8 md:h-[40px] md:w-[40px] flex items-center justify-center border border-primary bg-lightPurple rounded-full">
+              <div className="w-8 h-8 md:h-[40px] md:w-[40px] flex items-center justify-center border border-primary bg-lightGreen rounded-full">
                 {name?.[0]}
               </div>
             )}
@@ -146,10 +146,10 @@ export const Navbar: React.FC = () => {
             >
               <Link
                 to={"/login"}
-                className="block px-4 py-2 text-sm hover:bg-lightPurple text-black w-full text-left cursor-pointer"
+                className="px-3 py-2 text-sm hover:bg-lightGreen text-black w-full text-left cursor-pointer flex items-center gap-2"
                 onClick={handleLogout}
               >
-                Logg ut
+                <LogOut className="w-5 h-5 text-primary" /> Logout
               </Link>
             </div>
           )}
@@ -182,7 +182,7 @@ export const Navbar: React.FC = () => {
                 currentPath.startsWith("/se-series/") ||
                 currentPath === "/add-husmodell" ||
                 currentPath.startsWith("/edit-husmodell/")
-                  ? "bg-lightPurple text-primary"
+                  ? "bg-lightGreen text-primary"
                   : "text-black"
               }`}
             >
@@ -194,7 +194,7 @@ export const Navbar: React.FC = () => {
                 currentPath === "/Room-Configurator" ||
                 currentPath === "/Bolig-configurator" ||
                 currentPath.startsWith("/Room-Configurator/")
-                  ? "bg-lightPurple text-primary"
+                  ? "bg-lightGreen text-primary"
                   : "text-black"
               }`}
               onClick={() => {

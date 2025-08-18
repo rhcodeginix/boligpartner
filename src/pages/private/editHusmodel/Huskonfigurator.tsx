@@ -517,7 +517,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                         <div className="flex items-center gap-2 md:gap-3">
                           {isEditing ? (
                             <button
-                              className="bg-purple text-white px-2 md:px-3 py-2 rounded text-sm self-end"
+                              className="bg-primary text-white px-2 md:px-3 py-2 rounded text-sm self-end"
                               disabled={updatingIndex === index}
                               onClick={async (e) => {
                                 setUpdatingIndex(index);
@@ -589,7 +589,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                             </button>
                           ) : (
                             <Pencil
-                              className="w-5 h-5 text-purple cursor-pointer"
+                              className="w-5 h-5 text-primary cursor-pointer"
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -630,7 +630,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                       </div>
                       <Button
                         text="Konfigurer plan"
-                        className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2`}
+                        className={`border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2`}
                         type="button"
                         onClick={() => {
                           if (item?.rooms) {
@@ -658,7 +658,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
               <img src={Ic_upload_blue_img} alt="upload" />
               <div className="flex items-center justify-center flex-col gap-3">
                 <div className="flex items-center gap-2 lg:gap-3">
-                  <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-purple rounded-[40px] h-[36px] py-2 px-3 md:px-4 text-sm lg:text-base">
+                  <span className="text-primary font-medium whitespace-nowrap flex items-center justify-center border-2 border-primary rounded-[40px] h-[36px] py-2 px-3 md:px-4 text-sm lg:text-base">
                     Bla gjennom
                   </span>
                   <p className="text-gray text-xs lg:text-sm text-center truncate w-full">
@@ -689,14 +689,14 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
       >
         <Button
           text="Lukk og lagre"
-          className="border border-lightPurple bg-lightPurple text-purple text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
+          className="border border-lightGreen bg-lightGreen text-primary text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 flex items-center gap-2"
           type="button"
           onClick={() => navigate("/Husmodell")}
         />
         {!IsPlaceOrder && (
           <Button
             text="Overfør til oppmelding"
-            className={`border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 ${
+            className={`border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-10 py-2 ${
               isDisable ? "cursor-not-allowed opacity-50" : ""
             }`}
             type="button"
@@ -763,7 +763,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
                 <div onClick={() => handleDeleteFloor(confirmDeleteIndex)}>
                   <Button
                     text="Bekreft"
-                    className="border border-purple bg-purple text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
+                    className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   />
                 </div>
               </div>
@@ -808,7 +808,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
               />
               <Button
                 text="Opprett"
-                className="bg-purple text-white"
+                className="bg-primary text-white"
                 onClick={async () => {
                   setShowConfiguratorModal(false);
                   setIsPlacingOrder(true);
@@ -869,11 +869,11 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           style={{ zIndex: 99999 }}
         >
           <div className="flex flex-col items-center gap-4 bg-white p-3 rounded-lg">
-            <span className="text-purple text-base font-medium">
+            <span className="text-primary text-base font-medium">
               Overfører til Aktive tiltak...
             </span>
             <div className="w-48 h-1 overflow-hidden rounded-lg">
-              <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
+              <div className="w-full h-full bg-primary animate-[progress_1.5s_linear_infinite] rounded-lg" />
             </div>
           </div>
         </div>
@@ -885,11 +885,11 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
           style={{ zIndex: 99999 }}
         >
           <div className="flex flex-col items-center gap-4 bg-white p-3 rounded-lg">
-            <span className="text-purple text-base font-medium">
+            <span className="text-primary text-base font-medium">
               Opplasting...
             </span>
             <div className="w-48 h-1 overflow-hidden rounded-lg">
-              <div className="w-full h-full bg-purple animate-[progress_1.5s_linear_infinite] rounded-lg" />
+              <div className="w-full h-full bg-primary animate-[progress_1.5s_linear_infinite] rounded-lg" />
             </div>
           </div>
         </div>
