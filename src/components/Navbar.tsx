@@ -159,7 +159,7 @@ export const Navbar: React.FC = () => {
         style={{
           transition: "transform 1s, box-shadow 1s",
           transform: isDrawerOpen ? "translateX(0)" : "translateX(-100%)",
-          background: isDrawerOpen ? "rgba(0, 0, 0, 0.6)" : "",
+          ...(isDrawerOpen ? { background: "rgba(0, 0, 0, 0.6)" } : {}),
           zIndex: 999999,
         }}
         className={`fixed top-0 left-0 w-full h-screen z-50`}
