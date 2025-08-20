@@ -201,16 +201,23 @@ export const Login = () => {
           console.log(tokenResponse);
 
           const token = tokenResponse.accessToken;
-          console.log("Access Token:", token);
+          // console.log("Access Token:", token);
 
-          // Example API call using token
-          // const res = await fetch("https://your-api.com/endpoint", {
-          //   headers: {
-          //     Authorization: `Bearer ${token}`,
-          //   },
-          // });
-          // const data = await res.json();
-          // console.log("API response:", data);
+          const response = await fetch(
+            "https://prix6wkqezgybojdc4j5yecxk40tncyy.lambda-url.eu-north-1.on.aws/",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                token: token,
+              }),
+            }
+          );
+
+          const data = await response.json();
+          console.log("Lambda response:", data);
         }
       } catch (error) {
         // If silent token acquisition fails, initiate redirect
