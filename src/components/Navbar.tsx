@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Ic_logo from "../assets/images/Ic_logo.svg";
+import Ic_logo from "../assets/images/Ic_logo.png";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import Ic_chevron_up from "../assets/images/Ic_chevron_up.svg";
@@ -83,7 +83,7 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center gap-2">
           <Menu onClick={toggleDrawer} className="md:hidden text-primary" />
           <Link to={"/"}>
-            <img src={Ic_logo} alt="logo" className="w-[200px] lg:w-auto" />
+            <img src={Ic_logo} alt="logo" className="w-[196px] lg:w-auto" />
           </Link>
         </div>
         <div className="hidden md:flex items-center gap-1">
@@ -167,7 +167,7 @@ export const Navbar: React.FC = () => {
         <div className="bg-white h-full px-4 sm:px-5 md:px-8 lg:px-10 big:px-[120px] w-[85%]">
           <div className="flex items-center justify-between py-4 mb-4">
             <div className="gap-[12px] flex items-center">
-              <img src={Ic_logo} alt="logo" className="w-[200px] lg:w-auto" />
+              <img src={Ic_logo} alt="logo" className="w-[196px] lg:w-auto" />
             </div>
             <button onClick={toggleDrawer} className="text-3xl">
               <X className="text-primary" />
