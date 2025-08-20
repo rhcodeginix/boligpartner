@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Ic_logo from "../assets/images/Ic_logo.png";
+import Ic_logo from "../assets/images/Ic_logo.svg";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import Ic_chevron_up from "../assets/images/Ic_chevron_up.svg";
