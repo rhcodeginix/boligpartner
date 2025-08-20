@@ -32,6 +32,7 @@ export const MicrosoftCallBack = () => {
               ...loginRequest,
               account: accounts[0],
             });
+          console.log(tokenResponse);
 
           const token = tokenResponse.accessToken;
           console.log("Access Token:", token);
