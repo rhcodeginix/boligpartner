@@ -203,21 +203,21 @@ export const Login = () => {
           const token = tokenResponse.accessToken;
           console.log("Access Token:", token);
 
-          // const response = await fetch(
-          //   "https://prix6wkqezgybojdc4j5yecxk40tncyy.lambda-url.eu-north-1.on.aws/",
-          //   {
-          //     method: "POST",
-          //     headers: {
-          //       "Content-Type": "application/json",
-          //     },
-          //     body: JSON.stringify({
-          //       token: token,
-          //     }),
-          //   }
-          // );
+          const response = await fetch(
+            "https://prix6wkqezgybojdc4j5yecxk40tncyy.lambda-url.eu-north-1.on.aws/",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                token: token,
+              }),
+            }
+          );
 
-          // const data = await response.json();
-          // console.log("Lambda response:", data);
+          const data = await response.json();
+          console.log("Lambda response:", data);
         }
       } catch (error) {
         // If silent token acquisition fails, initiate redirect
