@@ -25,7 +25,11 @@ import { useEffect, useState } from "react";
 import Modal from "../../../components/common/modal";
 import { Landmark, Home, X } from "lucide-react";
 import { useMsal } from "@azure/msal-react";
-import { AuthenticationResult, InteractionRequiredAuthError, RedirectRequest } from "@azure/msal-browser";
+import {
+  AuthenticationResult,
+  InteractionRequiredAuthError,
+  RedirectRequest,
+} from "@azure/msal-browser";
 import { Spinner } from "../../../components/Spinner";
 
 const loginRequest: RedirectRequest = {
@@ -181,12 +185,11 @@ export const Login = () => {
   useEffect(() => {
     const handleRedirect = async () => {
       try {
-        // Handle login redirect result
-        const response = await instance.handleRedirectPromise();
+        // const response = await instance.handleRedirectPromise();
 
-        if (response?.account) {
-          console.log("Login success", response.account);
-        }
+        // if (response?.account) {
+        //   console.log("Login success", response.account);
+        // }
 
         // If user account exists, get the token silently
         if (accounts.length > 0) {
