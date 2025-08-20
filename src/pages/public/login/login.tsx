@@ -182,15 +182,61 @@ export const Login = () => {
 
   const [loading, setLoading] = useState(true);
 
+  // useEffect(() => {
+  //   const handleRedirect = async () => {
+  //     try {
+  //       // const response = await instance.handleRedirectPromise();
+
+  //       // if (response?.account) {
+  //       //   console.log("Login success", response.account);
+  //       // }
+
+  //       // If user account exists, get the token silently
+  //       if (accounts.length > 0) {
+  //         const tokenResponse: AuthenticationResult =
+  //           await instance.acquireTokenSilent({
+  //             ...loginRequest,
+  //             account: accounts[0],
+  //           });
+  //         console.log(tokenResponse);
+
+  //         const token = tokenResponse.accessToken;
+  //         console.log("Access Token:", token);
+
+  //         const response = await fetch(
+  //           "https://prix6wkqezgybojdc4j5yecxk40tncyy.lambda-url.eu-north-1.on.aws/",
+  //           {
+  //             method: "POST",
+  //             headers: {
+  //               "Content-Type": "application/json",
+  //             },
+  //             body: JSON.stringify({
+  //               token: token,
+  //             }),
+  //           }
+  //         );
+
+  //         const data = await response.json();
+  //         console.log("Lambda response:", data);
+  //       }
+  //     } catch (error) {
+  //       // If silent token acquisition fails, initiate redirect
+  //       if (error instanceof InteractionRequiredAuthError) {
+  //         instance.acquireTokenRedirect(loginRequest);
+  //       } else {
+  //         console.error("MSAL Redirect Error:", error);
+  //       }
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   handleRedirect();
+  // }, [accounts, instance]);
+
   useEffect(() => {
     const handleRedirect = async () => {
       try {
-        // const response = await instance.handleRedirectPromise();
-
-        // if (response?.account) {
-        //   console.log("Login success", response.account);
-        // }
-
         // If user account exists, get the token silently
         if (accounts.length > 0) {
           const tokenResponse: AuthenticationResult =
@@ -198,7 +244,6 @@ export const Login = () => {
               ...loginRequest,
               account: accounts[0],
             });
-          console.log(tokenResponse);
 
           const token = tokenResponse.accessToken;
           console.log("Access Token:", token);
@@ -209,18 +254,21 @@ export const Login = () => {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
+                // ✅ safer to send token in Authorization header
+                Authorization: `Bearer ${token}`,
               },
-              body: JSON.stringify({
-                token: token,
-              }),
+              body: JSON.stringify({ token }), // you can keep this if Lambda expects it in body
             }
           );
+
+          if (!response.ok) {
+            throw new Error(`Lambda returned ${response.status}`);
+          }
 
           const data = await response.json();
           console.log("Lambda response:", data);
         }
       } catch (error) {
-        // If silent token acquisition fails, initiate redirect
         if (error instanceof InteractionRequiredAuthError) {
           instance.acquireTokenRedirect(loginRequest);
         } else {
