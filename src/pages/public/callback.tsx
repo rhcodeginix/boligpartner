@@ -24,15 +24,12 @@ export const MicrosoftCallBack = () => {
 
     const handleAuthentication = async () => {
       try {
-        console.log("Handling authentication...", {
-          inProgress,
-          accountsLength: accounts.length,
-        });
+        console.log("Handling authentication...", { inProgress, accountsLength: accounts.length });
 
         // If user account exists after redirect, get the token silently
         if (accounts.length > 0) {
           console.log("Account found:", accounts[0]);
-
+          
           try {
             const tokenResponse: AuthenticationResult =
               await instance.acquireTokenSilent({
@@ -45,16 +42,17 @@ export const MicrosoftCallBack = () => {
             console.log("Access Token:", token);
 
             // Store the token for API calls
-            localStorage.setItem("access_token", token);
-            localStorage.setItem("user_info", JSON.stringify(accounts[0]));
-
+            localStorage.setItem('access_token', token);
+            localStorage.setItem('user_info', JSON.stringify(accounts[0]));
+            
             // Auto-redirect to dashboard after successful login
             setTimeout(() => {
-              window.location.href = "/dashboard"; // Change to your desired route
+              window.location.href = '/dashboard'; // Change to your desired route
             }, 1500);
+            
           } catch (tokenError) {
             console.error("Token acquisition error:", tokenError);
-
+            
             // If silent token acquisition fails, initiate redirect
             if (tokenError instanceof InteractionRequiredAuthError) {
               console.log("Interaction required, redirecting...");
@@ -67,6 +65,7 @@ export const MicrosoftCallBack = () => {
           // Optionally redirect to login if no accounts are found
           // instance.loginRedirect(loginRequest);
         }
+        
       } catch (error) {
         console.error("Authentication Error:", error);
       } finally {
@@ -85,7 +84,19 @@ export const MicrosoftCallBack = () => {
       console.log("MSAL still processing...", inProgress);
       // Keep loading state while MSAL is processing
       setLoading(true);
+      
+      // If we have accounts but still in handleRedirect, force completion after timeout
+      if (accounts.length > 0 && inProgress === "handleRedirect") {
+        console.log("Account found during redirect, will complete shortly...");
+        setTimeout(() => {
+          if (accounts.length > 0) {
+            console.log("Force completing authentication with existing account");
+            handleAuthentication();
+          }
+        }, 2000);
+      }
     }
+
   }, [accounts, instance, inProgress]);
 
   if (loading || inProgress !== "none") {
