@@ -99,12 +99,17 @@ export const RoomTable = () => {
     try {
       let q;
       if (IsAdmin) {
-        q = query(collection(db, "projects"), where("placeOrder", "==", true));
+        q = query(
+          collection(db, "projects"),
+          where("placeOrder", "==", true),
+          where("is_deleted", "==", false)
+        );
       } else {
         q = query(
           collection(db, "projects"),
           where("placeOrder", "==", true),
-          where("office_id", "==", office)
+          where("office_id", "==", office),
+          where("is_deleted", "==", false)
         );
       }
       const querySnapshot = await getDocs(q);
