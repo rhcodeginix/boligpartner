@@ -22,6 +22,7 @@ export const MicrosoftCallBack = () => {
 
     const handleRedirect = async () => {
       try {
+        console.log("after function--------------------", instance);
         // Check if MSAL instance is initialized
         if (!instance) {
           console.error("MSAL instance not available");
