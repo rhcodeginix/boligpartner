@@ -287,7 +287,7 @@ export const MicrosoftCallBack = () => {
       <div
         className="flex items-center justify-center h-screen relative w-full"
         style={{
-          backgroundImage: `${Img_main_bg}`,
+          backgroundImage: `url(${Img_main_bg})`,
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
