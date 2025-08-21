@@ -9,8 +9,10 @@ import { Spinner } from "../../components/Spinner";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Modal from "../../components/common/modal";
+import Ic_logo from "../../assets/images/Ic_logo.svg";
+import Img_main_bg from "../../assets/images/Img_main_bg.png";
 import { Home, Landmark, X } from "lucide-react";
 import Button from "../../components/common/button";
 
@@ -282,9 +284,30 @@ export const MicrosoftCallBack = () => {
 
   return (
     <>
-      <div className="flex items-center justify-center h-screen">
+      <div
+        className="flex items-center justify-center h-screen relative"
+        style={{
+          backgroundImage: `${Img_main_bg}`,
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+        }}
+      >
+        <div
+          className="px-4 md:px-6 py-4 flex items-center border-b border-gray2 justify-between fixed top-0 bg-white"
+          style={{
+            zIndex: 999,
+          }}
+          id="navbar"
+        >
+          <div className="flex items-center gap-2">
+            <Link to={"/"}>
+              <img src={Ic_logo} alt="logo" className="w-[200px] lg:w-auto" />
+            </Link>
+          </div>
+        </div>
         <div className="text-center">
-          <div className="text-green-600 text-lg font-semibold mb-2">
+          <div className="text-primary text-lg font-semibold mb-2">
             Authentication completed successfully!
           </div>
           {accounts.length > 0 ? (
@@ -317,7 +340,10 @@ export const MicrosoftCallBack = () => {
           <div className="p-4 md:p-6 bg-white rounded-lg shadow-lg relative h-auto max-h-[90vh] overflow-y-auto w-[355px] sm:w-[390px]">
             <X
               className="text-primary absolute top-2.5 right-2.5 w-5 h-5 cursor-pointer"
-              onClick={() => setModalOpen(false)}
+              onClick={() => {
+                setModalOpen(false);
+                navigate("/login");
+              }}
             />
             <h2 className="text-lg font-semibold mb-4">
               Velg type tjeneste du vil bruke

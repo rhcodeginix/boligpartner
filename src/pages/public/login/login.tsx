@@ -77,7 +77,6 @@ export const Login = () => {
     resolver: zodResolver(formSchema),
   });
 
-  // Helper functions for navigation
   const loginBolig = (email: string) => {
     localStorage.setItem("Iplot_admin_bolig", email);
     toast.success("Logg inn", { position: "top-right" });
@@ -87,11 +86,12 @@ export const Login = () => {
   const loginLead = (email: string) => {
     localStorage.setItem("Iplot_admin", email);
     toast.success("Logg inn", { position: "top-right" });
-    const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(email)}`;
+    const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(
+      email
+    )}`;
     window.location.href = url;
   };
 
-  // Handle user authentication and routing based on permissions
   const handleUserAuth = async (email: string, type?: string) => {
     try {
       const adminDocRef = doc(db, "admin", email);
@@ -104,15 +104,12 @@ export const Login = () => {
 
       const adminData = adminSnap.data() as AdminData;
 
-      // Handle Bankansvarlig role
       if (adminData?.role === "Bankansvarlig") {
         loginBolig(email);
         return;
       }
 
-      // Handle Agent role
       if (adminData?.role === "Agent") {
-        // Check supplier restriction
         if (adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71") {
           toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
             position: "top-right",
@@ -120,7 +117,6 @@ export const Login = () => {
           return;
         }
 
-        // Handle dual permissions (both bank and boligkonfigurator)
         if (adminData?.is_bank && adminData?.is_boligkonfigurator) {
           if (!type) {
             setModalOpen(true);
@@ -132,12 +128,11 @@ export const Login = () => {
           } else if (type === "lead") {
             loginLead(email);
           }
-          
+
           setSelectedType("");
           return;
         }
 
-        // Handle single permissions
         if (adminData?.is_boligkonfigurator) {
           loginBolig(email);
           return;
@@ -148,22 +143,21 @@ export const Login = () => {
           return;
         }
 
-        // Default fallback for Agent
         loginBolig(email);
         return;
       }
 
-      // Any other roles not allowed
       toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
         position: "top-right",
       });
     } catch (error) {
       console.error("Error during authentication:", error);
-      toast.error("En feil oppstod under innlogging.", { position: "top-right" });
+      toast.error("En feil oppstod under innlogging.", {
+        position: "top-right",
+      });
     }
   };
 
-  // Handle form submission for email/password login
   const onSubmit = async (data: z.infer<typeof formSchema>, type: string) => {
     try {
       setIsLoading(true);
@@ -175,23 +169,22 @@ export const Login = () => {
         return;
       }
 
-      // Hash the password and update it (you might want to verify existing password first)
       if (data.password) {
         const hashedPassword = bcrypt.hashSync(data.password, 10);
         await updateDoc(adminDocRef, { password: hashedPassword });
       }
 
-      // Handle user authentication and routing
       await handleUserAuth(data.email, type);
     } catch (error) {
       console.error("Error during sign-in", error);
-      toast.error("En feil oppstod under innlogging.", { position: "top-right" });
+      toast.error("En feil oppstod under innlogging.", {
+        position: "top-right",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handle main form submission
   const handleMainSubmit = async (data: any) => {
     try {
       const adminDocRef = doc(db, "admin", data.email);
@@ -204,7 +197,6 @@ export const Login = () => {
 
       const adminData = adminSnap.data() as AdminData;
 
-      // Quick routing for specific roles
       if (adminData?.role === "Bankansvarlig") {
         await onSubmit(data, "boligpartner");
         return;
@@ -245,7 +237,6 @@ export const Login = () => {
     }
   };
 
-  // Handle Microsoft login
   const handleMicrosoftLogin = async () => {
     try {
       setIsLoading(true);
@@ -257,7 +248,6 @@ export const Login = () => {
     }
   };
 
-  // Handle modal form submission
   const handleModalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedType) {
@@ -284,7 +274,7 @@ export const Login = () => {
             <div className="flex justify-center mb-10">
               <img src={Ic_logo} alt="logo" />
             </div>
-            
+
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(handleMainSubmit)}
@@ -325,7 +315,7 @@ export const Login = () => {
                       )}
                     />
                   </div>
-                  
+
                   <div>
                     <FormField
                       control={form.control}
@@ -361,7 +351,7 @@ export const Login = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="flex justify-end w-full gap-5 items-center p-4">
                   <div onClick={() => !isLoading && form.reset()}>
                     <Button
@@ -377,11 +367,11 @@ export const Login = () => {
                 </div>
               </form>
             </Form>
-            
+
             <div
               onClick={handleMicrosoftLogin}
               className={`text-black border border-[#DCDFEA] rounded-[8px] py-[10px] px-4 mt-4 md:mt-6 flex gap-2 justify-center items-center cursor-pointer text-sm md:text-base ${
-                isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
               style={{
                 boxShadow: "0px 1px 2px 0px #1018280D",
@@ -393,7 +383,7 @@ export const Login = () => {
           </div>
         </div>
       </div>
-      
+
       {modalOpen && (
         <Modal onClose={handleModalOpen} isOpen={true} outSideClick={true}>
           <div className="p-4 md:p-6 bg-white rounded-lg shadow-lg relative h-auto max-h-[90vh] overflow-y-auto w-[355px] sm:w-[390px]">
