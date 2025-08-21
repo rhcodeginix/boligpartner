@@ -3,7 +3,7 @@ import { Toaster } from "react-hot-toast";
 import { RouterProvider } from "react-router-dom";
 import { routes } from "./routes";
 import "./App.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { msalConfig } from "./lib/msalConfig";
 import { MsalProvider } from "@azure/msal-react";
@@ -20,20 +20,42 @@ const queryClient = new QueryClient({
 });
 
 export const App = () => {
-  const params = new URLSearchParams(window.location.search);
-  const email = params.get("email");
-
-  if (email) {
-    localStorage.setItem("Iplot_admin_bolig", email);
-
-    params.delete("email");
-    const newUrl =
-      window.location.pathname +
-      (params.toString() ? `?${params.toString()}` : "");
-    window.history.replaceState({}, "", newUrl);
-  }
+  const [msalInitialized, setMsalInitialized] = useState(false);
 
   useEffect(() => {
+    const initializeMsal = async () => {
+      try {
+        // Initialize MSAL first
+        await msalInstance.initialize();
+        console.log('MSAL initialized successfully');
+        setMsalInitialized(true);
+      } catch (error) {
+        console.error('MSAL initialization failed:', error);
+        setMsalInitialized(true); // Set to true anyway to prevent infinite loading
+      }
+    };
+
+    initializeMsal();
+  }, []);
+
+  useEffect(() => {
+    // Handle email parameter logic
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get("email");
+
+    if (email) {
+      localStorage.setItem("Iplot_admin_bolig", email);
+
+      params.delete("email");
+      const newUrl =
+        window.location.pathname +
+        (params.toString() ? `?${params.toString()}` : "");
+      window.history.replaceState({}, "", newUrl);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Tab handling logic
     const handleTab = (e: any) => {
       if (e.key === "Tab") {
         e.preventDefault();
@@ -58,6 +80,16 @@ export const App = () => {
     document.addEventListener("keydown", handleTab);
     return () => document.removeEventListener("keydown", handleTab);
   }, []);
+
+  // Show loading until MSAL is initialized
+  if (!msalInitialized) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div>Initializing authentication...</div>
+      </div>
+    );
+  }
+
   return (
     <MsalProvider instance={msalInstance}>
       <QueryClientProvider client={queryClient}>

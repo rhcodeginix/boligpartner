@@ -18,47 +18,73 @@ export const MicrosoftCallBack = () => {
   useEffect(() => {
     const handleRedirect = async () => {
       try {
+        // Check if MSAL instance is initialized
+        if (!instance) {
+          console.error("MSAL instance not available");
+          setLoading(false);
+          return;
+        }
+
         // Handle login redirect result
         const response = await instance.handleRedirectPromise();
 
         if (response?.account) {
           console.log("Login success", response.account);
+          
+          // Store user info or redirect as needed
+          // Example: navigate to dashboard
+          // window.location.href = '/dashboard';
         }
 
         // If user account exists, get the token silently
         if (accounts.length > 0) {
-          const tokenResponse: AuthenticationResult =
-            await instance.acquireTokenSilent({
-              ...loginRequest,
-              account: accounts[0],
-            });
-          console.log(tokenResponse);
+          try {
+            const tokenResponse: AuthenticationResult =
+              await instance.acquireTokenSilent({
+                ...loginRequest,
+                account: accounts[0],
+              });
+            console.log("Token acquired silently:", tokenResponse);
 
-          const token = tokenResponse.accessToken;
-          console.log("Access Token:", token);
+            const token = tokenResponse.accessToken;
+            console.log("Access Token:", token);
 
-          // Example API call using token
-          // const res = await fetch("https://your-api.com/endpoint", {
-          //   headers: {
-          //     Authorization: `Bearer ${token}`,
-          //   },
-          // });
-          // const data = await res.json();
-          // console.log("API response:", data);
+            // Example API call using token
+            // const res = await fetch("https://your-api.com/endpoint", {
+            //   headers: {
+            //     Authorization: `Bearer ${token}`,
+            //   },
+            // });
+            // const data = await res.json();
+            // console.log("API response:", data);
+            
+          } catch (tokenError) {
+            // If silent token acquisition fails, initiate redirect
+            if (tokenError instanceof InteractionRequiredAuthError) {
+              console.log("Interaction required, redirecting...");
+              instance.acquireTokenRedirect(loginRequest);
+              return; // Don't set loading to false as we're redirecting
+            } else {
+              console.error("Token acquisition error:", tokenError);
+            }
+          }
+        } else {
+          // No accounts found, might need to login
+          console.log("No accounts found");
         }
       } catch (error) {
-        // If silent token acquisition fails, initiate redirect
-        if (error instanceof InteractionRequiredAuthError) {
-          instance.acquireTokenRedirect(loginRequest);
-        } else {
-          console.error("MSAL Redirect Error:", error);
-        }
+        console.error("MSAL Redirect Error:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    handleRedirect();
+    // Add a small delay to ensure MSAL is fully ready
+    const timer = setTimeout(() => {
+      handleRedirect();
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, [accounts, instance]);
 
   if (loading) {
@@ -69,5 +95,9 @@ export const MicrosoftCallBack = () => {
     );
   }
 
-  return null;
+  return (
+    <div className="flex items-center justify-center h-screen">
+      <div>Authentication completed. Redirecting...</div>
+    </div>
+  );
 };
