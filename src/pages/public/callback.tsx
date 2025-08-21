@@ -21,8 +21,6 @@ export const MicrosoftCallBack = () => {
     console.log("useeffect--------------------");
 
     const handleRedirect = async () => {
-      console.log("after function--------------------", instance);
-
       try {
         // Check if MSAL instance is initialized
         if (!instance) {
@@ -30,6 +28,7 @@ export const MicrosoftCallBack = () => {
           setLoading(false);
           return;
         }
+        console.log("instance-------------------", instance);
 
         // Handle login redirect result
         const response = await instance.handleRedirectPromise();
