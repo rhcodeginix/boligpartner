@@ -180,7 +180,7 @@ export const Login = () => {
     instance.loginRedirect(loginRequest);
   };
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // useEffect(() => {
   //   const handleRedirect = async () => {
