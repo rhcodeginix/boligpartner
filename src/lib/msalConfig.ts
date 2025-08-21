@@ -6,11 +6,11 @@ export const msalConfig: Configuration = {
     authority: `https://login.microsoftonline.com/${process.env.REACT_APP_MICROSOFT_TENANT_ID}`,
     redirectUri: `${window.location.origin}/auth/callback`,
     postLogoutRedirectUri: window.location.origin,
-    navigateToLoginRequestUrl: false, // Set to false to avoid redirect loops
+    navigateToLoginRequestUrl: false,
   },
   cache: {
-    cacheLocation: "sessionStorage", // This configures where your cache will be stored
-    storeAuthStateInCookie: false, // Set this to true if you are having issues on IE11 or Edge
+    cacheLocation: "sessionStorage",
+    storeAuthStateInCookie: false,
   },
   system: {
     loggerOptions: {
@@ -20,16 +20,16 @@ export const msalConfig: Configuration = {
         }
         switch (level) {
           case LogLevel.Error:
-            console.error(message);
+            // console.error(message);
             return;
           case LogLevel.Info:
-            console.info(message);
+            // console.info(message);
             return;
           case LogLevel.Verbose:
-            console.debug(message);
+            // console.debug(message);
             return;
           case LogLevel.Warning:
-            console.warn(message);
+            // console.warn(message);
             return;
           default:
             return;
@@ -39,12 +39,10 @@ export const msalConfig: Configuration = {
   },
 };
 
-// Login request configuration
 export const loginRequest = {
   scopes: ["user.read"],
 };
 
-// Graph API request configuration
 export const graphConfig = {
   graphMeEndpoint: "https://graph.microsoft.com/v1.0/me",
 };
