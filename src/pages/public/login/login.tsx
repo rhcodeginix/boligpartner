@@ -182,128 +182,128 @@ export const Login = () => {
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const handleRedirect = async () => {
-      try {
-        if (accounts.length === 0) return;
+  // useEffect(() => {
+  //   const handleRedirect = async () => {
+  //     try {
+  //       if (accounts.length === 0) return;
 
-        const tokenResponse: AuthenticationResult =
-          await instance.acquireTokenSilent({
-            ...loginRequest,
-            account: accounts[0],
-          });
+  //       const tokenResponse: AuthenticationResult =
+  //         await instance.acquireTokenSilent({
+  //           ...loginRequest,
+  //           account: accounts[0],
+  //         });
 
-        const token = tokenResponse.accessToken;
-        if (!token) return;
+  //       const token = tokenResponse.accessToken;
+  //       if (!token) return;
 
-        const response = await fetch(
-          "https://12k1qcbcda.execute-api.eu-north-1.amazonaws.com/prod/user",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ token }),
-          }
-        );
+  //       const response = await fetch(
+  //         "https://12k1qcbcda.execute-api.eu-north-1.amazonaws.com/prod/user",
+  //         {
+  //           method: "POST",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //           body: JSON.stringify({ token }),
+  //         }
+  //       );
 
-        if (!response.ok) throw new Error(`Returned ${response.status}`);
+  //       if (!response.ok) throw new Error(`Returned ${response.status}`);
 
-        const data = await response.json();
-        const userEmail = data?.user?.userPrincipalName;
+  //       const data = await response.json();
+  //       const userEmail = data?.user?.userPrincipalName;
 
-        // Fetch admin data from Firestore
-        const adminDocRef = doc(db, "admin", userEmail);
-        const adminSnap = await getDoc(adminDocRef);
+  //       // Fetch admin data from Firestore
+  //       const adminDocRef = doc(db, "admin", userEmail);
+  //       const adminSnap = await getDoc(adminDocRef);
 
-        if (!adminSnap.exists()) {
-          toast.error("Brukeren finnes ikke", { position: "top-right" });
-          return;
-        }
+  //       if (!adminSnap.exists()) {
+  //         toast.error("Brukeren finnes ikke", { position: "top-right" });
+  //         return;
+  //       }
 
-        const adminData = adminSnap.data();
+  //       const adminData = adminSnap.data();
 
-        // ---- Helper functions ----
-        const loginBolig = () => {
-          localStorage.setItem("Iplot_admin_bolig", userEmail);
-          toast.success("Logg inn", { position: "top-right" });
-          navigate("/Husmodell");
-        };
+  //       // ---- Helper functions ----
+  //       const loginBolig = () => {
+  //         localStorage.setItem("Iplot_admin_bolig", userEmail);
+  //         toast.success("Logg inn", { position: "top-right" });
+  //         navigate("/Husmodell");
+  //       };
 
-        const loginLead = () => {
-          localStorage.setItem("Iplot_admin", userEmail);
-          toast.success("Logg inn", { position: "top-right" });
-          const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(
-            userEmail
-          )}`;
-          window.location.href = url;
-        };
+  //       const loginLead = () => {
+  //         localStorage.setItem("Iplot_admin", userEmail);
+  //         toast.success("Logg inn", { position: "top-right" });
+  //         const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(
+  //           userEmail
+  //         )}`;
+  //         window.location.href = url;
+  //       };
 
-        // ---- Role-based access ----
-        if (adminData?.role === "Bankansvarlig") {
-          loginBolig();
-          return;
-        }
+  //       // ---- Role-based access ----
+  //       if (adminData?.role === "Bankansvarlig") {
+  //         loginBolig();
+  //         return;
+  //       }
 
-        if (adminData?.role === "Agent") {
-          // Only allow specific supplier
-          if (adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71") {
-            toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
-              position: "top-right",
-            });
-            return;
-          }
+  //       if (adminData?.role === "Agent") {
+  //         // Only allow specific supplier
+  //         if (adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71") {
+  //           toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
+  //             position: "top-right",
+  //           });
+  //           return;
+  //         }
 
-          // Handle Agent permissions
-          if (adminData?.is_bank && adminData?.is_boligkonfigurator) {
-            if (!selectedType) {
-              setModalOpen(true);
-              return;
-            }
+  //         // Handle Agent permissions
+  //         if (adminData?.is_bank && adminData?.is_boligkonfigurator) {
+  //           if (!selectedType) {
+  //             setModalOpen(true);
+  //             return;
+  //           }
 
-            if (selectedType === "boligpartner") {
-              loginBolig();
-            } else if (selectedType === "lead") {
-              loginLead();
-            }
+  //           if (selectedType === "boligpartner") {
+  //             loginBolig();
+  //           } else if (selectedType === "lead") {
+  //             loginLead();
+  //           }
 
-            setSelectedType("");
-            return;
-          }
+  //           setSelectedType("");
+  //           return;
+  //         }
 
-          if (adminData?.is_boligkonfigurator) {
-            loginBolig();
-            return;
-          }
+  //         if (adminData?.is_boligkonfigurator) {
+  //           loginBolig();
+  //           return;
+  //         }
 
-          if (adminData?.is_bank) {
-            loginLead();
-            return;
-          }
+  //         if (adminData?.is_bank) {
+  //           loginLead();
+  //           return;
+  //         }
 
-          // Default fallback → boligpartner
-          loginBolig();
-          return;
-        }
+  //         // Default fallback → boligpartner
+  //         loginBolig();
+  //         return;
+  //       }
 
-        // Any other roles
-        toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
-          position: "top-right",
-        });
-      } catch (error) {
-        if (error instanceof InteractionRequiredAuthError) {
-          instance.acquireTokenRedirect(loginRequest);
-        } else {
-          console.error("MSAL Redirect Error:", error);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
+  //       // Any other roles
+  //       toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
+  //         position: "top-right",
+  //       });
+  //     } catch (error) {
+  //       if (error instanceof InteractionRequiredAuthError) {
+  //         instance.acquireTokenRedirect(loginRequest);
+  //       } else {
+  //         console.error("MSAL Redirect Error:", error);
+  //       }
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    handleRedirect();
-  }, [accounts, instance, navigate]);
+  //   handleRedirect();
+  // }, [accounts, instance, navigate]);
 
   if (loading) {
     return (
