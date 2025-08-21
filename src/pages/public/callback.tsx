@@ -1,4 +1,3 @@
-// Updated MicrosoftCallBack.tsx
 import { useEffect, useState } from "react";
 import { useMsal } from "@azure/msal-react";
 import {
@@ -47,7 +46,6 @@ export const MicrosoftCallBack = () => {
     }
   };
 
-  // Helper functions for navigation
   const loginBolig = (email: string) => {
     localStorage.setItem("Iplot_admin_bolig", email);
     toast.success("Logg inn", { position: "top-right" });
@@ -57,11 +55,12 @@ export const MicrosoftCallBack = () => {
   const loginLead = (email: string) => {
     localStorage.setItem("Iplot_admin", email);
     toast.success("Logg inn", { position: "top-right" });
-    const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(email)}`;
+    const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(
+      email
+    )}`;
     window.location.href = url;
   };
 
-  // Handle user authentication and routing based on permissions
   const handleUserAuth = async (email: string, type?: string) => {
     try {
       const adminDocRef = doc(db, "admin", email);
@@ -70,20 +69,18 @@ export const MicrosoftCallBack = () => {
       if (!adminSnap.exists()) {
         toast.error("Brukeren finnes ikke", { position: "top-right" });
         setError("User not found in database");
+        navigate("/login");
         return;
       }
 
       const adminData = adminSnap.data() as AdminData;
 
-      // Handle Bankansvarlig role
       if (adminData?.role === "Bankansvarlig") {
         loginBolig(email);
         return;
       }
 
-      // Handle Agent role
       if (adminData?.role === "Agent") {
-        // Check supplier restriction
         if (adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71") {
           toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
             position: "top-right",
@@ -92,7 +89,6 @@ export const MicrosoftCallBack = () => {
           return;
         }
 
-        // Handle dual permissions (both bank and boligkonfigurator)
         if (adminData?.is_bank && adminData?.is_boligkonfigurator) {
           if (!type) {
             setUserEmail(email);
@@ -106,12 +102,11 @@ export const MicrosoftCallBack = () => {
           } else if (type === "lead") {
             loginLead(email);
           }
-          
+
           setSelectedType("");
           return;
         }
 
-        // Handle single permissions
         if (adminData?.is_boligkonfigurator) {
           loginBolig(email);
           return;
@@ -122,24 +117,23 @@ export const MicrosoftCallBack = () => {
           return;
         }
 
-        // Default fallback for Agent
         loginBolig(email);
         return;
       }
 
-      // Any other roles not allowed
       toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
         position: "top-right",
       });
       setError("User role not authorized");
     } catch (error) {
       console.error("Error during authentication:", error);
-      toast.error("En feil oppstod under innlogging.", { position: "top-right" });
+      toast.error("En feil oppstod under innlogging.", {
+        position: "top-right",
+      });
       setError("Authentication error occurred");
     }
   };
 
-  // Handle modal form submission
   const handleModalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedType) {
@@ -155,28 +149,25 @@ export const MicrosoftCallBack = () => {
   useEffect(() => {
     const handleAuthentication = async () => {
       try {
-        // Wait for MSAL to complete processing
         if (inProgress !== "none") {
-          console.log(`⏳ MSAL in progress: ${inProgress}`);
           return;
         }
 
         if (accounts.length === 0) {
-          console.log("⚠️ No accounts found after authentication");
-          setError("No authenticated account found. Please try logging in again.");
+          setError(
+            "No authenticated account found. Please try logging in again."
+          );
           setLoading(false);
           return;
         }
 
-        console.log("✅ Account found, acquiring token:", accounts[0]);
-
         try {
-          const tokenResponse: AuthenticationResult = await instance.acquireTokenSilent({
-            ...loginRequest,
-            account: accounts[0],
-          });
+          const tokenResponse: AuthenticationResult =
+            await instance.acquireTokenSilent({
+              ...loginRequest,
+              account: accounts[0],
+            });
 
-          console.log("🔑 Token acquired successfully");
           const token = tokenResponse.accessToken;
 
           if (!token) {
@@ -185,7 +176,6 @@ export const MicrosoftCallBack = () => {
             return;
           }
 
-          // Call your API to get user information
           const response = await fetch(
             "https://12k1qcbcda.execute-api.eu-north-1.amazonaws.com/prod/user",
             {
@@ -211,16 +201,11 @@ export const MicrosoftCallBack = () => {
             return;
           }
 
-          console.log("📧 User email retrieved:", email);
-
-          // Handle user authentication and routing
           await handleUserAuth(email);
-
         } catch (tokenError) {
           console.error("❌ Token acquisition error:", tokenError);
 
           if (tokenError instanceof InteractionRequiredAuthError) {
-            console.log("🔄 Interaction required, redirecting...");
             try {
               await instance.acquireTokenRedirect(loginRequest);
             } catch (redirectError) {
@@ -234,7 +219,6 @@ export const MicrosoftCallBack = () => {
           setError("Failed to acquire authentication token");
           setLoading(false);
         }
-
       } catch (error) {
         console.error("💥 Authentication Error:", error);
         setError("An unexpected error occurred during authentication");
@@ -242,13 +226,11 @@ export const MicrosoftCallBack = () => {
       }
     };
 
-    // Only run authentication when MSAL has finished processing
     if (inProgress === "none") {
       handleAuthentication();
     }
   }, [instance, accounts, inProgress]);
 
-  // Handle loading states
   if (loading || inProgress !== "none") {
     return (
       <div className="h-screen w-full flex items-center justify-center">
@@ -265,7 +247,6 @@ export const MicrosoftCallBack = () => {
     );
   }
 
-  // Handle error states
   if (error) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -299,7 +280,6 @@ export const MicrosoftCallBack = () => {
     );
   }
 
-  // Success state (should not normally be reached as user gets redirected)
   return (
     <>
       <div className="flex items-center justify-center h-screen">
@@ -309,14 +289,18 @@ export const MicrosoftCallBack = () => {
           </div>
           {accounts.length > 0 ? (
             <div className="mt-4">
-              <p className="text-gray-700">Welcome, {accounts[0].name || accounts[0].username}!</p>
+              <p className="text-gray-700">
+                Welcome, {accounts[0].name || accounts[0].username}!
+              </p>
               <p className="text-sm text-gray-500 mt-2">
                 Redirecting to dashboard...
               </p>
             </div>
           ) : (
             <div className="mt-4">
-              <p className="text-red-600">No user account found. Please try logging in again.</p>
+              <p className="text-red-600">
+                No user account found. Please try logging in again.
+              </p>
               <button
                 onClick={() => navigate("/")}
                 className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
