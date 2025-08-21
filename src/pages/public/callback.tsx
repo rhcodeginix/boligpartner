@@ -95,6 +95,7 @@ export const MicrosoftCallBack = () => {
         accountsLength: accounts.length,
         loading,
       });
+      handleAuthentication();
     }
   }, [accounts, instance, inProgress, loading]);
 
