@@ -249,15 +249,14 @@ export const Login = () => {
           console.log("Access Token:", token);
 
           const response = await fetch(
-            "https://prix6wkqezgybojdc4j5yecxk40tncyy.lambda-url.eu-north-1.on.aws/",
+            "https://12k1qcbcda.execute-api.eu-north-1.amazonaws.com/prod/user",
             {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                // ✅ safer to send token in Authorization header
                 Authorization: `Bearer ${token}`,
               },
-              body: JSON.stringify({ token }), // you can keep this if Lambda expects it in body
+              body: JSON.stringify({ token }),
             }
           );
 
