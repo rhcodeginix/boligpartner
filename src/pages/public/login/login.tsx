@@ -185,7 +185,6 @@ export const Login = () => {
   useEffect(() => {
     const handleRedirect = async () => {
       try {
-        // If user account exists, get the token silently
         if (accounts.length > 0) {
           const tokenResponse: AuthenticationResult =
             await instance.acquireTokenSilent({
@@ -194,128 +193,126 @@ export const Login = () => {
             });
 
           const token = tokenResponse.accessToken;
-          console.log("Access Token:", token);
+          // console.log("Access Token:", token);
 
-          const response = await fetch(
-            "https://12k1qcbcda.execute-api.eu-north-1.amazonaws.com/prod/user",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({ token }),
+          if (token) {
+            const response = await fetch(
+              "https://12k1qcbcda.execute-api.eu-north-1.amazonaws.com/prod/user",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ token }),
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error(`Returned ${response.status}`);
             }
-          );
 
-          if (!response.ok) {
-            throw new Error(`Returned ${response.status}`);
-          }
+            const data = await response.json();
+            const userEmail = data?.user?.userPrincipalName;
 
-          const data = await response.json();
-          // console.log("Response:", data);
-          const userEmail = data?.user?.userPrincipalName;
+            const adminDocRef = doc(db, "admin", userEmail);
+            const adminSnap = await getDoc(adminDocRef);
 
-          const adminDocRef = doc(db, "admin", userEmail);
-          const adminSnap = await getDoc(adminDocRef);
+            if (!adminSnap.exists()) {
+              toast.error("Brukeren finnes ikke", { position: "top-right" });
+            } else {
+              const adminData = adminSnap.data();
+              if (adminData && adminData?.role === "Bankansvarlig") {
+                setSelectedType("boligpartner");
+                toast.success("Logg inn", {
+                  position: "top-right",
+                });
+                localStorage.setItem("Iplot_admin_bolig", userEmail);
 
-          if (!adminSnap.exists()) {
-            toast.error("Brukeren finnes ikke", { position: "top-right" });
-          } else {
-            const adminData = adminSnap.data();
-            if (adminData && adminData?.role === "Bankansvarlig") {
-              setSelectedType("boligpartner");
-              // form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
-              toast.success("Logg inn", {
-                position: "top-right",
-              });
-              localStorage.setItem("Iplot_admin_bolig", userEmail);
+                navigate("/Husmodell");
 
-              navigate("/Husmodell");
+                setSelectedType("");
+                return;
+              } else if (adminData && adminData?.role === "Agent") {
+                if (
+                  adminData?.supplier === "9f523136-72ca-4bde-88e5-de175bc2fc71"
+                ) {
+                  if (adminData?.is_bank && adminData?.is_boligkonfigurator) {
+                    const isValid = await form.trigger();
 
-              setSelectedType("");
-              return;
-            } else if (adminData && adminData?.role === "Agent") {
-              if (
-                adminData?.supplier === "9f523136-72ca-4bde-88e5-de175bc2fc71"
-              ) {
-                if (adminData?.is_bank && adminData?.is_boligkonfigurator) {
-                  const isValid = await form.trigger();
+                    if (!isValid) return;
 
-                  if (!isValid) return;
+                    if (!selectedType) {
+                      setModalOpen(true);
+                    } else {
+                      // const formData = form.getValues();
+                      // onSubmit(formData, selectedType);
 
-                  if (!selectedType) {
-                    setModalOpen(true);
-                  } else {
-                    // const formData = form.getValues();
-                    // onSubmit(formData, selectedType);
+                      toast.success("Logg inn", {
+                        position: "top-right",
+                      });
+                      if (selectedType === "boligpartner") {
+                        localStorage.setItem("Iplot_admin_bolig", userEmail);
+                      } else if (selectedType === "lead") {
+                        localStorage.setItem("Iplot_admin", userEmail);
+                      }
 
+                      if (selectedType === "boligpartner") {
+                        navigate("/Husmodell");
+                      } else if (selectedType === "lead") {
+                        const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(
+                          userEmail
+                        )}`;
+                        window.location.href = url;
+                      }
+                      setSelectedType("");
+                    }
+                  } else if (adminData?.is_boligkonfigurator) {
+                    setSelectedType("boligpartner");
                     toast.success("Logg inn", {
                       position: "top-right",
                     });
-                    if (selectedType === "boligpartner") {
-                      localStorage.setItem("Iplot_admin_bolig", userEmail);
-                    } else if (selectedType === "lead") {
-                      localStorage.setItem("Iplot_admin", userEmail);
-                    }
+                    localStorage.setItem("Iplot_admin_bolig", userEmail);
 
-                    if (selectedType === "boligpartner") {
-                      navigate("/Husmodell");
-                    } else if (selectedType === "lead") {
-                      const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(
-                        userEmail
-                      )}`;
-                      window.location.href = url;
-                    }
+                    navigate("/Husmodell");
+
                     setSelectedType("");
+                  } else if (adminData?.is_bank) {
+                    setSelectedType("lead");
+                    toast.success("Logg inn", {
+                      position: "top-right",
+                    });
+
+                    localStorage.setItem("Iplot_admin", userEmail);
+
+                    const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(
+                      userEmail
+                    )}`;
+                    window.location.href = url;
+
+                    setSelectedType("");
+                  } else {
+                    setSelectedType("boligpartner");
+                    toast.success("Logg inn", {
+                      position: "top-right",
+                    });
+                    localStorage.setItem("Iplot_admin_bolig", userEmail);
+
+                    navigate("/Husmodell");
                   }
-                } else if (adminData?.is_boligkonfigurator) {
-                  setSelectedType("boligpartner");
-                  // form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
-                  toast.success("Logg inn", {
-                    position: "top-right",
-                  });
-                  localStorage.setItem("Iplot_admin_bolig", userEmail);
-
-                  navigate("/Husmodell");
-
-                  setSelectedType("");
-                } else if (adminData?.is_bank) {
-                  setSelectedType("lead");
-                  // form.handleSubmit((data) => onSubmit(data, "lead"))();
-                  toast.success("Logg inn", {
-                    position: "top-right",
-                  });
-
-                  localStorage.setItem("Iplot_admin", userEmail);
-
-                  const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(
-                    userEmail
-                  )}`;
-                  window.location.href = url;
-
-                  setSelectedType("");
                 } else {
-                  setSelectedType("boligpartner");
-                  toast.success("Logg inn", {
+                  toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
                     position: "top-right",
                   });
-                  localStorage.setItem("Iplot_admin_bolig", userEmail);
-
-                  navigate("/Husmodell");
                 }
+
+                return;
               } else {
                 toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
                   position: "top-right",
                 });
+                return;
               }
-
-              return;
-            } else {
-              toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
-                position: "top-right",
-              });
-              return;
             }
           }
         }
