@@ -253,11 +253,11 @@ export const MicrosoftCallBack = () => {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center max-w-md mx-4">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h2 className="text-lg font-semibold text-red-800 mb-2">
+          <div className="border border-red rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-red mb-2">
               Authentication Error
             </h2>
-            <p className="text-red-600 mb-4">{error}</p>
+            <p className="text-red mb-4">{error}</p>
             <div className="space-y-2">
               <button
                 onClick={() => {
