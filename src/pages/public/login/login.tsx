@@ -182,58 +182,6 @@ export const Login = () => {
 
   const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const handleRedirect = async () => {
-  //     try {
-  //       // const response = await instance.handleRedirectPromise();
-
-  //       // if (response?.account) {
-  //       //   console.log("Login success", response.account);
-  //       // }
-
-  //       // If user account exists, get the token silently
-  //       if (accounts.length > 0) {
-  //         const tokenResponse: AuthenticationResult =
-  //           await instance.acquireTokenSilent({
-  //             ...loginRequest,
-  //             account: accounts[0],
-  //           });
-  //         console.log(tokenResponse);
-
-  //         const token = tokenResponse.accessToken;
-  //         console.log("Access Token:", token);
-
-  //         const response = await fetch(
-  //           "https://prix6wkqezgybojdc4j5yecxk40tncyy.lambda-url.eu-north-1.on.aws/",
-  //           {
-  //             method: "POST",
-  //             headers: {
-  //               "Content-Type": "application/json",
-  //             },
-  //             body: JSON.stringify({
-  //               token: token,
-  //             }),
-  //           }
-  //         );
-
-  //         const data = await response.json();
-  //         console.log("Lambda response:", data);
-  //       }
-  //     } catch (error) {
-  //       // If silent token acquisition fails, initiate redirect
-  //       if (error instanceof InteractionRequiredAuthError) {
-  //         instance.acquireTokenRedirect(loginRequest);
-  //       } else {
-  //         console.error("MSAL Redirect Error:", error);
-  //       }
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   handleRedirect();
-  // }, [accounts, instance]);
-
   useEffect(() => {
     const handleRedirect = async () => {
       try {
@@ -261,11 +209,62 @@ export const Login = () => {
           );
 
           if (!response.ok) {
-            throw new Error(`Lambda returned ${response.status}`);
+            throw new Error(`Returned ${response.status}`);
           }
 
           const data = await response.json();
-          console.log("Lambda response:", data);
+          console.log("Response:", data);
+
+          const adminDocRef = doc(db, "admin", data?.user?.userPrincipalName);
+          const adminSnap = await getDoc(adminDocRef);
+
+          if (!adminSnap.exists()) {
+            toast.error("Brukeren finnes ikke", { position: "top-right" });
+          } else {
+            const adminData = adminSnap.data();
+            if (adminData && adminData?.role === "Bankansvarlig") {
+              setSelectedType("boligpartner");
+              form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
+              return;
+            } else if (adminData && adminData?.role === "Agent") {
+              if (
+                adminData?.supplier === "9f523136-72ca-4bde-88e5-de175bc2fc71"
+              ) {
+                if (adminData?.is_bank && adminData?.is_boligkonfigurator) {
+                  const isValid = await form.trigger();
+
+                  if (!isValid) return;
+
+                  if (!selectedType) {
+                    setModalOpen(true);
+                  } else {
+                    const formData = form.getValues();
+                    onSubmit(formData, selectedType);
+                  }
+                } else if (adminData?.is_boligkonfigurator) {
+                  setSelectedType("boligpartner");
+                  form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
+                } else if (adminData?.is_bank) {
+                  setSelectedType("lead");
+                  form.handleSubmit((data) => onSubmit(data, "lead"))();
+                } else {
+                  setSelectedType("boligpartner");
+                  form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
+                }
+              } else {
+                toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
+                  position: "top-right",
+                });
+              }
+
+              return;
+            } else {
+              toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
+                position: "top-right",
+              });
+              return;
+            }
+          }
         }
       } catch (error) {
         if (error instanceof InteractionRequiredAuthError) {
