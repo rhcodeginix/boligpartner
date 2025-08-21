@@ -1187,11 +1187,7 @@ export const OppsummeringData: React.FC<{
                                             });
                                           }
                                         );
-                                      }
-                                      // if (
-                                      //   (kat?.comment ?? "").trim() !== ""
-                                      // )
-                                      else {
+                                      } else {
                                         allSelectedProducts.push({
                                           Produktnavn: "",
                                           categoryName: kat?.navn ?? "",
