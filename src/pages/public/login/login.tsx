@@ -21,16 +21,16 @@ import Button from "../../../components/common/button";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import bcrypt from "bcryptjs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Modal from "../../../components/common/modal";
 import { Landmark, Home, X } from "lucide-react";
 import { useMsal } from "@azure/msal-react";
 import {
-  AuthenticationResult,
-  InteractionRequiredAuthError,
+  // AuthenticationResult,
+  // InteractionRequiredAuthError,
   RedirectRequest,
 } from "@azure/msal-browser";
-import { Spinner } from "../../../components/Spinner";
+// import { Spinner } from "../../../components/Spinner";
 
 const loginRequest: RedirectRequest = {
   scopes: ["user.read"],
@@ -174,13 +174,13 @@ export const Login = () => {
     }
   };
 
-  const { instance, accounts } = useMsal();
+  const { instance } = useMsal();
 
   const handleLogin = () => {
     instance.loginRedirect(loginRequest);
   };
 
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   // useEffect(() => {
   //   const handleRedirect = async () => {
@@ -305,59 +305,13 @@ export const Login = () => {
   //   handleRedirect();
   // }, [accounts, instance, navigate]);
 
-  // useEffect(() => {
-  //   const handleRedirect = async () => {
-  //     try {
-  //       // Handle login redirect result
-  //       const response = await instance.handleRedirectPromise();
-
-  //       if (response?.account) {
-  //         console.log("Login success", response.account);
-  //       }
-
-  //       // If user account exists, get the token silently
-  //       if (accounts.length > 0) {
-  //         const tokenResponse: AuthenticationResult =
-  //           await instance.acquireTokenSilent({
-  //             ...loginRequest,
-  //             account: accounts[0],
-  //           });
-  //         console.log(tokenResponse);
-
-  //         const token = tokenResponse.accessToken;
-  //         console.log("Access Token:", token);
-
-  //         // Example API call using token
-  //         // const res = await fetch("https://your-api.com/endpoint", {
-  //         //   headers: {
-  //         //     Authorization: `Bearer ${token}`,
-  //         //   },
-  //         // });
-  //         // const data = await res.json();
-  //         // console.log("API response:", data);
-  //       }
-  //     } catch (error) {
-  //       // If silent token acquisition fails, initiate redirect
-  //       if (error instanceof InteractionRequiredAuthError) {
-  //         instance.acquireTokenRedirect(loginRequest);
-  //       } else {
-  //         console.error("MSAL Redirect Error:", error);
-  //       }
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   handleRedirect();
-  // }, [accounts, instance]);
-
-  if (loading) {
-    return (
-      <div className="h-screen w-full">
-        <Spinner />
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="h-screen w-full">
+  //       <Spinner />
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
