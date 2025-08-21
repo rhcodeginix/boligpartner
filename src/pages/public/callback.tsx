@@ -15,8 +15,14 @@ export const MicrosoftCallBack = () => {
   const { instance, accounts } = useMsal();
   const [loading, setLoading] = useState(true);
 
+  console.log("page call--------------------");
+
   useEffect(() => {
+    console.log("useeffect--------------------");
+
     const handleRedirect = async () => {
+      console.log("after function--------------------", instance);
+
       try {
         // Check if MSAL instance is initialized
         if (!instance) {
@@ -27,10 +33,11 @@ export const MicrosoftCallBack = () => {
 
         // Handle login redirect result
         const response = await instance.handleRedirectPromise();
+        console.log(response);
 
         if (response?.account) {
           console.log("Login success", response.account);
-          
+
           // Store user info or redirect as needed
           // Example: navigate to dashboard
           // window.location.href = '/dashboard';
@@ -57,7 +64,6 @@ export const MicrosoftCallBack = () => {
             // });
             // const data = await res.json();
             // console.log("API response:", data);
-            
           } catch (tokenError) {
             // If silent token acquisition fails, initiate redirect
             if (tokenError instanceof InteractionRequiredAuthError) {
@@ -81,6 +87,8 @@ export const MicrosoftCallBack = () => {
 
     // Add a small delay to ensure MSAL is fully ready
     const timer = setTimeout(() => {
+      console.log("before function--------------------");
+
       handleRedirect();
     }, 100);
 
