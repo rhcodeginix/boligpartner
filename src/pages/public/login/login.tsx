@@ -213,9 +213,10 @@ export const Login = () => {
           }
 
           const data = await response.json();
-          console.log("Response:", data);
+          // console.log("Response:", data);
+          const userEmail = data?.user?.userPrincipalName;
 
-          const adminDocRef = doc(db, "admin", data?.user?.userPrincipalName);
+          const adminDocRef = doc(db, "admin", userEmail);
           const adminSnap = await getDoc(adminDocRef);
 
           if (!adminSnap.exists()) {
@@ -224,7 +225,15 @@ export const Login = () => {
             const adminData = adminSnap.data();
             if (adminData && adminData?.role === "Bankansvarlig") {
               setSelectedType("boligpartner");
-              form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
+              // form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
+              toast.success("Logg inn", {
+                position: "top-right",
+              });
+              localStorage.setItem("Iplot_admin_bolig", userEmail);
+
+              navigate("/Husmodell");
+
+              setSelectedType("");
               return;
             } else if (adminData && adminData?.role === "Agent") {
               if (
@@ -238,18 +247,62 @@ export const Login = () => {
                   if (!selectedType) {
                     setModalOpen(true);
                   } else {
-                    const formData = form.getValues();
-                    onSubmit(formData, selectedType);
+                    // const formData = form.getValues();
+                    // onSubmit(formData, selectedType);
+
+                    toast.success("Logg inn", {
+                      position: "top-right",
+                    });
+                    if (selectedType === "boligpartner") {
+                      localStorage.setItem("Iplot_admin_bolig", userEmail);
+                    } else if (selectedType === "lead") {
+                      localStorage.setItem("Iplot_admin", userEmail);
+                    }
+
+                    if (selectedType === "boligpartner") {
+                      navigate("/Husmodell");
+                    } else if (selectedType === "lead") {
+                      const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(
+                        userEmail
+                      )}`;
+                      window.location.href = url;
+                    }
+                    setSelectedType("");
                   }
                 } else if (adminData?.is_boligkonfigurator) {
                   setSelectedType("boligpartner");
-                  form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
+                  // form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
+                  toast.success("Logg inn", {
+                    position: "top-right",
+                  });
+                  localStorage.setItem("Iplot_admin_bolig", userEmail);
+
+                  navigate("/Husmodell");
+
+                  setSelectedType("");
                 } else if (adminData?.is_bank) {
                   setSelectedType("lead");
-                  form.handleSubmit((data) => onSubmit(data, "lead"))();
+                  // form.handleSubmit((data) => onSubmit(data, "lead"))();
+                  toast.success("Logg inn", {
+                    position: "top-right",
+                  });
+
+                  localStorage.setItem("Iplot_admin", userEmail);
+
+                  const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(
+                    userEmail
+                  )}`;
+                  window.location.href = url;
+
+                  setSelectedType("");
                 } else {
                   setSelectedType("boligpartner");
-                  form.handleSubmit((data) => onSubmit(data, "boligpartner"))();
+                  toast.success("Logg inn", {
+                    position: "top-right",
+                  });
+                  localStorage.setItem("Iplot_admin_bolig", userEmail);
+
+                  navigate("/Husmodell");
                 }
               } else {
                 toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
