@@ -40,7 +40,7 @@ export const MicrosoftCallBack = () => {
     const handleAuthentication = async () => {
       try {
         if (accounts.length > 0) {
-          console.log("✅ Account found, acquiring token:", accounts[0]);
+          // console.log("✅ Account found, acquiring token:", accounts[0]);
 
           try {
             const tokenResponse: AuthenticationResult =
@@ -48,8 +48,9 @@ export const MicrosoftCallBack = () => {
                 ...loginRequest,
                 account: accounts[0],
               });
-            console.log("🔑 Access Token:", tokenResponse.accessToken);
+            console.log("🔑 Access Token:", tokenResponse);
             const token = tokenResponse.accessToken;
+            console.log(token);
 
             if (!token) return;
 
