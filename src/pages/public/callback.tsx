@@ -44,11 +44,14 @@ export const MicrosoftCallBack = () => {
             const token = tokenResponse.accessToken;
             console.log("Access Token:", token);
 
-            // Here you can store the token or make API calls
-            // Example: localStorage.setItem('access_token', token);
+            // Store the token for API calls
+            localStorage.setItem("access_token", token);
+            localStorage.setItem("user_info", JSON.stringify(accounts[0]));
 
-            // Redirect to your main app or dashboard
-            // window.location.href = '/dashboard';
+            // Auto-redirect to dashboard after successful login
+            setTimeout(() => {
+              window.location.href = "/dashboard"; // Change to your desired route
+            }, 1500);
           } catch (tokenError) {
             console.error("Token acquisition error:", tokenError);
 
