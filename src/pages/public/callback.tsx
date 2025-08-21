@@ -285,7 +285,7 @@ export const MicrosoftCallBack = () => {
   return (
     <>
       <div
-        className="flex items-center justify-center h-screen relative"
+        className="flex items-center justify-center h-screen relative w-full"
         style={{
           backgroundImage: `${Img_main_bg}`,
           backgroundPosition: "center",
@@ -294,7 +294,7 @@ export const MicrosoftCallBack = () => {
         }}
       >
         <div
-          className="px-4 md:px-6 py-4 flex items-center border-b border-gray2 justify-between fixed top-0 bg-white"
+          className="px-4 md:px-6 py-4 flex items-center border-b border-gray2 justify-between w-full fixed top-0 bg-white"
           style={{
             zIndex: 999,
           }}
