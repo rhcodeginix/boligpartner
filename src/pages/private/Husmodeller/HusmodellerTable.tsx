@@ -28,7 +28,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Ic_search from "../../../assets/images/Ic_search.svg";
 import {
   collection,
-  deleteDoc,
+  updateDoc,
   doc,
   getDoc,
   getDocs,
@@ -84,7 +84,17 @@ export const HusmodellerTable = () => {
 
   const handleDelete = async (entryId: string) => {
     try {
-      await deleteDoc(doc(db, "projects", entryId));
+      const formatDate = (date: Date) =>
+        date.toLocaleString("sv-SE", { timeZone: "UTC" }).replace(",", "");
+      const now = new Date();
+
+      // await deleteDoc(doc(db, "projects", entryId));
+      const ref = doc(db, "projects", entryId);
+      await updateDoc(ref, {
+        is_deleted: true,
+        deleted_at: formatDate(now),
+      });
+
       fetchHusmodellsData();
       setShowConfirm(false);
     } catch (error) {
@@ -149,9 +159,13 @@ export const HusmodellerTable = () => {
 
       let q;
       if (IsAdmin) {
-        q = query(collection(db, "projects"));
+        q = query(collection(db, "projects"), where("is_deleted", "==", false));
       } else {
-        q = query(collection(db, "projects"), where("office_id", "==", office));
+        q = query(
+          collection(db, "projects"),
+          where("office_id", "==", office),
+          where("is_deleted", "==", false)
+        );
       }
       const querySnapshot = await getDocs(q);
 

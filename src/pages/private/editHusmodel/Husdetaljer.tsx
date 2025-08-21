@@ -178,6 +178,7 @@ export const Husdetaljer: React.FC<{
           category_id: id,
           self_id: uniqueId,
           office_id: officeId,
+          is_deleted: false,
         });
 
         toast.success("Added successfully", { position: "top-right" });

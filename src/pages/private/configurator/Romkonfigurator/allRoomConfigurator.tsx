@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   collection,
-  deleteDoc,
   doc,
   getDocs,
   query,
@@ -117,7 +116,15 @@ export const AllRoomkonfigurator: React.FC = () => {
     setIsSubmitLoading(true);
 
     try {
-      await deleteDoc(doc(db, "projects", entryId));
+      const formatDate = (date: Date) =>
+        date.toLocaleString("sv-SE", { timeZone: "UTC" }).replace(",", "");
+      const now = new Date();
+
+      const ref = doc(db, "projects", entryId);
+      await updateDoc(ref, {
+        is_deleted: true,
+        deleted_at: formatDate(now),
+      });
       fetchRoomConfiguratorData();
       setId(null);
       setSelectedId(null);
