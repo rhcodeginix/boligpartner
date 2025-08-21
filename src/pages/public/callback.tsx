@@ -48,19 +48,6 @@ export const MicrosoftCallBack = () => {
             console.log("🎉 Token acquired successfully!");
             console.log("Full token response:", tokenResponse);
             console.log("🔑 Access Token:", tokenResponse.accessToken);
-
-            // Store the token for API calls
-            localStorage.setItem("access_token", tokenResponse.accessToken);
-            localStorage.setItem("user_info", JSON.stringify(accounts[0]));
-
-            console.log("💾 Token and user info stored in localStorage");
-
-            // Auto-redirect to dashboard after successful login
-            console.log("🚀 Redirecting to dashboard in 2 seconds...");
-            setTimeout(() => {
-              // window.location.href = '/dashboard'; // Uncomment when ready
-              console.log("Would redirect to dashboard now");
-            }, 2000);
           } catch (tokenError) {
             console.error("❌ Token acquisition error:", tokenError);
 
