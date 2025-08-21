@@ -14,51 +14,25 @@ const loginRequest: RedirectRequest = {
 export const MicrosoftCallBack = () => {
   const { instance, accounts, inProgress } = useMsal();
   const [loading, setLoading] = useState(true);
-  const [initialized, setInitialized] = useState(false);
 
   console.log("page call--------------------");
   console.log("inProgress:", inProgress);
+  console.log("accounts:", accounts);
 
   useEffect(() => {
     console.log("useeffect--------------------");
 
-    const initializeAndHandle = async () => {
+    const handleAuthentication = async () => {
       try {
-        console.log("after function--------------------", instance);
+        console.log("Handling authentication...", {
+          inProgress,
+          accountsLength: accounts.length,
+        });
 
-        // Check if MSAL instance is available
-        if (!instance) {
-          console.error("MSAL instance not available");
-          setLoading(false);
-          return;
-        }
-
-        console.log("instance-------------------", instance);
-
-        // Wait for MSAL to be fully initialized
-        if (!initialized) {
-          console.log("Waiting for MSAL initialization...");
-          // Check if instance has the initialize method and call it
-          if (typeof instance.initialize === "function") {
-            await instance.initialize();
-          }
-          setInitialized(true);
-        }
-
-        // Handle login redirect result
-        console.log("Handling redirect promise...");
-        const response = await instance.handleRedirectPromise();
-        console.log("Redirect response:", response);
-
-        if (response?.account) {
-          console.log("Login success", response.account);
-          // Store user info or redirect as needed
-          // Example: navigate to dashboard
-          // window.location.href = '/dashboard';
-        }
-
-        // If user account exists, get the token silently
+        // If user account exists after redirect, get the token silently
         if (accounts.length > 0) {
+          console.log("Account found:", accounts[0]);
+
           try {
             const tokenResponse: AuthenticationResult =
               await instance.acquireTokenSilent({
@@ -69,62 +43,79 @@ export const MicrosoftCallBack = () => {
 
             const token = tokenResponse.accessToken;
             console.log("Access Token:", token);
+
+            // Here you can store the token or make API calls
+            // Example: localStorage.setItem('access_token', token);
+
+            // Redirect to your main app or dashboard
+            // window.location.href = '/dashboard';
           } catch (tokenError) {
+            console.error("Token acquisition error:", tokenError);
+
             // If silent token acquisition fails, initiate redirect
             if (tokenError instanceof InteractionRequiredAuthError) {
               console.log("Interaction required, redirecting...");
               instance.acquireTokenRedirect(loginRequest);
               return; // Don't set loading to false as we're redirecting
-            } else {
-              console.error("Token acquisition error:", tokenError);
             }
           }
         } else {
-          // No accounts found, might need to login
-          console.log("No accounts found");
+          console.log("No accounts found - user may need to login");
+          // Optionally redirect to login if no accounts are found
+          // instance.loginRedirect(loginRequest);
         }
-      } catch (error: any) {
-        console.error("MSAL Error:", error);
-        // Check if it's the specific initialization error
-        if (
-          error.message &&
-          error.message.includes("uninitialized_public_client_application")
-        ) {
-          console.log("Retrying after initialization...");
-          // Retry after a longer delay
-          setTimeout(() => {
-            initializeAndHandle();
-          }, 1000);
-          return;
-        }
+      } catch (error) {
+        console.error("Authentication Error:", error);
       } finally {
-        setLoading(false);
+        // Only set loading to false when MSAL is not in progress
+        if (inProgress === "none") {
+          setLoading(false);
+        }
       }
     };
 
-    // Only proceed if not currently in progress and instance is available
-    if (instance && inProgress === "none") {
-      console.log("before function--------------------");
-      initializeAndHandle();
+    // Wait for MSAL to finish processing (startup, handleRedirect, etc.)
+    if (inProgress === "none") {
+      console.log("MSAL processing complete, handling authentication...");
+      handleAuthentication();
     } else {
-      console.log("Waiting for MSAL to be ready...", {
-        instance: !!instance,
-        inProgress,
-      });
+      console.log("MSAL still processing...", inProgress);
+      // Keep loading state while MSAL is processing
+      setLoading(true);
     }
-  }, [accounts, instance, inProgress, initialized]);
+  }, [accounts, instance, inProgress]);
 
-  if (loading) {
+  if (loading || inProgress !== "none") {
     return (
-      <div className="h-screen w-full">
-        <Spinner />
+      <div className="h-screen w-full flex items-center justify-center">
+        <div className="text-center">
+          <Spinner />
+          <p className="mt-4">
+            {inProgress === "startup" && "Initializing authentication..."}
+            {inProgress === "handleRedirect" && "Processing login..."}
+            {inProgress === "acquireToken" && "Getting access token..."}
+            {inProgress === "none" && "Completing authentication..."}
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <div>Authentication completed. Redirecting...</div>
+      <div className="text-center">
+        <div>Authentication completed successfully!</div>
+        {accounts.length > 0 ? (
+          <div className="mt-4">
+            <p>Welcome, {accounts[0].name || accounts[0].username}!</p>
+            <p className="text-sm text-gray-600">Redirecting to dashboard...</p>
+          </div>
+        ) : (
+          <div className="mt-4">
+            <p>No user account found. Please try logging in again.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
