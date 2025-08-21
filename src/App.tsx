@@ -4,11 +4,21 @@ import { RouterProvider } from "react-router-dom";
 import { routes } from "./routes";
 import "./App.css";
 import { useEffect, useState } from "react";
-import { PublicClientApplication } from "@azure/msal-browser";
+import { PublicClientApplication, EventType, EventMessage, AuthenticationResult } from "@azure/msal-browser";
 import { msalConfig } from "./lib/msalConfig";
 import { MsalProvider } from "@azure/msal-react";
 
+// Initialize MSAL instance
 const msalInstance = new PublicClientApplication(msalConfig);
+
+// Set up event callbacks
+msalInstance.addEventCallback((event: EventMessage) => {
+  if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
+    const payload = event.payload as AuthenticationResult;
+    const account = payload.account;
+    msalInstance.setActiveAccount(account);
+  }
+});
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,6 +37,16 @@ export const App = () => {
       try {
         // Initialize MSAL first
         await msalInstance.initialize();
+        
+        // Handle redirect promise
+        const response = await msalInstance.handleRedirectPromise();
+        
+        if (response !== null) {
+          // Handle successful login
+          msalInstance.setActiveAccount(response.account);
+          console.log('MSAL redirect handled successfully', response);
+        }
+        
         console.log('MSAL initialized successfully');
         setMsalInitialized(true);
       } catch (error) {
@@ -39,13 +59,14 @@ export const App = () => {
   }, []);
 
   useEffect(() => {
-    // Handle email parameter logic
+    // Handle email parameter logic (for direct login links)
     const params = new URLSearchParams(window.location.search);
     const email = params.get("email");
 
     if (email) {
       localStorage.setItem("Iplot_admin_bolig", email);
 
+      // Clean up URL
       params.delete("email");
       const newUrl =
         window.location.pathname +
@@ -55,23 +76,26 @@ export const App = () => {
   }, []);
 
   useEffect(() => {
-    // Tab handling logic
-    const handleTab = (e: any) => {
+    // Enhanced tab handling logic with better accessibility
+    const handleTab = (e: KeyboardEvent) => {
       if (e.key === "Tab") {
         e.preventDefault();
 
-        const focusable = Array.from(
+        const focusableElements = Array.from(
           document.querySelectorAll(
-            'input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])'
+            'input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"]):not([disabled])'
           )
-        ).filter((el: any) => !el.disabled && el.offsetParent !== null);
+        ).filter((el: any) => {
+          return el.offsetParent !== null && !el.hasAttribute('aria-hidden');
+        });
 
-        const index = focusable.indexOf((document as any).activeElement);
-        const next = e.shiftKey ? index - 1 : index + 1;
+        const currentIndex = focusableElements.indexOf(document.activeElement as Element);
+        const nextIndex = e.shiftKey ? currentIndex - 1 : currentIndex + 1;
 
-        if (focusable.length > 0) {
-          const nextElement: any =
-            focusable[(next + focusable.length) % focusable.length];
+        if (focusableElements.length > 0) {
+          const nextElement = focusableElements[
+            (nextIndex + focusableElements.length) % focusableElements.length
+          ] as HTMLElement;
           nextElement.focus();
         }
       }
@@ -85,7 +109,10 @@ export const App = () => {
   if (!msalInitialized) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div>Initializing authentication...</div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <div>Initializing authentication...</div>
+        </div>
       </div>
     );
   }
@@ -98,6 +125,8 @@ export const App = () => {
             style: {
               zIndex: 999999999,
             },
+            duration: 4000,
+            position: 'top-right',
           }}
         />
         <RouterProvider router={routes} />

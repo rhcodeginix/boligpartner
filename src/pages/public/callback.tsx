@@ -1,3 +1,4 @@
+// Updated MicrosoftCallBack.tsx
 import { useEffect, useState } from "react";
 import { useMsal } from "@azure/msal-react";
 import {
@@ -18,17 +19,27 @@ const loginRequest: RedirectRequest = {
   scopes: ["user.read"],
 };
 
+interface AdminData {
+  role: string;
+  supplier?: string;
+  is_admin?: boolean;
+  is_bank?: boolean;
+  is_boligkonfigurator?: boolean;
+}
+
 export const MicrosoftCallBack = () => {
   const { instance, accounts, inProgress } = useMsal();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const [selectedType, setSelectedType] = useState<string>("");
-  const [error, setError] = useState<boolean>(false);
-  const [ModalOpen, setModalOpen] = useState(false);
+  const [modalError, setModalError] = useState<boolean>(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string>("");
 
   const handleModalOpen = () => {
-    if (ModalOpen) {
+    if (modalOpen) {
       setModalOpen(false);
       setSelectedType("");
     } else {
@@ -36,197 +47,288 @@ export const MicrosoftCallBack = () => {
     }
   };
 
+  // Helper functions for navigation
+  const loginBolig = (email: string) => {
+    localStorage.setItem("Iplot_admin_bolig", email);
+    toast.success("Logg inn", { position: "top-right" });
+    navigate("/Husmodell");
+  };
+
+  const loginLead = (email: string) => {
+    localStorage.setItem("Iplot_admin", email);
+    toast.success("Logg inn", { position: "top-right" });
+    const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(email)}`;
+    window.location.href = url;
+  };
+
+  // Handle user authentication and routing based on permissions
+  const handleUserAuth = async (email: string, type?: string) => {
+    try {
+      const adminDocRef = doc(db, "admin", email);
+      const adminSnap = await getDoc(adminDocRef);
+
+      if (!adminSnap.exists()) {
+        toast.error("Brukeren finnes ikke", { position: "top-right" });
+        setError("User not found in database");
+        return;
+      }
+
+      const adminData = adminSnap.data() as AdminData;
+
+      // Handle Bankansvarlig role
+      if (adminData?.role === "Bankansvarlig") {
+        loginBolig(email);
+        return;
+      }
+
+      // Handle Agent role
+      if (adminData?.role === "Agent") {
+        // Check supplier restriction
+        if (adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71") {
+          toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
+            position: "top-right",
+          });
+          setError("User not authorized for this supplier");
+          return;
+        }
+
+        // Handle dual permissions (both bank and boligkonfigurator)
+        if (adminData?.is_bank && adminData?.is_boligkonfigurator) {
+          if (!type) {
+            setUserEmail(email);
+            setModalOpen(true);
+            setLoading(false);
+            return;
+          }
+
+          if (type === "boligpartner") {
+            loginBolig(email);
+          } else if (type === "lead") {
+            loginLead(email);
+          }
+          
+          setSelectedType("");
+          return;
+        }
+
+        // Handle single permissions
+        if (adminData?.is_boligkonfigurator) {
+          loginBolig(email);
+          return;
+        }
+
+        if (adminData?.is_bank) {
+          loginLead(email);
+          return;
+        }
+
+        // Default fallback for Agent
+        loginBolig(email);
+        return;
+      }
+
+      // Any other roles not allowed
+      toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
+        position: "top-right",
+      });
+      setError("User role not authorized");
+    } catch (error) {
+      console.error("Error during authentication:", error);
+      toast.error("En feil oppstod under innlogging.", { position: "top-right" });
+      setError("Authentication error occurred");
+    }
+  };
+
+  // Handle modal form submission
+  const handleModalSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedType) {
+      setModalError(true);
+      return;
+    }
+
+    setLoading(true);
+    await handleUserAuth(userEmail, selectedType);
+    setModalOpen(false);
+  };
+
   useEffect(() => {
     const handleAuthentication = async () => {
       try {
-        if (accounts.length > 0) {
-          // console.log("✅ Account found, acquiring token:", accounts[0]);
-
-          try {
-            const tokenResponse: AuthenticationResult =
-              await instance.acquireTokenSilent({
-                ...loginRequest,
-                account: accounts[0],
-              });
-            console.log("🔑 Access Token:", tokenResponse);
-            const token = tokenResponse.accessToken;
-            console.log(token);
-
-            if (!token) return;
-
-            if (tokenResponse) {
-              const response = await fetch(
-                "https://12k1qcbcda.execute-api.eu-north-1.amazonaws.com/prod/user",
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                  },
-                  body: JSON.stringify({ token }),
-                }
-              );
-
-              if (!response.ok) throw new Error(`Returned ${response.status}`);
-
-              const data = await response.json();
-              const userEmail = data?.user?.userPrincipalName;
-
-              // Fetch admin data from Firestore
-              const adminDocRef = doc(db, "admin", userEmail);
-              const adminSnap = await getDoc(adminDocRef);
-
-              if (!adminSnap.exists()) {
-                toast.error("Brukeren finnes ikke", { position: "top-right" });
-                return;
-              }
-
-              const adminData = adminSnap.data();
-
-              // ---- Helper functions ----
-              const loginBolig = () => {
-                localStorage.setItem("Iplot_admin_bolig", userEmail);
-                toast.success("Logg inn", { position: "top-right" });
-                navigate("/Husmodell");
-              };
-
-              const loginLead = () => {
-                localStorage.setItem("Iplot_admin", userEmail);
-                toast.success("Logg inn", { position: "top-right" });
-                const url = `https://admin.mintomt.no/bank-leads?email=${encodeURIComponent(
-                  userEmail
-                )}`;
-                window.location.href = url;
-              };
-
-              // ---- Role-based access ----
-              if (adminData?.role === "Bankansvarlig") {
-                loginBolig();
-                return;
-              }
-
-              if (adminData?.role === "Agent") {
-                // Only allow specific supplier
-                if (
-                  adminData?.supplier !== "9f523136-72ca-4bde-88e5-de175bc2fc71"
-                ) {
-                  toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
-                    position: "top-right",
-                  });
-                  return;
-                }
-
-                // Handle Agent permissions
-                if (adminData?.is_bank && adminData?.is_boligkonfigurator) {
-                  if (!selectedType) {
-                    setModalOpen(true);
-                    return;
-                  }
-
-                  if (selectedType === "boligpartner") {
-                    loginBolig();
-                  } else if (selectedType === "lead") {
-                    loginLead();
-                  }
-
-                  setSelectedType("");
-                  return;
-                }
-
-                if (adminData?.is_boligkonfigurator) {
-                  loginBolig();
-                  return;
-                }
-
-                if (adminData?.is_bank) {
-                  loginLead();
-                  return;
-                }
-
-                // Default fallback → boligpartner
-                loginBolig();
-                return;
-              }
-
-              // Any other roles
-              toast.error("Vennligst logg inn som Bolig Partner-bruker.", {
-                position: "top-right",
-              });
-            }
-          } catch (tokenError) {
-            console.error("❌ Token acquisition error:", tokenError);
-
-            if (tokenError instanceof InteractionRequiredAuthError) {
-              console.log("🔄 Interaction required, redirecting...");
-              instance.acquireTokenRedirect(loginRequest);
-              return;
-            }
-          }
-        } else {
-          console.log("⚠️ No accounts found - user may need to login");
+        // Wait for MSAL to complete processing
+        if (inProgress !== "none") {
+          console.log(`⏳ MSAL in progress: ${inProgress}`);
+          return;
         }
+
+        if (accounts.length === 0) {
+          console.log("⚠️ No accounts found after authentication");
+          setError("No authenticated account found. Please try logging in again.");
+          setLoading(false);
+          return;
+        }
+
+        console.log("✅ Account found, acquiring token:", accounts[0]);
+
+        try {
+          const tokenResponse: AuthenticationResult = await instance.acquireTokenSilent({
+            ...loginRequest,
+            account: accounts[0],
+          });
+
+          console.log("🔑 Token acquired successfully");
+          const token = tokenResponse.accessToken;
+
+          if (!token) {
+            setError("Failed to acquire access token");
+            setLoading(false);
+            return;
+          }
+
+          // Call your API to get user information
+          const response = await fetch(
+            "https://12k1qcbcda.execute-api.eu-north-1.amazonaws.com/prod/user",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ token }),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`API returned ${response.status}`);
+          }
+
+          const data = await response.json();
+          const email = data?.user?.userPrincipalName;
+
+          if (!email) {
+            setError("Failed to get user email from Microsoft");
+            setLoading(false);
+            return;
+          }
+
+          console.log("📧 User email retrieved:", email);
+
+          // Handle user authentication and routing
+          await handleUserAuth(email);
+
+        } catch (tokenError) {
+          console.error("❌ Token acquisition error:", tokenError);
+
+          if (tokenError instanceof InteractionRequiredAuthError) {
+            console.log("🔄 Interaction required, redirecting...");
+            try {
+              await instance.acquireTokenRedirect(loginRequest);
+            } catch (redirectError) {
+              console.error("Redirect error:", redirectError);
+              setError("Failed to redirect for authentication");
+              setLoading(false);
+            }
+            return;
+          }
+
+          setError("Failed to acquire authentication token");
+          setLoading(false);
+        }
+
       } catch (error) {
         console.error("💥 Authentication Error:", error);
-      } finally {
-        console.log("✅ Setting loading to false");
+        setError("An unexpected error occurred during authentication");
         setLoading(false);
       }
     };
 
-    if (accounts.length > 0 && !loading) {
-      console.log("🚀 Account available, attempting token acquisition...");
+    // Only run authentication when MSAL has finished processing
+    if (inProgress === "none") {
       handleAuthentication();
-    } else if (inProgress === "none" && accounts.length === 0) {
-      console.log("⚠️ MSAL processing complete but no accounts found");
-      setLoading(false);
-    } else {
-      console.log("⏳ Waiting for accounts or MSAL to complete...", {
-        inProgress,
-        accountsLength: accounts.length,
-        loading,
-      });
-      if (accounts.length > 0) {
-        handleAuthentication();
-      }
     }
-  }, [accounts, instance, inProgress, loading]);
+  }, [instance, accounts, inProgress]);
 
+  // Handle loading states
   if (loading || inProgress !== "none") {
     return (
       <div className="h-screen w-full flex items-center justify-center">
         <div className="text-center">
           <Spinner />
-          <p className="mt-4">
+          <p className="mt-4 text-gray-600">
             {inProgress === "startup" && "Initializing authentication..."}
-            {inProgress === "handleRedirect" && "Processing login..."}
+            {inProgress === "handleRedirect" && "Processing Microsoft login..."}
             {inProgress === "acquireToken" && "Getting access token..."}
-            {inProgress === "none" && "Completing authentication..."}
+            {inProgress === "none" && loading && "Completing authentication..."}
           </p>
         </div>
       </div>
     );
   }
 
+  // Handle error states
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center max-w-md mx-4">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-red-800 mb-2">
+              Authentication Error
+            </h2>
+            <p className="text-red-600 mb-4">{error}</p>
+            <div className="space-y-2">
+              <button
+                onClick={() => {
+                  setError(null);
+                  setLoading(true);
+                  window.location.href = "/";
+                }}
+                className="w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              >
+                Try Again
+              </button>
+              <button
+                onClick={() => navigate("/")}
+                className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-colors"
+              >
+                Back to Login
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Success state (should not normally be reached as user gets redirected)
   return (
     <>
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
-          <div>Authentication completed successfully!</div>
+          <div className="text-green-600 text-lg font-semibold mb-2">
+            Authentication completed successfully!
+          </div>
           {accounts.length > 0 ? (
             <div className="mt-4">
-              <p>Welcome, {accounts[0].name || accounts[0].username}!</p>
-              <p className="text-sm text-gray-600">
+              <p className="text-gray-700">Welcome, {accounts[0].name || accounts[0].username}!</p>
+              <p className="text-sm text-gray-500 mt-2">
                 Redirecting to dashboard...
               </p>
             </div>
           ) : (
             <div className="mt-4">
-              <p>No user account found. Please try logging in again.</p>
+              <p className="text-red-600">No user account found. Please try logging in again.</p>
+              <button
+                onClick={() => navigate("/")}
+                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+              >
+                Back to Login
+              </button>
             </div>
           )}
         </div>
       </div>
-      {ModalOpen && (
+
+      {modalOpen && (
         <Modal onClose={handleModalOpen} isOpen={true} outSideClick={true}>
           <div className="p-4 md:p-6 bg-white rounded-lg shadow-lg relative h-auto max-h-[90vh] overflow-y-auto w-[355px] sm:w-[390px]">
             <X
@@ -237,18 +339,7 @@ export const MicrosoftCallBack = () => {
               Velg type tjeneste du vil bruke
             </h2>
 
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (!selectedType) {
-                  setError(true);
-                  return;
-                }
-
-                setModalOpen(false);
-              }}
-              className="relative"
-            >
+            <form onSubmit={handleModalSubmit} className="relative">
               <div className="flex flex-col gap-3 mb-6">
                 <div className="flex flex-wrap gap-2 lg:gap-4 items-center">
                   {[
@@ -283,7 +374,7 @@ export const MicrosoftCallBack = () => {
                       key={index}
                       onClick={() => {
                         setSelectedType(item.value);
-                        setError(false);
+                        setModalError(false);
                       }}
                       className={`flex items-center gap-2 border-2 rounded-lg py-2 px-3 cursor-pointer ${
                         selectedType === item.value
@@ -299,7 +390,7 @@ export const MicrosoftCallBack = () => {
                   ))}
                 </div>
 
-                {error && <p className="text-red text-sm">Påkrevd</p>}
+                {modalError && <p className="text-red text-sm">Påkrevd</p>}
               </div>
 
               <div className="flex justify-end gap-4">
@@ -309,7 +400,7 @@ export const MicrosoftCallBack = () => {
                   onClick={() => setModalOpen(false)}
                 />
                 <Button
-                  text="Neste"
+                  text={loading ? "Laster..." : "Neste"}
                   className="border border-primary bg-primary text-white text-sm rounded-[8px] h-[40px] font-medium relative px-4 py-[10px] flex items-center gap-2"
                   type="submit"
                 />
