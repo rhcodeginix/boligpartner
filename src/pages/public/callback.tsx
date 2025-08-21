@@ -251,7 +251,7 @@ export const MicrosoftCallBack = () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen w-full">
         <div className="text-center max-w-md mx-4">
           <div className="border border-red rounded-lg p-6">
             <h2 className="text-lg font-semibold text-red mb-2">
