@@ -150,7 +150,6 @@ export const Husdetaljer: React.FC<{
       const finalData = {
         ...data,
         id: uniqueId,
-        createdAt,
         updatedAt,
       };
 
