@@ -630,7 +630,7 @@ export const HusmodellerTable = () => {
 
                     await setDoc(docRef, {
                       ...houseData,
-                      createdAt: formatDate(new Date()),
+                      updatedAt: formatDate(new Date()),
                       name: newConfiguratorName.trim(),
                     });
 
@@ -1116,7 +1116,7 @@ export const HusmodellerTable = () => {
                     ...existingData,
                     placeOrder: true,
                     name: newConfiguratorName.trim(),
-                    createdAt: formatDate(new Date()),
+                    updatedAt: formatDate(new Date()),
                   };
 
                   await setDoc(docRef, { ...updatedKundeInfo });
