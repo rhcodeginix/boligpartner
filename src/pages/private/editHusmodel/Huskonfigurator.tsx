@@ -727,7 +727,7 @@ export const Huskonfigurator: React.FC<{ setActiveTab: any }> = ({
 
                 await setDoc(docRef, {
                   ...existingData,
-                  createdAt: formatDate(new Date()),
+                  updatedAt: formatDate(new Date()),
                   name: newConfiguratorName.trim(),
                 });
 

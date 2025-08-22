@@ -67,12 +67,12 @@ export const AllRoomkonfigurator: React.FC = () => {
           ...doc.data(),
         }))
         .sort((a: any, b: any) => {
-          const dateA = a.updatedAt?.toDate
-            ? a.updatedAt.toDate()
-            : new Date(a.updatedAt);
-          const dateB = b.updatedAt?.toDate
-            ? b.updatedAt.toDate()
-            : new Date(b.updatedAt);
+          const dateA = a.createdAt?.toDate
+            ? a.createdAt.toDate()
+            : new Date(a.createdAt);
+          const dateB = b.createdAt?.toDate
+            ? b.createdAt.toDate()
+            : new Date(b.createdAt);
           return dateB - dateA;
         });
 
@@ -270,7 +270,7 @@ export const AllRoomkonfigurator: React.FC = () => {
 
                                   await updateDoc(husmodellDocRef, {
                                     name: editedFloorName,
-                                    updatedAt: new Date().toISOString(),
+                                    createdAt: new Date().toISOString(),
                                   });
 
                                   toast.success("Navn oppdatert!", {
