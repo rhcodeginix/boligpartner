@@ -270,7 +270,7 @@ export const AllRoomkonfigurator: React.FC = () => {
 
                                   await updateDoc(husmodellDocRef, {
                                     name: editedFloorName,
-                                    createdAt: new Date().toISOString(),
+                                    updatedAt: new Date().toISOString(),
                                   });
 
                                   toast.success("Navn oppdatert!", {

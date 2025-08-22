@@ -681,7 +681,7 @@ export const RoomTable = () => {
                       );
                       await updateDoc(husmodellDocRef, {
                         name: editedFloorName,
-                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
                       });
 
                       setRoomConfigurator((prev: any) =>
