@@ -25,7 +25,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../components/ui/select";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../../../../config/firebaseConfig";
 import { useLocation, useNavigate } from "react-router-dom";
 import { removeUndefinedOrNull } from "../Oppmelding/Yttervegger";
@@ -545,6 +554,7 @@ export const AddFinalSubmission: React.FC<{
   // ];
 
   const [array, setArray] = useState<string[]>([]);
+  const [house, setHouse] = useState([]);
 
   useEffect(() => {
     if (!id || !kundeId) {
@@ -611,7 +621,7 @@ export const AddFinalSubmission: React.FC<{
     };
 
     getData();
-  }, [id, roomsData, form, array.length > 0]);
+  }, [id, roomsData, form, array.length > 0, house.length > 0]);
 
   useEffect(() => {
     const navbar = document.getElementById("navbar");
@@ -625,6 +635,33 @@ export const AddFinalSubmission: React.FC<{
       exportDiv.style.zIndex = isExporting ? "-1" : "999";
     }
   }, [isExporting]);
+
+  useEffect(() => {
+    const fetchHusmodellData = async () => {
+      try {
+        let q = query(
+          collection(db, "house_model"),
+          where(
+            "Husdetaljer.Leverandører",
+            "==",
+            "9f523136-72ca-4bde-88e5-de175bc2fc71"
+          )
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        const data: any = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setHouse(data);
+      } catch (error) {
+        console.error("Error fetching husmodell data:", error);
+      }
+    };
+
+    fetchHusmodellData();
+  }, []);
 
   return (
     <>
@@ -803,7 +840,7 @@ export const AddFinalSubmission: React.FC<{
                     </p>
                     <FormControl>
                       <div className="relative">
-                        <Input
+                        {/* <Input
                           placeholder="Skriv inn Husmodell"
                           {...field}
                           className={`bg-white rounded-[8px] border text-black
@@ -813,7 +850,35 @@ export const AddFinalSubmission: React.FC<{
                                               : "border-gray1"
                                           } `}
                           type="text"
-                        />
+                        /> */}
+                        <Select
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                          }}
+                          value={field.value}
+                        >
+                          <SelectTrigger
+                            className={`bg-white rounded-[8px] border text-black
+                              ${
+                                fieldState?.error
+                                  ? "border-red"
+                                  : "border-gray1"
+                              } `}
+                          >
+                            <SelectValue placeholder="Velg" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white">
+                            <SelectGroup>
+                              {house?.map((item: any, index: number) => {
+                                return (
+                                  <SelectItem key={index} value={item?.id}>
+                                    {item?.Husdetaljer?.husmodell_name}
+                                  </SelectItem>
+                                );
+                              })}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </FormControl>
                     <FormMessage />
