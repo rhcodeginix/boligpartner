@@ -49,44 +49,47 @@ import { Spinner } from "../../../../components/Spinner";
 import { ExportViewData } from "./exportViewData";
 import { v4 as uuidv4 } from "uuid";
 
-const formSchema = z.object({
-  Kundenavn: z.string({
-    required_error: "Kundenavn must må spesifiseres.",
-  }),
-  mobile: z.string().refine(
-    (value) => {
-      const parsedNumber = parsePhoneNumber(value);
-      const countryCode = parsedNumber?.countryCallingCode
-        ? `+${parsedNumber.countryCallingCode}`
-        : "";
-      const phoneNumber = parsedNumber?.nationalNumber || "";
-      if (countryCode !== "+47") {
-        return false;
-      }
-      const validator = phoneNumberValidations[countryCode];
-      return validator ? validator(phoneNumber) : false;
-    },
-    {
-      message:
-        "Vennligst skriv inn et gyldig telefonnummer for det valgte landet.",
-    }
-  ),
-  Serie: z.string({
-    required_error: "Serie must må spesifiseres.",
-  }),
-  Kundenummer: z.string({ required_error: "BP prosjektnummer er påkrevd." }),
-  Husmodell: z.string({
-    required_error: "Husmodell må spesifiseres.",
-  }),
-  exportType: z.string({ required_error: "Obligatorisk" }),
-});
-
 export const AddFinalSubmission: React.FC<{
   onClose: any;
   rooms: any;
   roomsData: any;
 }> = ({ onClose, rooms, roomsData }) => {
   const location = useLocation();
+  const formSchema = z.object({
+    Kundenavn: z.string({
+      required_error: "Kundenavn must må spesifiseres.",
+    }),
+    mobile: z.string().refine(
+      (value) => {
+        const parsedNumber = parsePhoneNumber(value);
+        const countryCode = parsedNumber?.countryCallingCode
+          ? `+${parsedNumber.countryCallingCode}`
+          : "";
+        const phoneNumber = parsedNumber?.nationalNumber || "";
+        if (countryCode !== "+47") {
+          return false;
+        }
+        const validator = phoneNumberValidations[countryCode];
+        return validator ? validator(phoneNumber) : false;
+      },
+      {
+        message:
+          "Vennligst skriv inn et gyldig telefonnummer for det valgte landet.",
+      }
+    ),
+    Serie:
+      roomsData?.Prosjektdetaljer?.TypeProsjekt === "Bolig" ||
+      roomsData?.TypeProsjekt === "Bolig" ||
+      roomsData?.Prosjektdetaljer?.TypeProsjekt === "Hytte" ||
+      roomsData?.TypeProsjekt === "Hytte"
+        ? z.string({ required_error: "Serie må spesifiseres." })
+        : z.string().optional(),
+    Kundenummer: z.string({ required_error: "BP prosjektnummer er påkrevd." }),
+    Husmodell: z.string({
+      required_error: "Husmodell må spesifiseres.",
+    }),
+    exportType: z.string({ required_error: "Obligatorisk" }),
+  });
   const pathSegments = location.pathname.split("/");
   const id = pathSegments.length > 2 ? pathSegments[2] : null;
   const kundeId = pathSegments.length > 3 ? pathSegments[3] : null;
@@ -134,11 +137,11 @@ export const AddFinalSubmission: React.FC<{
 
         const updatedKundeInfo = {
           ...existingDocData,
-          VelgSerie: data.Serie,
+          VelgSerie: data.Serie || null,
           FinalSubmission: filteredData,
           Prosjektdetaljer: {
             ...existingDocData.Prosjektdetaljer,
-            VelgSerie: data.Serie,
+            VelgSerie: data.Serie || null,
           },
           updatedAt: formatDate(new Date()),
         };
@@ -662,6 +665,8 @@ export const AddFinalSubmission: React.FC<{
 
     fetchHusmodellData();
   }, []);
+
+  console.log(form.formState.errors);
 
   return (
     <>
