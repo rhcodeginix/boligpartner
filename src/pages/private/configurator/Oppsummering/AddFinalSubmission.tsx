@@ -141,7 +141,10 @@ export const AddFinalSubmission: React.FC<{
           FinalSubmission: filteredData,
           Prosjektdetaljer: {
             ...existingDocData.Prosjektdetaljer,
-            VelgSerie: data.Serie || null,
+            VelgSerie:
+              data.Serie ||
+              existingDocData?.Prosjektdetaljer?.VelgSerie ||
+              null,
           },
           updatedAt: formatDate(new Date()),
         };
@@ -874,13 +877,18 @@ export const AddFinalSubmission: React.FC<{
                           </SelectTrigger>
                           <SelectContent className="bg-white">
                             <SelectGroup>
-                              {house?.map((item: any, index: number) => {
-                                return (
+                              {house
+                                ?.slice()
+                                .sort((a: any, b: any) =>
+                                  a?.Husdetaljer?.husmodell_name?.localeCompare(
+                                    b?.Husdetaljer?.husmodell_name
+                                  )
+                                )
+                                .map((item: any, index: number) => (
                                   <SelectItem key={index} value={item?.id}>
                                     {item?.Husdetaljer?.husmodell_name}
                                   </SelectItem>
-                                );
-                              })}
+                                ))}
                             </SelectGroup>
                           </SelectContent>
                         </Select>
